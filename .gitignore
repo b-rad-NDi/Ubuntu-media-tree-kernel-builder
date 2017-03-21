@@ -1,0 +1,10 @@
+.clean-master-repo/
+.flag-media-tree-sync-time
+.media-tree-clean-patch-repo/
+.state_env_file
+.user_env_file
+media_build/
+ubuntu-*/
+*.deb
+linux-media-tree-*.tgz
+
