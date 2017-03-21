@@ -8,3 +8,4 @@ ubuntu-*/
 *.deb
 linux-media-tree-*.tgz
 
+0001-Linuxtv.org-media-tree-sync-*.patch
