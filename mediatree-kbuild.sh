@@ -475,9 +475,12 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":mrxcgbsp" o; do
+while getopts ":imrxcgbsp" o; do
 #p=${OPTARG}
 	case "${o}" in
+	i)
+		init_mediatree_builder
+		;;
 	m)
 		## App operation: get latest drivers and make patched tarball for a particular kernel
 		#
@@ -487,6 +490,7 @@ while getopts ":mrxcgbsp" o; do
 		;;
 	s)
 		## App operation: Make a patch with the latest tarball applied
+		init_mediatree_builder
 		apply_media_tree .media-tree-clean-patch-repo
 		;;
 	r)
