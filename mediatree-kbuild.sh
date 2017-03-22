@@ -352,7 +352,7 @@ function regen_changelog()
 
 	[ -z "${1}" ] && echo "error..." && return 1
 
-	git checkout debian.master/changelog
+	git checkout ${UBUNTU_REVISION} debian.master/changelog
 	get_ubuntu_kver
 
 	cp debian.master/changelog /tmp/tmpkrn_changelog.orig
