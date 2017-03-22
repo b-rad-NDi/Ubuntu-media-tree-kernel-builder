@@ -423,9 +423,11 @@ function build_kernel_bin()
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
 	if [ "$1" == "dbg" ] ; then
-		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipmodule=true skipabi=true skipdbg=false
+		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipdbg=false
+			#skipmodule=true skipabi=true
 	else
-		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipmodule=true skipabi=true
+		time fakeroot debian/rules binary-headers binary-generic binary-perarch
+			#skipmodule=true skipabi=true
 	fi
 }
 
