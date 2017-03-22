@@ -1,0 +1,80 @@
+From 0365bf0f4c12144333671e6eae569ec220ec3fbe Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Wed, 22 Mar 2017 11:40:43 -0500
+Subject: [PATCH 5/5] Maintainer, changelog, git url updates
+
+---
+ debian.master/changelog         | 21 +++++++++++++++++++++
+ debian.master/control.stub.in   |  5 +++--
+ debian/rules.d/0-common-vars.mk |  3 +++
+ 3 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/debian.master/changelog b/debian.master/changelog
+index 0b7e9b08..2b0d62d 100644
+--- a/debian.master/changelog
++++ b/debian.master/changelog
+@@ -1,3 +1,24 @@
++linux (4.4.0-66201703210157.87+0+mediatree+hauppauge) xenial; urgency=low
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2017-03-20-21-52.patch
++    - 0002-Apply-build-fixes-to-media-tree.patch
++    - 0003-Add-new-media-tree-kernel-config.patch
++
++  * Ubuntu mainline build fixes
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++
++  * Packaging patches
++    - 0005-Maintainer-changelog-git-url-updates.patch
++
++  * Additional patches
++    - 0006-lgdt3306a-i2c-mux-backport.patch
++    - 0007-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
++    - 0008-em28xx-bulk-transfer-implementation-fix.patch
++    - 0009-usb-packet-size-tweaks.patch
++    - 0010-lgdt3306a-add-QAM-AUTO.patch
++
++ -- Brad Love <brad@nextdimension.cc>  Tue, 21 Mar 2017 01:57:22 +0000
++
+ linux (4.4.0-66.87) xenial; urgency=low
+ 
+   * CVE-2017-2636
+diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
+index 9f4f817..7504ae7 100644
+--- a/debian.master/control.stub.in
++++ b/debian.master/control.stub.in
+@@ -1,7 +1,7 @@
+ Source: linux
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Brad Love (Hauppauge) <brad@nextdimension.cc>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper (>= 5),
+@@ -44,7 +44,8 @@ Build-Depends-Indep:
+  bzip2 <!stage1>,
+  sharutils <!stage1>,
+  asciidoc <!stage1>,
+-Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/xenial
++Vcs-Git: git://github.com/~b-rad-NDi/
++Vcs-Browser: https://github.com/~b-rad-NDi/
+ XS-Testsuite: autopkgtest
+ #XS-Testsuite-Depends: gcc-4.7 binutils
+ 
+diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
+index ccc65dc..dc37475 100644
+--- a/debian/rules.d/0-common-vars.mk
++++ b/debian/rules.d/0-common-vars.mk
+@@ -27,6 +27,9 @@ family=ubuntu
+ # or configs.
+ AUTOBUILD=
+ 
++skipabi         ?= true
++skipmodule      ?= true
++
+ ifneq ($(AUTOBUILD),)
+ skipabi		= true
+ skipmodule	= true
+-- 
+2.7.4
+
