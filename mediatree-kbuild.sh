@@ -319,7 +319,7 @@ function apply_patches()
 	#apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
 	#[ $? != 0 ] && echo "patch failure, exiting" && exit 1
 
-	apply_patch_git_am ${KB_PATCH_DIR}/0005-maintainer-and-git-url-update.patch
+	apply_patch_git_am ${KB_PATCH_DIR}/0005-Maintainer-changelog-git-url-updates.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	return 0
@@ -392,7 +392,7 @@ function regen_changelog()
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Packaging patches" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0005-maintainer-and-git-url-update.patch" >>  /tmp/tmpkrn_changelog.mod
+	echo "    - 0005-Maintainer-changelog-git-url-updates.patch" >>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Additional patches" >>  /tmp/tmpkrn_changelog.mod
