@@ -433,7 +433,7 @@ function init_mediatree_builder()
 {
 	# Saves time by keeping clean local master (also takes up space)
 	cd ${TOP_DEVDIR}
-	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
+	if [ ! -d ".clean-master-repo" ] ; then
 		get_ubuntu .clean-master-repo
 	fi
 	cd ${TOP_DEVDIR}
@@ -442,7 +442,7 @@ function init_mediatree_builder()
 		configure_repo_git .media-tree-clean-patch-repo
 	fi
 	cd ${TOP_DEVDIR}
-	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
+	if [ ! -d "ubuntu-${UBUNTU_VERSION}" ] ; then
 		get_ubuntu
 		configure_repo_git
 	fi
