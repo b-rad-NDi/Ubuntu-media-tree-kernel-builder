@@ -422,9 +422,11 @@ function build_kernel_bin()
 {
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
-	if [ "$1" == "dbg" ] ; then
+	if [ "$1" == "debug" ] ; then
 		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipdbg=false
 			#skipmodule=true skipabi=true
+	elif [ "$1" == "full" ] ; then
+		time fakeroot debian/rules binary
 	else
 		time fakeroot debian/rules binary-headers binary-generic binary-perarch
 			#skipmodule=true skipabi=true
@@ -477,8 +479,7 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":imrxcgbsp" o; do
-#p=${OPTARG}
+while getopts ":imrxcgbB:sp" o; do
 	case "${o}" in
 	i)
 		init_mediatree_builder
@@ -536,6 +537,15 @@ while getopts ":imrxcgbsp" o; do
 		# Add dbg to build debug versions
 		#
 		build_kernel_bin
+		;;
+	B)
+		## App operation: Build kernel either full or dbg
+		#
+		if [ "${OPTARG}" != "full" -o "${OPTARG}" != "debug" ] ; then
+			echo "  -B [full|debug]"
+			exit 1
+		fi
+		build_kernel_bin ${OPTARG}
 		;;
 	h|*)
 		usage
