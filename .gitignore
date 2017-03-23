@@ -1,11 +1,17 @@
-.clean-master-repo/
-.flag-media-tree-sync-time
-.media-tree-clean-patch-repo/
-.state_env_file
-.user_env_file
-media_build/
-ubuntu-*/
-*.deb
-linux-media-tree-*.tgz
+/.clean-master-repo/
+/.flag-media-tree-sync-time
+/.media-tree-clean-patch-repo/
+/.state_env_file
+/.user_env_file
+/media_build/
+/ubuntu-*/
+/*.deb
+/linux-media-tree-*.tgz
 
-0001-Linuxtv.org-media-tree-sync-*.patch
+/0001-Linuxtv.org-media-tree-sync-*.patch
+
+/linux_*.orig.tar.gz
+/linux_*.diff.gz
+/linux_*.dsc
+/linux_*.changes
+/linux-*/
