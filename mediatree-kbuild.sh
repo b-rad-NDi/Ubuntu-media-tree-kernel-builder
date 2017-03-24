@@ -367,9 +367,10 @@ function regen_changelog()
 
 	K_BUILD_TIME=`date -R`
 
-	echo "linux (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_B}+${K_ABI_MOD}${KERNEL_ABI_TAG}) xenial; urgency=low" > /tmp/tmpkrn_changelog.mod
+	echo "linux (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) xenial; urgency=low" > /tmp/tmpkrn_changelog.mod
+	echo "" >>  /tmp/tmpkrn_changelog.mod
 	echo "  * Ubuntu kernel git clone">>  /tmp/tmpkrn_changelog.mod
-	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} : rev ${UBUNTU_REVISION}">>  /tmp/tmpkrn_changelog.mod
+	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} rev ${UBUNTU_REVISION}">>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * LinuxTV.org media tree slipstream + build fixes" >>  /tmp/tmpkrn_changelog.mod
