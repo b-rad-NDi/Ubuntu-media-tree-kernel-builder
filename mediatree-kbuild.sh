@@ -539,10 +539,10 @@ while getopts ":imrxcgbB:sp" o; do
 		build_kernel_bin
 		;;
 	B)
-		## App operation: Build kernel either full or dbg
+		## App operation: Build kernel either min (default), full, or dbg
 		#
-		if [ "${OPTARG}" != "full" -o "${OPTARG}" != "debug" ] ; then
-			echo "  -B [full|debug]"
+		if [ "${OPTARG}" != "min" -a "${OPTARG}" != "full" -a "${OPTARG}" != "debug" ] ; then
+			echo "  -B [min|full|debug]"
 			exit 1
 		fi
 		build_kernel_bin ${OPTARG}
