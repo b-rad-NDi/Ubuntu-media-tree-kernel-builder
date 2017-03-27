@@ -1,7 +1,7 @@
-From 3dd5645880425d8ec6abd0d739d08fd63e77ff09 Mon Sep 17 00:00:00 2001
+From 401b12c6bdd26de4286d379b359fdffc0b617885 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:44 +0000
-Subject: [PATCH 2/7] Apply build fixes to media tree
+Subject: [PATCH 2/5] Apply build fixes to media tree
 
 ---
  drivers/media/cec/cec-core.c                   | 2 ++

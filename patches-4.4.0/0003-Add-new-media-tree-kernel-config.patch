@@ -1,7 +1,7 @@
-From e847710d64cf2eeb7133d108958313efb2e0ef75 Mon Sep 17 00:00:00 2001
+From e72524e21d124c60c53109227c370526e6402cfb Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:57 +0000
-Subject: [PATCH 3/7] Add 'new' media tree kernel config
+Subject: [PATCH 3/5] Add 'new' media tree kernel config
 
 ---
  debian.master/config/config.common.ubuntu | 15 +++++++++++++++

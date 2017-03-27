@@ -1,7 +1,7 @@
-From 1a8afc6c68a4651c8f41ec6ab820ae83cbf226d0 Mon Sep 17 00:00:00 2001
+From 3a1176b6f647b086c57209834b5efa370bfd2c55 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:12 +0000
-Subject: [PATCH 4/7] Mainline Ubuntu build fixes
+Subject: [PATCH 4/5] Mainline Ubuntu build fixes
 
 ---
  drivers/hid/hid-picolcd_cir.c           |  5 ++--
