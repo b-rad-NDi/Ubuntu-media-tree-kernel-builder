@@ -314,11 +314,18 @@ function apply_patches()
 
 	###################################################
 	########### Ubuntu packaging patches ##############
-	#apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
-	#[ $? != 0 ] && echo "patch failure, exiting" && exit 1
-
-	apply_patch_git_am ${KB_PATCH_DIR}/0005-Maintainer-changelog-git-url-updates.patch
-	[ $? != 0 ] && echo "patch failure, exiting" && return 1
+	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
+		apply_patch ${KB_PATCH_DIR}/0005-Maintainer-changelog-git-url-updates.patch
+		[ $? != 0 ] && echo "patch failure, exiting 1" && return 1
+		regen_changelog "`date +%Y%m%d%H%M`"
+		git add debian.master/changelog
+		git commit -m 'Maintainer, changelog, git url updates'
+		unset UPDATE_MT_KBUILD_VER
+	else
+		apply_patch_git_am ${KB_PATCH_DIR}/0005-Maintainer-changelog-git-url-updates.patch
+#		apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
+		[ $? != 0 ] && echo "patch failure, exiting 2" && exit 1
+	fi
 
 	return 0
 }
