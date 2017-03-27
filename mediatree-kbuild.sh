@@ -411,6 +411,8 @@ function regen_changelog()
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	cat /tmp/tmpkrn_changelog.mod /tmp/tmpkrn_changelog.orig > debian.master/changelog
+
+	write_state_env
 }
 
 function generate_new_kernel_version()
@@ -418,10 +420,9 @@ function generate_new_kernel_version()
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
 	regen_changelog "`date +%Y%m%d%H%M`"
-
-	write_state_env
-
 	fakeroot debian/rules clean
+
+	return 0
 }
 
 function build_kernel_bin()
