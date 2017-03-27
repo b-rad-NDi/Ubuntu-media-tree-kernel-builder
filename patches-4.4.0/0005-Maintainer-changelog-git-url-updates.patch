@@ -1,17 +1,17 @@
-From a0cac902a4f01e1e9c9a9f8ea42aa08da697f801 Mon Sep 17 00:00:00 2001
+From fb4f51b4515148ae1933edbba51d6d0774e04aa9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Sun, 26 Mar 2017 22:22:16 -0500
+Date: Mon, 27 Mar 2017 12:39:24 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, git url updates
 
 ---
  debian.master/changelog         | 25 +++++++++++++++++++++++++
- debian.master/control.stub.in   |  5 +++--
+ debian.master/control.stub.in   |  6 ++++--
  debian.master/copyright         | 21 +++++++++++++++++++++
  debian/rules.d/0-common-vars.mk |  3 +++
- 4 files changed, 52 insertions(+), 2 deletions(-)
+ 4 files changed, 53 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..4d5bfac 100644
+index 0b7e9b08..7c526ae 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,28 @@
@@ -38,25 +38,26 @@ index 0b7e9b08..4d5bfac 100644
 +    - 0009-usb-packet-size-tweaks.patch
 +    - 0010-lgdt3306a-add-QAM-AUTO.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Tue, 21 Mar 2017 01:57:22 +0000
++ -- Brad Love <brad@nextdimension.cc>  Mon, 27 Mar 2017 12:35:04 -0500
 +
  linux (4.4.0-66.87) xenial; urgency=low
  
    * CVE-2017-2636
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 9f4f817..7504ae7 100644
+index 9f4f817..8235143 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
-@@ -1,7 +1,7 @@
+@@ -1,7 +1,8 @@
  Source: linux
  Section: devel
  Priority: optional
 -Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
 +Maintainer: Brad Love (Hauppauge) <brad@nextdimension.cc>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 5),
-@@ -44,7 +44,8 @@ Build-Depends-Indep:
+@@ -44,7 +45,8 @@ Build-Depends-Indep:
   bzip2 <!stage1>,
   sharutils <!stage1>,
   asciidoc <!stage1>,
