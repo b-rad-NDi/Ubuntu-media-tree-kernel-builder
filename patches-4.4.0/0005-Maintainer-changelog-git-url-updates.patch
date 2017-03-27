@@ -62,8 +62,8 @@ index 9f4f817..8235143 100644
   sharutils <!stage1>,
   asciidoc <!stage1>,
 -Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/xenial
-+Vcs-Git: git://github.com/~b-rad-NDi/
-+Vcs-Browser: https://github.com/~b-rad-NDi/
++Vcs-Git: git://github.com/~b-rad-NDi/Ubuntu-media-tree-kernel-builder.git
++Vcs-Browser: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -81,7 +81,7 @@ index d1d04a6..70008fb 100644
 +
 +Additional patches for hardware/performance/etc are also included.
 +
-+All patches are available at https://github.com/b-rad-NDi/xxxx
++All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 +
 +The packaging and build system is currently maintained by
 +brad at nextdimension dot cc for Hauppauge Computer Works.
