@@ -415,6 +415,13 @@ function regen_changelog()
 	write_state_env
 }
 
+function clean_kernel()
+{
+	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	fakeroot debian/rules clean
+	return 0
+}
+
 function generate_new_kernel_version()
 {
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
@@ -486,7 +493,7 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":imrxcgbB:sp" o; do
+while getopts ":imrxCcgbB:sp" o; do
 	case "${o}" in
 	i)
 		init_mediatree_builder
@@ -531,6 +538,11 @@ while getopts ":imrxcgbB:sp" o; do
 	c)
 		## App operation: Update changelog with ABI, build tag, maintainer, and patch list
 		generate_new_kernel_version
+		[ $? != 0 ] && exit 1
+		;;
+	C)
+		## App operation: clean kernel
+		clean_kernel
 		[ $? != 0 ] && exit 1
 		;;
 	g)
