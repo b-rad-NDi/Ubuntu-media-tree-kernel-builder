@@ -1,20 +1,25 @@
-From 0365bf0f4c12144333671e6eae569ec220ec3fbe Mon Sep 17 00:00:00 2001
+From a0cac902a4f01e1e9c9a9f8ea42aa08da697f801 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 22 Mar 2017 11:40:43 -0500
+Date: Sun, 26 Mar 2017 22:22:16 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, git url updates
 
 ---
- debian.master/changelog         | 21 +++++++++++++++++++++
+ debian.master/changelog         | 25 +++++++++++++++++++++++++
  debian.master/control.stub.in   |  5 +++--
+ debian.master/copyright         | 21 +++++++++++++++++++++
  debian/rules.d/0-common-vars.mk |  3 +++
- 3 files changed, 27 insertions(+), 2 deletions(-)
+ 4 files changed, 52 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..2b0d62d 100644
+index 0b7e9b08..4d5bfac 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,24 @@
-+linux (4.4.0-66201703210157.87+0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,28 @@
++linux (4.4.0-66201703210157.0+mediatree+hauppauge) xenial; urgency=low
++
++  * Ubuntu kernel git clone
++    - 4.4.0-66.87 rev 05022128a513a344d156de5bffd88e3dda4c8da6
++
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2017-03-20-21-52.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
@@ -61,6 +66,35 @@ index 9f4f817..7504ae7 100644
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
+diff --git a/debian.master/copyright b/debian.master/copyright
+index d1d04a6..70008fb 100644
+--- a/debian.master/copyright
++++ b/debian.master/copyright
+@@ -1,3 +1,24 @@
++#############################################################
++#############################################################
++#############################################################
++
++This is a patched version of the Ubuntu kernel.
++The latest media tree drivers from https://linuxtv.com are slip streamed in.
++
++Additional patches for hardware/performance/etc are also included.
++
++All patches are available at https://github.com/b-rad-NDi/xxxx
++
++The packaging and build system is currently maintained by
++brad at nextdimension dot cc for Hauppauge Computer Works.
++
++Errors in packaging or building should be directed to github above.
++Bugs in the kernel or media tree drivers should be reported upstream.
++
++#############################################################
++#############################################################
++#############################################################
++
+ This is the Ubuntu prepackaged version of the Linux kernel.
+ Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
+ and others.
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
 index ccc65dc..dc37475 100644
 --- a/debian/rules.d/0-common-vars.mk
