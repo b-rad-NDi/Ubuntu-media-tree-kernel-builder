@@ -256,12 +256,10 @@ function apply_patch()
 		return 1
 	fi
 
-	patch -p1 '<' $1
+	patch -p1 < $1
 	if [ $? != 0 ] ; then
 		return 1
 	fi
-	echo git add --all
-	echo git commit -m "$2"
 	return 0
 }
 
