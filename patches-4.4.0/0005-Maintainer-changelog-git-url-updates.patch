@@ -1,17 +1,18 @@
-From fb4f51b4515148ae1933edbba51d6d0774e04aa9 Mon Sep 17 00:00:00 2001
+From 0e30c95b987cf2e266e955a62a66b57d636acc02 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Mon, 27 Mar 2017 12:39:24 -0500
+Date: Tue, 28 Mar 2017 14:44:23 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, git url updates
 
 ---
  debian.master/changelog         | 25 +++++++++++++++++++++++++
  debian.master/control.stub.in   |  6 ++++--
  debian.master/copyright         | 21 +++++++++++++++++++++
- debian/rules.d/0-common-vars.mk |  3 +++
- 4 files changed, 53 insertions(+), 2 deletions(-)
+ debian/rules.d/0-common-vars.mk |  5 +++++
+ debian/rules.d/2-binary-arch.mk |  4 ++++
+ 5 files changed, 59 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..7c526ae 100644
+index 0b7e9b08..8c98b12 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,28 @@
@@ -44,7 +45,7 @@ index 0b7e9b08..7c526ae 100644
  
    * CVE-2017-2636
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 9f4f817..8235143 100644
+index 9f4f817..3c1828e 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -68,7 +69,7 @@ index 9f4f817..8235143 100644
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
 diff --git a/debian.master/copyright b/debian.master/copyright
-index d1d04a6..70008fb 100644
+index d1d04a6..0a3a226 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
 @@ -1,3 +1,24 @@
@@ -97,19 +98,40 @@ index d1d04a6..70008fb 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..dc37475 100644
+index ccc65dc..b575ba4 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
-@@ -27,6 +27,9 @@ family=ubuntu
+@@ -27,6 +27,11 @@ family=ubuntu
  # or configs.
  AUTOBUILD=
  
 +skipabi         ?= true
 +skipmodule      ?= true
++skipdbg         ?= true
++do_binary_udebs ?= false
 +
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
+diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
+index 8ce1fa8..626d4f0 100644
+--- a/debian/rules.d/2-binary-arch.mk
++++ b/debian/rules.d/2-binary-arch.mk
+@@ -721,10 +721,14 @@ build-arch: $(build-arch-deps-true)
+ 	@echo Debug: $@
+ 
+ ifeq ($(AUTOBUILD),)
++ifeq ($(do_binary_udebs),true)
+ binary-arch-deps-$(do_flavour_image_package) += binary-udebs
+ else
+ binary-arch-deps-$(do_flavour_image_package) = binary-debs
+ endif
++else
++binary-arch-deps-$(do_flavour_image_package) = binary-debs
++endif
+ binary-arch-deps-$(do_libc_dev_package) += binary-arch-headers
+ ifneq ($(do_common_headers_indep),true)
+ binary-arch-deps-$(do_flavour_header_package) += binary-headers
 -- 
 2.7.4
 
