@@ -1,6 +1,6 @@
-From 0e30c95b987cf2e266e955a62a66b57d636acc02 Mon Sep 17 00:00:00 2001
+From 6bc3250c3fecf51724f1d6894237c1be162f5549 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 28 Mar 2017 14:44:23 -0500
+Date: Tue, 28 Mar 2017 14:56:17 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, git url updates
 
 ---
@@ -12,11 +12,11 @@ Subject: [PATCH 5/5] Maintainer, changelog, git url updates
  5 files changed, 59 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..8c98b12 100644
+index 0b7e9b08..6b87cbc 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,28 @@
-+linux (4.4.0-66201703210157.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-66201703281456.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
 +    - 4.4.0-66.87 rev 05022128a513a344d156de5bffd88e3dda4c8da6
@@ -39,7 +39,7 @@ index 0b7e9b08..8c98b12 100644
 +    - 0009-usb-packet-size-tweaks.patch
 +    - 0010-lgdt3306a-add-QAM-AUTO.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Mon, 27 Mar 2017 12:35:04 -0500
++ -- Brad Love <brad@nextdimension.cc>  Tue, 28 Mar 2017 14:56:17 -0500
 +
  linux (4.4.0-66.87) xenial; urgency=low
  
