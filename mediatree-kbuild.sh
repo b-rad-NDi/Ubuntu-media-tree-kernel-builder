@@ -319,6 +319,10 @@ function apply_patches()
 		[ $? != 0 ] && echo "patch failure, exiting 1" && return 1
 		regen_changelog "`date +%Y%m%d%H%M`"
 		git add debian.master/changelog
+		git add debian.master/control.stub.in
+		git add debian.master/copyright
+		git add debian/rules.d/0-common-vars.mk
+		git add debian/rules.d/2-binary-arch.mk
 		git commit -m 'Maintainer, changelog, git url updates'
 		unset UPDATE_MT_KBUILD_VER
 	else
