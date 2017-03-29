@@ -1,6 +1,6 @@
-From ae753bac92c575dc9fff26cccde43d8e87dcde1d Mon Sep 17 00:00:00 2001
+From ee8be38a18e390c658cd25cf508a398d4d2e5627 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 29 Mar 2017 14:36:26 -0500
+Date: Wed, 29 Mar 2017 14:43:48 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, git url updates
 
 ---
@@ -12,17 +12,17 @@ Subject: [PATCH 5/5] Maintainer, changelog, git url updates
  5 files changed, 61 insertions(+), 4 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..6b87cbc 100644
+index 0b7e9b08..bc79a5e 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,28 @@
-+linux (4.4.0-66201703281456.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-66201703291443.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
 +    - 4.4.0-66.87 rev 05022128a513a344d156de5bffd88e3dda4c8da6
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-03-20-21-52.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-03-29-18-06.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -39,7 +39,7 @@ index 0b7e9b08..6b87cbc 100644
 +    - 0009-usb-packet-size-tweaks.patch
 +    - 0010-lgdt3306a-add-QAM-AUTO.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Tue, 28 Mar 2017 14:56:17 -0500
++ -- Brad Love <brad@nextdimension.cc>  Wed, 29 Mar 2017 14:43:48 -0500
 +
  linux (4.4.0-66.87) xenial; urgency=low
  
