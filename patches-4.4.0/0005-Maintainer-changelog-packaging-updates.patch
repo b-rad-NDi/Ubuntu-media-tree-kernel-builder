@@ -1,15 +1,16 @@
-From ee8be38a18e390c658cd25cf508a398d4d2e5627 Mon Sep 17 00:00:00 2001
+From 597ceda62afdaf8b0b14477a5fdba39dace71279 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 29 Mar 2017 14:43:48 -0500
-Subject: [PATCH 5/5] Maintainer, changelog, git url updates
+Date: Thu, 30 Mar 2017 16:48:55 -0500
+Subject: [PATCH 5/5] Maintainer, changelog, packaging, git url updates
 
 ---
- debian.master/changelog         | 25 +++++++++++++++++++++++++
- debian.master/control.stub.in   |  6 ++++--
- debian.master/copyright         | 21 +++++++++++++++++++++
- debian/rules.d/0-common-vars.mk |  9 +++++++--
- debian/rules.d/2-binary-arch.mk |  4 ++++
- 5 files changed, 61 insertions(+), 4 deletions(-)
+ debian.master/changelog                      | 25 +++++++++++++++++++++++++
+ debian.master/control.d/flavour-control.stub |  4 ++--
+ debian.master/control.stub.in                |  6 ++++--
+ debian.master/copyright                      | 21 +++++++++++++++++++++
+ debian/rules.d/0-common-vars.mk              |  9 +++++++--
+ debian/rules.d/2-binary-arch.mk              |  4 ++++
+ 6 files changed, 63 insertions(+), 6 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 0b7e9b08..bc79a5e 100644
@@ -44,6 +45,28 @@ index 0b7e9b08..bc79a5e 100644
  linux (4.4.0-66.87) xenial; urgency=low
  
    * CVE-2017-2636
+diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
+index e63a682..75ce8e6 100644
+--- a/debian.master/control.d/flavour-control.stub
++++ b/debian.master/control.d/flavour-control.stub
+@@ -52,7 +52,7 @@ Architecture: ARCH
+ Section: kernel
+ Priority: optional
+ Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-PKGVER-ABINUM-FLAVOUR, crda | wireless-crda
+-Description: Linux kernel extra modules for version PKGVER on DESC
++Description: Linux kernel extra modules with slipstreamed mediatree drivers for version PKGVER on DESC
+  This package contains the Linux kernel extra modules for version PKGVER on
+  DESC.
+  .
+@@ -75,7 +75,7 @@ Section: devel
+ Priority: optional
+ Depends: ${misc:Depends}, linux-headers-PKGVER-ABINUM, ${shlibs:Depends}
+ Provides: linux-headers, linux-headers-3.0
+-Description: Linux kernel headers for version PKGVER on DESC
++Description: Linux kernel headers with slipstreamed mediatree drivers for version PKGVER on DESC
+  This package provides kernel header files for version PKGVER on
+  DESC.
+  .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
 index 9f4f817..3c1828e 100644
 --- a/debian.master/control.stub.in
