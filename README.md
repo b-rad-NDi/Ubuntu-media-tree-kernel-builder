@@ -1,4 +1,4 @@
-# Ubuntu + LinuxTV.org media tree custom kernel package builder
+# Ubuntu + LinuxTV.org media tree custom kernel builder
 
 The kernel that ships with Ubuntu is typically locked to a specific version,
 such as 4.4. When this happens support for new media devices and fixes to
