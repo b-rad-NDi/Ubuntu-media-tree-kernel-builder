@@ -21,6 +21,7 @@ for adding the PPA are provided on its web page.
 ### In short:
 
 sudo add-apt-repository ppa:b-rad/kernel+mediatree+hauppauge
+
 sudo apt-get update
 
 ### Then to find the packages:
