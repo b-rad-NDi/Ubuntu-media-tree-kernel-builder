@@ -39,7 +39,7 @@ The PPA will be updated once a week.
 
 ## Hauppauge Computer Works is proud sponsor of this effort.
 
-http://haupauge.com
+http://hauppauge.com
 
 
 ## This script produces installable kernel packages from
