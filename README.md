@@ -40,7 +40,7 @@ The PPA will be updated once a week.
 
 ## Hauppauge Computer Works is proud sponsor of this effort.
 
-http://hauppauge.com
+http://www.hauppauge.com
 
 
 ## This script produces installable kernel packages from
@@ -70,3 +70,5 @@ Foundation, either version 3 of the License, or (at your option) any later versi
 https://linuxtv.org
 
 https://ubuntu.org
+
+http://www.hauppauge.com
