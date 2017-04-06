@@ -15,3 +15,5 @@
 /linux_*.dsc
 /linux_*.changes
 /linux-*/
+
+/linux_4.*.0-*mediatree+hauppauge_*.tar.gz
