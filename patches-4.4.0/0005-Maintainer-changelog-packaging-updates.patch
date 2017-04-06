@@ -1,6 +1,6 @@
-From 807b3622be916d672a95528def12a367529b1da5 Mon Sep 17 00:00:00 2001
+From 7ac1f5423d8e9d8298c9f3faed5ae81f2cd146c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 31 Mar 2017 16:20:21 -0500
+Date: Thu, 6 Apr 2017 16:20:06 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
@@ -13,17 +13,17 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  6 files changed, 63 insertions(+), 6 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0b7e9b08..612e540 100644
+index 9b3c0db..1d92d77 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,28 @@
-+linux (4.4.0-66201703311620.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-72201704061620.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.4.0-66.87 rev 05022128a513a344d156de5bffd88e3dda4c8da6
++    - 4.4.0-72.93 rev 50aaaec159365f8f8788e054048545e7ec9734f1
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-03-29-18-06.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-04-06-20-53.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -40,11 +40,11 @@ index 0b7e9b08..612e540 100644
 +    - 0009-usb-packet-size-tweaks.patch
 +    - 0010-lgdt3306a-add-QAM-AUTO.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Fri, 31 Mar 2017 16:20:19 -0500
++ -- Brad Love <brad@nextdimension.cc>  Thu, 06 Apr 2017 16:20:05 -0500
 +
- linux (4.4.0-66.87) xenial; urgency=low
+ linux (4.4.0-72.93) xenial; urgency=low
  
-   * CVE-2017-2636
+   * linux: 4.4.0-72.93 -proposed tracker (LP: #1678078)
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index e63a682..75ce8e6 100644
 --- a/debian.master/control.d/flavour-control.stub
