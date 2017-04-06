@@ -41,7 +41,7 @@ fi
 
 [ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=xenial
 
-[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=05022128a513a344d156de5bffd88e3dda4c8da6
+[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
 
 ################################################
 
