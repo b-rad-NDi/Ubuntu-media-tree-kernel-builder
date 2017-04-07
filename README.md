@@ -15,36 +15,39 @@ This script is used to develop and maintain the following Launchpad PPA:
 https://launchpad.net/~b-rad/+archive/ubuntu/kernel+mediatree+hauppauge
 
 The above ppa provides installable and upgradeable debs, so end users do
-not have to recompile the kernel and/or modules themselves. Instructions
-for adding the PPA are provided on its web page.
+not have to recompile the kernel and/or modules themselves.
 
-### In short:
+## To install and keep up to date with the PPA
+
+Two virtual package are provided in the PPA
+ * linux-image-mediatree-generic
+ * linux-headers-mediatree-generic
+
+### First add the PPA and update
 
 sudo add-apt-repository ppa:b-rad/kernel+mediatree+hauppauge
 
 sudo apt-get update
 
-### Then to find the packages:
+### Then install the virtual packages (enables updates)
 
-apt-cache search mediatree
+sudo apt-get install linux-image-mediatree-generic
 
-### Then install linux-image-extra and linux-headers
-
-sudo apt-get install _____ _____
+sudo apt-get install linux-headers-mediatree-generic
 
 If you use an NVidia or AMD graphics card it is imperative to install
-the linux-headers-___ package in order for the graphics card drivers
-to sucessfully regenerate on upgrade.
+the linux-headers-mediatree-generic package in order for the graphics card drivers
+to sucessfully regenerate on driver upgrade. There are many other packages
+similarly requiring kernel headers, so most users should install this.
 
-The PPA will be updated once a week.
+The PPA will be updated once a week, or immediately upon new Ubuntu kernel release.
 
 ## Hauppauge Computer Works is proud sponsor of this effort.
 
 http://www.hauppauge.com
 
-
 ## This script produces installable kernel packages from
- * Ubuntu kernel sources for a specific release
+ * Ubuntu kernel git for a specific release
  * Latest upstream LinuxTV media tree drivers
  * Minimal patches to get the above to build
  * Additional patches to enable HW and/or optimizations not yet upstreamed
