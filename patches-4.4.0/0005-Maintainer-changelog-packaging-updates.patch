@@ -1,13 +1,13 @@
-From 3047ac4d63388ac330b88343e3e24c59add423e0 Mon Sep 17 00:00:00 2001
+From 01e90a2709b73a90dc0ac091138a58f3868d7f0d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Sat, 8 Apr 2017 20:29:28 -0500
+Date: Sun, 9 Apr 2017 10:23:32 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
- debian.master/changelog                      | 25 +++++++++++++++++++++++++
+ debian.master/changelog                      | 25 ++++++++++++++++++++++++
  debian.master/control.d/flavour-control.stub |  4 ++--
- debian.master/control.stub.in                |  6 ++++--
- debian.master/copyright                      | 21 +++++++++++++++++++++
+ debian.master/control.stub.in                | 29 ++++------------------------
+ debian.master/copyright                      | 21 ++++++++++++++++++++
  debian.master/rules.d/amd64.mk               | 14 +++++++-------
  debian.master/rules.d/arm64.mk               |  6 +++---
  debian.master/rules.d/armhf.mk               |  6 +++---
@@ -18,7 +18,7 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 14 +++++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 ++++
- 14 files changed, 96 insertions(+), 36 deletions(-)
+ 14 files changed, 96 insertions(+), 59 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 9b3c0db..1d92d77 100644
@@ -76,7 +76,7 @@ index e63a682..75ce8e6 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 9f4f817..3c1828e 100644
+index 9f4f817..1e94edf 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -99,6 +99,43 @@ index 9f4f817..3c1828e 100644
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
+@@ -110,18 +112,6 @@ Description: Linux Kernel Headers for development
+  libraries. They are NOT meant to be used to build third-party modules for
+  your kernel. Use SRCPKGNAME-headers-* packages for that.
+ 
+-Package: SRCPKGNAME-tools-common
+-Build-Profiles: <!stage1>
+-Architecture: all
+-Multi-Arch: foreign
+-Section: kernel
+-Priority: optional
+-Depends: ${misc:Depends}
+-Description: Linux kernel version specific tools for version PKGVER
+- This package provides the architecture independent parts for kernel
+- version locked tools (such as perf and x86_energy_perf_policy) for
+- version PGKVER.
+-
+ Package: SRCPKGNAME-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: i386 amd64 armhf arm64 powerpc ppc64el s390x
+@@ -135,17 +125,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+  =HUMAN=.
+  You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
+ 
+-Package: SRCPKGNAME-cloud-tools-common
+-Build-Profiles: <!stage1>
+-Architecture: all
+-Multi-Arch: foreign
+-Section: kernel
+-Priority: optional
+-Depends: ${misc:Depends}
+-Description: Linux kernel version specific cloud tools for version PKGVER
+- This package provides the architecture independent parts for kernel
+- version locked tools for cloud tools for version PGKVER.
+-
+ Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
 index d1d04a6..0a3a226 100644
 --- a/debian.master/copyright
