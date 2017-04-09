@@ -55,8 +55,11 @@ http://www.hauppauge.com
 
 ## This script also:
  * A full patch series for reproduction
- *  Generate latest LinuxTV driver patch set on demand
+ * Generate latest LinuxTV driver patch set on demand
 
+## Development use
+
+todo
 
 ## Author
  * Brad Love <brad at nextdimension dot cc>
