@@ -1,6 +1,6 @@
-From 7ac1f5423d8e9d8298c9f3faed5ae81f2cd146c1 Mon Sep 17 00:00:00 2001
+From 4db67bf3023f37fbda621a1fd8ca98bd4c7eb6f6 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Thu, 6 Apr 2017 16:20:06 -0500
+Date: Sat, 8 Apr 2017 20:21:09 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
@@ -8,9 +8,10 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian.master/control.d/flavour-control.stub |  4 ++--
  debian.master/control.stub.in                |  6 ++++--
  debian.master/copyright                      | 21 +++++++++++++++++++++
- debian/rules.d/0-common-vars.mk              |  9 +++++++--
+ debian/rules                                 |  2 +-
+ debian/rules.d/0-common-vars.mk              | 14 +++++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 ++++
- 6 files changed, 63 insertions(+), 6 deletions(-)
+ 7 files changed, 68 insertions(+), 8 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 9b3c0db..1d92d77 100644
@@ -120,11 +121,24 @@ index d1d04a6..0a3a226 100644
  This is the Ubuntu prepackaged version of the Linux kernel.
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
+diff --git a/debian/rules b/debian/rules
+index f2e801c..a72cc25 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
+ 
+ do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
+ do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
+-do_tools_common=true
++do_tools_common?=false
+ 
+ # Don't build tools or udebs in a cross compile environment.
+ ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..b8fce14 100644
+index ccc65dc..37d2859 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
-@@ -27,6 +27,11 @@ family=ubuntu
+@@ -27,6 +27,14 @@ family=ubuntu
  # or configs.
  AUTOBUILD=
  
@@ -132,11 +146,14 @@ index ccc65dc..b8fce14 100644
 +skipmodule      ?= true
 +skipdbg         ?= true
 +do_binary_udebs ?= false
++do_tools_common ?= false
++do_tools	?= false
++do_linux_tools	?= false
 +
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -134,8 +139,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+@@ -134,8 +142,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  # cycle, so its OK to leave 'do_doc_package_content=false' until those build
  # failures get sorted out. Finally, the doc package doesn't really need to be built
  # for developer testing (its kind of slow), so only do it if on a buildd.
@@ -147,6 +164,15 @@ index ccc65dc..b8fce14 100644
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
+@@ -152,7 +160,7 @@ do_source_package_content=false
+ endif
+ 
+ # linux-libc-dev may not be needed, default to building it.
+-do_libc_dev_package=true
++do_libc_dev_package?=false
+ 
+ # common headers normally is built as an indep package, but may be arch
+ do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
 index 8ce1fa8..626d4f0 100644
 --- a/debian/rules.d/2-binary-arch.mk
