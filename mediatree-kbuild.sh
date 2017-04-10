@@ -437,6 +437,43 @@ function generate_new_kernel_version()
 	return 0
 }
 
+function generate_virtual_package()
+{
+	cd ${TOP_DEVDIR}
+	VPACKAGE_VER=`head -n 1 changelog`
+	cd .vpackage_tmp
+	rm -rf linux-*-mediatree-*/
+	rm -f *
+        VP_BUILD_TIME=`date -R`
+
+	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
+		cp ../linux-${1}-mediatree.control ./ns_control
+		echo "linux-${1}-mediatree (${VPACKAGE_VER}) ${UBUNTU_VERSION}; urgency=low" > changelog
+		git log --pretty=format:"  * %h %s" -n 5 >> changelog
+		echo "" >> changelog
+		echo "" >> changelog
+		echo " -- ${U_FULLNAME} <${U_EMAIL}>  ${VP_BUILD_TIME}" >> changelog
+		echo "" >> changelog
+		cat ../changelog >> changelog
+	else
+		return 1
+	fi
+
+	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
+	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic/" ns_control
+	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic, linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic/" ns_control
+	equivs-build --full ns_control
+	dpkg-source -x linux-${1}-mediatree_${VPACKAGE_VER}.dsc
+	cd linux-${1}-mediatree-${VPACKAGE_VER}
+	debuild -us -uc -S
+	cd ..
+	cp linux-${1}-mediatree*.tar.gz ..
+	cp linux-${1}-mediatree*.dsc ..
+	cp linux-${1}-mediatree*_source.changes ..
+
+	return 0
+}
+
 function build_kernel_bin()
 {
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
@@ -498,7 +535,7 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":imrxCcgbB:sp" o; do
+while getopts ":imrxCcgbB:spV:" o; do
 	case "${o}" in
 	i)
 		init_mediatree_builder
@@ -570,6 +607,10 @@ while getopts ":imrxCcgbB:sp" o; do
 			exit 1
 		fi
 		build_kernel_bin ${OPTARG}
+		;;
+	V)
+		## App operation: build PPA decriptors
+		generate_virtual_package ${OPTARG}
 		;;
 	h|*)
 		usage
