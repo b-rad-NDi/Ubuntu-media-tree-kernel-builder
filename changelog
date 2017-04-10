@@ -1,0 +1,14 @@
+0.10
+
+  * Initial virtual package
+    - Only linux-image, linux-image-extra, linux-headers, linux-doc offered by ppa
+
+  * LinuxTV.org media tree slipstream 2017-04-06-20-53
+
+  * Additional patches
+    - 0006-lgdt3306a-i2c-mux-backport.patch
+    - 0007-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
+    - 0008-em28xx-bulk-transfer-implementation-fix.patch
+    - 0009-usb-packet-size-tweaks.patch
+    - 0010-lgdt3306a-add-QAM-AUTO.patch
+
