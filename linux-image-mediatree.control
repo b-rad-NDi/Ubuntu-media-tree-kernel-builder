@@ -1,0 +1,24 @@
+Source: linux-image-mediatree
+Section: devel
+Priority: low
+Homepage: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
+Standards-Version: 3.9.2
+
+Package: linux-image-mediatree
+Version: 0.1
+Maintainer: __MAINTAINER_INFO__
+Depends: __LINUX_IMAGE_PACKAGES__
+Suggests: __LINUX_HEADER_PACKAGE__
+#, linux-doc_4.4.0-72201704061620
+Architecture: all
+# Copyright: <copyright file; defaults to GPL2>
+Changelog: changelog
+# Readme: README
+Description: linux-image packages wih integrated LinuxTV.org mediatree drivers
+ This virtual package is provided to allow automatic updates
+ for linux-image and linux-image-extra.
+ .
+ The kernel packages provide the Ubuntu kernel, with all of the latest drirvers from linuxtv.org
+ integrated and all modules enabled. Additional patches are included while pursuing upstream.
+ All patches can be found at the homepage.
+

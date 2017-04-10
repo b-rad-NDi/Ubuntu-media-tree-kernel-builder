@@ -1,0 +1,17 @@
+Source: linux-headers-mediatree
+Section: devel
+Priority: low
+Homepage: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
+Standards-Version: 3.9.2
+
+Package: linux-headers-mediatree
+Version: 0.1
+Maintainer: __MAINTAINER_INFO__
+Depends: __LINUX_HEADER_PACKAGE__
+Suggests: __LINUX_IMAGE_PACKAGES__
+Architecture: all
+# Copyright: <copyright file; defaults to GPL2>
+Changelog: changelog
+# Readme: README
+Description: Header files related to linux-image-mediatree
+ This package provides kernel header files for version ___
