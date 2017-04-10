@@ -246,7 +246,7 @@ function configure_repo_git()
 
 	# set local Ubuntu kernel repo git config
 	git config user.name "${U_FULLNAME}"
-	git config user.email "${U_EMAIL}"
+	git config user.email "hidden@email.co"
 }
 
 function apply_patch()
