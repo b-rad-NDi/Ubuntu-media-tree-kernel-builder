@@ -1,8 +1,8 @@
 Source: linux-headers-mediatree
 Section: devel
-Priority: low
+Priority: optional
 Homepage: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
-Standards-Version: 3.9.2
+Standards-Version: 3.9.7
 
 Package: linux-headers-mediatree
 Version: 0.1
