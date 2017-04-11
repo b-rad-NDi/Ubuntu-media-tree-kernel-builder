@@ -17,3 +17,9 @@
 /linux-*/
 
 /linux_4.*.0-*mediatree+hauppauge_*.tar.gz
+
+/.vpackage_tmp/*
+
+/linux-headers-mediatree_*
+#_source.changes
+/linux-image-mediatree_*
