@@ -489,6 +489,22 @@ function build_kernel_bin()
 	fi
 }
 
+function generate_ppa_data()
+{
+	echo "This should only be executed in a completely clean state"
+	echo "For example, after:"
+	echo "   ./mediatree.sh -r -p -x -c"
+	echo "Continue?"
+	read x
+	[ "${x}" != "YES" ] && return 1
+
+	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	debuild -us -uc -S
+
+	generate_virtual_package image
+	generate_virtual_package headers
+}
+
 function init_mediatree_builder()
 {
 	# Saves time by keeping clean local master (also takes up space)
