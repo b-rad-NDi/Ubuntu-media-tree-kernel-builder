@@ -440,6 +440,9 @@ function generate_new_kernel_version()
 function generate_virtual_package()
 {
 	cd ${TOP_DEVDIR}
+
+	LAST_KBUILD_VER=`head -n 1 ubuntu-${UBUNTU_VERSION}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
+
 	VPACKAGE_VER=`head -n 1 changelog`
 	cd .vpackage_tmp
 	rm -rf linux-*-mediatree-*/
@@ -460,8 +463,15 @@ function generate_virtual_package()
 	fi
 
 	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
-	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic/" ns_control
-	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic, linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}-generic/" ns_control
+	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+	echo "Building virtual package that depends on:"
+	if [ "${1}" == "headers" ] ; then
+		echo "    linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
+	else
+		echo "    linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
+		echo "    linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
+	fi
 	equivs-build --full ns_control
 	dpkg-source -x linux-${1}-mediatree_${VPACKAGE_VER}.dsc
 	cd linux-${1}-mediatree-${VPACKAGE_VER}
