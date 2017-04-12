@@ -441,6 +441,11 @@ function generate_virtual_package()
 {
 	cd ${TOP_DEVDIR}
 
+	if [ ! -f "ubuntu-${UBUNTU_VERSION}/debian/changelog" ] ; then
+		echo "Error, you must 'clean'/regenerate build data first"
+		return 1
+	fi
+
 	LAST_KBUILD_VER=`head -n 1 ubuntu-${UBUNTU_VERSION}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
 
 	VPACKAGE_VER=`head -n 1 changelog`
