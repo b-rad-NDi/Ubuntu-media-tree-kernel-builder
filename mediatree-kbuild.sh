@@ -641,7 +641,10 @@ while getopts ":imrxCcgbB:spV:" o; do
 		;;
 	V)
 		## App operation: build PPA decriptors
-		generate_virtual_package ${OPTARG}
+		if [ "${OPTARG}" == "all" ] ; then
+			generate_ppa_data
+		fi
+#		generate_virtual_package ${OPTARG}
 		;;
 	h|*)
 		usage
