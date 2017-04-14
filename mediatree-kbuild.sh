@@ -546,7 +546,8 @@ function init_mediatree_builder()
 function usage()
 {
 	echo "Usage:"
-	echo "  ${0} [-m|-s|-p|-x|-c|-g|-b|-h]"
+	echo "  ${0} [-i|-m|-s|-p|-x|-c|-g|-b|-h]"
+	echo "    -i  :  Initialize all git repositories"
 	echo "    -m  :  Download and generate latest backport-patched LinuxTV.org media tree tarball"
 	echo "    -s  :  Generate a vanilla media tree kernel patch from a tarball"
 	echo "    -p  :  Apply mediatree kbuild system patches"
