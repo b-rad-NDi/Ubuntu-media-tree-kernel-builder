@@ -39,9 +39,9 @@ fi
 
 [ -z "${KERNEL_ABI_TAG}" ] && KERNEL_ABI_TAG="+mediatree+hauppauge"
 
-[ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=xenial
+[ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=yakkety
 
-[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
+[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=7913960eb0f7df333aaad4ee266b83cdccc39f7a
 
 ################################################
 
