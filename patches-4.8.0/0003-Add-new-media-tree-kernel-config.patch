@@ -1,14 +1,14 @@
-From 2fa5be620250d54191964d53fbf59b93fb9ac9c7 Mon Sep 17 00:00:00 2001
+From f04ecaa6a8ba485e20f0795316b80c7344095bad Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 15 Apr 2017 18:34:52 -0500
-Subject: [PATCH 3/8] Add 'new' media tree kernel config
+Subject: [PATCH 3/5] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ debian.master/config/config.common.ubuntu | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index ff52f1f..d0a0235 100644
+index ff52f1f..9a1110e 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -9395,3 +9395,22 @@ CONFIG_ZPOOL=y
