@@ -1,0 +1,40 @@
+From 7d7c1df56ffedf33d56f181ffa69a619b7fbf8b8 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Sat, 15 Apr 2017 18:34:52 -0500
+Subject: [PATCH 3/5] Add 'new' media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index 46503ca..c2d41af 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -9728,3 +9728,23 @@ CONFIG_ZRAM=m
+ CONFIG_ZSMALLOC=y
+ # CONFIG_ZSMALLOC_STAT is not set
+ CONFIG_ZSWAP=y
++
++CONFIG_MEDIA_CEC_SUPPORT=y
++CONFIG_MEDIA_CEC_DEBUG=y
++CONFIG_MEDIA_CONTROLLER_DVB=y
++CONFIG_VIDEO_PCI_SKELETON=m
++# CONFIG_DVB_DEMUX_SECTION_LOSS_LOG is not set
++CONFIG_IR_SPI=m
++CONFIG_IR_SERIAL_TRANSMITTER=y
++CONFIG_IR_SERIAL=m
++CONFIG_IR_SIR=m
++CONFIG_DVB_USB_ZD1301=m
++CONFIG_USB_PULSE8_CEC=m
++CONFIG_USB_RAINSHADOW_CEC=m
++CONFIG_V4L_CEC_DRIVERS=y
++CONFIG_VIDEO_TW5864=m
++CONFIG_VIDEO_TW686X=m
++# CONFIG_VIDEO_IVTV_DEPRECATED_IOCTLS is not set
++CONFIG_VIDEO_VIMC=m
++CONFIG_VIDEO_VIVID_CEC=y
++
+-- 
+2.7.4
+
