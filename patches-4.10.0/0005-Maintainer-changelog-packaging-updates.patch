@@ -1,0 +1,363 @@
+From 72f6d9e2747cc00694a4fd222268e7195aa23619 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 17 Apr 2017 12:34:19 -0500
+Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
+
+---
+ debian.master/changelog                      | 24 +++++++++++++++++++++++
+ debian.master/control.d/flavour-control.stub |  4 ++--
+ debian.master/control.stub.in                | 29 ++++------------------------
+ debian.master/copyright                      | 21 ++++++++++++++++++++
+ debian.master/rules.d/amd64.mk               | 14 +++++++-------
+ debian.master/rules.d/arm64.mk               |  6 +++---
+ debian.master/rules.d/armhf.mk               |  6 +++---
+ debian.master/rules.d/i386.mk                | 12 ++++++------
+ debian.master/rules.d/ppc64el.mk             |  6 +++---
+ debian.master/rules.d/s390x.mk               |  6 +++---
+ debian/rules                                 |  2 +-
+ debian/rules.d/0-common-vars.mk              | 14 +++++++++++---
+ debian/rules.d/2-binary-arch.mk              |  4 ++++
+ 13 files changed, 92 insertions(+), 56 deletions(-)
+
+diff --git a/debian.master/changelog b/debian.master/changelog
+index 91dcb65..4b9c506 100644
+--- a/debian.master/changelog
++++ b/debian.master/changelog
+@@ -1,3 +1,27 @@
++linux (4.10.0-19201704171234.0+mediatree+hauppauge) zesty; urgency=low
++
++  * Ubuntu kernel git clone
++    - 4.10.0-19.21 rev acbae4cfe69b3ee7315ba24113c14e1c89921f53
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2017-04-17-16-56.patch
++    - 0002-Apply-build-fixes-to-media-tree.patch
++    - 0003-Add-new-media-tree-kernel-config.patch
++
++  * Ubuntu mainline build fixes
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++
++  * Packaging patches
++    - 0005-Maintainer-changelog-git-url-updates.patch
++
++  * Additional patches
++    - 0006-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
++    - 0007-em28xx-bulk-transfer-implementation-fix.patch
++    - 0008-usb-packet-size-tweaks.patch
++    - 0009-lgdt3306a-add-QAM-AUTO.patch
++
++ -- Brad Love <brad@nextdimension.cc>  Mon, 17 Apr 2017 12:34:19 -0500
++
+ linux (4.10.0-19.21) zesty; urgency=low
+ 
+   [ Tim Gardner ]
+diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
+index 6318ad2..3ddd97b 100644
+--- a/debian.master/control.d/flavour-control.stub
++++ b/debian.master/control.d/flavour-control.stub
+@@ -53,7 +53,7 @@ Architecture: ARCH
+ Section: kernel
+ Priority: optional
+ Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-PKGVER-ABINUM-FLAVOUR, crda | wireless-crda
+-Description: Linux kernel extra modules for version PKGVER on DESC
++Description: Linux kernel extra modules with slipstreamed mediatree drivers for version PKGVER on DESC
+  This package contains the Linux kernel extra modules for version PKGVER on
+  DESC.
+  .
+@@ -76,7 +76,7 @@ Section: devel
+ Priority: optional
+ Depends: ${misc:Depends}, linux-headers-PKGVER-ABINUM, ${shlibs:Depends}
+ Provides: linux-headers, linux-headers-3.0
+-Description: Linux kernel headers for version PKGVER on DESC
++Description: Linux kernel headers with slipstreamed mediatree drivers for version PKGVER on DESC
+  This package provides kernel header files for version PKGVER on
+  DESC.
+  .
+diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
+index abf86b0..93fbbcd 100644
+--- a/debian.master/control.stub.in
++++ b/debian.master/control.stub.in
+@@ -1,7 +1,8 @@
+ Source: linux
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Brad Love (Hauppauge) <brad@nextdimension.cc>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper (>= 5),
+@@ -41,7 +42,8 @@ Build-Depends-Indep:
+  bzip2 <!stage1>,
+  sharutils <!stage1>,
+  asciidoc <!stage1>,
+-Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/zesty
++Vcs-Git: git://github.com/~b-rad-NDi/Ubuntu-media-tree-kernel-builder.git
++Vcs-Browser: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
+ XS-Testsuite: autopkgtest
+ #XS-Testsuite-Depends: gcc-4.7 binutils
+ 
+@@ -107,18 +109,6 @@ Description: Linux Kernel Headers for development
+  libraries. They are NOT meant to be used to build third-party modules for
+  your kernel. Use SRCPKGNAME-headers-* packages for that.
+ 
+-Package: SRCPKGNAME-tools-common
+-Build-Profiles: <!stage1>
+-Architecture: all
+-Multi-Arch: foreign
+-Section: kernel
+-Priority: optional
+-Depends: ${misc:Depends}, lsb-release
+-Description: Linux kernel version specific tools for version PKGVER
+- This package provides the architecture independent parts for kernel
+- version locked tools (such as perf and x86_energy_perf_policy) for
+- version PGKVER.
+-
+ Package: SRCPKGNAME-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: i386 amd64 armhf arm64 ppc64el s390x
+@@ -132,17 +122,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+  =HUMAN=.
+  You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
+ 
+-Package: SRCPKGNAME-cloud-tools-common
+-Build-Profiles: <!stage1>
+-Architecture: all
+-Multi-Arch: foreign
+-Section: kernel
+-Priority: optional
+-Depends: ${misc:Depends}
+-Description: Linux kernel version specific cloud tools for version PKGVER
+- This package provides the architecture independent parts for kernel
+- version locked tools for cloud tools for version PGKVER.
+-
+ Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: i386 amd64 armhf
+diff --git a/debian.master/copyright b/debian.master/copyright
+index d1d04a6..0a3a226 100644
+--- a/debian.master/copyright
++++ b/debian.master/copyright
+@@ -1,3 +1,24 @@
++#############################################################
++#############################################################
++#############################################################
++
++This is a patched version of the Ubuntu kernel.
++The latest media tree drivers from https://linuxtv.com are slip streamed in.
++
++Additional patches for hardware/performance/etc are also included.
++
++All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
++
++The packaging and build system is currently maintained by
++brad at nextdimension dot cc for Hauppauge Computer Works.
++
++Errors in packaging or building should be directed to github above.
++Bugs in the kernel or media tree drivers should be reported upstream.
++
++#############################################################
++#############################################################
++#############################################################
++
+ This is the Ubuntu prepackaged version of the Linux kernel.
+ Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
+ and others.
+diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
+index c6b57f7..6ddc711 100644
+--- a/debian.master/rules.d/amd64.mk
++++ b/debian.master/rules.d/amd64.mk
+@@ -2,7 +2,7 @@ human_arch	= 64 bit x86
+ build_arch	= x86
+ header_arch	= $(build_arch)
+ defconfig	= defconfig
+-flavours	= generic lowlatency
++flavours	= generic
+ build_image	= bzImage
+ kernel_file	= arch/$(build_arch)/boot/bzImage
+ install_file	= vmlinuz
+@@ -10,11 +10,11 @@ loader		= grub
+ vdso		= vdso_install
+ no_dumpfile	= true
+ uefi_signed     = true
+-do_tools_usbip  = true
+-do_tools_cpupower = true
+-do_tools_perf   = true
+-do_tools_x86	= true
+-do_tools_hyperv	= true
++do_tools_usbip  = false
++do_tools_cpupower = false
++do_tools_perf   = false
++do_tools_x86	= false
++do_tools_hyperv	= false
+ do_extras_package = true
+-do_tools_common = true
++do_tools_common = false
+ do_zfs		= true
+diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
+index 14c4132..e5ec413 100644
+--- a/debian.master/rules.d/arm64.mk
++++ b/debian.master/rules.d/arm64.mk
+@@ -12,9 +12,9 @@ loader		= grub
+ vdso		= vdso_install
+ 
+ do_extras_package = true
+-do_tools_usbip  = true
+-do_tools_cpupower = true
+-do_tools_perf   = true
++do_tools_usbip  = false
++do_tools_cpupower = false
++do_tools_perf   = false
+ 
+ do_dtbs		= true
+ do_zfs		= true
+diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
+index 6cabbf2..e8fcfbe 100644
+--- a/debian.master/rules.d/armhf.mk
++++ b/debian.master/rules.d/armhf.mk
+@@ -10,8 +10,8 @@ no_dumpfile	= true
+ 
+ loader		= grub
+ 
+-do_tools_usbip  = true
+-do_tools_cpupower = true
+-do_tools_perf	= true
++do_tools_usbip  = false
++do_tools_cpupower = false
++do_tools_perf	= false
+ 
+ do_dtbs		= true
+diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
+index 8c470c4..327e163 100644
+--- a/debian.master/rules.d/i386.mk
++++ b/debian.master/rules.d/i386.mk
+@@ -2,16 +2,16 @@ human_arch	= 32 bit x86
+ build_arch	= x86
+ header_arch	= $(build_arch)
+ defconfig	= defconfig
+-flavours        = generic lowlatency
++flavours        = generic
+ build_image	= bzImage
+ kernel_file	= arch/$(build_arch)/boot/bzImage
+ install_file	= vmlinuz
+ loader		= grub
+ vdso		= vdso_install
+ no_dumpfile	= true
+-do_tools_usbip  = true
+-do_tools_cpupower = true
+-do_tools_perf   = true
+-do_tools_x86	= true
+-do_tools_hyperv = true
++do_tools_usbip  = false
++do_tools_cpupower = false
++do_tools_perf   = false
++do_tools_x86	= false
++do_tools_hyperv = false
+ do_extras_package = true
+diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
+index 3f8c4a4..f46109b 100644
+--- a/debian.master/rules.d/ppc64el.mk
++++ b/debian.master/rules.d/ppc64el.mk
+@@ -11,9 +11,9 @@ vdso		= vdso_install
+ loader		= grub
+ do_extras_package = true
+ 
+-do_tools_usbip    = true
+-do_tools_cpupower = true
+-do_tools_perf	  = true
++do_tools_usbip    = false
++do_tools_cpupower = false
++do_tools_perf	  = false
+ 
+ #do_flavour_image_package = false
+ do_zfs		= true
+diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
+index 5b468ac..dfc7a15 100644
+--- a/debian.master/rules.d/s390x.mk
++++ b/debian.master/rules.d/s390x.mk
+@@ -12,8 +12,8 @@ no_dumpfile	= true
+ 
+ do_extras_package = true
+ 
+-do_tools_usbip    = true
+-do_tools_cpupower = true
+-do_tools_perf     = true
++do_tools_usbip    = false
++do_tools_cpupower = false
++do_tools_perf     = false
+ 
+ do_zfs		= true
+diff --git a/debian/rules b/debian/rules
+index 5fbe78f..bc46e3a 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
+ 
+ do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
+ do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
+-do_tools_common=true
++do_tools_common?=false
+ 
+ # Don't build tools or udebs in a cross compile environment.
+ ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
+diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
+index ccc65dc..37d2859 100644
+--- a/debian/rules.d/0-common-vars.mk
++++ b/debian/rules.d/0-common-vars.mk
+@@ -27,6 +27,14 @@ family=ubuntu
+ # or configs.
+ AUTOBUILD=
+ 
++skipabi         ?= true
++skipmodule      ?= true
++skipdbg         ?= true
++do_binary_udebs ?= false
++do_tools_common ?= false
++do_tools	?= false
++do_linux_tools	?= false
++
+ ifneq ($(AUTOBUILD),)
+ skipabi		= true
+ skipmodule	= true
+@@ -134,8 +142,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+ # cycle, so its OK to leave 'do_doc_package_content=false' until those build
+ # failures get sorted out. Finally, the doc package doesn't really need to be built
+ # for developer testing (its kind of slow), so only do it if on a buildd.
+-do_doc_package=true
+-do_doc_package_content=true
++do_doc_package?=false
++do_doc_package_content?=false
+ ifeq ($(full_build),false)
+ do_doc_package_content=false
+ endif
+@@ -152,7 +160,7 @@ do_source_package_content=false
+ endif
+ 
+ # linux-libc-dev may not be needed, default to building it.
+-do_libc_dev_package=true
++do_libc_dev_package?=false
+ 
+ # common headers normally is built as an indep package, but may be arch
+ do_common_headers_indep=true
+diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
+index 627d869..17287de 100644
+--- a/debian/rules.d/2-binary-arch.mk
++++ b/debian/rules.d/2-binary-arch.mk
+@@ -723,10 +723,14 @@ build-arch: $(build-arch-deps-true)
+ 	@echo Debug: $@
+ 
+ ifeq ($(AUTOBUILD),)
++ifeq ($(do_binary_udebs),true)
+ binary-arch-deps-$(do_flavour_image_package) += binary-udebs
+ else
+ binary-arch-deps-$(do_flavour_image_package) = binary-debs
+ endif
++else
++binary-arch-deps-$(do_flavour_image_package) = binary-debs
++endif
+ binary-arch-deps-$(do_libc_dev_package) += binary-arch-headers
+ ifneq ($(do_common_headers_indep),true)
+ binary-arch-deps-$(do_flavour_header_package) += binary-headers
+-- 
+2.7.4
+
