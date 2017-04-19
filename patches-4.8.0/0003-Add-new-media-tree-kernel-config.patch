@@ -1,17 +1,17 @@
-From f04ecaa6a8ba485e20f0795316b80c7344095bad Mon Sep 17 00:00:00 2001
+From 38742b87aeb184e534e6677d9b7204a1db22ad8a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 15 Apr 2017 18:34:52 -0500
 Subject: [PATCH 3/5] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ debian.master/config/config.common.ubuntu | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index ff52f1f..9a1110e 100644
+index ff52f1f..c698072 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9395,3 +9395,22 @@ CONFIG_ZPOOL=y
+@@ -9395,3 +9395,23 @@ CONFIG_ZPOOL=y
  CONFIG_ZRAM=m
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -32,8 +32,9 @@ index ff52f1f..9a1110e 100644
 +CONFIG_VIDEO_TW5864=m
 +CONFIG_VIDEO_TW686X=m
 +# CONFIG_VIDEO_IVTV_DEPRECATED_IOCTLS is not set
++CONFIG_VIDEO_VIMC=m
 +CONFIG_VIDEO_VIVID_CEC=y
 +
 -- 
-2.7.4
+2.9.3
 
