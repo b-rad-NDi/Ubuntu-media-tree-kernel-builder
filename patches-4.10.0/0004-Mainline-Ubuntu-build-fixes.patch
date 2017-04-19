@@ -1,15 +1,43 @@
-From f3ae4b674e78cd17e06a6d2a2062768cb67a1e2e Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 17 Mar 2017 01:37:12 +0000
+From a3b57d8d8cc017b94eb98ae87763d47115bdd5ac Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 19 Apr 2017 23:14:44 +0000
 Subject: [PATCH 4/5] Mainline Ubuntu build fixes
 
 ---
+ drivers/dma-buf/sync_debug.c            |  2 +-
+ drivers/dma-buf/sync_file.c             |  2 +-
  drivers/hid/hid-picolcd_cir.c           |  5 ++---
  drivers/net/ethernet/via/via-velocity.c | 10 +++++-----
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ 4 files changed, 9 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/dma-buf/sync_debug.c b/drivers/dma-buf/sync_debug.c
+index 48b20e34fb6d..07bcb4d5ecda 100644
+--- a/drivers/dma-buf/sync_debug.c
++++ b/drivers/dma-buf/sync_debug.c
+@@ -78,7 +78,7 @@ static void sync_print_fence(struct seq_file *s,
+ 	struct sync_timeline *parent = dma_fence_parent(fence);
+ 
+ 	if (dma_fence_is_signaled_locked(fence))
+-		status = fence->status;
++		status = fence->error;
+ 
+ 	seq_printf(s, "  %s%sfence %s",
+ 		   show ? parent->name : "",
+diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
+index 6d802f2d2881..a9ee7babb00e 100644
+--- a/drivers/dma-buf/sync_file.c
++++ b/drivers/dma-buf/sync_file.c
+@@ -380,7 +380,7 @@ static void sync_fill_fence_info(struct dma_fence *fence,
+ 	strlcpy(info->driver_name, fence->ops->get_driver_name(fence),
+ 		sizeof(info->driver_name));
+ 	if (dma_fence_is_signaled(fence))
+-		info->status = fence->status >= 0 ? 1 : fence->status;
++		info->status = fence->error >= 0 ? 1 : fence->error;
+ 	else
+ 		info->status = 0;
+ 	info->timestamp_ns = ktime_to_ns(fence->timestamp);
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 9628651..8ffbb6f 100644
+index 96286510f42e..8ffbb6f65a65 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
 @@ -108,13 +108,12 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
@@ -29,7 +57,7 @@ index 9628651..8ffbb6f 100644
  	rdev->close            = picolcd_cir_close;
  	rdev->input_name       = data->hdev->name;
 diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
-index 4716e60..58f127a 100644
+index 4716e60e2ccb..58f127a13efe 100644
 --- a/drivers/net/ethernet/via/via-velocity.c
 +++ b/drivers/net/ethernet/via/via-velocity.c
 @@ -85,8 +85,8 @@
@@ -71,5 +99,5 @@ index 4716e60..58f127a 100644
  
  static int velocity_platform_remove(struct platform_device *pdev)
 -- 
-2.7.4
+2.11.0
 
