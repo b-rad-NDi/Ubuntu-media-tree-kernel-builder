@@ -126,7 +126,7 @@ function download_media_tree()
 	make -C linux/ download
 
 	# UTC time marker for LinuxTV media tree sync
-	export V4L_SYNC_DATE=`date -u +%Y-%m-%d-%k:%M`
+	export V4L_SYNC_DATE=`date -u +%Y-%0m-%0d-%0k:%0M`
 	echo ${V4L_SYNC_DATE} > ${TOP_DEVDIR}/.flag-media-tree-sync-time
 }
 
