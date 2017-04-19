@@ -225,9 +225,6 @@ function apply_media_tree()
 	tar -xzvf ${LinuxTV_MT_TAR}
 #	export V4L_SYNC_DATE="${V4L_SYNC_DATE}"
 
-	# FIXME: dma-buf.h api changes
-	git checkout include/linux/dma-buf.h
-
 	git add --all
 	git commit -m "Linuxtv.org media tree sync - ${V4L_SYNC_DATE}"
 	git format-patch -o ../ -1 HEAD
