@@ -216,34 +216,6 @@ index 6aa09419be2b..ed3a27337029 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
-diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index 4d74860..7279f68 100644
---- a/include/linux/kconfig.h
-+++ b/include/linux/kconfig.h
-@@ -31,6 +31,7 @@
-  * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
-  * the last step cherry picks the 2nd arg, we get a zero.
-  */
-+#define config_enabled(cfg)		___is_defined(cfg)
- #define __is_defined(x)			___is_defined(x)
- #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
- #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
-@@ -40,13 +41,13 @@
-  * otherwise. For boolean options, this is equivalent to
-  * IS_ENABLED(CONFIG_FOO).
-  */
--#define IS_BUILTIN(option) __is_defined(option)
-+#define IS_BUILTIN(option) config_enabled(option)
- 
- /*
-  * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
-  * otherwise.
-  */
--#define IS_MODULE(option) __is_defined(option##_MODULE)
-+#define IS_MODULE(option) config_enabled(option##_MODULE)
- 
- /*
-  * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
 -- 
-2.7.4
+2.11.0
 
