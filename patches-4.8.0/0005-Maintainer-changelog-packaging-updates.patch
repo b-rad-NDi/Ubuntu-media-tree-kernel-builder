@@ -319,7 +319,7 @@ index 5fbe78f..bc46e3a 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..37d2859 100644
+index ccc65dc..83ad1b2 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -343,8 +343,8 @@ index ccc65dc..37d2859 100644
  # for developer testing (its kind of slow), so only do it if on a buildd.
 -do_doc_package=true
 -do_doc_package_content=true
-+do_doc_package?=false
-+do_doc_package_content?=false
++do_doc_package?=true
++do_doc_package_content?=true
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
@@ -377,5 +377,5 @@ index 1657376..9281034 100644
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
 -- 
-2.7.4
+2.9.3
 
