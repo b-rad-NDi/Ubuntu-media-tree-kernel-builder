@@ -74,7 +74,7 @@ index 6318ad2..3ddd97b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index abf86b0..93fbbcd 100644
+index abf86b03a1b8..93fbbcdc0d2b 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -135,7 +135,7 @@ index abf86b0..93fbbcd 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
-index d1d04a6..0a3a226 100644
+index d1d04a6d6697..0a3a226a4c8a 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
 @@ -1,3 +1,24 @@
@@ -164,7 +164,7 @@ index d1d04a6..0a3a226 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index c6b57f7..6ddc711 100644
+index c6b57f7babe4..6ddc711b3ca1 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -2,7 +2,7 @@ human_arch	= 64 bit x86
@@ -195,7 +195,7 @@ index c6b57f7..6ddc711 100644
 +do_tools_common = false
  do_zfs		= true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index 14c4132..e5ec413 100644
+index 14c413282c69..e5ec4135c3af 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
 @@ -12,9 +12,9 @@ loader		= grub
@@ -212,7 +212,7 @@ index 14c4132..e5ec413 100644
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
-index 6cabbf2..e8fcfbe 100644
+index 6cabbf281e55..e8fcfbe68ea4 100644
 --- a/debian.master/rules.d/armhf.mk
 +++ b/debian.master/rules.d/armhf.mk
 @@ -10,8 +10,8 @@ no_dumpfile	= true
@@ -228,7 +228,7 @@ index 6cabbf2..e8fcfbe 100644
  
  do_dtbs		= true
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
-index 8c470c4..327e163 100644
+index 8c470c4dab6a..327e1636913e 100644
 --- a/debian.master/rules.d/i386.mk
 +++ b/debian.master/rules.d/i386.mk
 @@ -2,16 +2,16 @@ human_arch	= 32 bit x86
@@ -255,7 +255,7 @@ index 8c470c4..327e163 100644
 +do_tools_hyperv = false
  do_extras_package = true
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index 3f8c4a4..f46109b 100644
+index 3f8c4a4069b3..f46109bc252e 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
 @@ -11,9 +11,9 @@ vdso		= vdso_install
@@ -272,7 +272,7 @@ index 3f8c4a4..f46109b 100644
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index 5b468ac..dfc7a15 100644
+index 5b468acdfe44..dfc7a152ee2a 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
 @@ -12,8 +12,8 @@ no_dumpfile	= true
@@ -288,7 +288,7 @@ index 5b468ac..dfc7a15 100644
  
  do_zfs		= true
 diff --git a/debian/rules b/debian/rules
-index 5fbe78f..bc46e3a 100755
+index 5fbe78f3265e..bc46e3a74dbd 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -301,7 +301,7 @@ index 5fbe78f..bc46e3a 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..37d2859 100644
+index ccc65dc03358..83ad1b228495 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -325,8 +325,8 @@ index ccc65dc..37d2859 100644
  # for developer testing (its kind of slow), so only do it if on a buildd.
 -do_doc_package=true
 -do_doc_package_content=true
-+do_doc_package?=false
-+do_doc_package_content?=false
++do_doc_package?=true
++do_doc_package_content?=true
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
@@ -340,7 +340,7 @@ index ccc65dc..37d2859 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 627d869..17287de 100644
+index 627d869f9aa7..17287de4712a 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
 @@ -723,10 +723,14 @@ build-arch: $(build-arch-deps-true)
@@ -359,5 +359,5 @@ index 627d869..17287de 100644
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
 -- 
-2.7.4
+2.11.0
 
