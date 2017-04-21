@@ -1,6 +1,6 @@
-From e3f71a6bbbf9cdd12132e6517c4fa74915dd8b88 Mon Sep 17 00:00:00 2001
+From fab1d53b3a0cb750fdc88fce637de9fd5b36363b Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 11 Apr 2017 16:20:56 -0500
+Date: Thu, 20 Apr 2017 16:20:38 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
@@ -320,7 +320,7 @@ index f2e801c..a72cc25 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..37d2859 100644
+index ccc65dc..095e9a6 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -338,17 +338,6 @@ index ccc65dc..37d2859 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -134,8 +142,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
- # cycle, so its OK to leave 'do_doc_package_content=false' until those build
- # failures get sorted out. Finally, the doc package doesn't really need to be built
- # for developer testing (its kind of slow), so only do it if on a buildd.
--do_doc_package=true
--do_doc_package_content=true
-+do_doc_package?=false
-+do_doc_package_content?=false
- ifeq ($(full_build),false)
- do_doc_package_content=false
- endif
 @@ -152,7 +160,7 @@ do_source_package_content=false
  endif
  
