@@ -4,21 +4,21 @@ Date: Thu, 20 Apr 2017 16:20:38 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
- debian.master/changelog                      | 25 ++++++++++++++++++++++++
- debian.master/control.d/flavour-control.stub |  4 ++--
- debian.master/control.stub.in                | 29 ++++------------------------
- debian.master/copyright                      | 21 ++++++++++++++++++++
- debian.master/rules.d/amd64.mk               | 14 +++++++-------
- debian.master/rules.d/arm64.mk               |  6 +++---
- debian.master/rules.d/armhf.mk               |  6 +++---
- debian.master/rules.d/i386.mk                | 12 ++++++------
- debian.master/rules.d/powerpc.mk             |  6 +++---
- debian.master/rules.d/ppc64el.mk             |  6 +++---
- debian.master/rules.d/s390x.mk               |  6 +++---
+ debian.master/changelog                      | 26 ++++++++++++++++++
+ debian.master/control.d/flavour-control.stub |  4 +--
+ debian.master/control.stub.in                | 41 +++++++---------------------
+ debian.master/copyright                      | 21 ++++++++++++++
+ debian.master/rules.d/amd64.mk               | 14 +++++-----
+ debian.master/rules.d/arm64.mk               |  6 ++--
+ debian.master/rules.d/armhf.mk               |  6 ++--
+ debian.master/rules.d/i386.mk                | 12 ++++----
+ debian.master/rules.d/powerpc.mk             |  6 ++--
+ debian.master/rules.d/ppc64el.mk             |  6 ++--
+ debian.master/rules.d/s390x.mk               |  6 ++--
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 14 +++++++++++---
- debian/rules.d/2-binary-arch.mk              |  4 ++++
- 14 files changed, 96 insertions(+), 59 deletions(-)
+ debian/rules.d/0-common-vars.mk              | 10 ++++++-
+ debian/rules.d/2-binary-arch.mk              |  4 +++
+ 14 files changed, 101 insertions(+), 63 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 9b3c0db..8934593 100644
@@ -76,7 +76,7 @@ index e63a682..75ce8e6 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 9f4f817..1e94edf 100644
+index 9f4f817..1ff7aa2 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -89,7 +89,7 @@ index 9f4f817..1e94edf 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 5),
-@@ -44,7 +45,8 @@ Build-Depends-Indep:
+@@ -44,11 +45,12 @@ Build-Depends-Indep:
   bzip2 <!stage1>,
   sharutils <!stage1>,
   asciidoc <!stage1>,
@@ -99,6 +99,43 @@ index 9f4f817..1e94edf 100644
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
+-Package: SRCPKGNAME-source-PKGVER
++Package: SRCPKGNAME-source-mediatree-PKGVER
+ Build-Profiles: <!stage1>
+ Architecture: all
+ Section: devel
+@@ -57,9 +59,9 @@ Provides: SRCPKGNAME-source, SRCPKGNAME-source-3
+ Depends: ${misc:Depends}, binutils, bzip2, coreutils
+ Recommends: libc-dev, gcc, make
+ Suggests: libncurses-dev | ncurses-dev, kernel-package, libqt3-dev
+-Description: Linux kernel source for version PKGVER with Ubuntu patches
++Description: Linux kernel source PKGVER w/Ubuntu patches and linuxtv.org media drivers
+  This package provides the source code for the Linux kernel version
+- PKGVER.
++ PKGVER with mainline LinuxTV.org media tree drivers integrated.
+  .
+  This package is mainly meant for other packages to use, in order to build
+  custom flavours.
+@@ -69,16 +71,16 @@ Description: Linux kernel source for version PKGVER with Ubuntu patches
+  been designed to ease the task of creating kernel image packages.
+  .
+  If you are simply trying to build third-party modules for your kernel,
+- you do not want this package. Install the appropriate linux-headers
++ you do not want this package. Install the appropriate linux-headers-mediatree
+  package instead.
+ 
+-Package: SRCPKGNAME-doc
++Package: SRCPKGNAME-doc-mediatree
+ Build-Profiles: <!stage1>
+ Architecture: all
+ Section: doc
+ Priority: optional
+ Depends: ${misc:Depends}
+-Description: Linux kernel specific documentation for version PKGVER
++Description: Linux kernel docs for PKGVER with mainline linuxtv.org media drivers
+  This package provides the various documents in the PKGVER kernel
+  Documentation/ subdirectory.  These document kernel subsystems, APIs, device
+  drivers, and so on.  See
 @@ -110,18 +112,6 @@ Description: Linux Kernel Headers for development
   libraries. They are NOT meant to be used to build third-party modules for
   your kernel. Use SRCPKGNAME-headers-* packages for that.
@@ -320,7 +357,7 @@ index f2e801c..a72cc25 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..095e9a6 100644
+index ccc65dc..6450ebd 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -338,6 +375,15 @@ index ccc65dc..095e9a6 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
+@@ -139,7 +147,7 @@ do_doc_package_content=true
+ ifeq ($(full_build),false)
+ do_doc_package_content=false
+ endif
+-doc_pkg_name=$(src_pkg_name)-doc
++doc_pkg_name=$(src_pkg_name)-doc-mediatree
+ 
+ #
+ # Similarly with the linux-source package, you need not build it as a developer. Its
 @@ -152,7 +160,7 @@ do_source_package_content=false
  endif
  
