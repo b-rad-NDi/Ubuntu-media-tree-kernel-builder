@@ -15,9 +15,9 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian.master/rules.d/ppc64el.mk             |  6 +++---
  debian.master/rules.d/s390x.mk               |  6 +++---
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 14 +++++++++++---
- debian/rules.d/2-binary-arch.mk              |  4 ++++
- 13 files changed, 92 insertions(+), 56 deletions(-)
+ debian/rules.d/0-common-vars.mk              | 14 +++++++---
+ debian/rules.d/2-binary-arch.mk              |  4 +++
+ 13 files changed, 98 insertions(+), 61 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 91dcb65..4b9c506 100644
@@ -74,7 +74,7 @@ index 6318ad2..3ddd97b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index abf86b03a1b8..93fbbcdc0d2b 100644
+index abf86b03a1b8..f0ab39dde67f 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -87,7 +87,7 @@ index abf86b03a1b8..93fbbcdc0d2b 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 5),
-@@ -41,7 +42,8 @@ Build-Depends-Indep:
+@@ -41,11 +42,12 @@ Build-Depends-Indep:
   bzip2 <!stage1>,
   sharutils <!stage1>,
   asciidoc <!stage1>,
@@ -97,6 +97,39 @@ index abf86b03a1b8..93fbbcdc0d2b 100644
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
+-Package: linux-source-PKGVER
++Package: linux-source-mediatree-PKGVER
+ Build-Profiles: <!stage1>
+ Architecture: all
+ Section: devel
+@@ -54,9 +56,9 @@ Provides: linux-source, linux-source-3
+ Depends: ${misc:Depends}, binutils, bzip2, coreutils
+ Recommends: libc-dev, gcc, make
+ Suggests: libncurses-dev | ncurses-dev, kernel-package, libqt3-dev
+-Description: Linux kernel source for version PKGVER with Ubuntu patches
++Description: Linux kernel source PKGVER w/Ubuntu patches and linuxtv.org media drivers
+  This package provides the source code for the Linux kernel version
+- PKGVER.
++ PKGVER with mainline LinuxTV.org media tree drivers integrated.
+  .
+  This package is mainly meant for other packages to use, in order to build
+  custom flavours.
+@@ -69,13 +71,13 @@ Description: Linux kernel source for version PKGVER with Ubuntu patches
+  you do not want this package. Install the appropriate linux-headers
+  package instead.
+ 
+-Package: SRCPKGNAME-doc
++Package: SRCPKGNAME-doc-mediatree
+ Build-Profiles: <!stage1>
+ Architecture: all
+ Section: doc
+ Priority: optional
+ Depends: ${misc:Depends}
+-Description: Linux kernel specific documentation for version PKGVER
++Description: Linux kernel docs for PKGVER with mainline linuxtv.org media drivers
+  This package provides the various documents in the PKGVER kernel
+  Documentation/ subdirectory.  These document kernel subsystems, APIs, device
+  drivers, and so on.  See
 @@ -107,18 +109,6 @@ Description: Linux Kernel Headers for development
   libraries. They are NOT meant to be used to build third-party modules for
   your kernel. Use SRCPKGNAME-headers-* packages for that.
