@@ -358,7 +358,7 @@ index ccc65dc03358..83ad1b228495 100644
  # for developer testing (its kind of slow), so only do it if on a buildd.
 -do_doc_package=true
 -do_doc_package_content=true
-+do_doc_package?=true
++do_doc_package?=false
 +do_doc_package_content?=true
  ifeq ($(full_build),false)
  do_doc_package_content=false
