@@ -16,9 +16,9 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian.master/rules.d/ppc64el.mk             |  6 ++--
  debian.master/rules.d/s390x.mk               |  6 ++--
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 10 ++++++-
+ debian/rules.d/0-common-vars.mk              | 16 ++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 +++
- 14 files changed, 101 insertions(+), 63 deletions(-)
+ 14 files changed, 104 insertions(+), 66 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
 index 9b3c0db..8934593 100644
@@ -357,7 +357,7 @@ index f2e801c..a72cc25 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..6450ebd 100644
+index ccc65dc..e597805 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -375,7 +375,14 @@ index ccc65dc..6450ebd 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -139,7 +147,7 @@ do_doc_package_content=true
+@@ -134,12 +142,12 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+ # cycle, so its OK to leave 'do_doc_package_content=false' until those build
+ # failures get sorted out. Finally, the doc package doesn't really need to be built
+ # for developer testing (its kind of slow), so only do it if on a buildd.
+-do_doc_package=true
+-do_doc_package_content=true
++do_doc_package?=false
++do_doc_package_content?=true
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
