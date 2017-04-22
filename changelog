@@ -1,3 +1,20 @@
+0.15
+
+  * Enable Hauppauge bulk devices
+    - Haupauge SoloHD
+    - Haupauge DualHD ATSC
+    - Haupauge DualHD DVB
+
+  * Rename doc and source package to not collide with official
+    - linux-doc-mediatree
+    - linux-source-mediatree
+
+  * Yakkety and Zesty support
+
+0.14
+
+  * Fix DualHD crash on second tuner attach
+
 0.13
 
   * Dependency fix
