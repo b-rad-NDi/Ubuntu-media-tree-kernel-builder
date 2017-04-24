@@ -185,6 +185,7 @@ function reset_repo_head_hard()
 	read x
 	if [ "$x" == "YES" ] ; then
 		cd ${TARGET_DIR}
+		git fetch
 		git reset --hard HEAD^
 		git clean -xdf
 		return 0
@@ -212,6 +213,7 @@ function reset_ubuntu_hard()
 	read x
 	if [ "${x}" == "YES" ] ; then
 		cd ${TARGET_DIR}
+		git fetch
 		git reset --hard ${UBUNTU_REVISION}
 		git clean -xdf
 		return 0
