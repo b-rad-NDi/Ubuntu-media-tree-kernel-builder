@@ -1,10 +1,10 @@
-From 43be0c647b8cf2796a383564b7a212ed5b53f790 Mon Sep 17 00:00:00 2001
+From 3212d69171e458f7cbd1e91c28b4e65795e71fb6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sun, 16 Apr 2017 00:41:58 -0500
+Date: Thu, 20 Apr 2017 16:20:26 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
 ---
- debian.master/changelog                      | 24 ++++++++++++++++
+ debian.master/changelog                      | 25 +++++++++++++++++
  debian.master/control.d/flavour-control.stub |  4 +--
  debian.master/control.stub.in                | 41 +++++++---------------------
  debian.master/copyright                      | 21 ++++++++++++++
@@ -18,20 +18,20 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 16 ++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 +++
- 14 files changed, 102 insertions(+), 66 deletions(-)
+ 14 files changed, 103 insertions(+), 66 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 82ee47d..97619e0 100644
+index 82ee47d..e51d864 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,27 @@
-+linux (4.8.0-46201704160041.0+mediatree+hauppauge) yakkety; urgency=low
+@@ -1,3 +1,28 @@
++linux (4.8.0-46201704200420.0+mediatree+hauppauge) yakkety; urgency=low
 +
 +  * Ubuntu kernel git clone
 +    - 4.8.0-46.49 rev 7913960eb0f7df333aaad4ee266b83cdccc39f7a
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-04-14-23-17.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-04-20-18-29.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -46,8 +46,9 @@ index 82ee47d..97619e0 100644
 +    - 0007-em28xx-bulk-transfer-implementation-fix.patch
 +    - 0008-usb-packet-size-tweaks.patch
 +    - 0009-lgdt3306a-add-QAM-AUTO.patch
++    - 0010-Add-Hauppauge-bulk-models-to-driver-table.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Sun, 16 Apr 2017 00:41:57 -0500
++ -- Brad Love <brad@nextdimension.cc>  Thu, 20 Apr 2017 04:20:25 -0500
 +
  linux (4.8.0-46.49) yakkety; urgency=low
  
