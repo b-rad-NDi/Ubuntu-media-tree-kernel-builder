@@ -1,5 +1,5 @@
-From fab1d53b3a0cb750fdc88fce637de9fd5b36363b Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
+From 01d8dca257ad70f78120baa1cd6551f64928a4b5 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
 Date: Thu, 20 Apr 2017 16:20:38 -0500
 Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
 
@@ -21,17 +21,17 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  14 files changed, 104 insertions(+), 66 deletions(-)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 9b3c0db..8934593 100644
+index 9b3c0db..07aaefa 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,28 @@
-+linux (4.4.0-72201704111620.0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,29 @@
++linux (4.4.0-72201704200420.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
 +    - 4.4.0-72.93 rev 50aaaec159365f8f8788e054048545e7ec9734f1
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-04-06-20-53.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-04-20-20-54.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -47,8 +47,9 @@ index 9b3c0db..8934593 100644
 +    - 0008-em28xx-bulk-transfer-implementation-fix.patch
 +    - 0009-usb-packet-size-tweaks.patch
 +    - 0010-lgdt3306a-add-QAM-AUTO.patch
++    - 0011-Add-Hauppauge-bulk-models-to-driver-table.patch
 +
-+ -- Brad Love <brad@nextdimension.cc>  Tue, 11 Apr 2017 16:20:56 -0500
++ -- Brad Love <brad@nextdimension.cc>  Thu, 20 Apr 2017 04:20:37 -0500
 +
  linux (4.4.0-72.93) xenial; urgency=low
  
