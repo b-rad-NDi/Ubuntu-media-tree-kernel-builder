@@ -121,7 +121,13 @@ function get_media_build()
 	else
 		TARGET_DIR=${1}
 	fi
-	git clone git://linuxtv.org/media_build.git ${TARGET_DIR}
+	if [ ! -d "${TARGET_DIR}" ] ; then
+		git clone git://linuxtv.org/media_build.git ${TARGET_DIR}
+	else
+		cd ${TARGET_DIR}
+		git pull
+		cd ..
+	fi
 }
 
 function download_media_tree()
@@ -257,6 +263,9 @@ function configure_repo_git()
 	else
 		TARGET_DIR=${1}
 	fi
+
+	[ ! -d "${TARGET_DIR}" ] && echo "configure_repo_git fail" && return 1
+
 	cd ${TARGET_DIR}
 
 	# set local Ubuntu kernel repo git config
@@ -554,23 +563,27 @@ function init_mediatree_builder()
 {
 	# Saves time by keeping clean local master (also takes up space)
 	cd ${TOP_DEVDIR}
-	if [ ! -d ".clean-master-repo" ] ; then
+	if [ "${MEDIATREE_KBUILD_USE_CLEAN_MASTER}" == "1" ] ; then
+		echo "Initializing/Updating clean master repo"
 		get_ubuntu .clean-master-repo
 	fi
 	cd ${TOP_DEVDIR}
-	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
+#	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
+		echo "Initializing/Updating clean patch gen repo"
 		get_ubuntu .media-tree-clean-patch-repo
 		configure_repo_git .media-tree-clean-patch-repo
-	fi
+#	fi
 	cd ${TOP_DEVDIR}
 	if [ ! -d "ubuntu-${UBUNTU_VERSION}" ] ; then
+		echo "Initializing Ubuntu work repo"
 		get_ubuntu
 		configure_repo_git
 	fi
 	cd ${TOP_DEVDIR}
-	if [ ! -d "media_build" ] ; then
+#	if [ ! -d "media_build" ] ; then
+		echo "Initializing/Updating media_build system"
 		get_media_build
-	fi
+#	fi
 }
 
 function usage()
