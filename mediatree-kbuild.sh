@@ -39,7 +39,14 @@ fi
 
 [ -z "${KERNEL_ABI_TAG}" ] && KERNEL_ABI_TAG="+mediatree+hauppauge"
 
-[ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=xenial
+if [ -z "${UBUNTU_VERSION}" ] ; then
+	if [ ! -f /etc/lsb-release ] ; then
+		echo "No /etc/lsb-release, cannot determine running Ubuntu..."
+		exit 250
+	fi
+	eval `cat /etc/lsb-release`
+	UBUNTU_VERSION=${DISTRIB_CODENAME}
+fi
 
 [ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
 
