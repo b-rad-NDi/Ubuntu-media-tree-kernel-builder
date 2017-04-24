@@ -94,17 +94,22 @@ function get_ubuntu()
 	else
 		TARGET_DIR=${1}
 	fi
-	if [ -d ".clean-master-repo" ] ; then
+	if [ ! -d "${TARGET_DIR}" -a -d ".clean-master-repo" ] ; then
 		cd .clean-master-repo
 		git pull
 		cd -
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
-	else
+	elif [ ! -d "${TARGET_DIR}" ] ; then
 		git clone git://kernel.ubuntu.com/ubuntu/ubuntu-${UBUNTU_VERSION}.git ${TARGET_DIR}
 	fi
-	cd ${TARGET_DIR}
-	git checkout ${UBUNTU_REVISION}
-	cd ..
+
+	if [ -n "${UBUNTU_REVISION}" ] ; then
+		cd ${TARGET_DIR}
+		git checkout ${UBUNTU_REVISION}
+		cd ..
+	else
+		UBUNTU_REVISION=`cat ${TARGET_DIR}/.git/refs/heads/master`
+	fi
 
 	if [ -z "${1}" ] ; then
 		get_ubuntu_kver
