@@ -48,7 +48,7 @@ if [ -z "${UBUNTU_VERSION}" ] ; then
 	UBUNTU_VERSION=${DISTRIB_CODENAME}
 fi
 
-[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
+#[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
 
 ################################################
 
@@ -82,6 +82,7 @@ function write_state_env()
 	echo "K_ABI_B=${K_ABI_B}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "K_ABI_MOD=${K_ABI_MOD}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "K_BUILD_VER=${K_BUILD_VER}" >> ${TOP_DEVDIR}/.state_env_file
+	echo "UBUNTU_REVISION=${UBUNTU_REVISION}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "" >> ${TOP_DEVDIR}/.state_env_file
 }
 
@@ -191,6 +192,11 @@ function reset_ubuntu_hard()
 	fi
 
 	[ ! -d "${TARGET_DIR}" ] && return 2
+	if [ -z "${UBUNTU_REVISION}" ] ; then
+		echo "UBUNTU_REVISION cannot be empty!"
+		return 3
+	fi
+
 	echo "WARNING: reset to rev ${UBUNTU_REVISION} *and* irreversibly clear ${TARGET_DIR}?  YES/NO"
 	read x
 	if [ "${x}" == "YES" ] ; then
@@ -358,6 +364,11 @@ function apply_extra_patches()
 
 function generate_patch_set()
 {
+	if [ -z "${UBUNTU_REVISION}" ] ; then
+		echo "UBUNTU_REVISION cannot be empty!"
+		return 3
+	fi
+
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
 	#	git format-patch -# HEAD
@@ -367,6 +378,11 @@ function generate_patch_set()
 
 function regen_changelog()
 {
+	if [ -z "${UBUNTU_REVISION}" ] ; then
+		echo "UBUNTU_REVISION cannot be empty!"
+		return 3
+	fi
+
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
 	[ -z "${1}" ] && echo "error..." && return 1
