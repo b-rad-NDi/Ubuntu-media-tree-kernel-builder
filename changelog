@@ -1,3 +1,7 @@
+0.15.1
+
+  * Add distro modifier to ver, so virtual packages co-exist across Ubuntu versions
+
 0.15
 
   * Enable Hauppauge bulk devices
