@@ -1,28 +1,28 @@
-From d70b2addce3fe7c0195e25a123d861aeb57e3f36 Mon Sep 17 00:00:00 2001
+From fe2799c0008b07f13c937a262696af4abdb11776 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:44 +0000
 Subject: [PATCH 2/5] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-core.c                   | 2 ++
- drivers/media/dvb-frontends/af9033.c           | 2 ++
- drivers/media/media-device.c                   | 2 ++
- drivers/media/pci/ivtv/ivtv-driver.c           | 2 ++
- drivers/media/pci/ivtv/ivtv-irq.c              | 2 ++
- drivers/media/rc/keymaps/rc-cec.c              | 2 ++
- drivers/media/usb/em28xx/em28xx-dvb.c          | 2 +-
- drivers/media/usb/pulse8-cec/pulse8-cec.c      | 2 ++
- drivers/media/usb/usbtv/usbtv-core.c           | 2 ++
- drivers/media/usb/uvc/uvc_driver.c             | 2 ++
- drivers/media/usb/uvc/uvc_video.c              | 2 ++
- drivers/media/v4l2-core/v4l2-async.c           | 2 ++
- drivers/media/v4l2-core/v4l2-flash-led-class.c | 2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c           | 2 ++
- include/linux/kconfig.h                        | 5 +++--
- 15 files changed, 30 insertions(+), 3 deletions(-)
+ drivers/media/cec/cec-core.c                      | 2 ++
+ drivers/media/dvb-frontends/af9033.c              | 2 ++
+ drivers/media/media-device.c                      | 2 ++
+ drivers/media/pci/ivtv/ivtv-driver.c              | 2 ++
+ drivers/media/pci/ivtv/ivtv-irq.c                 | 2 ++
+ drivers/media/rc/keymaps/rc-cec.c                 | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c             | 2 +-
+ drivers/media/usb/pulse8-cec/pulse8-cec.c         | 2 ++
+ drivers/media/usb/rainshadow-cec/rainshadow-cec.c | 2 ++
+ drivers/media/usb/usbtv/usbtv-core.c              | 2 ++
+ drivers/media/usb/uvc/uvc_driver.c                | 2 ++
+ drivers/media/usb/uvc/uvc_video.c                 | 2 ++
+ drivers/media/v4l2-core/v4l2-async.c              | 2 ++
+ drivers/media/v4l2-core/v4l2-flash-led-class.c    | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c              | 2 ++
+ 15 files changed, 29 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index 430f5e0..8a11132 100644
+index 430f5e052ab3..8a1113244eb9 100644
 --- a/drivers/media/cec/cec-core.c
 +++ b/drivers/media/cec/cec-core.c
 @@ -29,6 +29,8 @@
@@ -35,7 +35,7 @@ index 430f5e0..8a11132 100644
  #define CEC_NAME	"cec"
  
 diff --git a/drivers/media/dvb-frontends/af9033.c b/drivers/media/dvb-frontends/af9033.c
-index aaed7cf..1631b9a 100644
+index aaed7cfe5f66..1631b9a9385a 100644
 --- a/drivers/media/dvb-frontends/af9033.c
 +++ b/drivers/media/dvb-frontends/af9033.c
 @@ -15,6 +15,8 @@
@@ -48,7 +48,7 @@ index aaed7cf..1631b9a 100644
  
  struct af9033_dev {
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index b188787..9c12426 100644
+index b1887870172d..9c12426a6147 100644
 --- a/drivers/media/media-device.c
 +++ b/drivers/media/media-device.c
 @@ -33,6 +33,8 @@
@@ -61,7 +61,7 @@ index b188787..9c12426 100644
  
  /* -----------------------------------------------------------------------------
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index e8dc691..206a2de 100644
+index e8dc69102f97..206a2de3b7b2 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
@@ -74,7 +74,7 @@ index e8dc691..206a2de 100644
     the device numbers stay matched. Example: you have a WinTV card
     without radio and a PVR-350 with. Normally this would give a
 diff --git a/drivers/media/pci/ivtv/ivtv-irq.c b/drivers/media/pci/ivtv/ivtv-irq.c
-index 6efe1f7..93153d8 100644
+index 6efe1f71262c..93153d8ba074 100644
 --- a/drivers/media/pci/ivtv/ivtv-irq.c
 +++ b/drivers/media/pci/ivtv/ivtv-irq.c
 @@ -27,6 +27,8 @@
@@ -87,7 +87,7 @@ index 6efe1f7..93153d8 100644
  
  static void ivtv_dma_dec_start(struct ivtv_stream *s);
 diff --git a/drivers/media/rc/keymaps/rc-cec.c b/drivers/media/rc/keymaps/rc-cec.c
-index 354c8e7..3ab5d41 100644
+index 354c8e724b8e..3ab5d41476cc 100644
 --- a/drivers/media/rc/keymaps/rc-cec.c
 +++ b/drivers/media/rc/keymaps/rc-cec.c
 @@ -11,6 +11,8 @@
@@ -100,7 +100,7 @@ index 354c8e7..3ab5d41 100644
   * CEC Spec "High-Definition Multimedia Interface Specification" can be obtained
   * here: http://xtreamerdev.googlecode.com/files/CEC_Specs.pdf
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 20407a5..1fb9926 100644
+index 20407a5d45a0..1fb9926b6fdb 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -113,7 +113,7 @@ index 20407a5..1fb9926 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
-index 1dfc2de..20808fc 100644
+index 1dfc2de1fe77..20808fc00521 100644
 --- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
 +++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
 @@ -44,6 +44,8 @@
@@ -125,8 +125,21 @@ index 1dfc2de..20808fc 100644
  #include <media/cec.h>
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
+diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
+index 541ca543f71f..399938e68317 100644
+--- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
++++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
+@@ -34,6 +34,8 @@
+ #include <linux/time.h>
+ #include <linux/workqueue.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec.h>
+ 
+ MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
-index ceb953b..92216c9 100644
+index ceb953be0770..92216c9ff499 100644
 --- a/drivers/media/usb/usbtv/usbtv-core.c
 +++ b/drivers/media/usb/usbtv/usbtv-core.c
 @@ -44,6 +44,8 @@
@@ -139,7 +152,7 @@ index ceb953b..92216c9 100644
  {
  	int ret;
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 6e31758..857bda1 100644
+index 6e31758ce9e6..857bda1b6741 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -27,6 +27,8 @@
@@ -152,7 +165,7 @@ index 6e31758..857bda1 100644
  				"<laurent.pinchart@ideasonboard.com>"
  #define DRIVER_DESC		"USB Video Class driver"
 diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 47d93a9..5a333ca 100644
+index 47d93a938dde..5a333cac0659 100644
 --- a/drivers/media/usb/uvc/uvc_video.c
 +++ b/drivers/media/usb/uvc/uvc_video.c
 @@ -26,6 +26,8 @@
@@ -165,7 +178,7 @@ index 47d93a9..5a333ca 100644
   * UVC Controls
   */
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index 96cc733..a4cc493 100644
+index 96cc733f35ef..a4cc4939eccf 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
 @@ -22,6 +22,8 @@
@@ -178,7 +191,7 @@ index 96cc733..a4cc493 100644
  {
  #if IS_ENABLED(CONFIG_I2C)
 diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-index 794e563..73831f6 100644
+index 794e563f24f8..73831f6d218d 100644
 --- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
 +++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
 @@ -17,6 +17,8 @@
@@ -191,7 +204,7 @@ index 794e563..73831f6 100644
  	(v4l2_flash && v4l2_flash->ops->op)
  
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 6aa0941..ed3a273 100644
+index 6aa09419be2b..ed3a27337029 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -31,6 +31,8 @@
@@ -203,34 +216,6 @@ index 6aa0941..ed3a273 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
-diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index 4d74860..7279f68 100644
---- a/include/linux/kconfig.h
-+++ b/include/linux/kconfig.h
-@@ -31,6 +31,7 @@
-  * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
-  * the last step cherry picks the 2nd arg, we get a zero.
-  */
-+#define config_enabled(cfg)		___is_defined(cfg)
- #define __is_defined(x)			___is_defined(x)
- #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
- #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
-@@ -40,13 +41,13 @@
-  * otherwise. For boolean options, this is equivalent to
-  * IS_ENABLED(CONFIG_FOO).
-  */
--#define IS_BUILTIN(option) __is_defined(option)
-+#define IS_BUILTIN(option) config_enabled(option)
- 
- /*
-  * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
-  * otherwise.
-  */
--#define IS_MODULE(option) __is_defined(option##_MODULE)
-+#define IS_MODULE(option) config_enabled(option##_MODULE)
- 
- /*
-  * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
 -- 
-2.7.4
+2.11.0
 

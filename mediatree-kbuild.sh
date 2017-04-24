@@ -225,8 +225,10 @@ function apply_media_tree()
 	tar -xzvf ${LinuxTV_MT_TAR}
 #	export V4L_SYNC_DATE="${V4L_SYNC_DATE}"
 
-	# FIXME: dma-buf.h api changes
-	git checkout include/linux/dma-buf.h
+	# dma-buf api changes < 4.10
+	if [ "${KVER}" -le 4 -a "${KMAJ}" -lt 10 ] ; then
+		git checkout include/linux/dma-buf.h
+	fi
 
 	git add --all
 	git commit -m "Linuxtv.org media tree sync - ${V4L_SYNC_DATE}"
