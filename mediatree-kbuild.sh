@@ -458,8 +458,8 @@ function generate_virtual_package()
 
 	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
 		cp ../linux-${1}-mediatree.control ./ns_control
-		echo "linux-${1}-mediatree (${VPACKAGE_VER}) ${UBUNTU_VERSION}; urgency=low" > changelog
-		git log --pretty=format:"  * %h %s" -n 5 >> changelog
+		echo "linux-${1}-mediatree (${VPACKAGE_VER}+${UBUNTU_VERSION}) ${UBUNTU_VERSION}; urgency=low" > changelog
+		git log --pretty=format:"  * %h %s" -n 13 >> changelog
 		echo "" >> changelog
 		echo "" >> changelog
 		echo " -- ${U_FULLNAME} <${U_EMAIL}>  ${VP_BUILD_TIME}" >> changelog
@@ -480,8 +480,13 @@ function generate_virtual_package()
 		echo "    linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 	fi
 	equivs-build --full ns_control
-	dpkg-source -x linux-${1}-mediatree_${VPACKAGE_VER}.dsc
-	cd linux-${1}-mediatree-${VPACKAGE_VER}
+	if [ ! -f "linux-${1}-mediatree_${VPACKAGE_VER}+${UBUNTU_VERSION}.dsc" ] ; then
+		echo "Missing linux-${1}-mediatree_${VPACKAGE_VER}+${UBUNTU_VERSION}.dsc"
+		return 1
+	fi
+	dpkg-source -x linux-${1}-mediatree_${VPACKAGE_VER}+${UBUNTU_VERSION}.dsc
+	[ $? -ne 0 ] && return 1
+	cd linux-${1}-mediatree-${VPACKAGE_VER}+${UBUNTU_VERSION}
 	debuild -us -uc -S
 	cd ..
 	cp linux-${1}-mediatree*.tar.gz ..
