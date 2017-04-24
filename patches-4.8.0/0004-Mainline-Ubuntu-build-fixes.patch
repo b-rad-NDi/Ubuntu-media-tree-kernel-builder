@@ -1,0 +1,75 @@
+From a23c258bf88884295f20cdd93484f03395cb418d Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 17 Mar 2017 01:37:12 +0000
+Subject: [PATCH 4/5] Mainline Ubuntu build fixes
+
+---
+ drivers/hid/hid-picolcd_cir.c           |  5 ++---
+ drivers/net/ethernet/via/via-velocity.c | 10 +++++-----
+ 2 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 9628651..8ffbb6f 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -108,13 +108,12 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
+ 	struct rc_dev *rdev;
+ 	int ret = 0;
+ 
+-	rdev = rc_allocate_device();
++	rdev = rc_allocate_device(RC_DRIVER_IR_RAW);
+ 	if (!rdev)
+ 		return -ENOMEM;
+ 
+ 	rdev->priv             = data;
+-	rdev->driver_type      = RC_DRIVER_IR_RAW;
+-	rdev->allowed_protocols = RC_BIT_ALL;
++	rdev->allowed_protocols = RC_BIT_ALL_IR_DECODER;
+ 	rdev->open             = picolcd_cir_open;
+ 	rdev->close            = picolcd_cir_close;
+ 	rdev->input_name       = data->hdev->name;
+diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
+index f38696c..2de4ccf 100644
+--- a/drivers/net/ethernet/via/via-velocity.c
++++ b/drivers/net/ethernet/via/via-velocity.c
+@@ -85,8 +85,8 @@
+ #include "via-velocity.h"
+ 
+ enum velocity_bus_type {
+-	BUS_PCI,
+-	BUS_PLATFORM,
++	bus_pci = 0x01,
++	bus_platform = 0x02,
+ };
+ 
+ static int velocity_nics;
+@@ -2807,7 +2807,7 @@ static int velocity_probe(struct device *dev, int irq,
+ 
+ 	velocity_init_info(vptr, info);
+ 
+-	if (bustype == BUS_PCI) {
++	if (bustype == bus_pci) {
+ 		vptr->pdev = to_pci_dev(dev);
+ 
+ 		ret = velocity_get_pci_info(vptr);
+@@ -2933,7 +2933,7 @@ static int velocity_pci_probe(struct pci_dev *pdev,
+ 		goto fail1;
+ 	}
+ 
+-	ret = velocity_probe(&pdev->dev, pdev->irq, info, BUS_PCI);
++	ret = velocity_probe(&pdev->dev, pdev->irq, info, bus_pci);
+ 	if (ret == 0)
+ 		return 0;
+ 
+@@ -2966,7 +2966,7 @@ static int velocity_platform_probe(struct platform_device *pdev)
+ 	if (!irq)
+ 		return -EINVAL;
+ 
+-	return velocity_probe(&pdev->dev, irq, info, BUS_PLATFORM);
++	return velocity_probe(&pdev->dev, irq, info, bus_platform);
+ }
+ 
+ static int velocity_platform_remove(struct platform_device *pdev)
+-- 
+2.7.4
+

@@ -39,9 +39,9 @@ fi
 
 [ -z "${KERNEL_ABI_TAG}" ] && KERNEL_ABI_TAG="+mediatree+hauppauge"
 
-[ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=xenial
+[ -z "${UBUNTU_VERSION}" ] && UBUNTU_VERSION=yakkety
 
-[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
+[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=7913960eb0f7df333aaad4ee266b83cdccc39f7a
 
 ################################################
 
@@ -126,7 +126,7 @@ function download_media_tree()
 	make -C linux/ download
 
 	# UTC time marker for LinuxTV media tree sync
-	export V4L_SYNC_DATE=`date -u +%Y-%m-%d-%k:%M`
+	export V4L_SYNC_DATE=`date -u +%Y-%0m-%0d-%0k:%0M`
 	echo ${V4L_SYNC_DATE} > ${TOP_DEVDIR}/.flag-media-tree-sync-time
 }
 
