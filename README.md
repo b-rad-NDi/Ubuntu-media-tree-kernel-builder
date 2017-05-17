@@ -20,8 +20,8 @@ not have to recompile the kernel and/or modules themselves.
 ## To install and keep up to date with the PPA
 
 Two virtual package are provided in the PPA
- * linux-image-mediatree-generic
- * linux-headers-mediatree-generic
+ * linux-image-mediatree
+ * linux-headers-mediatree
 
 ### First add the PPA and update
 
@@ -31,12 +31,12 @@ sudo apt-get update
 
 ### Then install the virtual packages (enables updates)
 
-sudo apt-get install linux-image-mediatree-generic
+sudo apt-get install linux-image-mediatree
 
-sudo apt-get install linux-headers-mediatree-generic
+sudo apt-get install linux-headers-mediatree
 
 If you use an NVidia or AMD graphics card it is imperative to install
-the linux-headers-mediatree-generic package in order for the graphics card drivers
+the linux-headers-mediatree package in order for the graphics card drivers
 to sucessfully regenerate on driver upgrade. There are many other packages
 similarly requiring kernel headers, so most users should install this.
 
