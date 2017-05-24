@@ -109,9 +109,15 @@ function get_ubuntu()
 		git clone git://kernel.ubuntu.com/ubuntu/ubuntu-${UBUNTU_VERSION}.git ${TARGET_DIR}
 	fi
 
-	if [ -n "${UBUNTU_REVISION}" ] ; then
+	if [ -n "${UBUNTU_REVISION}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
 		cd ${TARGET_DIR}
-		git checkout ${UBUNTU_REVISION}
+		git fetch
+		if [ -n "${TIP_UBUNTU_REVISION}" -a "${TIP_UBUNTU_REVISION}" != "${UBUNTU_REVISION}" ] ; then
+			git checkout ${TIP_UBUNTU_REVISION}
+			[ -z "${1}" ] && UBUNTU_REVISION=${TIP_UBUNTU_REVISION}
+		else
+			git checkout ${UBUNTU_REVISION}
+		fi
 		cd ..
 	else
 		cd ${TARGET_DIR}
@@ -618,6 +624,11 @@ function init_mediatree_builder()
 		echo "Initializing Ubuntu work repo"
 		get_ubuntu
 		configure_repo_git
+		echo ""
+	elif [ "${TRY_UPDATE}" == "YES" ] ; then
+		echo "Attempting to update Ubuntu work repo (should already be reset with -r)"
+		get_ubuntu
+		echo ""
 	fi
 
 	cd ${TOP_DEVDIR}
