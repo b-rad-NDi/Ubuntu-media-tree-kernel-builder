@@ -596,11 +596,15 @@ function generate_ppa_data()
 
 function init_mediatree_builder()
 {
+	ret_val=0
+
 	# Saves time by keeping clean local master (also takes up space)
 	cd ${TOP_DEVDIR}
 	if [ "${MEDIATREE_KBUILD_USE_CLEAN_MASTER}" == "1" ] ; then
 		echo "Initializing/Updating clean master repo"
 		get_ubuntu .clean-master-repo
+		ret_val=${?}
+		echo ""
 	fi
 	cd ${TOP_DEVDIR}
 #	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
@@ -615,10 +619,10 @@ function init_mediatree_builder()
 		configure_repo_git
 	fi
 	cd ${TOP_DEVDIR}
-#	if [ ! -d "media_build" ] ; then
-		echo "Initializing/Updating media_build system"
-		get_media_build
-#	fi
+	echo "Initializing/Updating media_build system"
+	get_media_build
+	echo ""
+	return ${ret_val}
 }
 
 function usage()
@@ -649,6 +653,7 @@ while getopts ":imrxCcgbB:spV:" o; do
 	case "${o}" in
 	i)
 		init_mediatree_builder
+		[ $? != 0 ] && exit 133
 		;;
 	m)
 		## App operation: get latest drivers and make patched tarball for a particular kernel
