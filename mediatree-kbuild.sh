@@ -51,6 +51,11 @@ fi
 #[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
 
 ################################################
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+TRY_UPDATE=NO
+TIP_UBUNTU_VERSION=
 
 export TOP_DEVDIR=`pwd`
 
@@ -88,6 +93,7 @@ function write_state_env()
 
 function get_ubuntu()
 {
+	ret_val=0
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" ]; then
 		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
@@ -108,7 +114,28 @@ function get_ubuntu()
 		git checkout ${UBUNTU_REVISION}
 		cd ..
 	else
-		UBUNTU_REVISION=`cat ${TARGET_DIR}/.git/refs/heads/master`
+		cd ${TARGET_DIR}
+		git pull
+		CUR_UBUNTU_REVISION=`cat .git/refs/heads/master`
+		if [ -n "${UBUNTU_REVISION}" -a "${CUR_UBUNTU_REVISION}" != "${UBUNTU_REVISION}" ] ; then
+			echo -e "${RED}###############################################"
+			echo -e "${RED}###############################################"
+			echo -e "${RED}###############################################"
+			echo -e "${RED}################### ${GREEN}ATTENTION ${RED}#################"
+			echo -e "${RED}####### ${GREEN}Ubuntu master revision updated! ${RED}#######"
+			echo -e "${RED}## ${NC}${CUR_UBUNTU_REVISION} ${RED}###"
+			echo -e "${RED}###############################################"
+			echo -e "${RED}### ${NC}Set env var MEDIATREE_KBUILD_UPDATE=YES ${RED}###"
+			echo -e "${RED}############# ${NC}to update build ${RED}#################"
+			echo -e "${RED}###############################################${NC}"
+			ret_val=1
+			if [ "${MEDIATREE_KBUILD_UPDATE}" == "YES" ] ; then
+				TIP_UBUNTU_REVISION=${CUR_UBUNTU_REVISION}
+				TRY_UPDATE=YES
+			fi
+		elif [ -z "${1}" ] ; then
+			UBUNTU_REVISION=${CUR_UBUNTU_REVISION}
+		fi
 	fi
 
 	if [ -z "${1}" ] ; then
@@ -116,6 +143,7 @@ function get_ubuntu()
 		write_state_env
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches-${KVER}.${KMAJ}.0"
 	fi
+	return ${ret_val}
 }
 
 function get_media_build()
