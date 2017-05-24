@@ -426,6 +426,14 @@ function generate_patch_set()
 	git format-patch ${UBUNTU_REVISION}
 }
 
+function update_identity()
+{
+	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+
+	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/control.stub.in
+	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/changelog
+}
+
 function regen_changelog()
 {
 	if [ -z "${UBUNTU_REVISION}" ] ; then
@@ -487,7 +495,7 @@ function regen_changelog()
 	done
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
-	echo " -- ${U_FULLNAME} <${U_EMAIL}>  ${K_BUILD_TIME}" >>  /tmp/tmpkrn_changelog.mod
+	echo " -- Fake User <hidden@email.co>  ${K_BUILD_TIME}" >>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	cat /tmp/tmpkrn_changelog.mod /tmp/tmpkrn_changelog.orig > debian.master/changelog
@@ -507,6 +515,8 @@ function generate_new_kernel_version()
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
 	regen_changelog "`date +%Y%m%d%H%M`"
+	update_identity
+
 	fakeroot debian/rules clean
 
 	return 0
