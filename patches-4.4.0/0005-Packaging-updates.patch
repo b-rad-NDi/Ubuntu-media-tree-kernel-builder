@@ -1,13 +1,12 @@
-From 67725aff851b431671ef3113c20daa02ded23d25 Mon Sep 17 00:00:00 2001
+From 0a2679a0e4d2e1b51add904f5c7e81c6d3af185c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 16 May 2017 15:52:16 -0500
-Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
+Date: Wed, 24 May 2017 16:11:45 -0500
+Subject: [PATCH 5/6] Packaging updates
 
 ---
- debian.master/changelog                      | 26 ++++++++++++++++++
  debian.master/control.d/flavour-control.stub |  4 +--
  debian.master/control.stub.in                | 41 +++++++---------------------
- debian.master/copyright                      | 21 ++++++++++++++
+ debian.master/copyright                      | 23 ++++++++++++++++
  debian.master/rules.d/amd64.mk               | 14 +++++-----
  debian.master/rules.d/arm64.mk               |  6 ++--
  debian.master/rules.d/armhf.mk               |  6 ++--
@@ -18,42 +17,8 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 16 ++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 +++
- 14 files changed, 104 insertions(+), 66 deletions(-)
+ 13 files changed, 80 insertions(+), 66 deletions(-)
 
-diff --git a/debian.master/changelog b/debian.master/changelog
-index 9b3c0db..07aaefa 100644
---- a/debian.master/changelog
-+++ b/debian.master/changelog
-@@ -1,3 +1,29 @@
-+linux (4.4.0-72201704200420.0+mediatree+hauppauge) xenial; urgency=low
-+
-+  * Ubuntu kernel git clone
-+    - 4.4.0-72.93 rev 50aaaec159365f8f8788e054048545e7ec9734f1
-+
-+  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-04-20-20-54.patch
-+    - 0002-Apply-build-fixes-to-media-tree.patch
-+    - 0003-Add-new-media-tree-kernel-config.patch
-+
-+  * Ubuntu mainline build fixes
-+    - 0004-Mainline-Ubuntu-build-fixes.patch
-+
-+  * Packaging patches
-+    - 0005-Maintainer-changelog-git-url-updates.patch
-+
-+  * Additional patches
-+    - 0006-lgdt3306a-i2c-mux-backport.patch
-+    - 0007-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
-+    - 0008-em28xx-bulk-transfer-implementation-fix.patch
-+    - 0009-usb-packet-size-tweaks.patch
-+    - 0010-lgdt3306a-add-QAM-AUTO.patch
-+    - 0011-Add-Hauppauge-bulk-models-to-driver-table.patch
-+
-+ -- Brad Love <brad@nextdimension.cc>  Thu, 20 Apr 2017 04:20:37 -0500
-+
- linux (4.4.0-72.93) xenial; urgency=low
- 
-   * linux: 4.4.0-72.93 -proposed tracker (LP: #1678078)
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index e63a682..75ce8e6 100644
 --- a/debian.master/control.d/flavour-control.stub
@@ -77,7 +42,7 @@ index e63a682..75ce8e6 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index d15e2a6..1ff7aa2 100644
+index d15e2a6..94e2e97 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -85,7 +50,7 @@ index d15e2a6..1ff7aa2 100644
  Section: devel
  Priority: optional
 -Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
-+Maintainer: Brad Love (Hauppauge) <brad@nextdimension.cc>
++Maintainer: Fake User <hidden@email.co>
 +XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:
@@ -175,10 +140,10 @@ index d15e2a6..1ff7aa2 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
-index b24bd66..598f8b2 100644
+index b24bd66..290b55b 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
-@@ -1,3 +1,24 @@
+@@ -1,3 +1,26 @@
 +#############################################################
 +#############################################################
 +#############################################################
@@ -190,8 +155,10 @@ index b24bd66..598f8b2 100644
 +
 +All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 +
-+The packaging and build system is currently maintained by
-+brad at nextdimension dot cc for Hauppauge Computer Works.
++The packaging and build system is currently sponsored by
++Hauppauge Computer Works.
++
++	http://hauppauge.com
 +
 +Errors in packaging or building should be directed to github above.
 +Bugs in the kernel or media tree drivers should be reported upstream.

@@ -379,20 +379,21 @@ function apply_patches()
 
 	###################################################
 	########### Ubuntu packaging patches ##############
-	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
-		apply_patch ${KB_PATCH_DIR}/0005-Maintainer-changelog-packaging-updates.patch
-		[ $? != 0 ] && echo "patch failure, exiting 1" && return 1
-		regen_changelog "`date +%Y%m%d%H%M`"
-		git add debian.master/*
-		git add debian.master/control.d/*
-		git add debian.master/rules.d/*
-		git add debian/rules.d/*
-		git add debian/*
+	apply_patch_git_am ${KB_PATCH_DIR}/0005-Packaging-updates.patch
+	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
-		git commit -m 'Maintainer, changelog, packaging updates'
+	###################################################
+	########## Add build system changelog #############
+	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
+		regen_changelog "`date +%Y%m%d%H%M`"
+		git add debian.master/changelog
+		git commit -m 'Changelog'
+
+		update_identity
+
 		unset UPDATE_MT_KBUILD_VER
 	else
-		apply_patch_git_am ${KB_PATCH_DIR}/0005-Maintainer-changelog-packaging-updates.patch
+		apply_patch_git_am ${KB_PATCH_DIR}/0006-Changelog.patch
 		[ $? != 0 ] && echo "patch failure, exiting 2" && exit 1
 	fi
 #		apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
