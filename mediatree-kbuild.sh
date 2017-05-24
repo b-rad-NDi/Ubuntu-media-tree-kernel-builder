@@ -606,18 +606,20 @@ function init_mediatree_builder()
 		ret_val=${?}
 		echo ""
 	fi
+
 	cd ${TOP_DEVDIR}
-#	if [ ! -d ".media-tree-clean-patch-repo" ] ; then
-		echo "Initializing/Updating clean patch gen repo"
-		get_ubuntu .media-tree-clean-patch-repo
-		configure_repo_git .media-tree-clean-patch-repo
-#	fi
+	echo "Initializing/Updating clean patch gen repo"
+	get_ubuntu .media-tree-clean-patch-repo
+	configure_repo_git .media-tree-clean-patch-repo
+	echo ""
+
 	cd ${TOP_DEVDIR}
 	if [ ! -d "ubuntu-${UBUNTU_VERSION}" ] ; then
 		echo "Initializing Ubuntu work repo"
 		get_ubuntu
 		configure_repo_git
 	fi
+
 	cd ${TOP_DEVDIR}
 	echo "Initializing/Updating media_build system"
 	get_media_build
