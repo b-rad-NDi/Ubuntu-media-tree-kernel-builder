@@ -1,13 +1,12 @@
-From 04ceb961d516ee55742b0d8127ff4d592a73eee6 Mon Sep 17 00:00:00 2001
+From 11489e8be1af00eae8ab305523d1d1c12e79c2b8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Apr 2017 16:20:21 -0500
-Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
+Subject: [PATCH 5/6] Packaging updates
 
 ---
- debian.master/changelog                      | 25 ++++++++++++++++++
  debian.master/control.d/flavour-control.stub |  4 +--
  debian.master/control.stub.in                | 39 +++++++---------------------
- debian.master/copyright                      | 21 +++++++++++++++
+ debian.master/copyright                      | 22 ++++++++++++++++
  debian.master/rules.d/amd64.mk               | 14 +++++-----
  debian.master/rules.d/arm64.mk               |  6 ++---
  debian.master/rules.d/armhf.mk               |  6 ++---
@@ -17,41 +16,8 @@ Subject: [PATCH 5/5] Maintainer, changelog, packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 14 +++++++---
  debian/rules.d/2-binary-arch.mk              |  4 +++
- 13 files changed, 98 insertions(+), 61 deletions(-)
+ 12 files changed, 74 insertions(+), 61 deletions(-)
 
-diff --git a/debian.master/changelog b/debian.master/changelog
-index 91dcb65591ca..bab22ff04b63 100644
---- a/debian.master/changelog
-+++ b/debian.master/changelog
-@@ -1,3 +1,28 @@
-+linux (4.10.0-19201704200420.0+mediatree+hauppauge) zesty; urgency=low
-+
-+  * Ubuntu kernel git clone
-+    - 4.10.0-19.21 rev acbae4cfe69b3ee7315ba24113c14e1c89921f53
-+
-+  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-04-20-21-09.patch
-+    - 0002-Apply-build-fixes-to-media-tree.patch
-+    - 0003-Add-new-media-tree-kernel-config.patch
-+
-+  * Ubuntu mainline build fixes
-+    - 0004-Mainline-Ubuntu-build-fixes.patch
-+
-+  * Packaging patches
-+    - 0005-Maintainer-changelog-git-url-updates.patch
-+
-+  * Additional patches
-+    - 0006-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
-+    - 0007-em28xx-bulk-transfer-implementation-fix.patch
-+    - 0008-usb-packet-size-tweaks.patch
-+    - 0009-lgdt3306a-add-QAM-AUTO.patch
-+    - 0010-Add-Hauppauge-DualHD-bulk-models-to-driver-table.patch
-+
-+ -- Brad Love <brad@nextdimension.cc>  Thu, 20 Apr 2017 04:20:20 -0500
-+
- linux (4.10.0-19.21) zesty; urgency=low
- 
-   [ Tim Gardner ]
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 6318ad236538..3ddd97b9a80b 100644
 --- a/debian.master/control.d/flavour-control.stub
@@ -75,7 +41,7 @@ index 6318ad236538..3ddd97b9a80b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index abf86b03a1b8..f0ab39dde67f 100644
+index abf86b03a1b8..f4e91a302883 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -83,7 +49,7 @@ index abf86b03a1b8..f0ab39dde67f 100644
  Section: devel
  Priority: optional
 -Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
-+Maintainer: Brad Love (Hauppauge) <brad@nextdimension.cc>
++Maintainer: Fake User <hidden@email.co>
 +XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:
@@ -169,10 +135,10 @@ index abf86b03a1b8..f0ab39dde67f 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
-index d1d04a6d6697..0a3a226a4c8a 100644
+index d1d04a6d6697..67972d67181f 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
-@@ -1,3 +1,24 @@
+@@ -1,3 +1,25 @@
 +#############################################################
 +#############################################################
 +#############################################################
@@ -184,8 +150,9 @@ index d1d04a6d6697..0a3a226a4c8a 100644
 +
 +All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 +
-+The packaging and build system is currently maintained by
-+brad at nextdimension dot cc for Hauppauge Computer Works.
++The packaging and build system is spoonsored by Hauppauge Computer Works.
++
++    http://www.hauppauge.com
 +
 +Errors in packaging or building should be directed to github above.
 +Bugs in the kernel or media tree drivers should be reported upstream.
@@ -335,7 +302,7 @@ index 5fbe78f3265e..bc46e3a74dbd 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc03358..83ad1b228495 100644
+index ccc65dc03358..fa24033b73d4 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu
@@ -374,7 +341,7 @@ index ccc65dc03358..83ad1b228495 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 627d869f9aa7..17287de4712a 100644
+index edda3f3ba845..e60b65a64bd5 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
 @@ -723,10 +723,14 @@ build-arch: $(build-arch-deps-true)
