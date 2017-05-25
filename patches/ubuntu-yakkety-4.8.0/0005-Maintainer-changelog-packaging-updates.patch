@@ -146,7 +146,7 @@ index 1334242..309fd13 100644
 -Multi-Arch: foreign
 -Section: kernel
 -Priority: optional
--Depends: ${misc:Depends}
+-Depends: ${misc:Depends}, lsb-release
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
 - version locked tools (such as perf and x86_energy_perf_policy) for
