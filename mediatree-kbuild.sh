@@ -652,13 +652,14 @@ function init_mediatree_builder()
 function usage()
 {
 	echo "Usage:"
-	echo "  ${0} [-i|-m|-s|-p|-x|-c|-g|-b|-h]"
-	echo "    -i  :  Initialize all git repositories"
+	echo "  ${0} [-i|-m|-s|-p|-x|-c|-r|-g|-b|-h]"
+	echo "    -i  :  Initialize/update all git repositories"
 	echo "    -m  :  Download and generate latest backport-patched LinuxTV.org media tree tarball"
 	echo "    -s  :  Generate a vanilla media tree kernel patch from a tarball"
 	echo "    -p  :  Apply mediatree kbuild system patches"
 	echo "    -x  :  Apply extra patches"
 	echo "    -c  :  Make new kernel build data and clean build system"
+	echo "    -r  :  Hard reset build directory (wipes build dir clean!)"
 	echo "    -g  :  Generate full patchset since original revision"
 	echo "    -b  :  Build kernel (requires clean first unless build error)"
 	echo "    -h  :  This help"
