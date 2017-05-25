@@ -61,7 +61,7 @@ export TOP_DEVDIR=`pwd`
 
 if [ -f ".state_env_file" ] ; then
 	. .state_env_file
-	export KB_PATCH_DIR="${TOP_DEVDIR}/patches-${KVER}.${KMAJ}.0"
+	export KB_PATCH_DIR="${TOP_DEVDIR}/patches/ubuntu-${UBUNTU_VERSION}-${KVER}.${KMAJ}.0"
 fi
 
 ## Set env var V4L_SYNC_DATE to a specific date to override latest tarball
@@ -147,7 +147,7 @@ function get_ubuntu()
 	if [ -z "${1}" ] ; then
 		get_ubuntu_kver
 		write_state_env
-		export KB_PATCH_DIR="${TOP_DEVDIR}/patches-${KVER}.${KMAJ}.0"
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/ubuntu-${UBUNTU_VERSION}-${KVER}.${KMAJ}.0"
 	fi
 	return ${ret_val}
 }
