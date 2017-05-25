@@ -1,0 +1,46 @@
+From 3a689270b97486240b9ccf8b9b0420c605c5f094 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 25 May 2017 10:01:31 -0500
+Subject: [PATCH 6/6] Changelog
+
+---
+ debian.master/changelog | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/debian.master/changelog b/debian.master/changelog
+index 553c170..9038364 100644
+--- a/debian.master/changelog
++++ b/debian.master/changelog
+@@ -1,3 +1,29 @@
++linux (4.8.0-52201705251001.0+mediatree+hauppauge) yakkety; urgency=low
++
++  * Ubuntu kernel git clone
++    - 4.8.0-52.55 rev 59e502dae0a1847669580a25e73be16d74bcfe7a
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2017-04-20-18-29.patch
++    - 0002-Apply-build-fixes-to-media-tree.patch
++    - 0003-Add-new-media-tree-kernel-config.patch
++
++  * Ubuntu mainline build fixes
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++
++  * Packaging patches
++    - 0005-Packaging-updates.patch
++    - 0006-Changelog.patch
++
++  * Additional patches
++    - 0006-Hauppauge-WinTV-DualHD-DVB-ATSC-second-tuner-support.patch
++    - 0007-em28xx-bulk-transfer-implementation-fix.patch
++    - 0008-usb-packet-size-tweaks.patch
++    - 0009-lgdt3306a-add-QAM-AUTO.patch
++    - 0010-Add-Hauppauge-bulk-models-to-driver-table.patch
++
++ -- Fake User <hidden@email.co>  Thu, 25 May 2017 10:01:31 -0500
++
+ linux (4.8.0-52.55) yakkety; urgency=low
+ 
+   * linux: 4.8.0-52.55 -proposed tracker (LP: #1686976)
+-- 
+2.9.3
+
