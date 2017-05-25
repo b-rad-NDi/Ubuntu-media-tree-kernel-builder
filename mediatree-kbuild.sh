@@ -487,7 +487,8 @@ function regen_changelog()
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Packaging patches" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0005-Maintainer-changelog-git-url-updates.patch" >>  /tmp/tmpkrn_changelog.mod
+	echo "    - 0005-Packaging-updates.patch" >>  /tmp/tmpkrn_changelog.mod
+	echo "    - 0006-Changelog.patch" >>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Additional patches" >>  /tmp/tmpkrn_changelog.mod
