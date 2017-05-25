@@ -149,7 +149,7 @@ index d1d04a6..514a589 100644
 +#############################################################
 +
 +This is a patched version of the Ubuntu kernel.
-+The latest media tree drivers from https://linuxtv.com are slip streamed in.
++The latest media tree drivers from https://linuxtv.org are slip streamed in.
 +
 +Additional patches for hardware/performance/etc are also included.
 +
