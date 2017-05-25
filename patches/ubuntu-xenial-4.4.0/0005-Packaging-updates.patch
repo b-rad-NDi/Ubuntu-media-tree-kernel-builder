@@ -143,7 +143,7 @@ diff --git a/debian.master/copyright b/debian.master/copyright
 index b24bd66..290b55b 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
-@@ -1,3 +1,26 @@
+@@ -1,3 +1,25 @@
 +#############################################################
 +#############################################################
 +#############################################################
@@ -155,10 +155,9 @@ index b24bd66..290b55b 100644
 +
 +All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 +
-+The packaging and build system is currently sponsored by
-+Hauppauge Computer Works.
++The packaging and build system is sponsored by Hauppauge Computer Works.
 +
-+	http://hauppauge.com
++	http://www.hauppauge.com
 +
 +Errors in packaging or building should be directed to github above.
 +Bugs in the kernel or media tree drivers should be reported upstream.
