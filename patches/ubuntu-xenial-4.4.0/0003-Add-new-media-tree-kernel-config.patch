@@ -1,20 +1,21 @@
-From 184b58a0e92e73f2a1c7c54d2d8b54d9dbb75c1f Mon Sep 17 00:00:00 2001
+From 4d961b9bce695ccf296793dd6a5888565c0fc652 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:57 +0000
-Subject: [PATCH 3/5] Add 'new' media tree kernel config
+Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ debian.master/config/config.common.ubuntu | 34 +++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 21922c6..2dcd024 100644
+index 2c641c2..54e30d7 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9104,3 +9104,23 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9108,3 +9108,37 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
++### LINUX MEDIA TREE EXTRA OPTIONS ###
 +CONFIG_CEC_PLATFORM_DRIVERS=y
 +CONFIG_MEDIA_CEC_SUPPORT=y
 +CONFIG_MEDIA_CEC_DEBUG=y
@@ -34,6 +35,19 @@ index 21922c6..2dcd024 100644
 +# CONFIG_VIDEO_IVTV_DEPRECATED_IOCTLS is not set
 +CONFIG_VIDEO_VIMC=m
 +CONFIG_VIDEO_VIVID_CEC=y
++# CONFIG_INTEL_ATOMISP is not set
++# CONFIG_VIDEO_ATOMISP is not set
++CONFIG_VIDEO_OV5693=m
++CONFIG_VIDEO_OV2722=m
++CONFIG_VIDEO_GC2235=m
++CONFIG_VIDEO_OV8858=m
++CONFIG_VIDEO_MSRLIST_HELPER=m
++CONFIG_VIDEO_MT9M114=m
++CONFIG_VIDEO_AP1302=m
++CONFIG_VIDEO_GC0310=m
++CONFIG_VIDEO_OV2680=m
++CONFIG_VIDEO_LM3554=m
++CONFIG_VIDEO_IMX=m
 +
 -- 
 2.7.4
