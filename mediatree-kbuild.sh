@@ -176,33 +176,39 @@ function download_media_tree()
 
 	git clean -xdf linux/
 	git checkout linux/
+	cp ../linux-media.tar.bz2 linux/
 	make -C linux/ download
 
 	# UTC time marker for LinuxTV media tree sync
 	export V4L_SYNC_DATE=`date -u +%Y-%0m-%0d-%0k:%0M`
 	echo ${V4L_SYNC_DATE} > ${TOP_DEVDIR}/.flag-media-tree-sync-time
+
+	# generate unpatched tarball of currentlinuxtv.org media tree
+	make -C linux/ untar
+	cd linux
+	tar -czvf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz drivers firmware include sound
 }
 
-function gen_media_tree_tarball()
+function gen_media_tree_tarball_patched()
 {
 	cd ${TOP_DEVDIR}/media_build
-
-	make -C linux/ untar
-	chmod +x v4l/scripts/make_config_compat.pl
-
 	cd linux
-	../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/ ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/debian.master/config/config.common.ubuntu config-compat.h
 
-	./version_patch.pl
+	# linuxtv media tree syslog messages and config-compat.h generation
+	perl ../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/ ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/debian.master/config/config.common.ubuntu config-compat.h
+	perl ./version_patch.pl
 
+	# apply kernel version specific backport patches
 	for i in `./patches_for_kernel.pl ${KVER}.${KMAJ}.0` ; do patch -p1 < ../backports/$i; done;
 
+	# copy includes where we need them for integration
 	sed -ie 's/NEED_USB_SPEED_WIRELESS/xxx_disabled_NEED_USB_SPEED_WIRELESS/' config-compat.h
 	cp -av kernel_version.h include/linux
 	cp -av config-compat.h include/media
 	cp -v ../v4l/compat.h include/media
 
-	tar -czvf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz drivers firmware include sound
+	# tar up fully kernel specific patched media tree tarball
+	tar -czvf ${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz drivers firmware include sound
 }
 
 function reset_repo_head_hard()
@@ -266,8 +272,8 @@ function apply_media_tree()
 	fi
 
 	cd ${TARGET_DIR}
-	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz" ] ; then
-		LinuxTV_MT_TAR=`ls ${TOP_DEVDIR}/linux-media-tree-*.tgz | sort | tail -n 1`
+	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz" ] ; then
+		LinuxTV_MT_TAR=`ls ${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-*.tgz | sort | tail -n 1`
 		if [ -z "${LinuxTV_MT_TAR}" ] ; then
 			return 1
 		fi
@@ -279,7 +285,7 @@ function apply_media_tree()
 		export V4L_SYNC_DATE="${TMP_MT_DATE%.tgz}"
 		echo "################# $V4L_SYNC_DATE"
 	else
-		LinuxTV_MT_TAR="${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz"
+		LinuxTV_MT_TAR="${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz"
 	fi
 
 	tar -xzvf ${LinuxTV_MT_TAR}
@@ -655,7 +661,7 @@ function usage()
 	echo "Usage:"
 	echo "  ${0} [-i|-m|-s|-p|-x|-c|-r|-g|-b|-h]"
 	echo "    -i  :  Initialize/update all git repositories"
-	echo "    -m  :  Download and generate latest backport-patched LinuxTV.org media tree tarball"
+	echo "    -m  :  Download and generate latest LinuxTV.org media tree tarballs"
 	echo "    -s  :  Generate a vanilla media tree kernel patch from a tarball"
 	echo "    -p  :  Apply mediatree kbuild system patches"
 	echo "    -x  :  Apply extra patches"
@@ -686,7 +692,7 @@ while getopts ":imrxCcgbB:spV:" o; do
 		#
 		init_mediatree_builder
 		download_media_tree
-		gen_media_tree_tarball
+		gen_media_tree_tarball_patched	# generate patched tarball
 		;;
 	s)
 		## App operation: Make a patch with the latest tarball applied
