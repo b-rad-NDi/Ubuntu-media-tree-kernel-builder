@@ -1,15 +1,15 @@
-From ae01473c1cd65991aec772ec818cf2c81e73717f Mon Sep 17 00:00:00 2001
+From 64411038bd4b8411ee6283b4a33a773ff3377e62 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 19 Apr 2017 17:10:43 -0500
-Subject: [PATCH 11/11] Add Hauppauge bulk models to driver table SoloHD DualHD
- ATSC DualHD DVB
+Subject: [PATCH 06/15] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
+ ATSC and DVB DualHD
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 20 +++++++++++++++-----
  1 file changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index a519ad1..8f44e6a 100644
+index df0e080..2d33179 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -508,8 +508,10 @@ static struct em28xx_reg_seq plex_px_bcud[] = {

@@ -1,7 +1,7 @@
-From c470c68a282617cc00832c60f8798b602981bd7e Mon Sep 17 00:00:00 2001
+From 2ffcaa3a9c96e5309198634b511fee891c3f747a Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 9/9] usb packet size tweaks
+Subject: [PATCH 04/15] em28xx: usb packet size tweaks
 
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--
@@ -9,7 +9,7 @@ Subject: [PATCH 9/9] usb packet size tweaks
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index c065b94..8bae0be 100644
+index 11f8a56..98c3365 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -205,7 +205,7 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
@@ -21,7 +21,7 @@ index c065b94..8bae0be 100644
  		packet_multiplier = EM28XX_DVB_BULK_PACKET_MULTIPLIER;
  		dvb_alt = 0;
  	} else { /* isoc */
-@@ -1156,7 +1156,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1157,7 +1157,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
  		result = em28xx_alloc_urbs(dev, EM28XX_DIGITAL_MODE,
  					   dev->dvb_xfer_bulk,
  					   EM28XX_DVB_NUM_BUFS,
@@ -31,7 +31,7 @@ index c065b94..8bae0be 100644
  	} else {
  		result = em28xx_alloc_urbs(dev, EM28XX_DIGITAL_MODE,
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 742c305..d014579 100644
+index 2fdd8df..132638e 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -190,7 +190,7 @@

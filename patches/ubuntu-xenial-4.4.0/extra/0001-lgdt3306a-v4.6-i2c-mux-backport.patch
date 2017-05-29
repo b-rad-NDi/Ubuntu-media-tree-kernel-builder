@@ -1,7 +1,7 @@
-From 00e85940ebd34b3151e3a183043fedc9ca72fc32 Mon Sep 17 00:00:00 2001
+From 86feef7ee5af9f38747b2c87262814312b81af08 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:35 +0000
-Subject: [PATCH 6/7] lgdt3306a i2c mux backport
+Subject: [PATCH 01/15] lgdt3306a: v4.6 i2c mux backport
 
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 180 ++++++++++++++++++++++++++++----
