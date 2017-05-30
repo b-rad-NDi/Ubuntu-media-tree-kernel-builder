@@ -172,10 +172,11 @@ function get_media_build()
 function download_media_tree()
 {
 	cd ${TOP_DEVDIR}/media_build
-	git pull
 
 	git clean -xdf linux/
 	git checkout linux/
+	git pull
+
 	make -C linux/ download
 
 	# UTC time marker for LinuxTV media tree sync
