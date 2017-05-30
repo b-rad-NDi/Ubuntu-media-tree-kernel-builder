@@ -65,11 +65,11 @@ index a12b599a1fa2..df0e080bd08e 100644
 +			return -ENOMEM;
 +		}
 +	} while (test_and_set_bit(nr, em28xx_devused));
-+ 	sec_dev->devno = nr;
-+ 	snprintf(sec_dev->name, 28, "em28xx #%d", nr);
-+ 	sec_dev->dev_next = NULL;
++	sec_dev->devno = nr;
++	snprintf(sec_dev->name, 28, "em28xx #%d", nr);
++	sec_dev->dev_next = NULL;
 +	dev->dev_next = sec_dev;
-+ 	return 0;
++	return 0;
 +}
 +
  /* high bandwidth multiplier, as encoded in highspeed endpoint descriptors */
