@@ -189,6 +189,23 @@ function download_media_tree()
 	tar -czf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz drivers firmware include sound
 }
 
+function unpack_media_tree()
+{
+	cd ${TOP_DEVDIR}/media_build
+
+	git clean -xdf linux/
+	git checkout linux/
+	cd linux
+
+	if [ -f "${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz" ] ; then
+		tar -xzf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz
+		return 0
+	else
+		echo "${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz not found"
+	fi
+	return 1
+}
+
 function gen_media_tree_tarball_patched()
 {
 	cd ${TOP_DEVDIR}/media_build
@@ -681,7 +698,7 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":imrxCcgbB:spV:" o; do
+while getopts ":imMrxCcgbB:spV:" o; do
 	case "${o}" in
 	i)
 		init_mediatree_builder
@@ -692,6 +709,14 @@ while getopts ":imrxCcgbB:spV:" o; do
 		#
 		init_mediatree_builder
 		download_media_tree
+		gen_media_tree_tarball_patched	# generate patched tarball
+		;;
+	M)
+		## App operation: App operation: unpack previous linuxtv.org tarball and patch for a particular kernel
+		#
+		init_mediatree_builder
+		unpack_media_tree
+		[ $? != 0 ] && exit 1
 		gen_media_tree_tarball_patched	# generate patched tarball
 		;;
 	s)
