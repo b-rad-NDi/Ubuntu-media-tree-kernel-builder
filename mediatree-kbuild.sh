@@ -176,7 +176,6 @@ function download_media_tree()
 
 	git clean -xdf linux/
 	git checkout linux/
-	cp ../linux-media.tar.bz2 linux/
 	make -C linux/ download
 
 	# UTC time marker for LinuxTV media tree sync
