@@ -419,6 +419,7 @@ function apply_patches()
 	else
 		apply_patch_git_am ${KB_PATCH_DIR}/0006-Changelog.patch
 		[ $? != 0 ] && echo "patch failure, exiting 2" && exit 1
+		update_identity
 	fi
 #		apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
 
