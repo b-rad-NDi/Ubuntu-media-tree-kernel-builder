@@ -374,6 +374,7 @@ function apply_patches()
 
 	###################################################
 	########## Pure LinuxTV.org media tree ############
+	echo "#############################################################"
 	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-${V4L_SYNC_DATE}.patch" ] ; then
 		LinuxTV_MT_PATCH=`ls ${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-*.patch | sort | tail -n 1`
 		if [ -z "${LinuxTV_MT_PATCH}" ] ; then
@@ -388,26 +389,31 @@ function apply_patches()
 
 	###################################################
 	############# media tree build fixes ##############
+	echo "#############################################################"
 	apply_patch_git_am ${KB_PATCH_DIR}/0002-Apply-build-fixes-to-media-tree.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	######### 'New' LinuxTV kernel options ############
+	echo "#############################################################"
 	apply_patch_git_am ${KB_PATCH_DIR}/0003-Add-new-media-tree-kernel-config.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	########## Ubuntu mainline build fixes ############
+	echo "#############################################################"
 	apply_patch_git_am ${KB_PATCH_DIR}/0004-Mainline-Ubuntu-build-fixes.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	########### Ubuntu packaging patches ##############
+	echo "#############################################################"
 	apply_patch_git_am ${KB_PATCH_DIR}/0005-Packaging-updates.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	########## Add build system changelog #############
+	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
 		regen_changelog "`date +%Y%m%d%H%M`"
 		git add debian.master/changelog
