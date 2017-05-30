@@ -1,20 +1,21 @@
-From 7d7c1df56ffedf33d56f181ffa69a619b7fbf8b8 Mon Sep 17 00:00:00 2001
+From 86e33af8d28337d4f0a13957e10e1b64d6575640 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 15 Apr 2017 18:34:52 -0500
-Subject: [PATCH 3/5] Add 'new' media tree kernel config
+Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ debian.master/config/config.common.ubuntu | 21 ++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 46503ca..c2d41af 100644
+index 0c1c3a32e279..1af6310e5a61 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9728,3 +9728,23 @@ CONFIG_ZRAM=m
+@@ -9728,3 +9728,24 @@ CONFIG_ZRAM=m
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
++### LINUX MEDIA TREE EXTRA OPTIONS ###
 +CONFIG_CEC_PLATFORM_DRIVERS=y
 +CONFIG_MEDIA_CEC_SUPPORT=y
 +CONFIG_MEDIA_CEC_DEBUG=y
@@ -35,7 +36,6 @@ index 46503ca..c2d41af 100644
 +# CONFIG_VIDEO_IVTV_DEPRECATED_IOCTLS is not set
 +CONFIG_VIDEO_VIMC=m
 +CONFIG_VIDEO_VIVID_CEC=y
-+
 -- 
-2.7.4
+2.11.0
 
