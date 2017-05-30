@@ -186,7 +186,7 @@ function download_media_tree()
 	# generate unpatched tarball of currentlinuxtv.org media tree
 	make -C linux/ untar
 	cd linux
-	tar -czvf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz drivers firmware include sound
+	tar -czf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz drivers firmware include sound
 }
 
 function gen_media_tree_tarball_patched()
@@ -208,7 +208,7 @@ function gen_media_tree_tarball_patched()
 	cp -v ../v4l/compat.h include/media
 
 	# tar up fully kernel specific patched media tree tarball
-	tar -czvf ${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz drivers firmware include sound
+	tar -czf ${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz drivers firmware include sound
 }
 
 function reset_repo_head_hard()
@@ -288,7 +288,7 @@ function apply_media_tree()
 		LinuxTV_MT_TAR="${TOP_DEVDIR}/linux-media-tree-${KVER}.${KMAJ}.${KMIN}-${V4L_SYNC_DATE}.tgz"
 	fi
 
-	tar -xzvf ${LinuxTV_MT_TAR}
+	tar -xzf ${LinuxTV_MT_TAR}
 #	export V4L_SYNC_DATE="${V4L_SYNC_DATE}"
 
 	# dma-buf api changes < 4.10
