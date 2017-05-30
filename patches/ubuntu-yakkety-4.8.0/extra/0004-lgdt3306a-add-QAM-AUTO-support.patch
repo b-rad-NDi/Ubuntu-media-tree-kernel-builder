@@ -1,7 +1,7 @@
-From c34cf92999abc49ca97b140de1f1a274212f0ba4 Mon Sep 17 00:00:00 2001
+From 30f0135a56842eb57eb1c28f6f3d7d80039e3af9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:29:26 +0000
-Subject: [PATCH 9/9] lgdt3306a add QAM AUTO
+Subject: [PATCH 4/5] lgdt3306a: add QAM AUTO support
 
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 9 +++++++++
@@ -56,5 +56,5 @@ index 1964da8..ca485705 100644
  		return -EINVAL;
  	}
 -- 
-2.7.4
+2.9.3
 

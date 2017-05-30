@@ -1,7 +1,8 @@
-From 806a07af02377fa7736402c1d09118254bcde039 Mon Sep 17 00:00:00 2001
+From 2302f3e5dfa5c2d876d4c3edb7537ebb013a6f13 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Apr 2017 18:13:36 -0500
-Subject: [PATCH 10/10] Add Hauppauge bulk models to driver table
+Subject: [PATCH 5/5] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
+ ATSC and DVB DualHD
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 20 +++++++++++++++-----

@@ -1,7 +1,7 @@
-From f5c42513965dc6aacd33010f39ef87674b794ed9 Mon Sep 17 00:00:00 2001
+From c48edee0c6bea70a3a5c7c4c670393482e16e5a5 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 8/9] usb packet size tweaks
+Subject: [PATCH 3/5] em28xx: usb packet size tweaks
 
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--
@@ -31,7 +31,7 @@ index dbc8ad6..776ac6e 100644
  	} else {
  		result = em28xx_alloc_urbs(dev, EM28XX_DIGITAL_MODE,
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 8155485..0322ae2 100644
+index 2fdd8df..132638e 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -190,7 +190,7 @@
@@ -44,5 +44,5 @@ index 8155485..0322ae2 100644
  #define EM28XX_INTERLACED_DEFAULT 1
  
 -- 
-2.7.4
+2.9.3
 
