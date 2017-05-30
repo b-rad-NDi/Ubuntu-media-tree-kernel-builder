@@ -1,7 +1,7 @@
-From 1bfab907e098aab52ae1770c7351a0cfa1c59dd7 Mon Sep 17 00:00:00 2001
+From f86a648dd0cac93fab685f5c202aaa2e11a47e9d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 20 Apr 2017 16:49:40 -0500
-Subject: [PATCH 2/5] Apply build fixes to media tree
+Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
  drivers/media/cec/cec-adap.c                      |  2 ++
@@ -9,9 +9,12 @@ Subject: [PATCH 2/5] Apply build fixes to media tree
  drivers/media/cec/cec-core.c                      |  2 ++
  drivers/media/dvb-frontends/af9033.c              |  2 ++
  drivers/media/media-device.c                      |  2 ++
+ drivers/media/media-devnode.c                     |  2 ++
  drivers/media/pci/ivtv/ivtv-driver.c              |  2 ++
  drivers/media/pci/ivtv/ivtv-irq.c                 |  2 ++
+ drivers/media/pci/zoran/zoran_card.c              |  2 ++
  drivers/media/rc/keymaps/rc-cec.c                 |  2 ++
+ drivers/media/rc/serial_ir.c                      |  2 ++
  drivers/media/usb/em28xx/em28xx-dvb.c             |  2 +-
  drivers/media/usb/pulse8-cec/pulse8-cec.c         |  2 ++
  drivers/media/usb/rainshadow-cec/rainshadow-cec.c |  2 ++
@@ -21,9 +24,12 @@ Subject: [PATCH 2/5] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-async.c              |  2 ++
  drivers/media/v4l2-core/v4l2-flash-led-class.c    |  2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c              |  2 ++
+ drivers/media/v4l2-core/videobuf2-dma-contig.c    |  4 ++--
+ drivers/media/v4l2-core/videobuf2-dma-sg.c        |  4 ++--
+ drivers/media/v4l2-core/videobuf2-vmalloc.c       |  4 ++--
  include/linux/kconfig.h                           |  5 +++--
  include/media/compat.h                            | 21 +++++++++++++++++++++
- 19 files changed, 57 insertions(+), 3 deletions(-)
+ 25 files changed, 69 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
 index f5fe01c..c756426 100644
@@ -52,7 +58,7 @@ index 0860fb4..2f2fbab 100644
  {
  	struct cec_fh *fh = filp->private_data;
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index a21fca7..b797bb68 100644
+index f9ebff9..c6b927f 100644
 --- a/drivers/media/cec/cec-core.c
 +++ b/drivers/media/cec/cec-core.c
 @@ -29,6 +29,8 @@
@@ -90,6 +96,19 @@ index b188787..9c12426 100644
  #ifdef CONFIG_MEDIA_CONTROLLER
  
  /* -----------------------------------------------------------------------------
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index 06bf97d..ec2b6cb 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -43,6 +43,8 @@
+ #include <media/media-devnode.h>
+ #include <media/media-device.h>
+ 
++#include <media/compat.h>
++
+ #define MEDIA_NUM_DEVICES	256
+ #define MEDIA_NAME		"media"
+ 
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
 index e8dc691..206a2de 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
@@ -116,6 +135,19 @@ index 6efe1f7..93153d8 100644
  #define DMA_MAGIC_COOKIE 0x000001fe
  
  static void ivtv_dma_dec_start(struct ivtv_stream *s);
+diff --git a/drivers/media/pci/zoran/zoran_card.c b/drivers/media/pci/zoran/zoran_card.c
+index 4680f00..fe554d4 100644
+--- a/drivers/media/pci/zoran/zoran_card.c
++++ b/drivers/media/pci/zoran/zoran_card.c
+@@ -54,6 +54,8 @@
+ #include "zoran_device.h"
+ #include "zoran_procfs.h"
+ 
++#include <media/compat.h>
++
+ extern const struct zoran_format zoran_formats[];
+ 
+ static int card[BUZ_MAX] = { [0 ... (BUZ_MAX-1)] = -1 };
 diff --git a/drivers/media/rc/keymaps/rc-cec.c b/drivers/media/rc/keymaps/rc-cec.c
 index 354c8e7..3ab5d41 100644
 --- a/drivers/media/rc/keymaps/rc-cec.c
@@ -129,6 +161,19 @@ index 354c8e7..3ab5d41 100644
  /*
   * CEC Spec "High-Definition Multimedia Interface Specification" can be obtained
   * here: http://xtreamerdev.googlecode.com/files/CEC_Specs.pdf
+diff --git a/drivers/media/rc/serial_ir.c b/drivers/media/rc/serial_ir.c
+index cb242f2..db4584e 100644
+--- a/drivers/media/rc/serial_ir.c
++++ b/drivers/media/rc/serial_ir.c
+@@ -35,6 +35,8 @@
+ #include <linux/spinlock.h>
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ struct serial_ir_hw {
+ 	int signal_pin;
+ 	int signal_pin_change;
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
 index 20407a5..1fb9926 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
@@ -156,7 +201,7 @@ index 1dfc2de..20808fc 100644
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
-index 541ca54..21bb52c 100644
+index 8d3ca2c..aa32f9b 100644
 --- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 +++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 @@ -36,6 +36,8 @@
@@ -195,7 +240,7 @@ index 6e31758..857bda1 100644
  				"<laurent.pinchart@ideasonboard.com>"
  #define DRIVER_DESC		"USB Video Class driver"
 diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 47d93a9..5a333ca 100644
+index a29f39d..d513406 100644
 --- a/drivers/media/usb/uvc/uvc_video.c
 +++ b/drivers/media/usb/uvc/uvc_video.c
 @@ -26,6 +26,8 @@
@@ -246,6 +291,51 @@ index 6aa0941..ed3a273 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-contig.c b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+index 2db0413..fb6a177 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+@@ -356,8 +356,8 @@ static struct dma_buf_ops vb2_dc_dmabuf_ops = {
+ 	.detach = vb2_dc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dc_dmabuf_ops_unmap,
+-	.map = vb2_dc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dc_dmabuf_ops_kmap,
++	.kmap = vb2_dc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dc_dmabuf_ops_kmap,
+ 	.vmap = vb2_dc_dmabuf_ops_vmap,
+ 	.mmap = vb2_dc_dmabuf_ops_mmap,
+ 	.release = vb2_dc_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+index 6fd1343..ecff8f4 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+@@ -504,8 +504,8 @@ static struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+ 	.detach = vb2_dma_sg_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
+-	.map = vb2_dma_sg_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dma_sg_dmabuf_ops_kmap,
+ 	.vmap = vb2_dma_sg_dmabuf_ops_vmap,
+ 	.mmap = vb2_dma_sg_dmabuf_ops_mmap,
+ 	.release = vb2_dma_sg_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-vmalloc.c b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+index 27d1db3..3f77814 100644
+--- a/drivers/media/v4l2-core/videobuf2-vmalloc.c
++++ b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+@@ -342,8 +342,8 @@ static struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
+ 	.detach = vb2_vmalloc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_vmalloc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_vmalloc_dmabuf_ops_unmap,
+-	.map = vb2_vmalloc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_vmalloc_dmabuf_ops_kmap,
+ 	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
+ 	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
+ 	.release = vb2_vmalloc_dmabuf_ops_release,
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
 index 4d74860..7279f68 100644
 --- a/include/linux/kconfig.h
@@ -275,10 +365,10 @@ index 4d74860..7279f68 100644
  /*
   * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
 diff --git a/include/media/compat.h b/include/media/compat.h
-index 5e764ff..8c9b92c 100644
+index 7d0f661..0f2c320 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
-@@ -1864,6 +1864,27 @@ static inline s64 ktime_ms_delta(const ktime_t later, const ktime_t earlier)
+@@ -1873,6 +1873,27 @@ static inline s64 ktime_ms_delta(const ktime_t later, const ktime_t earlier)
  #define SERIO_PULSE8_CEC     0x40
  #define SERIO_RAINSHADOW_CEC 0x41
  
