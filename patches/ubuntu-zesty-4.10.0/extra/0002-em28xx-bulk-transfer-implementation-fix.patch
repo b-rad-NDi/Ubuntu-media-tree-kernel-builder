@@ -1,14 +1,14 @@
-From b593179c712c49dec8cea734e3cd1d4516535963 Mon Sep 17 00:00:00 2001
+From b9a09760c73321cfa03e7c2fc21e7571c6d207d8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:10:11 +0000
-Subject: [PATCH 7/9] em28xx bulk transfer implementation fix
+Subject: [PATCH 2/5] em28xx: bulk transfer implementation fix
 
 ---
  drivers/media/usb/em28xx/em28xx-core.c | 34 +++++++++++++++++++++++++---------
  1 file changed, 25 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 432668d..b74faf6 100644
+index 432668dc18de..b74faf66db02 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
 @@ -637,17 +637,33 @@ int em28xx_capture_start(struct em28xx *dev, int start)
@@ -55,5 +55,5 @@ index 432668d..b74faf6 100644
  			rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
  							start ?
 -- 
-2.7.4
+2.11.0
 
