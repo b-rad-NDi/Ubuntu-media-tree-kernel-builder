@@ -1,6 +1,6 @@
-From c796306651c55659750ca986f2c5cdbdd83bb39c Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 17 Mar 2017 01:36:44 +0000
+From f72e1edf5f5ad4b16a44b826f5ccd331289b9858 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 30 May 2017 19:11:58 -0500
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
@@ -22,7 +22,10 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-async.c              | 2 ++
  drivers/media/v4l2-core/v4l2-flash-led-class.c    | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c              | 2 ++
- 18 files changed, 35 insertions(+), 1 deletion(-)
+ drivers/media/v4l2-core/videobuf2-dma-contig.c    | 4 ++--
+ drivers/media/v4l2-core/videobuf2-dma-sg.c        | 4 ++--
+ drivers/media/v4l2-core/videobuf2-vmalloc.c       | 4 ++--
+ 21 files changed, 41 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
 index f9ebff90f8eb..c6b927f3ec0f 100644
@@ -258,6 +261,51 @@ index 6aa09419be2b..ed3a27337029 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-contig.c b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+index 2db0413f5d57..fb6a177be461 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+@@ -356,8 +356,8 @@ static struct dma_buf_ops vb2_dc_dmabuf_ops = {
+ 	.detach = vb2_dc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dc_dmabuf_ops_unmap,
+-	.map = vb2_dc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dc_dmabuf_ops_kmap,
++	.kmap = vb2_dc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dc_dmabuf_ops_kmap,
+ 	.vmap = vb2_dc_dmabuf_ops_vmap,
+ 	.mmap = vb2_dc_dmabuf_ops_mmap,
+ 	.release = vb2_dc_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+index 6fd1343b7c13..ecff8f492c4f 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+@@ -504,8 +504,8 @@ static struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+ 	.detach = vb2_dma_sg_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
+-	.map = vb2_dma_sg_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dma_sg_dmabuf_ops_kmap,
+ 	.vmap = vb2_dma_sg_dmabuf_ops_vmap,
+ 	.mmap = vb2_dma_sg_dmabuf_ops_mmap,
+ 	.release = vb2_dma_sg_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-vmalloc.c b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+index 27d1db3bb8cf..3f778147cdef 100644
+--- a/drivers/media/v4l2-core/videobuf2-vmalloc.c
++++ b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+@@ -342,8 +342,8 @@ static struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
+ 	.detach = vb2_vmalloc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_vmalloc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_vmalloc_dmabuf_ops_unmap,
+-	.map = vb2_vmalloc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_vmalloc_dmabuf_ops_kmap,
+ 	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
+ 	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
+ 	.release = vb2_vmalloc_dmabuf_ops_release,
 -- 
 2.11.0
 
