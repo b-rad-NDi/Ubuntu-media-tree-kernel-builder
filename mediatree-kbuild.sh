@@ -309,8 +309,8 @@ function apply_media_tree()
 	tar -xzf ${LinuxTV_MT_TAR}
 #	export V4L_SYNC_DATE="${V4L_SYNC_DATE}"
 
-	# dma-buf api changes < 4.10
-	if [ "${KVER}" -le 4 -a "${KMAJ}" -lt 10 ] ; then
+	# dma-buf struct changes < 4.12
+	if [ "${KVER}" -le 4 -a "${KMAJ}" -lt 12 ] ; then
 		git checkout include/linux/dma-buf.h
 	fi
 
