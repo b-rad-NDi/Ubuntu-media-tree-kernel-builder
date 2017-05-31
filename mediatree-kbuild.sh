@@ -436,7 +436,7 @@ function apply_extra_patches()
 {
 	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
 
-	for i in `ls ${KB_PATCH_DIR}/extra/* | sort` ; do
+	for i in `ls ${KB_PATCH_DIR}/extra/*.patch | sort` ; do
 		echo "#############################################################"
 		apply_patch_git_am $i
 		[ $? != 0 ] && echo "patch [${i}] failure, exiting" && return 1
