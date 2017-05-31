@@ -1,17 +1,17 @@
-From 38742b87aeb184e534e6677d9b7204a1db22ad8a Mon Sep 17 00:00:00 2001
+From da1d811e4ef374731a34a99004d93176225a69f5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 15 Apr 2017 18:34:52 -0500
-Subject: [PATCH 3/5] Add 'new' media tree kernel config
+Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 21 ++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ debian.master/config/config.common.ubuntu | 35 +++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index ff52f1f..c698072 100644
+index 9494568..5840f85 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9395,3 +9395,25 @@ CONFIG_ZPOOL=y
+@@ -9394,3 +9394,38 @@ CONFIG_ZPOOL=y
  CONFIG_ZRAM=m
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
