@@ -1,3 +1,7 @@
+0.16.0
+
+  * New Xenial/Yakkety/Zesty kernel revisions
+
 0.15.2
 
   * Xenial virtual package dependency fubar...
