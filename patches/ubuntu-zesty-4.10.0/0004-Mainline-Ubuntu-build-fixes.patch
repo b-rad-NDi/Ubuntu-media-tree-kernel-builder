@@ -1,7 +1,7 @@
-From a3b57d8d8cc017b94eb98ae87763d47115bdd5ac Mon Sep 17 00:00:00 2001
+From 1073b5236b00c75d8f0bb514d9e449c1155d52e8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 19 Apr 2017 23:14:44 +0000
-Subject: [PATCH 4/5] Mainline Ubuntu build fixes
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/dma-buf/sync_debug.c            |  2 +-
