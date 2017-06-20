@@ -1,23 +1,23 @@
-From 0a2679a0e4d2e1b51add904f5c7e81c6d3af185c Mon Sep 17 00:00:00 2001
+From 73f8c01f85b577d360e2d8c53a0b63a4ad7e6897 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 24 May 2017 16:11:45 -0500
+Date: Mon, 19 Jun 2017 16:11:42 -0500
 Subject: [PATCH 5/6] Packaging updates
 
 ---
- debian.master/control.d/flavour-control.stub |  4 +--
- debian.master/control.stub.in                | 41 +++++++---------------------
- debian.master/copyright                      | 23 ++++++++++++++++
- debian.master/rules.d/amd64.mk               | 14 +++++-----
- debian.master/rules.d/arm64.mk               |  6 ++--
- debian.master/rules.d/armhf.mk               |  6 ++--
- debian.master/rules.d/i386.mk                | 12 ++++----
- debian.master/rules.d/powerpc.mk             |  6 ++--
- debian.master/rules.d/ppc64el.mk             |  6 ++--
- debian.master/rules.d/s390x.mk               |  6 ++--
+ debian.master/control.d/flavour-control.stub |  4 +-
+ debian.master/control.stub.in                | 62 +++++-----------------------
+ debian.master/copyright                      | 22 ++++++++++
+ debian.master/rules.d/amd64.mk               | 14 +++----
+ debian.master/rules.d/arm64.mk               |  6 +--
+ debian.master/rules.d/armhf.mk               |  6 +--
+ debian.master/rules.d/i386.mk                | 12 +++---
+ debian.master/rules.d/powerpc.mk             |  6 +--
+ debian.master/rules.d/ppc64el.mk             |  6 +--
+ debian.master/rules.d/s390x.mk               |  6 +--
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 16 ++++++++---
- debian/rules.d/2-binary-arch.mk              |  4 +++
- 13 files changed, 80 insertions(+), 66 deletions(-)
+ debian/rules.d/0-common-vars.mk              | 16 +++++--
+ debian/rules.d/2-binary-arch.mk              |  4 ++
+ 13 files changed, 79 insertions(+), 87 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index e63a682..75ce8e6 100644
@@ -42,7 +42,7 @@ index e63a682..75ce8e6 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index d15e2a6..94e2e97 100644
+index 677852c..94e2e97 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -102,7 +102,7 @@ index d15e2a6..94e2e97 100644
   This package provides the various documents in the PKGVER kernel
   Documentation/ subdirectory.  These document kernel subsystems, APIs, device
   drivers, and so on.  See
-@@ -110,18 +112,6 @@ Description: Linux Kernel Headers for development
+@@ -110,27 +112,6 @@ Description: Linux Kernel Headers for development
   libraries. They are NOT meant to be used to build third-party modules for
   your kernel. Use SRCPKGNAME-headers-* packages for that.
  
@@ -112,6 +112,15 @@ index d15e2a6..94e2e97 100644
 -Multi-Arch: foreign
 -Section: kernel
 -Priority: optional
+-Provides:
+- linux-aws-tools-common,
+- linux-gke-tools-common,
+-Conflicts:
+- linux-aws-tools-common,
+- linux-gke-tools-common,
+-Replaces:
+- linux-aws-tools-common,
+- linux-gke-tools-common,
 -Depends: ${misc:Depends}, lsb-release
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
@@ -121,7 +130,7 @@ index d15e2a6..94e2e97 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 powerpc ppc64el s390x
-@@ -135,17 +125,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -144,29 +125,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -131,6 +140,18 @@ index d15e2a6..94e2e97 100644
 -Multi-Arch: foreign
 -Section: kernel
 -Priority: optional
+-Breaks:
+- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
+- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
+-Replaces:
+- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
+- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
+-Conflicts:
+- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
+- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
+-Provides:
+- linux-aws-cloud-tools-common,
+- linux-gke-cloud-tools-common,
 -Depends: ${misc:Depends}
 -Description: Linux kernel version specific cloud tools for version PKGVER
 - This package provides the architecture independent parts for kernel
@@ -140,7 +161,7 @@ index d15e2a6..94e2e97 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
-index b24bd66..290b55b 100644
+index b24bd66..b6a0c04 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
 @@ -1,3 +1,25 @@
