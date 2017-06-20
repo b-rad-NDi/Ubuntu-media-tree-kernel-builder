@@ -396,6 +396,32 @@ index 7d0f661..0f2c320 100644
  #ifdef NEED_KTHREAD_INIT_WORKER
  #define __kthread_init_worker __init_kthread_worker
  #define kthread_init_worker init_kthread_worker
+diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
+index 8c8f38f..2e3e12d 100644
+--- a/drivers/media/rc/sir_ir.c
++++ b/drivers/media/rc/sir_ir.c
+@@ -23,6 +23,8 @@
+ 
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ /* SECTION: Definitions */
+ #define PULSE '['
+ 
+diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
+index ecc1233..58f81ed 100644
+--- a/include/media/v4l2-fwnode.h
++++ b/include/media/v4l2-fwnode.h
+@@ -24,6 +24,8 @@
+ 
+ #include <media/v4l2-mediabus.h>
+ 
++#include <media/compat.h>
++
+ struct fwnode_handle;
+ 
+ /**
 -- 
 2.9.3
 
