@@ -1,9 +1,10 @@
-From f72e1edf5f5ad4b16a44b826f5ccd331289b9858 Mon Sep 17 00:00:00 2001
+From 764c970e9eb3f9de1cbc5e311f1d36c32acf2939 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 30 May 2017 19:11:58 -0500
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
+ drivers/media/cec/cec-api.c                       | 2 ++
  drivers/media/cec/cec-core.c                      | 2 ++
  drivers/media/dvb-frontends/af9033.c              | 2 ++
  drivers/media/media-device.c                      | 2 ++
@@ -13,6 +14,7 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/pci/zoran/zoran_card.c              | 2 ++
  drivers/media/rc/keymaps/rc-cec.c                 | 2 ++
  drivers/media/rc/serial_ir.c                      | 2 ++
+ drivers/media/rc/sir_ir.c                         | 2 ++
  drivers/media/usb/em28xx/em28xx-dvb.c             | 2 +-
  drivers/media/usb/pulse8-cec/pulse8-cec.c         | 2 ++
  drivers/media/usb/rainshadow-cec/rainshadow-cec.c | 2 ++
@@ -25,10 +27,24 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/videobuf2-dma-contig.c    | 4 ++--
  drivers/media/v4l2-core/videobuf2-dma-sg.c        | 4 ++--
  drivers/media/v4l2-core/videobuf2-vmalloc.c       | 4 ++--
- 21 files changed, 41 insertions(+), 7 deletions(-)
+ include/media/v4l2-fwnode.h                       | 2 ++
+ 24 files changed, 47 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index 60fd48214142..0e29009a5ca7 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -30,6 +30,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/version.h>
+ 
++#include <media/compat.h>
++
+ #include "cec-priv.h"
+ 
+ static inline struct cec_devnode *cec_devnode_data(struct file *filp)
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index f9ebff90f8eb..c6b927f3ec0f 100644
+index 2f87748ba4fc..6efddea2a580 100644
 --- a/drivers/media/cec/cec-core.c
 +++ b/drivers/media/cec/cec-core.c
 @@ -29,6 +29,8 @@
@@ -144,6 +160,19 @@ index cb242f2dff11..db4584e93531 100644
  struct serial_ir_hw {
  	int signal_pin;
  	int signal_pin_change;
+diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
+index 8c8f38f58777..2e3e12d40ce6 100644
+--- a/drivers/media/rc/sir_ir.c
++++ b/drivers/media/rc/sir_ir.c
+@@ -23,6 +23,8 @@
+ 
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ /* SECTION: Definitions */
+ #define PULSE '['
+ 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
 index 20407a5d45a0..1fb9926b6fdb 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
@@ -171,7 +200,7 @@ index 1dfc2de1fe77..20808fc00521 100644
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
-index 8d3ca2c8b20f..01b8c62fa3d8 100644
+index ad468efc4399..622341c6a4b4 100644
 --- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 +++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 @@ -34,6 +34,8 @@
@@ -197,7 +226,7 @@ index ceb953be0770..92216c9ff499 100644
  {
  	int ret;
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 6e31758ce9e6..857bda1b6741 100644
+index 2b719f80de15..69d5cdffe244 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -27,6 +27,8 @@
@@ -210,7 +239,7 @@ index 6e31758ce9e6..857bda1b6741 100644
  				"<laurent.pinchart@ideasonboard.com>"
  #define DRIVER_DESC		"USB Video Class driver"
 diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index a29f39d4e05b..d513406363a4 100644
+index fb86d6af398d..635ffa82b30a 100644
 --- a/drivers/media/usb/uvc/uvc_video.c
 +++ b/drivers/media/usb/uvc/uvc_video.c
 @@ -26,6 +26,8 @@
@@ -223,10 +252,10 @@ index a29f39d4e05b..d513406363a4 100644
   * UVC Controls
   */
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index 96cc733f35ef..a4cc4939eccf 100644
+index cbd919d4edd2..cc3ff275ad40 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
-@@ -22,6 +22,8 @@
+@@ -23,6 +23,8 @@
  #include <media/v4l2-device.h>
  #include <media/v4l2-subdev.h>
  
@@ -236,7 +265,7 @@ index 96cc733f35ef..a4cc4939eccf 100644
  {
  #if IS_ENABLED(CONFIG_I2C)
 diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-index 794e563f24f8..73831f6d218d 100644
+index 7b8288108e8a..e1da487201f2 100644
 --- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
 +++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
 @@ -17,6 +17,8 @@
@@ -249,7 +278,7 @@ index 794e563f24f8..73831f6d218d 100644
  	(v4l2_flash && v4l2_flash->ops->op)
  
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 6aa09419be2b..ed3a27337029 100644
+index e0fb14c851d5..5e80e520aafd 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -31,6 +31,8 @@
@@ -306,6 +335,19 @@ index 27d1db3bb8cf..3f778147cdef 100644
  	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
  	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
  	.release = vb2_vmalloc_dmabuf_ops_release,
+diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
+index ecc1233a873e..58f81edc929a 100644
+--- a/include/media/v4l2-fwnode.h
++++ b/include/media/v4l2-fwnode.h
+@@ -24,6 +24,8 @@
+ 
+ #include <media/v4l2-mediabus.h>
+ 
++#include <media/compat.h>
++
+ struct fwnode_handle;
+ 
+ /**
 -- 
 2.11.0
 
