@@ -589,6 +589,8 @@ function generate_virtual_package()
 	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
 	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
 	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+	echo "#########################################"
+	echo "#########################################"
 	echo "Building virtual package that depends on:"
 	if [ "${1}" == "headers" ] ; then
 		echo "    linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
@@ -596,6 +598,8 @@ function generate_virtual_package()
 		echo "    linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 		echo "    linux-image-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 	fi
+	echo "#########################################"
+	echo "#########################################"
 	equivs-build --full ns_control
 	if [ ! -f "linux-${1}-mediatree_${VPACKAGE_VER}+${UBUNTU_VERSION}.dsc" ] ; then
 		echo "Missing linux-${1}-mediatree_${VPACKAGE_VER}+${UBUNTU_VERSION}.dsc"
