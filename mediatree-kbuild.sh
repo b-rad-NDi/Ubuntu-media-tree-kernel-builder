@@ -342,7 +342,7 @@ function configure_repo_git()
 
 	cd ${TARGET_DIR}
 
-	# set local Ubuntu kernel repo git config
+	# set local repo git config
 	git config user.name "${U_FULLNAME}"
 	git config user.email "hidden@email.co"
 }
@@ -747,9 +747,9 @@ while getopts ":imMrxCcgbB:spV:" o; do
 		apply_media_tree .media-tree-clean-patch-repo
 		;;
 	r)
-		## App operation: Reset to original commit main ubuntu build directory
+		## App operation: Reset to original commit main kernel build directory
 		#
-		# resets Ubuntu git back to original commit package is based on
+		# resets kernel git back to original commit package is based on
 		# suitable for re applying updated patchset
 		# WARNING: irreversibly wipes out all files and resets to original state!!!
 		echo "!!! Requesting hard reset of ${DISTRO_NAME}-${DISTRO_CODENAME}"
@@ -758,15 +758,15 @@ while getopts ":imMrxCcgbB:spV:" o; do
 		reset_repo_revision_hard
 		;;
 	p)
-		## App operation: Apply all patches to main ubuntu build directory
+		## App operation: Apply all patches to main kernel build directory
 		#
-		# requires main ubuntu build repo reset
+		# requires main kernel build repo reset
 		#
 		apply_patches
 		[ $? != 0 ] && exit 1
 		;;
 	x)
-		## App operation: Apply all extra patches to main ubuntu build directory
+		## App operation: Apply all extra patches to main kernel build directory
 		#
 		apply_extra_patches
 		[ $? != 0 ] && exit 1
