@@ -39,6 +39,15 @@ fi
 
 [ -z "${KERNEL_ABI_TAG}" ] && KERNEL_ABI_TAG="+mediatree+hauppauge"
 
+if [ -z "${DISTRO_NAME}" ] ; then
+	if [ ! -f /etc/os-release ] ; then
+		echo "No /etc/os-release, cannot determine running OS..."
+		exit 250
+	fi
+	eval `cat /etc/os-release`
+	DISTRO_NAME=${ID}
+fi
+
 if [ -z "${UBUNTU_VERSION}" ] ; then
 	if [ ! -f /etc/lsb-release ] ; then
 		echo "No /etc/lsb-release, cannot determine running Ubuntu..."
@@ -61,7 +70,7 @@ export TOP_DEVDIR=`pwd`
 
 if [ -f ".state_env_file" ] ; then
 	. .state_env_file
-	export KB_PATCH_DIR="${TOP_DEVDIR}/patches/ubuntu-${UBUNTU_VERSION}-${KVER}.${KMAJ}.0"
+	export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
 fi
 
 ## Set env var V4L_SYNC_DATE to a specific date to override latest tarball
@@ -71,11 +80,11 @@ fi
 
 function get_ubuntu_kver()
 {
-	export KVER=`grep VERSION ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/Makefile | head -n 1 | cut -d ' ' -f 3`
-	export KMAJ=`grep PATCHLEVEL ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/Makefile | head -n 1 | cut -d ' ' -f 3`
+	export KVER=`grep VERSION ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/Makefile | head -n 1 | cut -d ' ' -f 3`
+	export KMAJ=`grep PATCHLEVEL ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/Makefile | head -n 1 | cut -d ' ' -f 3`
 	export KMIN=0
-	export K_ABI_A=`head -n1 ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/debian.master/changelog | cut -d'-' -f2 | cut -d'.' -f1`
-	export K_ABI_B=`head -n1 ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/debian.master/changelog | cut -d'.' -f4 | cut -d')' -f1`
+	export K_ABI_A=`head -n1 ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/debian.master/changelog | cut -d'-' -f2 | cut -d'.' -f1`
+	export K_ABI_B=`head -n1 ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/debian.master/changelog | cut -d'.' -f4 | cut -d')' -f1`
 }
 
 function write_state_env()
@@ -96,7 +105,7 @@ function get_ubuntu()
 	ret_val=0
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" ]; then
-		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
+		TARGET_DIR=${DISTRO_NAME}-${UBUNTU_VERSION}
 	else
 		TARGET_DIR=${1}
 	fi
@@ -106,7 +115,7 @@ function get_ubuntu()
 		cd -
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
 	elif [ ! -d "${TARGET_DIR}" ] ; then
-		git clone git://kernel.ubuntu.com/ubuntu/ubuntu-${UBUNTU_VERSION}.git ${TARGET_DIR}
+		git clone git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${UBUNTU_VERSION}.git ${TARGET_DIR}
 	fi
 
 	if [ -n "${UBUNTU_REVISION}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
@@ -147,7 +156,7 @@ function get_ubuntu()
 	if [ -z "${1}" ] ; then
 		get_ubuntu_kver
 		write_state_env
-		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/ubuntu-${UBUNTU_VERSION}-${KVER}.${KMAJ}.0"
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${UBUNTU_VERSION}-${KVER}.${KMAJ}.0"
 	fi
 	return ${ret_val}
 }
@@ -214,7 +223,7 @@ function gen_media_tree_tarball_patched()
 	cd linux
 
 	# linuxtv media tree syslog messages and config-compat.h generation
-	perl ../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/ ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}/debian.master/config/config.common.ubuntu config-compat.h
+	perl ../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/ ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}/debian.master/config/config.common.ubuntu config-compat.h
 	perl ./version_patch.pl
 
 	# apply kernel version specific backport patches
@@ -233,7 +242,7 @@ function reset_repo_head_hard()
 {
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" -o ! -d "${1}" ]; then
-		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
+		TARGET_DIR=${DISTRO_NAME}-${UBUNTU_VERSION}
 	else
 		TARGET_DIR=${1}
 	fi
@@ -256,7 +265,7 @@ function reset_ubuntu_hard()
 {
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" -o ! -d "${1}" ]; then
-		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
+		TARGET_DIR=${DISTRO_NAME}-${UBUNTU_VERSION}
 	else
 		TARGET_DIR=${1}
 	fi
@@ -284,7 +293,7 @@ function apply_media_tree()
 {
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" ]; then
-		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
+		TARGET_DIR=${DISTRO_NAME}-${UBUNTU_VERSION}
 	else
 		TARGET_DIR=${1}
 	fi
@@ -324,7 +333,7 @@ function configure_repo_git()
 {
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" ]; then
-		TARGET_DIR=ubuntu-${UBUNTU_VERSION}
+		TARGET_DIR=${DISTRO_NAME}-${UBUNTU_VERSION}
 	else
 		TARGET_DIR=${1}
 	fi
@@ -370,7 +379,7 @@ function apply_patch_git_am()
 
 function apply_patches()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	###################################################
 	########## Pure LinuxTV.org media tree ############
@@ -434,7 +443,7 @@ function apply_patches()
 
 function apply_extra_patches()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	for i in `ls ${KB_PATCH_DIR}/extra/*.patch | sort` ; do
 		echo "#############################################################"
@@ -452,7 +461,7 @@ function generate_patch_set()
 		return 3
 	fi
 
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	#	git format-patch -# HEAD
 	# Generate all patches after checkout revision
@@ -461,7 +470,7 @@ function generate_patch_set()
 
 function update_identity()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/control.stub.in
 	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/changelog
@@ -474,7 +483,7 @@ function regen_changelog()
 		return 3
 	fi
 
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	[ -z "${1}" ] && echo "error..." && return 1
 
@@ -539,14 +548,14 @@ function regen_changelog()
 
 function clean_kernel()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 	fakeroot debian/rules clean
 	return 0
 }
 
 function generate_new_kernel_version()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	regen_changelog "`date +%Y%m%d%H%M`"
 	update_identity
@@ -560,12 +569,12 @@ function generate_virtual_package()
 {
 	cd ${TOP_DEVDIR}
 
-	if [ ! -f "ubuntu-${UBUNTU_VERSION}/debian/changelog" ] ; then
+	if [ ! -f "${DISTRO_NAME}-${UBUNTU_VERSION}/debian/changelog" ] ; then
 		echo "Error, you must 'clean'/regenerate build data first"
 		return 1
 	fi
 
-	LAST_KBUILD_VER=`head -n 1 ubuntu-${UBUNTU_VERSION}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
+	LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${UBUNTU_VERSION}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
 
 	VPACKAGE_VER=`head -n 1 changelog`
 	cd .vpackage_tmp
@@ -619,7 +628,7 @@ function generate_virtual_package()
 
 function build_kernel_bin()
 {
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 
 	if [ "$1" == "debug" ] ; then
 		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipdbg=false
@@ -641,7 +650,7 @@ function generate_ppa_data()
 	read x
 	[ "${x}" != "YES" ] && return 1
 
-	cd ${TOP_DEVDIR}/ubuntu-${UBUNTU_VERSION}
+	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${UBUNTU_VERSION}
 	debuild -us -uc -S
 
 	generate_virtual_package image
@@ -668,7 +677,7 @@ function init_mediatree_builder()
 	echo ""
 
 	cd ${TOP_DEVDIR}
-	if [ ! -d "ubuntu-${UBUNTU_VERSION}" ] ; then
+	if [ ! -d "${DISTRO_NAME}-${UBUNTU_VERSION}" ] ; then
 		echo "Initializing Ubuntu work repo"
 		get_ubuntu
 		configure_repo_git
@@ -743,7 +752,7 @@ while getopts ":imMrxCcgbB:spV:" o; do
 		# resets Ubuntu git back to original commit package is based on
 		# suitable for re applying updated patchset
 		# WARNING: irreversibly wipes out all files and resets to original state!!!
-		echo "!!! Requesting hard reset of ubuntu-${UBUNTU_VERSION}"
+		echo "!!! Requesting hard reset of ${DISTRO_NAME}-${UBUNTU_VERSION}"
 		echo "!!!  This will irrerversibly wipe out the entire directory and restore it to original state"
 		echo "!!!  Any changes you have made will be lost."
 		reset_ubuntu_hard
