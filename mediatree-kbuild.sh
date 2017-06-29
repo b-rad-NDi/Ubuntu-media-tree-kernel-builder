@@ -261,7 +261,7 @@ function reset_repo_head_hard()
 	fi
 }
 
-function reset_ubuntu_hard()
+function reset_repo_revision_hard()
 {
 	cd ${TOP_DEVDIR}
 	if [ -z "${1}" -o ! -d "${1}" ]; then
@@ -755,7 +755,7 @@ while getopts ":imMrxCcgbB:spV:" o; do
 		echo "!!! Requesting hard reset of ${DISTRO_NAME}-${DISTRO_CODENAME}"
 		echo "!!!  This will irrerversibly wipe out the entire directory and restore it to original state"
 		echo "!!!  Any changes you have made will be lost."
-		reset_ubuntu_hard
+		reset_repo_revision_hard
 		;;
 	p)
 		## App operation: Apply all patches to main ubuntu build directory
