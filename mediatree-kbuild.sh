@@ -57,7 +57,7 @@ if [ -z "${DISTRO_CODENAME}" ] ; then
 	DISTRO_CODENAME=${VERSION_CODENAME}
 fi
 
-#[ -z "${UBUNTU_REVISION}" ] && UBUNTU_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
+#[ -z "${DISTRO_GIT_REVISION}" ] && DISTRO_GIT_REVISION=50aaaec159365f8f8788e054048545e7ec9734f1
 
 ################################################
 RED='\033[0;31m'
@@ -96,7 +96,7 @@ function write_state_env()
 	echo "K_ABI_B=${K_ABI_B}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "K_ABI_MOD=${K_ABI_MOD}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "K_BUILD_VER=${K_BUILD_VER}" >> ${TOP_DEVDIR}/.state_env_file
-	echo "UBUNTU_REVISION=${UBUNTU_REVISION}" >> ${TOP_DEVDIR}/.state_env_file
+	echo "DISTRO_GIT_REVISION=${DISTRO_GIT_REVISION}" >> ${TOP_DEVDIR}/.state_env_file
 	echo "" >> ${TOP_DEVDIR}/.state_env_file
 }
 
@@ -118,38 +118,38 @@ function get_ubuntu()
 		git clone git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
 	fi
 
-	if [ -n "${UBUNTU_REVISION}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
+	if [ -n "${DISTRO_GIT_REVISION}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
 		cd ${TARGET_DIR}
 		git fetch
-		if [ -n "${TIP_UBUNTU_REVISION}" -a "${TIP_UBUNTU_REVISION}" != "${UBUNTU_REVISION}" ] ; then
-			git checkout ${TIP_UBUNTU_REVISION}
-			[ -z "${1}" ] && UBUNTU_REVISION=${TIP_UBUNTU_REVISION}
+		if [ -n "${TIP_DISTRO_GIT_REVISION}" -a "${TIP_DISTRO_GIT_REVISION}" != "${DISTRO_GIT_REVISION}" ] ; then
+			git checkout ${TIP_DISTRO_GIT_REVISION}
+			[ -z "${1}" ] && DISTRO_GIT_REVISION=${TIP_DISTRO_GIT_REVISION}
 		else
-			git checkout ${UBUNTU_REVISION}
+			git checkout ${DISTRO_GIT_REVISION}
 		fi
 		cd ..
 	else
 		cd ${TARGET_DIR}
 		git pull
-		CUR_UBUNTU_REVISION=`cat .git/refs/heads/master`
-		if [ -n "${UBUNTU_REVISION}" -a "${CUR_UBUNTU_REVISION}" != "${UBUNTU_REVISION}" ] ; then
+		CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
+		if [ -n "${DISTRO_GIT_REVISION}" -a "${CUR_DISTRO_GIT_REVISION}" != "${DISTRO_GIT_REVISION}" ] ; then
 			echo -e "${RED}###############################################"
 			echo -e "${RED}###############################################"
 			echo -e "${RED}###############################################"
 			echo -e "${RED}################### ${GREEN}ATTENTION ${RED}#################"
 			echo -e "${RED}####### ${GREEN}Ubuntu master revision updated! ${RED}#######"
-			echo -e "${RED}## ${NC}${CUR_UBUNTU_REVISION} ${RED}###"
+			echo -e "${RED}## ${NC}${CUR_DISTRO_GIT_REVISION} ${RED}###"
 			echo -e "${RED}###############################################"
 			echo -e "${RED}### ${NC}Set env var MEDIATREE_KBUILD_UPDATE=YES ${RED}###"
 			echo -e "${RED}############# ${NC}to update build ${RED}#################"
 			echo -e "${RED}###############################################${NC}"
 			ret_val=1
 			if [ "${MEDIATREE_KBUILD_UPDATE}" == "YES" ] ; then
-				TIP_UBUNTU_REVISION=${CUR_UBUNTU_REVISION}
+				TIP_DISTRO_GIT_REVISION=${CUR_DISTRO_GIT_REVISION}
 				TRY_UPDATE=YES
 			fi
 		elif [ -z "${1}" ] ; then
-			UBUNTU_REVISION=${CUR_UBUNTU_REVISION}
+			DISTRO_GIT_REVISION=${CUR_DISTRO_GIT_REVISION}
 		fi
 	fi
 
@@ -271,17 +271,17 @@ function reset_ubuntu_hard()
 	fi
 
 	[ ! -d "${TARGET_DIR}" ] && return 2
-	if [ -z "${UBUNTU_REVISION}" ] ; then
-		echo "UBUNTU_REVISION cannot be empty!"
+	if [ -z "${DISTRO_GIT_REVISION}" ] ; then
+		echo "DISTRO_GIT_REVISION cannot be empty!"
 		return 3
 	fi
 
-	echo "WARNING: reset to rev ${UBUNTU_REVISION} *and* irreversibly clear ${TARGET_DIR}?  YES/NO"
+	echo "WARNING: reset to rev ${DISTRO_GIT_REVISION} *and* irreversibly clear ${TARGET_DIR}?  YES/NO"
 	read x
 	if [ "${x}" == "YES" ] ; then
 		cd ${TARGET_DIR}
 		git fetch
-		git reset --hard ${UBUNTU_REVISION}
+		git reset --hard ${DISTRO_GIT_REVISION}
 		git clean -xdf
 		return 0
 	else
@@ -456,8 +456,8 @@ function apply_extra_patches()
 
 function generate_patch_set()
 {
-	if [ -z "${UBUNTU_REVISION}" ] ; then
-		echo "UBUNTU_REVISION cannot be empty!"
+	if [ -z "${DISTRO_GIT_REVISION}" ] ; then
+		echo "DISTRO_GIT_REVISION cannot be empty!"
 		return 3
 	fi
 
@@ -465,7 +465,7 @@ function generate_patch_set()
 
 	#	git format-patch -# HEAD
 	# Generate all patches after checkout revision
-	git format-patch ${UBUNTU_REVISION}
+	git format-patch ${DISTRO_GIT_REVISION}
 }
 
 function update_identity()
@@ -478,8 +478,8 @@ function update_identity()
 
 function regen_changelog()
 {
-	if [ -z "${UBUNTU_REVISION}" ] ; then
-		echo "UBUNTU_REVISION cannot be empty!"
+	if [ -z "${DISTRO_GIT_REVISION}" ] ; then
+		echo "DISTRO_GIT_REVISION cannot be empty!"
 		return 3
 	fi
 
@@ -487,7 +487,7 @@ function regen_changelog()
 
 	[ -z "${1}" ] && echo "error..." && return 1
 
-	git checkout ${UBUNTU_REVISION} debian.master/changelog
+	git checkout ${DISTRO_GIT_REVISION} debian.master/changelog
 	get_ubuntu_kver
 
 	cp debian.master/changelog /tmp/tmpkrn_changelog.orig
@@ -505,7 +505,7 @@ function regen_changelog()
 	echo "linux (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) ${DISTRO_CODENAME}; urgency=low" > /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 	echo "  * Ubuntu kernel git clone">>  /tmp/tmpkrn_changelog.mod
-	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} rev ${UBUNTU_REVISION}">>  /tmp/tmpkrn_changelog.mod
+	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} rev ${DISTRO_GIT_REVISION}">>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * LinuxTV.org media tree slipstream + build fixes" >>  /tmp/tmpkrn_changelog.mod
