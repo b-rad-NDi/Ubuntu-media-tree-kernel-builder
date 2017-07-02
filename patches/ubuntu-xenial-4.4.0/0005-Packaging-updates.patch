@@ -1,12 +1,12 @@
-From 73f8c01f85b577d360e2d8c53a0b63a4ad7e6897 Mon Sep 17 00:00:00 2001
+From 747daa2cbbe5176745890751e9f54b88aad82ac3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 19 Jun 2017 16:11:42 -0500
+Date: Thu, 29 Jun 2017 12:47:06 -0500
 Subject: [PATCH 5/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
- debian.master/control.stub.in                | 62 +++++-----------------------
- debian.master/copyright                      | 22 ++++++++++
+ debian.master/control.stub.in                | 59 +++++-----------------------
+ debian.master/copyright                      | 22 +++++++++++
  debian.master/rules.d/amd64.mk               | 14 +++----
  debian.master/rules.d/arm64.mk               |  6 +--
  debian.master/rules.d/armhf.mk               |  6 +--
@@ -14,10 +14,10 @@ Subject: [PATCH 5/6] Packaging updates
  debian.master/rules.d/powerpc.mk             |  6 +--
  debian.master/rules.d/ppc64el.mk             |  6 +--
  debian.master/rules.d/s390x.mk               |  6 +--
- debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 16 +++++--
+ debian/rules                                 |  1 +
+ debian/rules.d/0-common-vars.mk              | 16 ++++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
- 13 files changed, 79 insertions(+), 87 deletions(-)
+ 13 files changed, 79 insertions(+), 83 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index e63a682..75ce8e6 100644
@@ -42,7 +42,7 @@ index e63a682..75ce8e6 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 677852c..94e2e97 100644
+index abc3b8e..94e2e97 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -130,7 +130,7 @@ index 677852c..94e2e97 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 powerpc ppc64el s390x
-@@ -144,29 +125,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -144,26 +125,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -140,16 +140,13 @@ index 677852c..94e2e97 100644
 -Multi-Arch: foreign
 -Section: kernel
 -Priority: optional
--Breaks:
-- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
-- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
--Replaces:
-- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
-- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
--Conflicts:
-- linux-aws-cloud-tools-common (<= 4.4.0-1017.26),
-- linux-gke-cloud-tools-common (<= 4.4.0-1013.13),
 -Provides:
+- linux-aws-cloud-tools-common,
+- linux-gke-cloud-tools-common,
+-Conflicts:
+- linux-aws-cloud-tools-common,
+- linux-gke-cloud-tools-common,
+-Replaces:
 - linux-aws-cloud-tools-common,
 - linux-gke-cloud-tools-common,
 -Depends: ${misc:Depends}
@@ -332,20 +329,19 @@ index 5b468ac..dfc7a15 100644
  
  do_zfs		= true
 diff --git a/debian/rules b/debian/rules
-index f2e801c..a72cc25 100755
+index 8b18711..a72cc25 100755
 --- a/debian/rules
 +++ b/debian/rules
-@@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
+@@ -35,6 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
  
  do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
  do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
--do_tools_common=true
 +do_tools_common?=false
  
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index ccc65dc..e597805 100644
+index 0628e55..68919dd 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,14 @@ family=ubuntu

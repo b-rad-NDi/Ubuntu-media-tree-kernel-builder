@@ -1,6 +1,6 @@
-From b6869c394ead264b7f37694980e61d4e474ee9ec Mon Sep 17 00:00:00 2001
+From 2a1bb09a923ce37943e3646d7595b9271b9bf743 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 29 May 2017 18:18:05 -0500
+Date: Fri, 30 Jun 2017 15:10:37 -0500
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
@@ -25,14 +25,15 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-flash-led-class.c    | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c              | 2 ++
  drivers/media/v4l2-core/videobuf2-dma-contig.c    | 4 ++--
- drivers/media/v4l2-core/videobuf2-dma-sg.c        | 4 ++--
+ drivers/media/v4l2-core/videobuf2-dma-sg.c        | 6 ++++--
  drivers/media/v4l2-core/videobuf2-vmalloc.c       | 4 ++--
  include/linux/kconfig.h                           | 5 +++--
+ include/media/media-entity.h                      | 2 ++
  include/media/v4l2-fwnode.h                       | 2 ++
- 25 files changed, 50 insertions(+), 9 deletions(-)
+ 26 files changed, 54 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
-index 60fd482..0e29009 100644
+index 6e1a1cb..6d0dcac 100644
 --- a/drivers/media/cec/cec-api.c
 +++ b/drivers/media/cec/cec-api.c
 @@ -30,6 +30,8 @@
@@ -45,7 +46,7 @@ index 60fd482..0e29009 100644
  
  static inline struct cec_devnode *cec_devnode_data(struct file *filp)
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index 2f87748..6efddea 100644
+index b516d59..9b1a648 100644
 --- a/drivers/media/cec/cec-core.c
 +++ b/drivers/media/cec/cec-core.c
 @@ -29,6 +29,8 @@
@@ -175,7 +176,7 @@ index 8c8f38f..2e3e12d 100644
  #define PULSE '['
  
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 20407a5..1fb9926 100644
+index 5b01ff5..d46fc11 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -188,7 +189,7 @@ index 20407a5..1fb9926 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
-index 1dfc2de..20808fc 100644
+index c843070..bea7f72 100644
 --- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
 +++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
 @@ -44,6 +44,8 @@
@@ -201,7 +202,7 @@ index 1dfc2de..20808fc 100644
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
-index ad468ef..e020e00 100644
+index 6569257..f40e280 100644
 --- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 +++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 @@ -36,6 +36,8 @@
@@ -253,10 +254,10 @@ index 672e248..ccc811e 100644
   * UVC Controls
   */
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index cbd919d..cc3ff27 100644
+index 851f128..6d7b43a 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
-@@ -23,6 +23,8 @@
+@@ -24,6 +24,8 @@
  #include <media/v4l2-device.h>
  #include <media/v4l2-subdev.h>
  
@@ -279,10 +280,10 @@ index 7b82881..e1da487 100644
  	(v4l2_flash && v4l2_flash->ops->op)
  
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index e0fb14c..5e80e52 100644
+index 2e9d7e9..cf6613c 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -31,6 +31,8 @@
+@@ -32,6 +32,8 @@
  
  #include <trace/events/v4l2.h>
  
@@ -307,10 +308,19 @@ index a1dd5c1..e50ef6a 100644
  	.mmap = vb2_dc_dmabuf_ops_mmap,
  	.release = vb2_dc_dmabuf_ops_release,
 diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
-index 02752a1..64a386d 100644
+index 9263556..d90046c 100644
 --- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
 +++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
-@@ -515,8 +515,8 @@ static struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+@@ -21,6 +21,8 @@
+ #include <media/videobuf2-memops.h>
+ #include <media/videobuf2-dma-sg.h>
+ 
++#include <media/compat.h>
++
+ static int debug;
+ module_param(debug, int, 0644);
+ 
+@@ -515,8 +517,8 @@ static struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
  	.detach = vb2_dma_sg_dmabuf_ops_detach,
  	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
@@ -364,6 +374,19 @@ index 4d74860..7279f68 100644
  
  /*
   * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 754182d..5c8b454 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -26,6 +26,8 @@
+ #include <linux/list.h>
+ #include <linux/media.h>
+ 
++#include <media/compat.h>
++
+ /* Enums used internally at the media controller to represent graphs */
+ 
+ /**
 diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
 index ecc1233..58f81edc 100644
 --- a/include/media/v4l2-fwnode.h
