@@ -1,6 +1,6 @@
-From 1803e11096a9df00c63060f6e616b7e931f726f7 Mon Sep 17 00:00:00 2001
+From 39fdd3636961fd03c137d3e8d5ee4ce589ff5df8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 20 Jun 2017 06:20:46 -0500
+Date: Sat, 1 Jul 2017 14:20:00 -0500
 Subject: [PATCH 6/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 6/6] Changelog
  1 file changed, 26 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 83c9fedcc587..ebf7d4c1f3ce 100644
+index 6476f7c9164e..ebcf35a5e574 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,29 @@
-+linux (4.10.0-24201706200620.0+mediatree+hauppauge) zesty; urgency=low
++linux (4.10.0-26201707011420.0+mediatree+hauppauge) zesty; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-24.28 rev 11067176f5d6bcc44dc73ab355a30c6838c597b0
++    - 4.10.0-26.30 rev 56389f24b205f2464626d56bc15c5a6ceeeceedf
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-06-20-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-07-01-04-20.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -36,11 +36,11 @@ index 83c9fedcc587..ebf7d4c1f3ce 100644
 +    - 0004-lgdt3306a-add-QAM-AUTO-support.patch
 +    - 0005-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 20 Jun 2017 06:20:46 -0500
++ -- Fake User <hidden@email.co>  Sat, 01 Jul 2017 14:20:00 -0500
 +
- linux (4.10.0-24.28) zesty; urgency=low
+ linux (4.10.0-26.30) zesty; urgency=low
  
-   * CVE-2017-1000364
+   * linux: 4.10.0-26.30 -proposed tracker (LP: #1700528)
 -- 
 2.11.0
 

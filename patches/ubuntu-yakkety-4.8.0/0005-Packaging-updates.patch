@@ -1,4 +1,4 @@
-From 5ef62a09c00c9dad80287a95bf2918e421ef1b42 Mon Sep 17 00:00:00 2001
+From 3d7a0e1b5b00d94e01e74890361311f3b1e66342 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Apr 2017 16:20:26 -0500
 Subject: [PATCH 5/6] Packaging updates
@@ -140,7 +140,7 @@ index 934a43d..d4fe7bb 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.master/copyright b/debian.master/copyright
-index d1d04a6..514a589 100644
+index d1d04a6..10e4abd 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
 @@ -1,3 +1,25 @@

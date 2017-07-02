@@ -1,4 +1,4 @@
-From a23c258bf88884295f20cdd93484f03395cb418d Mon Sep 17 00:00:00 2001
+From fbe53abd1f6ee6e02077f426097da8b935ccfdbe Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:12 +0000
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -71,5 +71,5 @@ index f38696c..2de4ccf 100644
  
  static int velocity_platform_remove(struct platform_device *pdev)
 -- 
-2.7.4
+2.9.3
 
