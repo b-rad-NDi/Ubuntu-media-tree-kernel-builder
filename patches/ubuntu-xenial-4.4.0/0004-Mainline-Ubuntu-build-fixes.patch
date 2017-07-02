@@ -1,4 +1,4 @@
-From 3a1176b6f647b086c57209834b5efa370bfd2c55 Mon Sep 17 00:00:00 2001
+From e9a3bb9d2d08010b2ba915d11108c48d63dc3ffd Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:12 +0000
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -31,7 +31,7 @@ index 9628651..8ffbb6f 100644
  	rdev->close            = picolcd_cir_close;
  	rdev->input_name       = data->hdev->name;
 diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-index 45b466e..4ea4757 100644
+index 0146e2c..2aabe73 100644
 --- a/drivers/input/touchscreen/sur40.c
 +++ b/drivers/input/touchscreen/sur40.c
 @@ -151,7 +151,6 @@ struct sur40_state {
@@ -102,7 +102,7 @@ index 45b466e..4ea4757 100644
  	new_buf->vb.sequence = sur40->sequence++;
  	new_buf->vb.field = V4L2_FIELD_NONE;
  	vb2_buffer_done(&new_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
-@@ -573,19 +579,13 @@ static int sur40_probe(struct usb_interface *interface,
+@@ -576,19 +582,13 @@ static int sur40_probe(struct usb_interface *interface,
  	sur40->queue = sur40_queue;
  	sur40->queue.drv_priv = sur40;
  	sur40->queue.lock = &sur40->lock;
@@ -123,7 +123,7 @@ index 45b466e..4ea4757 100644
  	sur40->vdev = sur40_video_device;
  	sur40->vdev.v4l2_dev = &sur40->v4l2;
  	sur40->vdev.lock = &sur40->lock;
-@@ -626,7 +626,6 @@ static void sur40_disconnect(struct usb_interface *interface)
+@@ -629,7 +629,6 @@ static void sur40_disconnect(struct usb_interface *interface)
  
  	video_unregister_device(&sur40->vdev);
  	v4l2_device_unregister(&sur40->v4l2);
@@ -131,7 +131,7 @@ index 45b466e..4ea4757 100644
  
  	input_unregister_polled_device(sur40->input);
  	input_free_polled_device(sur40->input);
-@@ -644,22 +643,18 @@ static void sur40_disconnect(struct usb_interface *interface)
+@@ -647,22 +646,18 @@ static void sur40_disconnect(struct usb_interface *interface)
   * minimum number: many DMA engines need a minimum of 2 buffers in the
   * queue and you need to have another available for userspace processing.
   */
@@ -159,7 +159,7 @@ index 45b466e..4ea4757 100644
  
  	return 0;
  }
-@@ -788,7 +783,6 @@ static int sur40_vidioc_enum_fmt(struct file *file, void *priv,
+@@ -791,7 +786,6 @@ static int sur40_vidioc_enum_fmt(struct file *file, void *priv,
  {
  	if (f->index != 0)
  		return -EINVAL;
