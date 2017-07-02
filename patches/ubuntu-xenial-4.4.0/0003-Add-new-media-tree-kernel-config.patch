@@ -1,17 +1,17 @@
-From 4d961b9bce695ccf296793dd6a5888565c0fc652 Mon Sep 17 00:00:00 2001
+From 6763e9fe2d9538fc9a25b6f33eaab3b62b63fd0c Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:57 +0000
 Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 34 +++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ debian.master/config/config.common.ubuntu | 35 +++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 2c641c2..54e30d7 100644
+index 1c7ce82..d8cd3ad7 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9108,3 +9108,37 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9109,3 +9109,38 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -48,6 +48,7 @@ index 2c641c2..54e30d7 100644
 +CONFIG_VIDEO_OV2680=m
 +CONFIG_VIDEO_LM3554=m
 +CONFIG_VIDEO_IMX=m
++CONFIG_SDR_PLATFORM_DRIVERS=y
 +
 -- 
 2.7.4
