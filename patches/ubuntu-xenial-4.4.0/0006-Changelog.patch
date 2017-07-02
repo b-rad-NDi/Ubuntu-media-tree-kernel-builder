@@ -1,6 +1,6 @@
-From ae0189f9d66afbda047bc2db912c4aab7cbaa1ef Mon Sep 17 00:00:00 2001
+From 8fed3580e0e2fae0bc7f3d0a981660582e921654 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 20 Jun 2017 06:20:11 -0500
+Date: Sat, 1 Jul 2017 14:20:00 -0500
 Subject: [PATCH 6/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 6/6] Changelog
  1 file changed, 27 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index bf5a70a..4ded1f8 100644
+index 35e2ab2..1b7303c 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,30 @@
-+linux (4.4.0-81201706200620.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-83201707011420.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.4.0-81.104 rev 78ab29f4aa24e326204fd6200666d7772100b08c
++    - 4.4.0-83.106 rev 6709a62ca1a374bce768270e59d65179dc672f92
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-06-20-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-07-01-04-20.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -37,11 +37,11 @@ index bf5a70a..4ded1f8 100644
 +    - 0005-lgdt3306a-add-QAM-AUTO-support.patch
 +    - 0006-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 20 Jun 2017 06:20:10 -0500
++ -- Fake User <hidden@email.co>  Sat, 01 Jul 2017 14:20:00 -0500
 +
- linux (4.4.0-81.104) xenial; urgency=low
+ linux (4.4.0-83.106) xenial; urgency=low
  
-   * CVE-2017-1000364
+   * linux: 4.4.0-83.106 -proposed tracker (LP: #1700541)
 -- 
 2.7.4
 
