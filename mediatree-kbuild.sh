@@ -200,7 +200,12 @@ function unpack_media_tree()
 	cd linux
 
 	if [ -f "${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz" ] ; then
+		echo "############################################################"
+		echo "############################################################"
+		echo "######### Unpacking linux-media-tree-${V4L_SYNC_DATE}.tgz"
 		tar -xzf ${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz
+		echo "############################################################"
+		echo "############################################################"
 		return 0
 	else
 		echo "${TOP_DEVDIR}/linux-media-tree-${V4L_SYNC_DATE}.tgz not found"
