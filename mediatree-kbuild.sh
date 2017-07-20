@@ -380,14 +380,14 @@ function apply_patches()
 	###################################################
 	########## Pure LinuxTV.org media tree ############
 	echo "#############################################################"
-	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-${V4L_SYNC_DATE}.patch" ] ; then
+	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch" ] ; then
 		LinuxTV_MT_PATCH=`ls ${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-*.patch | sort | tail -n 1`
 		if [ -z "${LinuxTV_MT_PATCH}" ] ; then
 			echo "Missing Linuxtv.org-media-tree patch"
 			return 1
 		fi
 	else
-		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-${V4L_SYNC_DATE}.patch"
+		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch"
 	fi
 	apply_patch_git_am ${LinuxTV_MT_PATCH}
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
