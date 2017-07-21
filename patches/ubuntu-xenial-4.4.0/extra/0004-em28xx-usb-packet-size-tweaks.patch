@@ -1,7 +1,7 @@
-From 2ffcaa3a9c96e5309198634b511fee891c3f747a Mon Sep 17 00:00:00 2001
+From d84b6198fb58ab9f1b4be3b0183f87843e3ef2c3 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 04/15] em28xx: usb packet size tweaks
+Subject: [PATCH 04/20] em28xx: usb packet size tweaks
 
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--
@@ -9,7 +9,7 @@ Subject: [PATCH 04/15] em28xx: usb packet size tweaks
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 11f8a56..98c3365 100644
+index c473e02..0807aa7 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -205,7 +205,7 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
@@ -31,10 +31,10 @@ index 11f8a56..98c3365 100644
  	} else {
  		result = em28xx_alloc_urbs(dev, EM28XX_DIGITAL_MODE,
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 2fdd8df..132638e 100644
+index 5208189..11275e2 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
-@@ -190,7 +190,7 @@
+@@ -191,7 +191,7 @@
     USB 2.0 spec says bulk packet size is always 512 bytes
   */
  #define EM28XX_BULK_PACKET_MULTIPLIER 384
