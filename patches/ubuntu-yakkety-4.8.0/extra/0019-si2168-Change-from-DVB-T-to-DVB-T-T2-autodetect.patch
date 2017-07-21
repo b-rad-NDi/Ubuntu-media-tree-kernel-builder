@@ -1,0 +1,51 @@
+From f7f75fd72216124038f8a203556d19d99e388cc7 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 19 Jul 2017 13:54:34 -0500
+Subject: [PATCH 19/19] si2168: Change from DVB-T to DVB-T/T2 autodetect
+
+---
+ drivers/media/dvb-frontends/si2168.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index 172fc36..3fae74b 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -228,7 +228,7 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 
+ 	switch (c->delivery_system) {
+ 	case SYS_DVBT:
+-		delivery_system = 0x20;
++		delivery_system = 0xf0; /* was 0x20 (DVB-T) but DVB-T/T2 auto-detect is more user friendly */
+ 		break;
+ 	case SYS_DVBC_ANNEX_A:
+ 		delivery_system = 0x30;
+@@ -298,6 +298,16 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 		ret = si2168_cmd_execute(client, &cmd);
+ 		if (ret)
+ 			goto err;
++	} else if (c->delivery_system == SYS_DVBT) {
++		/* select Auto PLP */
++		cmd.args[0] = 0x52;
++		cmd.args[1] = 0;
++		cmd.args[2] = 0; /* Auto PLP */
++		cmd.wlen = 3;
++		cmd.rlen = 1;
++		ret = si2168_cmd_execute(client, &cmd);
++		if (ret)
++			goto err;
+ 	}
+ 
+ 	memcpy(cmd.args, "\x51\x03", 2);
+@@ -337,6 +347,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 
+ 	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
+ 	cmd.args[4] = delivery_system | bandwidth;
++	if(delivery_system == 0xf0)
++		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
+ 	cmd.wlen = 6;
+ 	cmd.rlen = 4;
+ 	ret = si2168_cmd_execute(client, &cmd);
+-- 
+2.9.3
+
