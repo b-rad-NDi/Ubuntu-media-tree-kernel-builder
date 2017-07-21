@@ -1,7 +1,7 @@
-From e4b51e8167fe051cf5f93efcb4ff9869e527e4fa Mon Sep 17 00:00:00 2001
+From d763944bc2c1e4e5bc2918351076f07b57856c32 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sun, 16 Apr 2017 00:13:39 -0500
-Subject: [PATCH 1/5] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
+Subject: [PATCH 01/19] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 123 +++++++++++++++++++++++++++++++-
@@ -11,7 +11,7 @@ Subject: [PATCH 1/5] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
  4 files changed, 192 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index a12b599..df0e080 100644
+index 146341a..94ad7ac 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2387,6 +2387,7 @@ struct em28xx_board em28xx_boards[] = {
@@ -209,10 +209,10 @@ index a12b599..df0e080 100644
  }
  
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 19ccff4..432668d 100644
+index 1d0d8cc..68d0691 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
-@@ -637,10 +637,23 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+@@ -638,10 +638,23 @@ int em28xx_capture_start(struct em28xx *dev, int start)
  	    dev->chip_id == CHIP_ID_EM28174 ||
  	    dev->chip_id == CHIP_ID_EM28178) {
  		/* The Transport Stream Enable Register moved in em2874 */
@@ -240,7 +240,7 @@ index 19ccff4..432668d 100644
  	} else {
  		/* FIXME: which is the best order? */
  		/* video registers are sampled by VREF */
-@@ -1076,7 +1089,11 @@ int em28xx_register_extension(struct em28xx_ops *ops)
+@@ -1077,7 +1090,11 @@ int em28xx_register_extension(struct em28xx_ops *ops)
  	mutex_lock(&em28xx_devlist_mutex);
  	list_add_tail(&ops->next, &em28xx_extension_devlist);
  	list_for_each_entry(dev, &em28xx_devlist, devlist) {
@@ -253,7 +253,7 @@ index 19ccff4..432668d 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  	pr_info("em28xx: Registered (%s) extension\n", ops->name);
-@@ -1090,7 +1107,11 @@ void em28xx_unregister_extension(struct em28xx_ops *ops)
+@@ -1091,7 +1108,11 @@ void em28xx_unregister_extension(struct em28xx_ops *ops)
  
  	mutex_lock(&em28xx_devlist_mutex);
  	list_for_each_entry(dev, &em28xx_devlist, devlist) {
@@ -266,7 +266,7 @@ index 19ccff4..432668d 100644
  	}
  	list_del(&ops->next);
  	mutex_unlock(&em28xx_devlist_mutex);
-@@ -1105,8 +1126,11 @@ void em28xx_init_extension(struct em28xx *dev)
+@@ -1106,8 +1127,11 @@ void em28xx_init_extension(struct em28xx *dev)
  	mutex_lock(&em28xx_devlist_mutex);
  	list_add_tail(&dev->devlist, &em28xx_devlist);
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
@@ -279,7 +279,7 @@ index 19ccff4..432668d 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  }
-@@ -1117,8 +1141,11 @@ void em28xx_close_extension(struct em28xx *dev)
+@@ -1118,8 +1142,11 @@ void em28xx_close_extension(struct em28xx *dev)
  
  	mutex_lock(&em28xx_devlist_mutex);
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
@@ -292,7 +292,7 @@ index 19ccff4..432668d 100644
  	}
  	list_del(&dev->devlist);
  	mutex_unlock(&em28xx_devlist_mutex);
-@@ -1133,6 +1160,8 @@ int em28xx_suspend_extension(struct em28xx *dev)
+@@ -1134,6 +1161,8 @@ int em28xx_suspend_extension(struct em28xx *dev)
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
  		if (ops->suspend)
  			ops->suspend(dev);
@@ -301,7 +301,7 @@ index 19ccff4..432668d 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  	return 0;
-@@ -1147,6 +1176,8 @@ int em28xx_resume_extension(struct em28xx *dev)
+@@ -1148,6 +1177,8 @@ int em28xx_resume_extension(struct em28xx *dev)
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
  		if (ops->resume)
  			ops->resume(dev);
