@@ -436,7 +436,12 @@ function apply_patches()
 		unset UPDATE_MT_KBUILD_VER
 	else
 		apply_patch_git_am 1 ${KB_PATCH_DIR}/0006-Changelog.patch
-		[ $? != 0 ] && echo "patch failure, exiting" && return 1
+		if [ $? != 0 ] ; then
+			echo "Changelog patch failure, regenerating..."
+			regen_changelog "`date +%Y%m%d%H%M`"
+			git add debian.master/changelog
+			git commit -m 'Changelog'
+		fi
 	fi
 	update_identity
 
