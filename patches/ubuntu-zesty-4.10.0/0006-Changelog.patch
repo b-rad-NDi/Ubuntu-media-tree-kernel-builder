@@ -1,24 +1,24 @@
-From 39fdd3636961fd03c137d3e8d5ee4ce589ff5df8 Mon Sep 17 00:00:00 2001
+From a1f304847dec1b7620a6a9c1abfe44539ec91815 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 1 Jul 2017 14:20:00 -0500
+Date: Fri, 4 Aug 2017 21:13:13 -0500
 Subject: [PATCH 6/6] Changelog
 
 ---
- debian.master/changelog | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 6476f7c9164e..ebcf35a5e574 100644
+index 785a36ad2df9..6edfc3c08835 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,29 @@
-+linux (4.10.0-26201707011420.0+mediatree+hauppauge) zesty; urgency=low
+@@ -1,3 +1,42 @@
++linux (4.10.0-28201708042113.0+mediatree+hauppauge) zesty; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-26.30 rev 56389f24b205f2464626d56bc15c5a6ceeeceedf
++    - 4.10.0-28.32 rev f4f26263ff6a66c2012e9417a56e1b01a95c45d0
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-07-01-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-08-04-17-52.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -35,12 +35,25 @@ index 6476f7c9164e..ebcf35a5e574 100644
 +    - 0003-em28xx-usb-packet-size-tweaks.patch
 +    - 0004-lgdt3306a-add-QAM-AUTO-support.patch
 +    - 0005-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
++    - 0006-cx23885-Enable-new-Hauppauge-PCIe-ImpactVCB-variant.patch
++    - 0007-cx23885-set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    - 0008-si2157-check-error-status-bit-on-cmd-execute.patch
++    - 0009-si2157-briefly-wait-for-tuning-operation-to-complete.patch
++    - 0010-Si2157-better-check-for-running-tuner-in-init-Reset-.patch
++    - 0011-si2157-add-analog-tuner-support-and-dvb-frontend.patch
++    - 0012-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
++    - 0013-cx25840-remove-offset-from-chip-specific-registers-A.patch
++    - 0014-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe-D.patch
++    - 0015-cx23885-Add-support-for-new-Hauppauge-QuadHD-885-dig.patch
++    - 0016-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++    - 0017-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
++    - 0018-lgdt3306a-QAM-streaming-improvement-Required-for-sta.patch
 +
-+ -- Fake User <hidden@email.co>  Sat, 01 Jul 2017 14:20:00 -0500
++ -- Fake User <hidden@email.co>  Fri, 04 Aug 2017 21:13:13 -0500
 +
- linux (4.10.0-26.30) zesty; urgency=low
+ linux (4.10.0-28.32) zesty; urgency=low
  
-   * linux: 4.10.0-26.30 -proposed tracker (LP: #1700528)
+   * linux: 4.10.0-28.32 -proposed tracker (LP: #1701013)
 -- 
 2.11.0
 

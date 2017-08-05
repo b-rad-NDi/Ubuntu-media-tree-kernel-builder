@@ -359,15 +359,25 @@ function apply_patch()
 
 function apply_patch_git_am()
 {
-	if [ -z "${1}" -o ! -f "${1}" ] ; then
+	if [ -z "${1}" ] ; then
+		echo "Error..."
+		return 1
+	fi
+	if [ -z "${2}" -o ! -f "${2}" ] ; then
 		echo "Error..."
 		return 1
 	fi
 
-	git am --reject $1
+	git am --reject ${2}
 	if [ $? != 0 ] ; then
-		echo "You must manually fix a conflict, and then mark complete with:"
-		echo "    git am --continue"
+		if [ "$1" == "1" ] ; then
+			echo "Patch failure: ${2}"
+			echo "    Aborting git am"
+			git am --abort
+		else
+			echo "You must manually fix a conflict, and then mark complete with:"
+			echo "    git am --continue"
+		fi
 		return 1
 	fi
 	return 0
@@ -389,31 +399,31 @@ function apply_patches()
 	else
 		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch"
 	fi
-	apply_patch_git_am ${LinuxTV_MT_PATCH}
+	apply_patch_git_am 1 ${LinuxTV_MT_PATCH}
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	############# media tree build fixes ##############
 	echo "#############################################################"
-	apply_patch_git_am ${KB_PATCH_DIR}/0002-Apply-build-fixes-to-media-tree.patch
+	apply_patch_git_am 1 ${KB_PATCH_DIR}/0002-Apply-build-fixes-to-media-tree.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	######### 'New' LinuxTV kernel options ############
 	echo "#############################################################"
-	apply_patch_git_am ${KB_PATCH_DIR}/0003-Add-new-media-tree-kernel-config.patch
+	apply_patch_git_am 1 ${KB_PATCH_DIR}/0003-Add-new-media-tree-kernel-config.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	########## Ubuntu mainline build fixes ############
 	echo "#############################################################"
-	apply_patch_git_am ${KB_PATCH_DIR}/0004-Mainline-Ubuntu-build-fixes.patch
+	apply_patch_git_am 1 ${KB_PATCH_DIR}/0004-Mainline-Ubuntu-build-fixes.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
 	########### Ubuntu packaging patches ##############
 	echo "#############################################################"
-	apply_patch_git_am ${KB_PATCH_DIR}/0005-Packaging-updates.patch
+	apply_patch_git_am 1 ${KB_PATCH_DIR}/0005-Packaging-updates.patch
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
@@ -423,16 +433,17 @@ function apply_patches()
 		regen_changelog "`date +%Y%m%d%H%M`"
 		git add debian.master/changelog
 		git commit -m 'Changelog'
-
-		update_identity
-
 		unset UPDATE_MT_KBUILD_VER
 	else
-		apply_patch_git_am ${KB_PATCH_DIR}/0006-Changelog.patch
-		[ $? != 0 ] && echo "patch failure, exiting 2" && exit 1
-		update_identity
+		apply_patch_git_am 1 ${KB_PATCH_DIR}/0006-Changelog.patch
+		if [ $? != 0 ] ; then
+			echo "Changelog patch failure, regenerating..."
+			regen_changelog "`date +%Y%m%d%H%M`"
+			git add debian.master/changelog
+			git commit -m 'Changelog'
+		fi
 	fi
-#		apply_patch_git_am ../env-var-to-control-custom-tag-for-packaging.patch
+	update_identity
 
 	return 0
 }
@@ -443,7 +454,7 @@ function apply_extra_patches()
 
 	for i in `ls ${KB_PATCH_DIR}/extra/*.patch | sort` ; do
 		echo "#############################################################"
-		apply_patch_git_am $i
+		apply_patch_git_am 1 $i
 		[ $? != 0 ] && echo "patch [${i}] failure, exiting" && return 1
 	done
 
