@@ -1,6 +1,6 @@
-From 8c677bec22cd980271cf63f047bb5493192ad282 Mon Sep 17 00:00:00 2001
+From cd016b0fed0e87a3fad3fab7918339ac98b2f3dc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Aug 2017 16:14:50 -0500
+Date: Sat, 5 Aug 2017 14:12:16 -0500
 Subject: [PATCH 20/20] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
 ---
@@ -8,10 +8,10 @@ Subject: [PATCH 20/20] si2168: Change from DVB-T to DVB-T/T2 autodetect
  1 file changed, 36 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index cc4178f..6b9daa9 100644
+index 172fc367ccaa..95f4ace68b29 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -125,7 +125,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -85,7 +85,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  	struct i2c_client *client = fe->demodulator_priv;
  	struct si2168_dev *dev = i2c_get_clientdata(client);
  	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
@@ -20,7 +20,7 @@ index cc4178f..6b9daa9 100644
  	unsigned int utmp, utmp1, utmp2;
  	struct si2168_cmd cmd;
  
-@@ -136,7 +136,23 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -96,7 +96,21 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  		goto err;
  	}
  
@@ -31,8 +31,6 @@ index cc4178f..6b9daa9 100644
 +	ret = si2168_cmd_execute(client, &cmd);
 +	if (ret)
 +		goto err;
-+	dev_dbg(&client->dev, "args[2]=%02x args[3]=%02x\n",
-+			cmd.args[2], cmd.args[3]);  /* remove when testing done */
 +
 +	sys = c->delivery_system;
 +	/* check if we found DVBT2 during DVBT tuning */
@@ -45,7 +43,15 @@ index cc4178f..6b9daa9 100644
  	case SYS_DVBT:
  		memcpy(cmd.args, "\xa0\x01", 2);
  		cmd.wlen = 2;
-@@ -268,7 +284,7 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -211,6 +225,7 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 	struct i2c_client *client = fe->demodulator_priv;
+ 	struct si2168_dev *dev = i2c_get_clientdata(client);
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	struct si2168_config *config = client->dev.platform_data;
+ 	int ret;
+ 	struct si2168_cmd cmd;
+ 	u8 bandwidth, delivery_system;
+@@ -228,7 +243,7 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	switch (c->delivery_system) {
  	case SYS_DVBT:
@@ -54,7 +60,7 @@ index cc4178f..6b9daa9 100644
  		break;
  	case SYS_DVBC_ANNEX_A:
  		delivery_system = 0x30;
-@@ -338,6 +354,16 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -298,6 +313,16 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  		ret = si2168_cmd_execute(client, &cmd);
  		if (ret)
  			goto err;
@@ -71,19 +77,20 @@ index cc4178f..6b9daa9 100644
  	}
  
  	memcpy(cmd.args, "\x51\x03", 2);
-@@ -377,6 +403,11 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -337,6 +362,12 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
  	cmd.args[4] = delivery_system | bandwidth;
 +	if(delivery_system == 0xf0)
 +		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
 +
-+	if(1/*inverted*/)/*BUGBUG - should be configurable*/
-+		cmd.args[5] |= 1; /* inverted spectrum, eg si2157 */
++	if(config->inversion) /* inverted spectrum, eg si2157 */
++		cmd.args[5] |= 1;
++
  	cmd.wlen = 6;
  	cmd.rlen = 4;
  	ret = si2168_cmd_execute(client, &cmd);
-@@ -396,6 +427,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -356,6 +387,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  	}
  
  	memcpy(cmd.args, "\x14\x00\x0f\x10\x10\x00", 6);
@@ -93,5 +100,5 @@ index cc4178f..6b9daa9 100644
  	cmd.rlen = 4;
  	ret = si2168_cmd_execute(client, &cmd);
 -- 
-2.7.4
+2.11.0
 
