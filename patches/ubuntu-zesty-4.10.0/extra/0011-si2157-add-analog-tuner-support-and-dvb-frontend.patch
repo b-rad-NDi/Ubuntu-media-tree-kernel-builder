@@ -1,20 +1,20 @@
-From d1a2a914c75a1fe4a6d61e86e0e4689fe4d018de Mon Sep 17 00:00:00 2001
+From 202118416f14c46edac30eaa8ffb7df2ca99023e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 25 Jul 2017 11:46:55 -0500
-Subject: [PATCH 12/19] si2157: add analog tuner support and dvb frontend
+Date: Sat, 5 Aug 2017 11:13:42 -0500
+Subject: [PATCH 11/18] si2157: add analog tuner support and dvb frontend
 
 ---
  drivers/media/pci/saa7164/saa7164-dvb.c |   6 +-
- drivers/media/tuners/si2157.c           | 502 ++++++++++++++++++++++++++++----
+ drivers/media/tuners/si2157.c           | 506 ++++++++++++++++++++++++++++----
  drivers/media/tuners/si2157.h           |  14 +
  drivers/media/tuners/si2157_priv.h      |   9 +
  drivers/media/tuners/tuner-types.c      |  15 +
  drivers/media/v4l2-core/tuner-core.c    |  22 ++
  include/media/tuner.h                   |   2 +
- 7 files changed, 508 insertions(+), 62 deletions(-)
+ 7 files changed, 510 insertions(+), 64 deletions(-)
 
 diff --git a/drivers/media/pci/saa7164/saa7164-dvb.c b/drivers/media/pci/saa7164/saa7164-dvb.c
-index e76d3ba..a557e29 100644
+index e76d3bafe2ce..a557e2920bd4 100644
 --- a/drivers/media/pci/saa7164/saa7164-dvb.c
 +++ b/drivers/media/pci/saa7164/saa7164-dvb.c
 @@ -110,7 +110,7 @@ static struct si2157_config hauppauge_hvr2255_tuner_config = {
@@ -41,7 +41,7 @@ index e76d3ba..a557e29 100644
  					      &hauppauge_hvr2255_tuner_config);
  			}
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 6cd62ba..ee16576 100644
+index 6cd62ba82d57..6ce6f02cb475 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -1,5 +1,5 @@
@@ -72,7 +72,7 @@ index 6cd62ba..ee16576 100644
  
  	dev_dbg(&client->dev, "\n");
  
-@@ -238,6 +243,23 @@ skip_fw_download:
+@@ -238,6 +243,23 @@ static int si2157_init(struct dvb_frontend *fe)
  	dev_info(&client->dev, "firmware version: %c.%c.%d\n",
  			cmd.args[6], cmd.args[7], cmd.args[8]);
  
@@ -459,9 +459,10 @@ index 6cd62ba..ee16576 100644
  	struct dvb_frontend *fe = cfg->fe;
 -	struct si2157_dev *dev;
 -	struct si2157_cmd cmd;
+-	int ret;
 +	struct si2157_dev *dev = NULL;
 +	unsigned short addr = client->addr;
- 	int ret;
++	int ret = 0;
  
 -	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 -	if (!dev) {
@@ -533,6 +534,15 @@ index 6cd62ba..ee16576 100644
  err:
  	dev_dbg(&client->dev, "failed=%d\n", ret);
  	return ret;
+@@ -624,7 +893,7 @@ static int si2157_remove(struct i2c_client *client)
+ 
+ 	memset(&fe->ops.tuner_ops, 0, sizeof(struct dvb_tuner_ops));
+ 	fe->tuner_priv = NULL;
+-	kfree(dev);
++	si2157_release(fe);
+ 
+ 	return 0;
+ }
 @@ -649,7 +918,122 @@ static struct i2c_driver si2157_driver = {
  
  module_i2c_driver(si2157_driver);
@@ -658,7 +668,7 @@ index 6cd62ba..ee16576 100644
  MODULE_LICENSE("GPL");
  MODULE_FIRMWARE(SI2158_A20_FIRMWARE);
 diff --git a/drivers/media/tuners/si2157.h b/drivers/media/tuners/si2157.h
-index 76807f5..04b98ef 100644
+index 76807f5b3cf8..04b98ef4fdd6 100644
 --- a/drivers/media/tuners/si2157.h
 +++ b/drivers/media/tuners/si2157.h
 @@ -46,4 +46,18 @@ struct si2157_config {
@@ -681,7 +691,7 @@ index 76807f5..04b98ef 100644
 +#endif
  #endif
 diff --git a/drivers/media/tuners/si2157_priv.h b/drivers/media/tuners/si2157_priv.h
-index e6436f7..6f12b79 100644
+index e6436f74abaa..6f12b797dde3 100644
 --- a/drivers/media/tuners/si2157_priv.h
 +++ b/drivers/media/tuners/si2157_priv.h
 @@ -19,17 +19,26 @@
@@ -712,7 +722,7 @@ index e6436f7..6f12b79 100644
  
  #if defined(CONFIG_MEDIA_CONTROLLER)
 diff --git a/drivers/media/tuners/tuner-types.c b/drivers/media/tuners/tuner-types.c
-index 98bc15a..e022ab8 100644
+index 98bc15a388be..e022ab8d093e 100644
 --- a/drivers/media/tuners/tuner-types.c
 +++ b/drivers/media/tuners/tuner-types.c
 @@ -1433,6 +1433,16 @@ static struct tuner_params tuner_sony_btf_pg463z_params[] = {
@@ -745,7 +755,7 @@ index 98bc15a..e022ab8 100644
  EXPORT_SYMBOL(tuners);
  
 diff --git a/drivers/media/v4l2-core/tuner-core.c b/drivers/media/v4l2-core/tuner-core.c
-index e48b7c0..89ef2e1 100644
+index e48b7c032c95..89ef2e106a32 100644
 --- a/drivers/media/v4l2-core/tuner-core.c
 +++ b/drivers/media/v4l2-core/tuner-core.c
 @@ -40,6 +40,7 @@
@@ -785,7 +795,7 @@ index e48b7c0..89ef2e1 100644
  		if (!dvb_attach(simple_tuner_attach, &t->fe,
  				t->i2c->adapter, t->i2c->addr, t->type))
 diff --git a/include/media/tuner.h b/include/media/tuner.h
-index b3edc14..cab980a 100644
+index b3edc14e763f..cab980a0c5d2 100644
 --- a/include/media/tuner.h
 +++ b/include/media/tuner.h
 @@ -142,6 +142,8 @@
@@ -798,5 +808,5 @@ index b3edc14..cab980a 100644
  #define TDA9887_PRESENT			(1<<0)
  #define TDA9887_PORT1_INACTIVE		(1<<1)
 -- 
-2.7.4
+2.11.0
 
