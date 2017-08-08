@@ -1,4 +1,4 @@
-From ee77441aa5d74ee959b61b34cadf6c07aaaffebf Mon Sep 17 00:00:00 2001
+From 119951199ecd7ab9597fc6556cea8dcbde24c0f5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:11:52 -0500
 Subject: [PATCH 21/21] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
