@@ -18,7 +18,7 @@ index 785a36ad2df9..997d993893c2 100644
 +    - 4.10.0-28.32 rev f4f26263ff6a66c2012e9417a56e1b01a95c45d0
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-08-04-17-52.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-06-20-04-20.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
