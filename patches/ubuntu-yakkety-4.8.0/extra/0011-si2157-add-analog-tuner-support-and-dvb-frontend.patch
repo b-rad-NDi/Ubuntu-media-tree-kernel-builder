@@ -1,7 +1,7 @@
-From 1e9edf81b16a1886b5eb6f6ecfc27c5af455d465 Mon Sep 17 00:00:00 2001
+From 5abc859814dbc6bca19afba7cc1353448a01af24 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 5 Aug 2017 10:03:45 -0500
-Subject: [PATCH 11/18] si2157: add analog tuner support and dvb frontend
+Date: Tue, 8 Aug 2017 14:46:26 -0500
+Subject: [PATCH 11/21] si2157: add analog tuner support and dvb frontend
 
 ---
  drivers/media/pci/saa7164/saa7164-dvb.c |   6 +-
@@ -11,7 +11,7 @@ Subject: [PATCH 11/18] si2157: add analog tuner support and dvb frontend
  drivers/media/tuners/tuner-types.c      |  15 +
  drivers/media/v4l2-core/tuner-core.c    |  22 ++
  include/media/tuner.h                   |   2 +
- 7 files changed, 510 insertions(+), 64 deletions(-)
+ 7 files changed, 509 insertions(+), 65 deletions(-)
 
 diff --git a/drivers/media/pci/saa7164/saa7164-dvb.c b/drivers/media/pci/saa7164/saa7164-dvb.c
 index e76d3ba..a557e29 100644
@@ -41,7 +41,7 @@ index e76d3ba..a557e29 100644
  					      &hauppauge_hvr2255_tuner_config);
  			}
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 6cd62ba..6ce6f02 100644
+index 6cd62ba..74115ae 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -1,5 +1,5 @@
@@ -123,7 +123,7 @@ index 6cd62ba..6ce6f02 100644
  	memcpy(cmd.args, "\x41\x00\x00\x00\x00\x00\x00\x00", 8);
  	cmd.args[4] = (c->frequency >>  0) & 0xff;
  	cmd.args[5] = (c->frequency >>  8) & 0xff;
-@@ -477,24 +499,307 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -477,24 +499,306 @@ static int si2157_set_params(struct dvb_frontend *fe)
  
  	si2157_tune_wait(client, 1); /* wait for tuning to complete, ignore any errors */
  
@@ -389,12 +389,11 @@ index 6cd62ba..6ce6f02 100644
 +		return;
 +
 +	mutex_lock(&si2157_list_mutex);
-+
 +	hybrid_tuner_release_state(dev);
-+
 +	mutex_unlock(&si2157_list_mutex);
 +
 +	i2c_set_clientdata(client, NULL);
++	fe->tuner_priv = NULL;
 +}
 +
 +static int si2157_setup_configuration(struct dvb_frontend *fe,
@@ -433,7 +432,7 @@ index 6cd62ba..6ce6f02 100644
  		.frequency_min  = 42000000,
  		.frequency_max  = 870000000,
  	},
-@@ -502,6 +807,10 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -502,6 +806,10 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -444,7 +443,7 @@ index 6cd62ba..6ce6f02 100644
  	.get_if_frequency = si2157_get_if_frequency,
  };
  
-@@ -524,7 +833,7 @@ static void si2157_stat_work(struct work_struct *work)
+@@ -524,7 +832,7 @@ static void si2157_stat_work(struct work_struct *work)
  		goto err;
  
  	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
@@ -453,7 +452,7 @@ index 6cd62ba..6ce6f02 100644
  
  	schedule_delayed_work(&dev->stat_work, msecs_to_jiffies(2000));
  	return;
-@@ -538,60 +847,22 @@ static int si2157_probe(struct i2c_client *client,
+@@ -538,60 +846,22 @@ static int si2157_probe(struct i2c_client *client,
  {
  	struct si2157_config *cfg = client->dev.platform_data;
  	struct dvb_frontend *fe = cfg->fe;
@@ -463,16 +462,16 @@ index 6cd62ba..6ce6f02 100644
 +	struct si2157_dev *dev = NULL;
 +	unsigned short addr = client->addr;
 +	int ret = 0;
++
++	printk(KERN_INFO "%s: probing si2157 tuner fe=%p cfg=%p addr=0X%2x\n",
++			__func__, fe, cfg, addr);
++	fe->tuner_priv = client;
++	si2157_setup_configuration(fe, cfg);
  
 -	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 -	if (!dev) {
 -		ret = -ENOMEM;
 -		dev_err(&client->dev, "kzalloc() failed\n");
-+	printk(KERN_INFO "%s: probing si2157 tuner fe=%p cfg=%p addr=0X%2x\n",
-+			__func__, fe, cfg, addr);
-+	fe->tuner_priv = client;
-+	si2157_setup_configuration(fe, cfg);
-+
 +	if (!dvb_attach(si2157_attach, fe, (u8)addr, client->adapter, cfg)) {
 +		printk(KERN_ERR "%s: attaching si2157 tuner failed\n", __func__);
  		goto err;
@@ -525,7 +524,7 @@ index 6cd62ba..6ce6f02 100644
  
  	dev_info(&client->dev, "Silicon Labs %s successfully attached\n",
  			dev->chiptype == SI2157_CHIPTYPE_SI2141 ?  "Si2141" :
-@@ -600,8 +871,6 @@ static int si2157_probe(struct i2c_client *client,
+@@ -600,8 +870,6 @@ static int si2157_probe(struct i2c_client *client,
  
  	return 0;
  
@@ -534,16 +533,17 @@ index 6cd62ba..6ce6f02 100644
  err:
  	dev_dbg(&client->dev, "failed=%d\n", ret);
  	return ret;
-@@ -624,7 +893,7 @@ static int si2157_remove(struct i2c_client *client)
+@@ -623,8 +891,7 @@ static int si2157_remove(struct i2c_client *client)
+ #endif
  
  	memset(&fe->ops.tuner_ops, 0, sizeof(struct dvb_tuner_ops));
- 	fe->tuner_priv = NULL;
+-	fe->tuner_priv = NULL;
 -	kfree(dev);
 +	si2157_release(fe);
  
  	return 0;
  }
-@@ -649,7 +918,122 @@ static struct i2c_driver si2157_driver = {
+@@ -649,7 +916,122 @@ static struct i2c_driver si2157_driver = {
  
  module_i2c_driver(si2157_driver);
  
