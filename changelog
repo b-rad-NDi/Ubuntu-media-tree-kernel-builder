@@ -1,5 +1,6 @@
 0.16.4
   * Fix DualHD replug-in-oops
+  * New Zesty kernel revision
 
 0.16.3
   * New Xenial/Yakkety/Zesty kernel revisions
