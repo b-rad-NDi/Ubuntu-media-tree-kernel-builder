@@ -1,3 +1,6 @@
+0.16.4
+  * Fix DualHD replug-in-oops
+
 0.16.3
   * New Xenial/Yakkety/Zesty kernel revisions
   * reverted to 2017/06/20 linuxtv.org patch
