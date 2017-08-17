@@ -1,0 +1,25 @@
+From 327a58c7e1dd3763de626f986fcc5c79475a8889 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 7 Aug 2017 13:11:52 -0500
+Subject: [PATCH 21/22] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
+
+---
+ drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index d731536aeece..cff971a0dbe6 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -2602,6 +2602,8 @@ struct usb_device_id em28xx_id_table[] = {
+ 			.driver_info = EM28178_BOARD_PCTV_461E },
+ 	{ USB_DEVICE(0x2013, 0x025f),
+ 			.driver_info = EM28178_BOARD_PCTV_292E },
++	{ USB_DEVICE(0x2013, 0x0264), /* Hauppauge WinTV-soloHD 292e SE */
++			.driver_info = EM28178_BOARD_PCTV_292E },
+ 	{ USB_DEVICE(0x2040, 0x0264), /* Hauppauge WinTV-soloHD Isoc */
+ 			.driver_info = EM28178_BOARD_PCTV_292E },
+ 	{ USB_DEVICE(0x2040, 0x8264), /* Hauppauge OEM Generic WinTV-soloHD Bulk */
+-- 
+2.11.0
+

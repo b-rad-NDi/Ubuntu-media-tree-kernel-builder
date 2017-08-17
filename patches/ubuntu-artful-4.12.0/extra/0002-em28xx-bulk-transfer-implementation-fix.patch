@@ -1,0 +1,59 @@
+From 7f54c3fab1d6241426a5b1d4e5c46e58de3fa427 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 16 Mar 2017 23:10:11 +0000
+Subject: [PATCH 02/22] em28xx: bulk transfer implementation fix
+
+---
+ drivers/media/usb/em28xx/em28xx-core.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index 68d0691dbfec..ca0ddd555699 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -638,17 +638,33 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 	    dev->chip_id == CHIP_ID_EM28174 ||
+ 	    dev->chip_id == CHIP_ID_EM28178) {
+ 		/* The Transport Stream Enable Register moved in em2874 */
++		if(dev->dvb_xfer_bulk) {
++			/* TS1 Maximum Transfer Size = 188 * EM28XX_DVB_BULK_PACKET_MULTIPLIER */
++			em28xx_write_reg(dev, EM2874_R5D_TS1_PKT_SIZE, 0xef);
++		} else {
++			/* TS1 Maximum Transfer Size = 188 * 5 */
++			em28xx_write_reg(dev, EM2874_R5D_TS1_PKT_SIZE, 0x05);
++		}
++
+ 		if(dev->board.has_dual_ts) {
+-			if (dev->ts == PRIMARY_TS)
+-				rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
+-							start ?
+-							EM2874_TS1_CAPTURE_ENABLE : 0x00,
+-							EM2874_TS1_CAPTURE_ENABLE);
+-			else
++			if(start) {
++				if(dev->dvb_xfer_bulk) {
++					/* TS2 Maximum Transfer Size = 188 * EM28XX_DVB_BULK_PACKET_MULTIPLIER */
++					em28xx_write_reg(dev, EM2874_R5E_TS2_PKT_SIZE, 0xef);
++				} else {
++					/* TS2 Maximum Transfer Size = 188 * 5 */
++					em28xx_write_reg(dev, EM2874_R5E_TS2_PKT_SIZE, 0x05);
++				}
+ 				rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
+-							start ?
+-							EM2874_TS2_CAPTURE_ENABLE : 0x00,
+-							EM2874_TS2_CAPTURE_ENABLE);
++								(EM2874_TS1_CAPTURE_ENABLE | EM2874_TS2_CAPTURE_ENABLE),
++								(EM2874_TS1_CAPTURE_ENABLE | EM2874_TS2_CAPTURE_ENABLE));
++			} else {
++				if(dev->ts == PRIMARY_TS) {
++					rc = em28xx_toggle_reg_bits(dev, EM2874_R5F_TS_ENABLE, EM2874_TS1_CAPTURE_ENABLE);
++				} else {
++					rc = em28xx_toggle_reg_bits(dev, EM2874_R5F_TS_ENABLE, EM2874_TS2_CAPTURE_ENABLE);
++				}
++			}
+ 		} else {
+ 			rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
+ 							start ?
+-- 
+2.11.0
+
