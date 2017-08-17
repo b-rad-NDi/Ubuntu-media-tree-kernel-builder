@@ -516,14 +516,14 @@ function regen_changelog()
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * LinuxTV.org media tree slipstream + build fixes" >>  /tmp/tmpkrn_changelog.mod
-	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-${V4L_SYNC_DATE}.patch" ] ; then
+	if [ -z "${V4L_SYNC_DATE}" -o ! -f "${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch" ] ; then
 		LinuxTV_MT_PATCH=`ls ${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-*.patch | sort | tail -n 1`
 		if [ -z "${LinuxTV_MT_PATCH}" ] ; then
 			echo "Missing Linuxtv.org-media-tree patch"
 			return 1
 		fi
 	else
-		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-${V4L_SYNC_DATE}.patch"
+		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch"
 	fi
 	echo "    - `basename ${LinuxTV_MT_PATCH}`" >>  /tmp/tmpkrn_changelog.mod
 	echo "    - 0002-Apply-build-fixes-to-media-tree.patch" >>  /tmp/tmpkrn_changelog.mod
