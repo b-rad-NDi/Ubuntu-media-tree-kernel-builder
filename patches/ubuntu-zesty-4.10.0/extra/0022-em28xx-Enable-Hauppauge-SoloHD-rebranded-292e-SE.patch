@@ -1,7 +1,7 @@
-From 07ddb97d5d330ed19955dd3d001dc51228b42b2f Mon Sep 17 00:00:00 2001
+From 6f59b04355d7fbe99ff281810261602fcd20b106 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:11:52 -0500
-Subject: [PATCH 21/21] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
+Subject: [PATCH 22/23] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 2 ++

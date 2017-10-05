@@ -1,7 +1,7 @@
-From f36fb6a1eff90a645cf67a0d7efb7314cec13a5a Mon Sep 17 00:00:00 2001
+From 82193bbc3f5956b8559e63dbf9fc71de375364c9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 10:50:10 -0500
-Subject: [PATCH 14/19] cx28335: Add support for Hauppauge Starburst 2 PCIe
+Subject: [PATCH 15/23] cx28335: Add support for Hauppauge Starburst 2 PCIe
  DVB-S/S2
 
 ---

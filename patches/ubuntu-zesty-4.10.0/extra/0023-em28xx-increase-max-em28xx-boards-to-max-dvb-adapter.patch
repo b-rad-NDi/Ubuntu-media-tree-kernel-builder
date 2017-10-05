@@ -1,14 +1,14 @@
-From fdea129b42e99620d3e38f2fb6a872d5e273969a Mon Sep 17 00:00:00 2001
+From 86bc66c65a736e467cc31b1737c60e962c267c12 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 15 Aug 2017 20:50:13 -0500
-Subject: [PATCH 20/20] em28xx: increase max em28xx boards to max dvb adapters
+Subject: [PATCH 23/23] em28xx: increase max em28xx boards to max dvb adapters
 
 ---
  drivers/media/usb/em28xx/em28xx.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 132638ed1e5b..99732326b178 100644
+index 132638ed1e5b..4a0c58893567 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -165,7 +165,7 @@

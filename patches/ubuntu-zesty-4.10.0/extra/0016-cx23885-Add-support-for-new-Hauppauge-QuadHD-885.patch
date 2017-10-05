@@ -1,8 +1,7 @@
-From 8a7117062116913b91372c8e824e3c044a8bf7df Mon Sep 17 00:00:00 2001
+From 076ae61f9ac3f7c5b9e478ea87053cf411456859 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 26 May 2017 11:09:18 -0500
-Subject: [PATCH 15/19] cx23885: Add support for new Hauppauge QuadHD (885)
- digital only (atsc/dvb) PCIe cards
+Date: Thu, 5 Oct 2017 14:38:25 -0500
+Subject: [PATCH 16/23] cx23885: Add support for new Hauppauge QuadHD (885)
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 42 ++++++++++++++++++++++---------
@@ -114,7 +113,7 @@ index 185080c6369f..7f03f80ac48a 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 02b5ec549369..72fb7ddaa483 100644
+index 02b5ec549369..224776c71aa7 100644
 --- a/drivers/media/pci/cx23885/cx23885-core.c
 +++ b/drivers/media/pci/cx23885/cx23885-core.c
 @@ -869,6 +869,14 @@ static int cx23885_dev_setup(struct cx23885_dev *dev)
@@ -133,10 +132,10 @@ index 02b5ec549369..72fb7ddaa483 100644
  	if (cx23885_boards[dev->board].clk_freq > 0)
  		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index d20524f825c7..e96fd2bf4e0e 100644
+index 850c72cce55a..ba1f957ffdcf 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2331,6 +2331,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2396,6 +2396,8 @@ static int dvb_register(struct cx23885_tsport *port)
  		break;
  	}
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
@@ -145,7 +144,7 @@ index d20524f825c7..e96fd2bf4e0e 100644
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
-@@ -2428,6 +2430,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2499,6 +2501,8 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
