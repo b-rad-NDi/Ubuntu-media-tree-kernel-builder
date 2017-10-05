@@ -1,0 +1,22 @@
+From 9840cab316176e29e1158531c7fbfcfabe26acd6 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Thu, 17 Aug 2017 20:04:50 +0000
+Subject: [PATCH 3/6] Add 'new' media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index c5601c189c6e..e6e1d49f42a9 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -10037,3 +10037,5 @@ CONFIG_ZSMALLOC=y
+ CONFIG_ZSWAP=y
+ CONFIG_ZX2967_PM_DOMAINS=y
+ CONFIG_ZX_TDM=m
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++
+-- 
+2.11.0
+

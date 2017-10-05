@@ -1,0 +1,22 @@
+From 003c13807989f33d3a403f56cd152ea4a86a7445 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Thu, 17 Aug 2017 20:05:48 +0000
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ dropped.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dropped.txt b/dropped.txt
+index 43cd9d784fe4..55baae76b0f1 100644
+--- a/dropped.txt
++++ b/dropped.txt
+@@ -3,3 +3,5 @@ reverted or disabled for AA:
+ 
+ Possibly no longer needed:
+  UBUNTU: SAUCE: nbd: Only delay uevent until connected
++
++# placeholder
+-- 
+2.11.0
+

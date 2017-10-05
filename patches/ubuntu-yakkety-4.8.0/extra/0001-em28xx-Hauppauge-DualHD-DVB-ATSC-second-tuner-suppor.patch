@@ -1,17 +1,17 @@
-From d763944bc2c1e4e5bc2918351076f07b57856c32 Mon Sep 17 00:00:00 2001
+From bd0265e61b1ce1e8e157f780c96a7607288687be Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sun, 16 Apr 2017 00:13:39 -0500
-Subject: [PATCH 01/19] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
+Subject: [PATCH 01/18] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
 ---
- drivers/media/usb/em28xx/em28xx-cards.c | 123 +++++++++++++++++++++++++++++++-
- drivers/media/usb/em28xx/em28xx-core.c  |  47 +++++++++---
- drivers/media/usb/em28xx/em28xx-dvb.c   |  28 ++++++--
- drivers/media/usb/em28xx/em28xx.h       |  12 ++++
- 4 files changed, 192 insertions(+), 18 deletions(-)
+ drivers/media/usb/em28xx/em28xx-cards.c | 126 +++++++++++++++++++++++++++++++-
+ drivers/media/usb/em28xx/em28xx-core.c  |  47 ++++++++++--
+ drivers/media/usb/em28xx/em28xx-dvb.c   |  28 +++++--
+ drivers/media/usb/em28xx/em28xx.h       |  12 +++
+ 4 files changed, 195 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 146341a..94ad7ac 100644
+index 146341a..03f62f7 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2387,6 +2387,7 @@ struct em28xx_board em28xx_boards[] = {
@@ -116,7 +116,7 @@ index 146341a..94ad7ac 100644
  	if (has_vendor_audio) {
  		dev_err(&interface->dev,
  			"Audio interface %i found (Vendor Class)\n", ifnum);
-@@ -3694,6 +3743,61 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+@@ -3694,6 +3743,64 @@ static int em28xx_usb_probe(struct usb_interface *interface,
  			dev->dvb_xfer_bulk ? "bulk" : "isoc");
  	}
  
@@ -134,6 +134,9 @@ index 146341a..94ad7ac 100644
 +		if (retval) {
 +			goto err_free;
 +		}
++
++		dev->dev_next->board.ir_codes = NULL; /* No IR for second tuner */
++		dev->dev_next->board.has_ir_i2c = 0; /* No IR for second tuner */
 +
 +		if (usb_xfer_mode < 0) {
 +			if (dev->dev_next->board.is_webcam)
@@ -178,7 +181,7 @@ index 146341a..94ad7ac 100644
  	kref_init(&dev->ref);
  
  	request_modules(dev);
-@@ -3736,15 +3840,28 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
+@@ -3736,15 +3843,28 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
  	if (!dev)
  		return;
  

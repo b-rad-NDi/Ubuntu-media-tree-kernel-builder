@@ -124,9 +124,9 @@ index 02b5ec5..72fb7dd 100644
 +	if (dev->pci->device == 0x8852) {
 +		/* no DIF on cx23885, so no analog tuner support possible */
 +		if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
-+			dev->pci->device = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
++			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
 +		else if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
-+			dev->pci->device = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
++			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
 +	}
 +
  	/* If the user specific a clk freq override, apply it */
