@@ -1,7 +1,7 @@
-From 6ee06c70afc2360254703b6933c04418809ef177 Mon Sep 17 00:00:00 2001
+From 1cade158521e1091fa0b746dbde01df1e39d03b0 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 25 May 2017 15:36:30 -0500
-Subject: [PATCH 06/19] cx23885: Enable new Hauppauge PCIe ImpactVCB variant
+Subject: [PATCH 06/23] cx23885: Enable new Hauppauge PCIe ImpactVCB variant
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 4 ++++

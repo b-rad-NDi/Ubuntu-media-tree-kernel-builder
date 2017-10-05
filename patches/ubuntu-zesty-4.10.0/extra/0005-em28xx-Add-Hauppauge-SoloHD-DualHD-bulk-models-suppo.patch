@@ -1,7 +1,7 @@
-From 4a2d2937ebfdb5ec52715aebaa5c2e4729936bcf Mon Sep 17 00:00:00 2001
+From 6e13fae0a02bf9a16b158b9030e2ccd7f6e3da08 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:00:42 -0500
-Subject: [PATCH 05/21] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
+Subject: [PATCH 05/23] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 22 +++++++++++++++++-----

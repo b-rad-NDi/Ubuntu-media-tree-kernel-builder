@@ -1,7 +1,7 @@
-From dec4162c054017f7b2e52ebbfcfa0fbc35ffc1a6 Mon Sep 17 00:00:00 2001
+From 84e9447740dbd6b2d057ea68ac101c643efed51d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 27 Jul 2017 11:57:12 -0500
-Subject: [PATCH 01/19] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
+Subject: [PATCH 01/23] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 126 +++++++++++++++++++++++++++++++-
@@ -11,7 +11,7 @@ Subject: [PATCH 01/19] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
  4 files changed, 195 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 146341aeb782..25871c4c2835 100644
+index 146341aeb782..03f62f7464e9 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2387,6 +2387,7 @@ struct em28xx_board em28xx_boards[] = {
