@@ -1,3 +1,8 @@
+0.16.5
+  * Fix QuadHD DVB models
+  * Bump max em28xx boards to max dvb adapter limit
+  * new Ubuntu kernel revs
+
 0.16.4
   * Fix DualHD replug-in-oops
   * New Zesty kernel revision
