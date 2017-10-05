@@ -1,14 +1,14 @@
-From cb2c11f19e0a4d4e72f64f7c9fb73206e490bfe3 Mon Sep 17 00:00:00 2001
+From 010345c4efe291ef062ef714d990408b833f5c1d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 5 Oct 2017 14:30:13 -0500
+Date: Thu, 5 Oct 2017 17:05:13 -0500
 Subject: [PATCH 12/23] cx23885: i2c platform data cannot be stack allocated
 
 ---
- drivers/media/pci/cx23885/cx23885-dvb.c | 453 ++++++++++++++++++--------------
- 1 file changed, 263 insertions(+), 190 deletions(-)
+ drivers/media/pci/cx23885/cx23885-dvb.c | 455 ++++++++++++++++++--------------
+ 1 file changed, 264 insertions(+), 191 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 979b66627f60..cc13de754cc0 100644
+index 979b66627f60..ef2297e9681b 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -601,6 +601,23 @@ static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
@@ -316,7 +316,8 @@ index 979b66627f60..cc13de754cc0 100644
 +					client_tuner->dev.driver == NULL) {
 +				kfree(si2157_config);
  				goto frontend_detach;
- 
+-
++			}
  			if (!try_module_get(client_tuner->dev.driver->owner)) {
 -				i2c_unregister_device(client_tuner);
 +				cx23885_i2c_unregister_device(client_tuner);
