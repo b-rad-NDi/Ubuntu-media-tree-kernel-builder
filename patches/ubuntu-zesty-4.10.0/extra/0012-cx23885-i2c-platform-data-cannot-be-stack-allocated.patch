@@ -67,7 +67,7 @@ index 979b66627f60..ef2297e9681b 100644
 +		}
  		if (!try_module_get(client_ci->dev.driver->owner)) {
 -			i2c_unregister_device(client_ci);
-+			cx23885_i2c_unregister_device(client_ci);;
++			cx23885_i2c_unregister_device(client_ci);
  			return -ENODEV;
  		}
  		port->i2c_client_ci = client_ci;
@@ -451,7 +451,7 @@ index 979b66627f60..ef2297e9681b 100644
  			p_set_voltage = dvbsky_s952_portc_set_voltage;
  			break;
  		default:
-+			/* this will never happen due to check above  */
++			/* this will never happen due to check above */
  			return 0;
  		}
  
