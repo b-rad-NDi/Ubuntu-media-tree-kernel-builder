@@ -1,14 +1,15 @@
-From 010345c4efe291ef062ef714d990408b833f5c1d Mon Sep 17 00:00:00 2001
+From f2b9f97536be9770f842eee0f97c79b4de306d48 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 5 Oct 2017 17:05:13 -0500
-Subject: [PATCH 12/23] cx23885: i2c platform data cannot be stack allocated
+Date: Fri, 6 Oct 2017 11:19:13 -0500
+Subject: [PATCH 12/23] cx2xxxx: Ensure i2c platform data object lifetime
 
 ---
- drivers/media/pci/cx23885/cx23885-dvb.c | 455 ++++++++++++++++++--------------
- 1 file changed, 264 insertions(+), 191 deletions(-)
+ drivers/media/pci/cx23885/cx23885-dvb.c | 457 ++++++++++++++++++--------------
+ drivers/media/usb/cx231xx/cx231xx-dvb.c | 135 ++++++----
+ 2 files changed, 346 insertions(+), 246 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 979b66627f60..ef2297e9681b 100644
+index 979b66627f60..e6735f82215a 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -601,6 +601,23 @@ static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
@@ -324,7 +325,7 @@ index 979b66627f60..ef2297e9681b 100644
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
-@@ -2018,28 +2058,30 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2018,39 +2058,43 @@ static int dvb_register(struct cx23885_tsport *port)
  		i2c_bus2 = &dev->i2c_bus[1];
  
  		/* attach frontend */
@@ -365,7 +366,8 @@ index 979b66627f60..ef2297e9681b 100644
  		memset(&info, 0, sizeof(struct i2c_board_info));
  		strlcpy(info.type, "si2157", I2C_NAME_SIZE);
  		info.addr = 0x60;
-@@ -2047,10 +2089,12 @@ static int dvb_register(struct cx23885_tsport *port)
+-		info.platform_data = &si2157_config;
++		info.platform_data = si2157_config;
  		request_module(info.type);
  		client_tuner = i2c_new_device(adapter, &info);
  		if (client_tuner == NULL ||
@@ -950,6 +952,335 @@ index 979b66627f60..ef2297e9681b 100644
  	}
  
  	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+index ee3eeeb600f8..17e253a11466 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
++++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+@@ -173,6 +173,23 @@ static struct r820t_config astrometa_t2hybrid_r820t_config = {
+ 	.max_i2c_msg_len	= 2,
+ };
+ 
++#define I2C_ZALLOC_PLATFORM_DATA(ptr, failure...) \
++	do { \
++		ptr = kzalloc(sizeof(*ptr), GFP_KERNEL); \
++		pr_info("i2c priv alloc " #ptr " = %p\n", ptr); \
++		if (ptr == NULL) { failure; } \
++	} while(0)
++
++static void cx231xx_i2c_unregister_device(struct i2c_client *client)
++{
++	pr_info("i2c priv free %p\n", client->dev.platform_data);
++	if (client->dev.platform_data) {
++		kfree(client->dev.platform_data);
++		client->dev.platform_data = NULL;
++	}
++	i2c_unregister_device(client);
++}
++
+ static inline void print_err_status(struct cx231xx *dev, int packet, int status)
+ {
+ 	char *errmsg = "Unknown";
+@@ -589,13 +606,13 @@ static void unregister_dvb(struct cx231xx_dvb *dvb)
+ 	client = dvb->i2c_client_tuner;
+ 	if (client) {
+ 		module_put(client->dev.driver->owner);
+-		i2c_unregister_device(client);
++		cx231xx_i2c_unregister_device(client);
+ 	}
+ 	/* remove I2C demod */
+ 	client = dvb->i2c_client_demod;
+ 	if (client) {
+ 		module_put(client->dev.driver->owner);
+-		i2c_unregister_device(client);
++		cx231xx_i2c_unregister_device(client);
+ 	}
+ 	dvb_unregister_frontend(dvb->frontend);
+ 	dvb_frontend_detach(dvb->frontend);
+@@ -757,21 +774,22 @@ static int dvb_init(struct cx231xx *dev)
+ 	{
+ 		struct i2c_client *client;
+ 		struct i2c_board_info info;
+-		struct si2165_platform_data si2165_pdata;
++		struct si2165_platform_data *si2165_pdata;
+ 
+ 		/* attach demod */
+-		memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+-		si2165_pdata.fe = &dev->dvb->frontend;
+-		si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL,
+-		si2165_pdata.ref_freq_Hz = 16000000,
++		I2C_ZALLOC_PLATFORM_DATA(si2165_pdata, goto out_free);
++		si2165_pdata->fe = &dev->dvb->frontend;
++		si2165_pdata->chip_mode = SI2165_MODE_PLL_XTAL,
++		si2165_pdata->ref_freq_Hz = 16000000,
+ 
+ 		memset(&info, 0, sizeof(struct i2c_board_info));
+ 		strlcpy(info.type, "si2165", I2C_NAME_SIZE);
+ 		info.addr = 0x64;
+-		info.platform_data = &si2165_pdata;
++		info.platform_data = si2165_pdata;
+ 		request_module(info.type);
+ 		client = i2c_new_device(demod_i2c, &info);
+ 		if (client == NULL || client->dev.driver == NULL || dev->dvb->frontend == NULL) {
++			kfree(si2165_pdata);
+ 			dev_err(dev->dev,
+ 				"Failed to attach SI2165 front end\n");
+ 			result = -EINVAL;
+@@ -779,7 +797,7 @@ static int dvb_init(struct cx231xx *dev)
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+@@ -803,22 +821,23 @@ static int dvb_init(struct cx231xx *dev)
+ 	{
+ 		struct i2c_client *client;
+ 		struct i2c_board_info info;
+-		struct si2165_platform_data si2165_pdata;
+-		struct si2157_config si2157_config;
++		struct si2165_platform_data *si2165_pdata;
++		struct si2157_config *si2157_config;
+ 
+ 		/* attach demod */
+-		memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+-		si2165_pdata.fe = &dev->dvb->frontend;
+-		si2165_pdata.chip_mode = SI2165_MODE_PLL_EXT,
+-		si2165_pdata.ref_freq_Hz = 24000000,
++		I2C_ZALLOC_PLATFORM_DATA(si2165_pdata, goto out_free);
++		si2165_pdata->fe = &dev->dvb->frontend;
++		si2165_pdata->chip_mode = SI2165_MODE_PLL_EXT,
++		si2165_pdata->ref_freq_Hz = 24000000,
+ 
+ 		memset(&info, 0, sizeof(struct i2c_board_info));
+ 		strlcpy(info.type, "si2165", I2C_NAME_SIZE);
+ 		info.addr = 0x64;
+-		info.platform_data = &si2165_pdata;
++		info.platform_data = si2165_pdata;
+ 		request_module(info.type);
+ 		client = i2c_new_device(demod_i2c, &info);
+ 		if (client == NULL || client->dev.driver == NULL || dev->dvb->frontend == NULL) {
++			kfree(si2165_pdata);
+ 			dev_err(dev->dev,
+ 				"Failed to attach SI2165 front end\n");
+ 			result = -EINVAL;
+@@ -826,7 +845,7 @@ static int dvb_init(struct cx231xx *dev)
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+@@ -841,29 +860,30 @@ static int dvb_init(struct cx231xx *dev)
+ 		dvb->frontend->callback = cx231xx_tuner_callback;
+ 
+ 		/* attach tuner */
+-		memset(&si2157_config, 0, sizeof(si2157_config));
+-		si2157_config.fe = dev->dvb->frontend;
++		I2C_ZALLOC_PLATFORM_DATA(si2157_config, goto out_free);
++		si2157_config->fe = dev->dvb->frontend;
+ #ifdef CONFIG_MEDIA_CONTROLLER_DVB
+-		si2157_config.mdev = dev->media_dev;
++		si2157_config->mdev = dev->media_dev;
+ #endif
+-		si2157_config.if_port = 1;
+-		si2157_config.inversion = true;
++		si2157_config->if_port = 1;
++		si2157_config->inversion = true;
+ 		strlcpy(info.type, "si2157", I2C_NAME_SIZE);
+ 		info.addr = 0x60;
+-		info.platform_data = &si2157_config;
++		info.platform_data = si2157_config;
+ 		request_module("si2157");
+ 
+ 		client = i2c_new_device(
+ 			tuner_i2c,
+ 			&info);
+ 		if (client == NULL || client->dev.driver == NULL) {
++			kfree(si2157_config);
+ 			dvb_frontend_detach(dev->dvb->frontend);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			dvb_frontend_detach(dev->dvb->frontend);
+ 			result = -ENODEV;
+ 			goto out_free;
+@@ -878,7 +898,7 @@ static int dvb_init(struct cx231xx *dev)
+ 	{
+ 		struct i2c_client *client;
+ 		struct i2c_board_info info;
+-		struct si2157_config si2157_config;
++		struct si2157_config *si2157_config;
+ 
+ 		memset(&info, 0, sizeof(struct i2c_board_info));
+ 
+@@ -900,29 +920,30 @@ static int dvb_init(struct cx231xx *dev)
+ 		dvb->frontend->callback = cx231xx_tuner_callback;
+ 
+ 		/* attach tuner */
+-		memset(&si2157_config, 0, sizeof(si2157_config));
+-		si2157_config.fe = dev->dvb->frontend;
++		I2C_ZALLOC_PLATFORM_DATA(si2157_config, goto out_free);
++		si2157_config->fe = dev->dvb->frontend;
+ #ifdef CONFIG_MEDIA_CONTROLLER_DVB
+-		si2157_config.mdev = dev->media_dev;
++		si2157_config->mdev = dev->media_dev;
+ #endif
+-		si2157_config.if_port = 1;
+-		si2157_config.inversion = true;
++		si2157_config->if_port = 1;
++		si2157_config->inversion = true;
+ 		strlcpy(info.type, "si2157", I2C_NAME_SIZE);
+ 		info.addr = 0x60;
+-		info.platform_data = &si2157_config;
++		info.platform_data = si2157_config;
+ 		request_module("si2157");
+ 
+ 		client = i2c_new_device(
+ 			tuner_i2c,
+ 			&info);
+ 		if (client == NULL || client->dev.driver == NULL) {
++			kfree(si2157_config);
+ 			dvb_frontend_detach(dev->dvb->frontend);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			dvb_frontend_detach(dev->dvb->frontend);
+ 			result = -ENODEV;
+ 			goto out_free;
+@@ -961,32 +982,34 @@ static int dvb_init(struct cx231xx *dev)
+ 
+ 	case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
+ 	{
+-		struct si2157_config si2157_config = {};
+-		struct si2168_config si2168_config = {};
++		struct si2157_config *si2157_config;
++		struct si2168_config *si2168_config;
+ 		struct i2c_board_info info = {};
+ 		struct i2c_client *client;
+ 		struct i2c_adapter *adapter;
+ 
+ 		/* attach demodulator chip */
+-		si2168_config.ts_mode = SI2168_TS_SERIAL; /* from *.inf file */
+-		si2168_config.fe = &dev->dvb->frontend;
+-		si2168_config.i2c_adapter = &adapter;
+-		si2168_config.ts_clock_inv = true;
++		I2C_ZALLOC_PLATFORM_DATA(si2168_config, goto out_free);
++		si2168_config->ts_mode = SI2168_TS_SERIAL; /* from *.inf file */
++		si2168_config->fe = &dev->dvb->frontend;
++		si2168_config->i2c_adapter = &adapter;
++		si2168_config->ts_clock_inv = true;
+ 
+ 		strlcpy(info.type, "si2168", sizeof(info.type));
+ 		info.addr = dev->board.demod_addr;
+-		info.platform_data = &si2168_config;
++		info.platform_data = si2168_config;
+ 
+ 		request_module(info.type);
+ 		client = i2c_new_device(demod_i2c, &info);
+ 
+ 		if (client == NULL || client->dev.driver == NULL) {
++			kfree(si2168_config);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+@@ -994,32 +1017,34 @@ static int dvb_init(struct cx231xx *dev)
+ 		dvb->i2c_client_demod = client;
+ 
+ 		/* attach tuner chip */
+-		si2157_config.fe = dev->dvb->frontend;
++		I2C_ZALLOC_PLATFORM_DATA(si2157_config, goto out_free);
++		si2157_config->fe = dev->dvb->frontend;
+ #ifdef CONFIG_MEDIA_CONTROLLER_DVB
+-		si2157_config.mdev = dev->media_dev;
++		si2157_config->mdev = dev->media_dev;
+ #endif
+-		si2157_config.if_port = 1;
+-		si2157_config.inversion = false;
++		si2157_config->if_port = 1;
++		si2157_config->inversion = false;
+ 
+ 		memset(&info, 0, sizeof(info));
+ 		strlcpy(info.type, "si2157", sizeof(info.type));
+ 		info.addr = dev->board.tuner_addr;
+-		info.platform_data = &si2157_config;
++		info.platform_data = si2157_config;
+ 
+ 		request_module(info.type);
+ 		client = i2c_new_device(tuner_i2c, &info);
+ 
+ 		if (client == NULL || client->dev.driver == NULL) {
++			kfree(si2157_config);
+ 			module_put(dvb->i2c_client_demod->dev.driver->owner);
+-			i2c_unregister_device(dvb->i2c_client_demod);
++			cx231xx_i2c_unregister_device(dvb->i2c_client_demod);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			module_put(dvb->i2c_client_demod->dev.driver->owner);
+-			i2c_unregister_device(dvb->i2c_client_demod);
++			cx231xx_i2c_unregister_device(dvb->i2c_client_demod);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+@@ -1032,27 +1057,29 @@ static int dvb_init(struct cx231xx *dev)
+ 	{
+ 		struct i2c_client *client;
+ 		struct i2c_board_info info = {};
+-		struct mn88473_config mn88473_config = {};
++		struct mn88473_config *mn88473_config;
+ 
+ 		/* attach demodulator chip */
+-		mn88473_config.i2c_wr_max = 16;
+-		mn88473_config.xtal = 25000000;
+-		mn88473_config.fe = &dev->dvb->frontend;
++		I2C_ZALLOC_PLATFORM_DATA(mn88473_config, goto out_free);
++		mn88473_config->i2c_wr_max = 16;
++		mn88473_config->xtal = 25000000;
++		mn88473_config->fe = &dev->dvb->frontend;
+ 
+ 		strlcpy(info.type, "mn88473", sizeof(info.type));
+ 		info.addr = dev->board.demod_addr;
+-		info.platform_data = &mn88473_config;
++		info.platform_data = mn88473_config;
+ 
+ 		request_module(info.type);
+ 		client = i2c_new_device(demod_i2c, &info);
+ 
+ 		if (client == NULL || client->dev.driver == NULL) {
++			kfree(mn88473_config);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
+ 
+ 		if (!try_module_get(client->dev.driver->owner)) {
+-			i2c_unregister_device(client);
++			cx231xx_i2c_unregister_device(client);
+ 			result = -ENODEV;
+ 			goto out_free;
+ 		}
 -- 
 2.11.0
 
