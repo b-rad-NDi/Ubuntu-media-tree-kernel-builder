@@ -1,4 +1,4 @@
-From 3804ff178d22bef63a5ff09331facada8129d46b Mon Sep 17 00:00:00 2001
+From ce1e5a132a2a0a400e2374038b27b17a238c0afd Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 6 Oct 2017 15:49:28 -0500
 Subject: [PATCH 24/24] v4l2-core: Reverse 758d90e16 kvmalloc patch
@@ -13,7 +13,7 @@ Subject: [PATCH 24/24] v4l2-core: Reverse 758d90e16 kvmalloc patch
  6 files changed, 27 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index 6d7b43a0b1be..3a899d2bbf55 100644
+index 11f15ca2b4a9..c8e759bfd343 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
 @@ -12,7 +12,6 @@
@@ -24,7 +24,7 @@ index 6d7b43a0b1be..3a899d2bbf55 100644
  #include <linux/module.h>
  #include <linux/mutex.h>
  #include <linux/of.h>
-@@ -213,7 +212,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
+@@ -208,7 +207,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
  	if (!notifier->v4l2_dev)
  		return;
  
@@ -33,7 +33,7 @@ index 6d7b43a0b1be..3a899d2bbf55 100644
  	if (!dev) {
  		dev_err(notifier->v4l2_dev->dev,
  			"Failed to allocate device cache!\n");
-@@ -269,7 +268,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
+@@ -264,7 +263,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
  		}
  		put_device(d);
  	}
@@ -177,7 +177,7 @@ index 968c2eb08b5a..a75df6cb141f 100644
  	return 0;
  }
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index cf6613c8d8ee..b5e097b0c161 100644
+index 0349c94bb9da..67fe8b616fd6 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -12,7 +12,6 @@
@@ -188,7 +188,7 @@ index cf6613c8d8ee..b5e097b0c161 100644
  #include <linux/module.h>
  #include <linux/slab.h>
  #include <linux/types.h>
-@@ -2861,7 +2860,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+@@ -2868,7 +2867,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
  			parg = sbuf;
  		} else {
  			/* too big to allocate from stack */
@@ -197,7 +197,7 @@ index cf6613c8d8ee..b5e097b0c161 100644
  			if (NULL == mbuf)
  				return -ENOMEM;
  			parg = mbuf;
-@@ -2910,7 +2909,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+@@ -2917,7 +2916,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
  		 * array) fits into sbuf (so that mbuf will still remain
  		 * unused up to here).
  		 */
@@ -206,7 +206,7 @@ index cf6613c8d8ee..b5e097b0c161 100644
  		err = -ENOMEM;
  		if (NULL == mbuf)
  			goto out_array_args;
-@@ -2955,7 +2954,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+@@ -2962,7 +2961,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
  	}
  
  out:
@@ -254,7 +254,7 @@ index 43fefa73e0a3..da78497ae5ed 100644
  EXPORT_SYMBOL_GPL(v4l2_subdev_free_pad_config);
  #endif /* CONFIG_MEDIA_CONTROLLER */
 diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
-index ebab3ee0a669..75153613f806 100644
+index 32bc67066383..37d86d664de8 100644
 --- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
 +++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
 @@ -121,8 +121,8 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,

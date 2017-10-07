@@ -1,14 +1,14 @@
-From 6e13fae0a02bf9a16b158b9030e2ccd7f6e3da08 Mon Sep 17 00:00:00 2001
+From 1a423e1ece977a82432f7ad53f0070e10bc668fc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:00:42 -0500
-Subject: [PATCH 05/23] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
+Subject: [PATCH 05/24] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 22 +++++++++++++++++-----
  1 file changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 03f62f7464e9..d731536aeece 100644
+index 2160dce48545..c461fbb26932 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -508,8 +508,10 @@ static struct em28xx_reg_seq plex_px_bcud[] = {
@@ -24,7 +24,7 @@ index 03f62f7464e9..d731536aeece 100644
   * reg 0x80/0x84:
   * GPIO_0: Yellow LED tuner 1, 0=on, 1=off
   * GPIO_1: Green LED tuner 1, 0=on, 1=off
-@@ -2376,7 +2378,8 @@ struct em28xx_board em28xx_boards[] = {
+@@ -2392,7 +2394,8 @@ struct em28xx_board em28xx_boards[] = {
  		.has_dvb       = 1,
  	},
  	/*
@@ -34,7 +34,7 @@ index 03f62f7464e9..d731536aeece 100644
  	 * Empia EM28274, 2x Silicon Labs Si2168, 2x Silicon Labs Si2157
  	 */
  	[EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_DVB] = {
-@@ -2392,7 +2395,8 @@ struct em28xx_board em28xx_boards[] = {
+@@ -2408,7 +2411,8 @@ struct em28xx_board em28xx_boards[] = {
  		.leds          = hauppauge_dualhd_leds,
  	},
  	/*
@@ -44,7 +44,7 @@ index 03f62f7464e9..d731536aeece 100644
  	 * Empia EM28274, 2x LG LGDT3306A, 2x Silicon Labs Si2157
  	 */
  	[EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595] = {
-@@ -2532,8 +2536,12 @@ struct usb_device_id em28xx_id_table[] = {
+@@ -2550,8 +2554,12 @@ struct usb_device_id em28xx_id_table[] = {
  			.driver_info = EM2883_BOARD_HAUPPAUGE_WINTV_HVR_850 },
  	{ USB_DEVICE(0x2040, 0x0265),
  			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_DVB },
@@ -57,7 +57,7 @@ index 03f62f7464e9..d731536aeece 100644
  	{ USB_DEVICE(0x0438, 0xb002),
  			.driver_info = EM2880_BOARD_AMD_ATI_TV_WONDER_HD_600 },
  	{ USB_DEVICE(0x2001, 0xf112),
-@@ -2594,7 +2602,11 @@ struct usb_device_id em28xx_id_table[] = {
+@@ -2612,7 +2620,11 @@ struct usb_device_id em28xx_id_table[] = {
  			.driver_info = EM28178_BOARD_PCTV_461E },
  	{ USB_DEVICE(0x2013, 0x025f),
  			.driver_info = EM28178_BOARD_PCTV_292E },

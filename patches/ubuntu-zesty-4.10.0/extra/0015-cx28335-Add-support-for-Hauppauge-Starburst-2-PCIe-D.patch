@@ -1,7 +1,7 @@
-From 82193bbc3f5956b8559e63dbf9fc71de375364c9 Mon Sep 17 00:00:00 2001
+From 14e98811cec1282eaa5d0f60cf1c575931242fde Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 10:50:10 -0500
-Subject: [PATCH 15/23] cx28335: Add support for Hauppauge Starburst 2 PCIe
+Subject: [PATCH 15/24] cx28335: Add support for Hauppauge Starburst 2 PCIe
  DVB-S/S2
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 15/23] cx28335: Add support for Hauppauge Starburst 2 PCIe
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 65907292e990..185080c6369f 100644
+index 9f879e1d5f4b..638c44cde6be 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -802,6 +802,10 @@ struct cx23885_board cx23885_boards[] = {
@@ -35,7 +35,7 @@ index 65907292e990..185080c6369f 100644
  	},
  
  };
-@@ -1812,6 +1820,7 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1818,6 +1826,7 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
@@ -43,7 +43,7 @@ index 65907292e990..185080c6369f 100644
  		/*
  		 * HVR5525 GPIO Details:
  		 *  GPIO-00 IR_WIDE
-@@ -2099,6 +2108,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2105,6 +2114,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_IMPACTVCBE:
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
@@ -51,7 +51,7 @@ index 65907292e990..185080c6369f 100644
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
  
-@@ -2240,6 +2250,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2246,6 +2256,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  		ts2->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:

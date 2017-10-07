@@ -1,7 +1,7 @@
-From 9398e0de8f444e35e3059f9e114875b2dcf1f9d3 Mon Sep 17 00:00:00 2001
+From a3284be8f85d589a667a802c4f30d38bfb1cdad8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 5 Oct 2017 12:31:04 -0500
-Subject: [PATCH 11/23] si2157: add analog tuner support and dvb frontend
+Subject: [PATCH 11/24] si2157: add analog tuner support and dvb frontend
 
 ---
  drivers/media/pci/saa7164/saa7164-dvb.c |   6 +-
@@ -775,7 +775,7 @@ index 98bc15a388be..e022ab8d093e 100644
  EXPORT_SYMBOL(tuners);
  
 diff --git a/drivers/media/v4l2-core/tuner-core.c b/drivers/media/v4l2-core/tuner-core.c
-index e48b7c032c95..89ef2e106a32 100644
+index 8db45dfc271b..9280f0a77a8d 100644
 --- a/drivers/media/v4l2-core/tuner-core.c
 +++ b/drivers/media/v4l2-core/tuner-core.c
 @@ -40,6 +40,7 @@
@@ -786,7 +786,7 @@ index e48b7c032c95..89ef2e106a32 100644
  
  #define UNSET (-1U)
  
-@@ -398,6 +399,27 @@ static void set_type(struct i2c_client *c, unsigned int type,
+@@ -396,6 +397,27 @@ static void set_type(struct i2c_client *c, unsigned int type,
  		tune_now = 0;
  		break;
  	}

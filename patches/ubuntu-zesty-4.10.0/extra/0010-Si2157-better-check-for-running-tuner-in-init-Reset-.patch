@@ -1,7 +1,7 @@
-From cadcbc1b1f32c0d19179fede0db403555d9215d4 Mon Sep 17 00:00:00 2001
+From d21d270e23d4395fb01b5628d1ce76c68a87d9d9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Jul 2017 16:41:03 -0500
-Subject: [PATCH 10/23] Si2157: better check for running tuner in init Reset
+Subject: [PATCH 10/24] Si2157: better check for running tuner in init Reset
  if_frequency if state unknown
 
 ---

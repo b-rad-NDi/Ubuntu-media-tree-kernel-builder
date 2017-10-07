@@ -1,7 +1,7 @@
-From 643c1a91b8158e90c42fa0b02a8d78060adf87e6 Mon Sep 17 00:00:00 2001
+From bfbf7e6307ec217df003a543713443f8e07db879 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 5 Oct 2017 14:34:31 -0500
-Subject: [PATCH 13/23] cx23885: add support for Hauppauge HVR1265 K4
+Date: Fri, 6 Oct 2017 16:34:29 -0500
+Subject: [PATCH 13/24] cx23885: add support for Hauppauge HVR1265 K4
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 52 ++++++++++++++++++++++++++
@@ -12,7 +12,7 @@ Subject: [PATCH 13/23] cx23885: add support for Hauppauge HVR1265 K4
  5 files changed, 121 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 09b1f562e080..65907292e990 100644
+index 7b07c89b358a..9f879e1d5f4b 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -774,6 +774,34 @@ struct cx23885_board cx23885_boards[] = {
@@ -63,7 +63,7 @@ index 09b1f562e080..65907292e990 100644
  };
  const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
  
-@@ -1283,6 +1316,9 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+@@ -1289,6 +1322,9 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
  	case 150329:
  		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
  		break;
@@ -73,7 +73,7 @@ index 09b1f562e080..65907292e990 100644
  	case 166100:
  		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
  		   DVB-T/T2/C, DVB-T/T2/C */
-@@ -1805,6 +1841,18 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1811,6 +1847,18 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  		 * card does not have any GPIO's connected to subcomponents.
  		 */
  		break;
@@ -92,7 +92,7 @@ index 09b1f562e080..65907292e990 100644
  	}
  }
  
-@@ -2050,8 +2098,10 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2056,8 +2104,10 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_STARBURST:
  	case CX23885_BOARD_HAUPPAUGE_IMPACTVCBE:
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
@@ -103,7 +103,7 @@ index 09b1f562e080..65907292e990 100644
  		if (dev->i2c_bus[0].i2c_rc == 0)
  			hauppauge_eeprom(dev, eeprom+0xc0);
  		break;
-@@ -2197,6 +2247,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2203,6 +2253,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  		ts2->ts_clk_en_val = 0x1; /* Enable TS_CLK */
  		ts2->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
  		break;
@@ -111,7 +111,7 @@ index 09b1f562e080..65907292e990 100644
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
  		ts1->gen_ctrl_val  = 0xc; /* Serial bus + punctured clock */
-@@ -2255,6 +2306,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2261,6 +2312,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
  	case CX23885_BOARD_HAUPPAUGE_HVR1255:
  	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
@@ -120,7 +120,7 @@ index 09b1f562e080..65907292e990 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index cc13de754cc0..850c72cce55a 100644
+index 74b2d7c7afde..f8d939e98c7e 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -947,6 +947,18 @@ static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
@@ -199,7 +199,7 @@ index cc13de754cc0..850c72cce55a 100644
  	default:
  		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
 diff --git a/drivers/media/pci/cx23885/cx23885-input.c b/drivers/media/pci/cx23885/cx23885-input.c
-index 4367cb3162b6..218157c214b7 100644
+index 944b70831f12..4b21c3306d8c 100644
 --- a/drivers/media/pci/cx23885/cx23885-input.c
 +++ b/drivers/media/pci/cx23885/cx23885-input.c
 @@ -94,6 +94,7 @@ void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
@@ -224,7 +224,7 @@ index 4367cb3162b6..218157c214b7 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1250:
 +	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
  		/* Integrated CX2388[58] IR controller */
- 		allowed_protos = RC_BIT_ALL_IR_DECODER;
+ 		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
  		/* The grey Hauppauge RC-5 remote */
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
 index ecc580af0148..7e696936b98c 100644

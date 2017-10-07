@@ -1,17 +1,17 @@
-From 6f59b04355d7fbe99ff281810261602fcd20b106 Mon Sep 17 00:00:00 2001
+From d35b6975a1501ccb5aebcafd2f20d272e87c598b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:11:52 -0500
-Subject: [PATCH 22/23] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
+Subject: [PATCH 22/24] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index d731536aeece..cff971a0dbe6 100644
+index c461fbb26932..1a7e750052ee 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -2602,6 +2602,8 @@ struct usb_device_id em28xx_id_table[] = {
+@@ -2620,6 +2620,8 @@ struct usb_device_id em28xx_id_table[] = {
  			.driver_info = EM28178_BOARD_PCTV_461E },
  	{ USB_DEVICE(0x2013, 0x025f),
  			.driver_info = EM28178_BOARD_PCTV_292E },
