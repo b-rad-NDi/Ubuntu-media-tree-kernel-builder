@@ -1,7 +1,7 @@
-From f2b9f97536be9770f842eee0f97c79b4de306d48 Mon Sep 17 00:00:00 2001
+From 5f8a2a507b9fc694f5357f673cb59e6ce3b438e6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 6 Oct 2017 11:19:13 -0500
-Subject: [PATCH 12/23] cx2xxxx: Ensure i2c platform data object lifetime
+Date: Fri, 6 Oct 2017 16:25:52 -0500
+Subject: [PATCH 12/24] cx23xxx: Ensure i2c platform data object lifetime
 
 ---
  drivers/media/pci/cx23885/cx23885-dvb.c | 457 ++++++++++++++++++--------------
@@ -9,7 +9,7 @@ Subject: [PATCH 12/23] cx2xxxx: Ensure i2c platform data object lifetime
  2 files changed, 346 insertions(+), 246 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 979b66627f60..e6735f82215a 100644
+index e795ddeb7fe2..74b2d7c7afde 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -601,6 +601,23 @@ static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
@@ -919,7 +919,7 @@ index 979b66627f60..e6735f82215a 100644
  		port->i2c_client_demod = NULL;
  	}
  
-@@ -2641,28 +2714,28 @@ int cx23885_dvb_unregister(struct cx23885_tsport *port)
+@@ -2646,28 +2719,28 @@ int cx23885_dvb_unregister(struct cx23885_tsport *port)
  	client = port->i2c_client_ci;
  	if (client) {
  		module_put(client->dev.driver->owner);
@@ -951,9 +951,9 @@ index 979b66627f60..e6735f82215a 100644
 +		cx23885_i2c_unregister_device(client);
  	}
  
- 	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+ 	switch (port->dev->board) {
 diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
-index ee3eeeb600f8..17e253a11466 100644
+index c18bb33e060e..847f67d38967 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
 @@ -173,6 +173,23 @@ static struct r820t_config astrometa_t2hybrid_r820t_config = {
@@ -980,7 +980,7 @@ index ee3eeeb600f8..17e253a11466 100644
  static inline void print_err_status(struct cx231xx *dev, int packet, int status)
  {
  	char *errmsg = "Unknown";
-@@ -589,13 +606,13 @@ static void unregister_dvb(struct cx231xx_dvb *dvb)
+@@ -592,13 +609,13 @@ static void unregister_dvb(struct cx231xx_dvb *dvb)
  	client = dvb->i2c_client_tuner;
  	if (client) {
  		module_put(client->dev.driver->owner);
@@ -994,8 +994,8 @@ index ee3eeeb600f8..17e253a11466 100644
 -		i2c_unregister_device(client);
 +		cx231xx_i2c_unregister_device(client);
  	}
- 	dvb_unregister_frontend(dvb->frontend);
- 	dvb_frontend_detach(dvb->frontend);
+ }
+ 
 @@ -757,21 +774,22 @@ static int dvb_init(struct cx231xx *dev)
  	{
  		struct i2c_client *client;
