@@ -1,17 +1,17 @@
-From 6763e9fe2d9538fc9a25b6f33eaab3b62b63fd0c Mon Sep 17 00:00:00 2001
+From 8cff00889af86f7ee40560bcd2234f15d7e5754a Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:57 +0000
 Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 35 +++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ debian.master/config/config.common.ubuntu | 38 +++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 1c7ce82..d8cd3ad7 100644
+index 73dc3a8..51d0312 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9109,3 +9109,38 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9115,3 +9115,41 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -48,7 +48,10 @@ index 1c7ce82..d8cd3ad7 100644
 +CONFIG_VIDEO_OV2680=m
 +CONFIG_VIDEO_LM3554=m
 +CONFIG_VIDEO_IMX=m
-+CONFIG_SDR_PLATFORM_DRIVERS=y
++CONFIG_IR_GPIO_TX=m
++CONFIG_IR_PWM_TX=m
++# CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
++# CONFIG_SDR_PLATFORM_DRIVERS is not set
 +
 -- 
 2.7.4
