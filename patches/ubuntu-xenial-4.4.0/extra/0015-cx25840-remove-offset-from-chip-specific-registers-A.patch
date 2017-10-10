@@ -1,15 +1,14 @@
-From d265e19e5f50f445c26c1f1d5fab3f547fed5182 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 25 May 2017 16:46:30 -0500
-Subject: [PATCH 14/20] cx25840: remove offset from chip specific registers Add
- labels to some undocumented
+From 1547ad83cf2af13d7bc13c49039256b0c61b314e Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:47 +0000
+Subject: [PATCH 15/25] cx25840: remove offset from chip specific registers Add
 
 ---
  drivers/media/i2c/cx25840/cx25840-core.c | 31 +++++++++++++++++--------------
  1 file changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/media/i2c/cx25840/cx25840-core.c b/drivers/media/i2c/cx25840/cx25840-core.c
-index 39f51da..243c585 100644
+index f38bf81..25e430e 100644
 --- a/drivers/media/i2c/cx25840/cx25840-core.c
 +++ b/drivers/media/i2c/cx25840/cx25840-core.c
 @@ -668,14 +668,14 @@ static void cx23885_initialize(struct i2c_client *client)

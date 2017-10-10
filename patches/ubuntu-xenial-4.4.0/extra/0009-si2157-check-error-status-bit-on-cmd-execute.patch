@@ -1,14 +1,14 @@
-From d26e8ef792ef3bb5c80dfcea3d09b067340d5b6a Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jul 2017 16:21:40 -0500
-Subject: [PATCH 09/20] si2157: check error status bit on cmd execute
+From f581969c7609f5c76982b3aeef1f7cc585495235 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:45 +0000
+Subject: [PATCH 09/25] si2157: check error status bit on cmd execute
 
 ---
  drivers/media/tuners/si2157.c | 15 +++++++++++----
  1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e35b1fa..f476a0f 100644
+index e35b1fa..9e21217 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -52,18 +52,25 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)

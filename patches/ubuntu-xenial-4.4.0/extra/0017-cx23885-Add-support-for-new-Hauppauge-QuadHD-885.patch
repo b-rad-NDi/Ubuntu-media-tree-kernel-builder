@@ -1,8 +1,7 @@
-From 6a4e714f9f1c909ffa405f96f2a9f52f323f5b77 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Fri, 26 May 2017 11:09:18 -0500
-Subject: [PATCH 16/20] cx23885: Add support for new Hauppauge QuadHD (885)
- digital only (atsc/dvb) PCIe cards
+From 657c4ed5c41bac62bb22a2030760f9409e14ed2e Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:48 +0000
+Subject: [PATCH 17/25] cx23885: Add support for new Hauppauge QuadHD (885)
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 42 ++++++++++++++++++++++---------
@@ -12,7 +11,7 @@ Subject: [PATCH 16/20] cx23885: Add support for new Hauppauge QuadHD (885)
  4 files changed, 44 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 185080c..7f03f80 100644
+index 638c44c..fdbbeca 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -769,11 +769,21 @@ struct cx23885_board cx23885_boards[] = {
@@ -37,7 +36,7 @@ index 185080c..7f03f80 100644
  	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
  		.name		= "Hauppauge WinTV-HVR-1265(161111)",
  		.porta		= CX23885_ANALOG_VIDEO,
-@@ -1327,25 +1337,25 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+@@ -1333,25 +1343,25 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
  	case 161111:
  		/* WinTV-HVR-1265 (PCIe, Analog/ATSC/QAM-B) */
  		break;
@@ -75,7 +74,7 @@ index 185080c..7f03f80 100644
  		break;
  	default:
  		pr_warn("%s: warning: unknown hauppauge model #%d\n",
-@@ -1851,6 +1861,8 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1857,6 +1867,8 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  		 */
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
@@ -84,7 +83,7 @@ index 185080c..7f03f80 100644
  		/*
  		 * GPIO-08 TER1_RESN
  		 * GPIO-09 TER2_RESN
-@@ -2110,7 +2122,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2116,7 +2128,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
  	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
@@ -94,7 +93,7 @@ index 185080c..7f03f80 100644
  
  		if (dev->i2c_bus[0].i2c_rc == 0)
  			hauppauge_eeprom(dev, eeprom+0xc0);
-@@ -2260,7 +2274,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2266,7 +2280,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
@@ -104,7 +103,7 @@ index 185080c..7f03f80 100644
  		ts1->gen_ctrl_val  = 0xc; /* Serial bus + punctured clock */
  		ts1->ts_clk_en_val = 0x1; /* Enable TS_CLK */
  		ts1->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
-@@ -2318,6 +2334,8 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2324,6 +2340,8 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_HVR1255:
  	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
@@ -114,7 +113,7 @@ index 185080c..7f03f80 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 02b5ec5..72fb7dd 100644
+index 8f63df1..5424a51 100644
 --- a/drivers/media/pci/cx23885/cx23885-core.c
 +++ b/drivers/media/pci/cx23885/cx23885-core.c
 @@ -869,6 +869,14 @@ static int cx23885_dev_setup(struct cx23885_dev *dev)
@@ -133,10 +132,10 @@ index 02b5ec5..72fb7dd 100644
  	if (cx23885_boards[dev->board].clk_freq > 0)
  		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index d20524f..e96fd2b 100644
+index f8d939e9..a14807a 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2331,6 +2331,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2396,6 +2396,8 @@ static int dvb_register(struct cx23885_tsport *port)
  		break;
  	}
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
@@ -145,7 +144,7 @@ index d20524f..e96fd2b 100644
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
-@@ -2428,6 +2430,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2499,6 +2501,8 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:

@@ -1,8 +1,7 @@
-From 73ce7a105c9f20c126775d74d2a39ad6eeeb6602 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Mon, 7 Aug 2017 09:47:39 -0500
-Subject: [PATCH 20/22] si2168: spectral inversion property Hauppauge
- DualHD/SoloHD si2157 models required it
+From ca4becaa26c76f811854d6d2a7db6bc3239d03c2 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:49 +0000
+Subject: [PATCH 21/25] si2168: spectral inversion property Hauppauge
 
 ---
  drivers/media/dvb-frontends/si2168.h  | 3 +++
@@ -24,10 +23,10 @@ index 3225d0c..0f71233 100644
  
  #endif
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 98c3365..c8d2b5b 100644
+index 0807aa7..dc5a424 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -1729,6 +1729,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1730,6 +1730,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			si2168_config.i2c_adapter = &adapter;
  			si2168_config.fe = &dvb->fe[0];
  			si2168_config.ts_mode = SI2168_TS_PARALLEL;
@@ -35,7 +34,7 @@ index 98c3365..c8d2b5b 100644
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
  			info.addr = 0x64;
-@@ -1913,6 +1914,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1914,6 +1915,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			si2168_config.i2c_adapter = &adapter;
  			si2168_config.fe = &dvb->fe[0];
  			si2168_config.ts_mode = SI2168_TS_SERIAL;

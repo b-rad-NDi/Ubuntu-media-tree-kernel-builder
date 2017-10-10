@@ -1,17 +1,17 @@
-From ee596c4a380271860499a280617f8ebfaa946ba7 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Fri, 26 May 2017 11:25:19 -0500
-Subject: [PATCH 18/20] cx23885: fix gpio on Hauppauge QuadHD (888) PCIe cards
+From 7b00b45a3131c6861eb2a3ca55f9f9a50b3603c7 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:48 +0000
+Subject: [PATCH 19/25] cx23885: fix gpio on Hauppauge QuadHD (888) PCIe cards
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 36f47ea..1800460 100644
+index 368b027..9b6c1f1 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -1850,8 +1850,6 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1858,8 +1858,6 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  		cx23885_gpio_set(dev, GPIO_2);
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
@@ -20,7 +20,7 @@ index 36f47ea..1800460 100644
  	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
  		/*
  		 * HVR5525 GPIO Details:
-@@ -1883,7 +1881,9 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1891,7 +1889,9 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  		 */
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:

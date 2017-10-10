@@ -1,15 +1,14 @@
-From b15762921b65a0d1c0c6c7d4b8b50a442b60213e Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jul 2017 16:41:03 -0500
-Subject: [PATCH 11/20] Si2157: better check for running tuner in init Reset
- if_frequency if state unknown
+From 226d6b8ec4e22f3fb575b887d482894f84a79ec0 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:46 +0000
+Subject: [PATCH 11/25] Si2157: better check for running tuner in init Reset
 
 ---
  drivers/media/tuners/si2157.c | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e222128..2570971 100644
+index 83bbaa6..6cd62ba 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -91,24 +91,24 @@ static int si2157_init(struct dvb_frontend *fe)

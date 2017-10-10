@@ -1,7 +1,7 @@
-From d84b6198fb58ab9f1b4be3b0183f87843e3ef2c3 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 04/20] em28xx: usb packet size tweaks
+From 0b51488debf5dc9b4cb06fe00c9c371036da4ea9 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:44 +0000
+Subject: [PATCH 04/25] em28xx: usb packet size tweaks
 
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--

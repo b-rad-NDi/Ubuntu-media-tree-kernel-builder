@@ -1,14 +1,14 @@
-From d0948b3c9367f382798003116880ee11eec893e3 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jul 2017 16:35:05 -0500
-Subject: [PATCH 10/20] si2157: briefly wait for tuning operation to complete
+From 60132198c012c1c5161fcf5e34dc2b9cf4c86092 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:46 +0000
+Subject: [PATCH 10/25] si2157: briefly wait for tuning operation to complete
 
 ---
  drivers/media/tuners/si2157.c | 100 ++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 100 insertions(+)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index f476a0f..e222128 100644
+index 9e21217..83bbaa6 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -237,6 +237,28 @@ skip_fw_download:

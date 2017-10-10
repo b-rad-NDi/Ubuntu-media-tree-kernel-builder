@@ -1,17 +1,17 @@
-From 544599a0c07adcb9fbbb22baa8aa1787781a26a8 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Thu, 16 Mar 2017 23:29:26 +0000
-Subject: [PATCH 05/20] lgdt3306a: add QAM AUTO support
+From ae7721711ddeb7825a7ae50309ad938d23665452 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:44 +0000
+Subject: [PATCH 05/25] lgdt3306a: add QAM AUTO support
 
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index 901735d..8074702 100644
+index 13c3c91..9716c9d 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
-@@ -629,6 +629,9 @@ static int lgdt3306a_set_modulation(struct lgdt3306a_state *state,
+@@ -630,6 +630,9 @@ static int lgdt3306a_set_modulation(struct lgdt3306a_state *state,
  	case QAM_256:
  		ret = lgdt3306a_set_qam(state, QAM_256);
  		break;
@@ -21,7 +21,7 @@ index 901735d..8074702 100644
  	default:
  		return -EINVAL;
  	}
-@@ -654,6 +657,7 @@ static int lgdt3306a_agc_setup(struct lgdt3306a_state *state,
+@@ -655,6 +658,7 @@ static int lgdt3306a_agc_setup(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -29,7 +29,7 @@ index 901735d..8074702 100644
  		break;
  	default:
  		return -EINVAL;
-@@ -708,6 +712,7 @@ static int lgdt3306a_spectral_inversion(struct lgdt3306a_state *state,
+@@ -709,6 +713,7 @@ static int lgdt3306a_spectral_inversion(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -37,7 +37,7 @@ index 901735d..8074702 100644
  		/* Auto ok for QAM */
  		ret = lgdt3306a_set_inversion_auto(state, 1);
  		break;
-@@ -731,6 +736,7 @@ static int lgdt3306a_set_if(struct lgdt3306a_state *state,
+@@ -732,6 +737,7 @@ static int lgdt3306a_set_if(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -45,7 +45,7 @@ index 901735d..8074702 100644
  		if_freq_khz = state->cfg->qam_if_khz;
  		break;
  	default:
-@@ -1649,6 +1655,9 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
+@@ -1650,6 +1656,9 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
  	case QAM_256:
  		 ref_snr = 2800; /* 28dB */
  		 break;

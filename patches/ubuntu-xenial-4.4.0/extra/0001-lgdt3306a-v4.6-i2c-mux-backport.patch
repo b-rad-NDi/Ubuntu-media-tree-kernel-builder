@@ -1,7 +1,7 @@
-From b3ca5c9224c3dd4d3bebdec60bbbdcc7d2082ec4 Mon Sep 17 00:00:00 2001
+From f0805379e5783c8938c2e7397afa93f947275a18 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:35 +0000
-Subject: [PATCH 01/20] lgdt3306a: v4.6 i2c mux backport
+Subject: [PATCH 01/25] lgdt3306a: v4.6 i2c mux backport
 
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 180 ++++++++++++++++++++++++++++----
@@ -10,10 +10,10 @@ Subject: [PATCH 01/20] lgdt3306a: v4.6 i2c mux backport
  3 files changed, 165 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index 1964da8..901735d 100644
+index e6dece2..13c3c91 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
-@@ -67,8 +67,6 @@ struct lgdt3306a_state {
+@@ -68,8 +68,6 @@ struct lgdt3306a_state {
  	enum fe_modulation current_modulation;
  	u32 current_frequency;
  	u32 snr;
@@ -22,7 +22,7 @@ index 1964da8..901735d 100644
  };
  
  /*
-@@ -121,6 +119,7 @@ static void lgdt3306a_DumpRegs(struct lgdt3306a_state *state);
+@@ -122,6 +120,7 @@ static void lgdt3306a_DumpRegs(struct lgdt3306a_state *state);
  static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
  {
  	int ret;
@@ -30,7 +30,7 @@ index 1964da8..901735d 100644
  	u8 buf[] = { reg >> 8, reg & 0xff, val };
  	struct i2c_msg msg = {
  		.addr = state->cfg->i2c_addr, .flags = 0,
-@@ -129,7 +128,9 @@ static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
+@@ -130,7 +129,9 @@ static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
  
  	dbg_reg("reg: 0x%04x, val: 0x%02x\n", reg, val);
  
@@ -41,7 +41,7 @@ index 1964da8..901735d 100644
  
  	if (ret != 1) {
  		pr_err("error (addr %02x %02x <- %02x, err = %i)\n",
-@@ -145,6 +146,7 @@ static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
+@@ -146,6 +147,7 @@ static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
  static int lgdt3306a_read_reg(struct lgdt3306a_state *state, u16 reg, u8 *val)
  {
  	int ret;
@@ -49,7 +49,7 @@ index 1964da8..901735d 100644
  	u8 reg_buf[] = { reg >> 8, reg & 0xff };
  	struct i2c_msg msg[] = {
  		{ .addr = state->cfg->i2c_addr,
-@@ -153,7 +155,9 @@ static int lgdt3306a_read_reg(struct lgdt3306a_state *state, u16 reg, u8 *val)
+@@ -154,7 +156,9 @@ static int lgdt3306a_read_reg(struct lgdt3306a_state *state, u16 reg, u8 *val)
  		  .flags = I2C_M_RD, .buf = val, .len = 1 },
  	};
  
@@ -60,7 +60,7 @@ index 1964da8..901735d 100644
  
  	if (ret != 2) {
  		pr_err("error (addr %02x reg %04x error (ret == %i)\n",
-@@ -1789,7 +1793,7 @@ struct dvb_frontend *lgdt3306a_attach(const struct lgdt3306a_config *config,
+@@ -1790,7 +1794,7 @@ struct dvb_frontend *lgdt3306a_attach(const struct lgdt3306a_config *config,
  		goto fail;
  
  	state->cfg = config;
@@ -69,7 +69,7 @@ index 1964da8..901735d 100644
  
  	memcpy(&state->frontend.ops, &lgdt3306a_ops,
  	       sizeof(struct dvb_frontend_ops));
-@@ -2135,20 +2139,151 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
+@@ -2136,20 +2140,151 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
  	.search               = lgdt3306a_search,
  };
  
@@ -227,7 +227,7 @@ index 1964da8..901735d 100644
  }
  
  static int lgdt3306a_probe(struct i2c_client *client,
-@@ -2169,6 +2304,8 @@ static int lgdt3306a_probe(struct i2c_client *client,
+@@ -2170,6 +2305,8 @@ static int lgdt3306a_probe(struct i2c_client *client,
  			sizeof(struct lgdt3306a_config));
  
  	config->i2c_addr = client->addr;
@@ -236,7 +236,7 @@ index 1964da8..901735d 100644
  	fe = lgdt3306a_attach(config, client->adapter);
  	if (fe == NULL) {
  		ret = -ENODEV;
-@@ -2179,23 +2316,22 @@ static int lgdt3306a_probe(struct i2c_client *client,
+@@ -2180,23 +2317,22 @@ static int lgdt3306a_probe(struct i2c_client *client,
  	state = fe->demodulator_priv;
  
  	/* create mux i2c adapter for tuner */
@@ -269,7 +269,7 @@ index 1964da8..901735d 100644
  	return 0;
  
  err_kfree:
-@@ -2211,7 +2347,7 @@ static int lgdt3306a_remove(struct i2c_client *client)
+@@ -2212,7 +2348,7 @@ static int lgdt3306a_remove(struct i2c_client *client)
  {
  	struct lgdt3306a_state *state = i2c_get_clientdata(client);
  
