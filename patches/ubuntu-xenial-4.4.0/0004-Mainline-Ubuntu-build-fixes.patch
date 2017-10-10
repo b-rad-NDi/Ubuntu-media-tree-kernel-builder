@@ -1,20 +1,21 @@
-From e9a3bb9d2d08010b2ba915d11108c48d63dc3ffd Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 17 Mar 2017 01:37:12 +0000
+From f26cc775f652937590d6fa2a8a5aa8686d9e627b Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 21:00:55 +0000
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |  5 ++--
+ drivers/hid/hid-picolcd_cir.c           |  7 +++--
  drivers/input/touchscreen/sur40.c       | 48 +++++++++++++++------------------
  drivers/net/ethernet/via/via-velocity.c | 10 +++----
  drivers/usb/gadget/function/uvc_queue.c |  3 ++-
- 4 files changed, 30 insertions(+), 36 deletions(-)
+ fs/compat_ioctl.c                       |  2 --
+ 5 files changed, 31 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 9628651..8ffbb6f 100644
+index 9628651..32747b7 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
-@@ -108,13 +108,12 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
+@@ -108,16 +108,15 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
  	struct rc_dev *rdev;
  	int ret = 0;
  
@@ -26,10 +27,14 @@ index 9628651..8ffbb6f 100644
  	rdev->priv             = data;
 -	rdev->driver_type      = RC_DRIVER_IR_RAW;
 -	rdev->allowed_protocols = RC_BIT_ALL;
-+	rdev->allowed_protocols = RC_BIT_ALL_IR_DECODER;
++	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
  	rdev->open             = picolcd_cir_open;
  	rdev->close            = picolcd_cir_close;
- 	rdev->input_name       = data->hdev->name;
+-	rdev->input_name       = data->hdev->name;
++	rdev->device_name      = data->hdev->name;
+ 	rdev->input_phys       = data->hdev->phys;
+ 	rdev->input_id.bustype = data->hdev->bus;
+ 	rdev->input_id.vendor  = data->hdev->vendor;
 diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
 index 0146e2c..2aabe73 100644
 --- a/drivers/input/touchscreen/sur40.c
@@ -223,6 +228,19 @@ index 51d4a17..e6897b1 100644
  
  	vb2_set_plane_payload(&buf->buf.vb2_buf, 0, buf->bytesused);
  	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index dcf2653..521330f 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -1339,8 +1339,6 @@ COMPATIBLE_IOCTL(DMX_SET_FILTER)
+ COMPATIBLE_IOCTL(DMX_SET_PES_FILTER)
+ COMPATIBLE_IOCTL(DMX_SET_BUFFER_SIZE)
+ COMPATIBLE_IOCTL(DMX_GET_PES_PIDS)
+-COMPATIBLE_IOCTL(DMX_GET_CAPS)
+-COMPATIBLE_IOCTL(DMX_SET_SOURCE)
+ COMPATIBLE_IOCTL(DMX_GET_STC)
+ COMPATIBLE_IOCTL(FE_GET_INFO)
+ COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
 -- 
 2.7.4
 
