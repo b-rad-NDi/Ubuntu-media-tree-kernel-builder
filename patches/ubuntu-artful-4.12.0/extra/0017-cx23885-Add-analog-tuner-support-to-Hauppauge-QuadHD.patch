@@ -1,7 +1,7 @@
-From 6c26922d11e4a95cd70e400d4df1f8f38de71591 Mon Sep 17 00:00:00 2001
+From 23d2dbcd15f8295a03b03da414369eebf1eae8d8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 15 Aug 2017 20:47:43 -0500
-Subject: [PATCH 16/22] cx23885: Add analog tuner support to Hauppauge QuadHD
+Subject: [PATCH 17/24] cx23885: Add analog tuner support to Hauppauge QuadHD
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 32 +++++++++++++++++++++++++++----
@@ -10,7 +10,7 @@ Subject: [PATCH 16/22] cx23885: Add analog tuner support to Hauppauge QuadHD
  3 files changed, 53 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 7f03f80ac48a..a82e3a69a6f2 100644
+index fdbbeca3bd9f..368b0273eeab 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -765,24 +765,48 @@ struct cx23885_board cx23885_boards[] = {
@@ -67,10 +67,10 @@ index 7f03f80ac48a..a82e3a69a6f2 100644
  	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
  		.name		= "Hauppauge WinTV-HVR-1265(161111)",
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index e96fd2bf4e0e..21365232c8fd 100644
+index a14807a72c78..eb724c23facf 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2379,6 +2379,15 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2447,6 +2447,15 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
@@ -81,12 +81,12 @@ index e96fd2bf4e0e..21365232c8fd 100644
 +				dev->ts1.analog_fe.tuner_priv = client_tuner;
 +				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
 +					info.addr, &dev->i2c_bus[1].i2c_adap,
-+					&si2157_config);
++					si2157_config);
 +			}
  			break;
  
  		/* port c - terrestrial/cable */
-@@ -2467,6 +2476,15 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2539,6 +2548,15 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
@@ -97,7 +97,7 @@ index e96fd2bf4e0e..21365232c8fd 100644
 +				dev->ts1.analog_fe.tuner_priv = client_tuner;
 +				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
 +					info.addr, &dev->i2c_bus[1].i2c_adap,
-+					&si2157_config);
++					si2157_config);
 +			}
  			break;
  
