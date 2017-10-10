@@ -1,17 +1,18 @@
-From 8210132298e18e25b60f4c5753eb1a6d72bb4d97 Mon Sep 17 00:00:00 2001
+From 6b50485b1fbc3d95f8e8b6fdbb6ac08aa1b523b6 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 16:27:14 +0000
-Subject: [PATCH 02/17] Apply build fixes to media tree
+Date: Tue, 10 Oct 2017 18:54:15 +0000
+Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-api.c           |  2 ++
- drivers/media/cec/cec-api.c.rej       | 10 ++++++++++
- drivers/media/media-device.c          |  2 ++
- drivers/media/usb/em28xx/em28xx-dvb.c |  2 +-
- drivers/media/usb/uvc/uvc_driver.c    |  2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c  |  2 ++
- 6 files changed, 19 insertions(+), 1 deletion(-)
- create mode 100644 drivers/media/cec/cec-api.c.rej
+ drivers/media/cec/cec-api.c                | 2 ++
+ drivers/media/dvb-core/dvb_net.c           | 2 ++
+ drivers/media/media-device.c               | 2 ++
+ drivers/media/pci/ddbridge/ddbridge-core.c | 2 ++
+ drivers/media/radio/wl128x/fmdrv_common.c  | 5 ++++-
+ drivers/media/usb/em28xx/em28xx-dvb.c      | 2 +-
+ drivers/media/usb/uvc/uvc_driver.c         | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c       | 2 ++
+ 8 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index 8ac616d2927b..af34e23e53b5 100644
@@ -26,22 +27,19 @@ index 8ac616d2927b..af34e23e53b5 100644
  #include <media/cec-pin.h>
  #include "cec-priv.h"
  
-diff --git a/drivers/media/cec/cec-api.c.rej b/drivers/media/cec/cec-api.c.rej
-new file mode 100644
-index 000000000000..4e31b3893f43
---- /dev/null
-+++ b/drivers/media/cec/cec-api.c.rej
-@@ -0,0 +1,10 @@
-+diff a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c	(rejected hunks)
-+@@ -30,6 +30,8 @@
-+ #include <linux/uaccess.h>
-+ #include <linux/version.h>
-+ 
-++#include <media/compat.h>
-++
-+ #include "cec-priv.h"
-+ 
-+ static inline struct cec_devnode *cec_devnode_data(struct file *filp)
+diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
+index 1bf636bfb763..dd504abba371 100644
+--- a/drivers/media/dvb-core/dvb_net.c
++++ b/drivers/media/dvb-core/dvb_net.c
+@@ -65,6 +65,8 @@
+ #include <linux/mutex.h>
+ #include <linux/sched.h>
+ 
++#include <media/compat.h>
++
+ #include "dvb_demux.h"
+ #include "dvb_net.h"
+ 
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
 index 77c2abad24b7..080e5c038b3b 100644
 --- a/drivers/media/media-device.c
@@ -55,6 +53,42 @@ index 77c2abad24b7..080e5c038b3b 100644
  #ifdef CONFIG_MEDIA_CONTROLLER
  
  /* -----------------------------------------------------------------------------
+diff --git a/drivers/media/pci/ddbridge/ddbridge-core.c b/drivers/media/pci/ddbridge/ddbridge-core.c
+index f4bd4908acdd..a09148ac3fc6 100644
+--- a/drivers/media/pci/ddbridge/ddbridge-core.c
++++ b/drivers/media/pci/ddbridge/ddbridge-core.c
+@@ -34,6 +34,8 @@
+ #include <linux/swab.h>
+ #include <linux/vmalloc.h>
+ 
++#include <media/compat.h>
++
+ #include "ddbridge.h"
+ #include "ddbridge-i2c.h"
+ #include "ddbridge-regs.h"
+diff --git a/drivers/media/radio/wl128x/fmdrv_common.c b/drivers/media/radio/wl128x/fmdrv_common.c
+index ab3428bf63fe..64eadfb45947 100644
+--- a/drivers/media/radio/wl128x/fmdrv_common.c
++++ b/drivers/media/radio/wl128x/fmdrv_common.c
+@@ -31,6 +31,9 @@
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+ #include <linux/delay.h>
++
++#include <media/compat.h>
++
+ #include "fmdrv.h"
+ #include "fmdrv_v4l2.h"
+ #include "fmdrv_common.h"
+@@ -416,7 +419,7 @@ static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+ 	if (!test_bit(FM_FW_DW_INPROGRESS, &fmdev->flag) ||
+ 			test_bit(FM_INTTASK_RUNNING, &fmdev->flag)) {
+ 		/* Fill command header info */
+-		hdr = skb_put(skb, FM_CMD_MSG_HDR_SIZE);
++		hdr = (void*)skb_put(skb, FM_CMD_MSG_HDR_SIZE);
+ 		hdr->hdr = FM_PKT_LOGICAL_CHAN_NUMBER;	/* 0x08 */
+ 
+ 		/* 3 (fm_opcode,rd_wr,dlen) + payload len) */
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
 index 5b01ff520b82..d46fc1108cf9 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
