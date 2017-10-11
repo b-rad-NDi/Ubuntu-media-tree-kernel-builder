@@ -461,7 +461,7 @@ function apply_extra_patches()
 {
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
-	for i in `ls ${KB_PATCH_DIR}/extra/*.patch | sort` ; do
+	for i in `ls ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/*.patch | sort` ; do
 		echo "#############################################################"
 		apply_patch_git_am 1 $i
 		[ $? != 0 ] && echo "patch [${i}] failure, exiting" && return 1
