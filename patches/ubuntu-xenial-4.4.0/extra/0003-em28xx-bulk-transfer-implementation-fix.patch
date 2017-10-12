@@ -1,7 +1,7 @@
-From ba23b7c9939c3417dcf5b8b3ef7fa99159913b7a Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Thu, 16 Mar 2017 23:10:11 +0000
-Subject: [PATCH 03/20] em28xx: bulk transfer implementation fix
+From ae9ed06981828d3b22495140f8ba2fd33a76bb00 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:44 +0000
+Subject: [PATCH 03/25] em28xx: bulk transfer implementation fix
 
 ---
  drivers/media/usb/em28xx/em28xx-core.c | 34 +++++++++++++++++++++++++---------

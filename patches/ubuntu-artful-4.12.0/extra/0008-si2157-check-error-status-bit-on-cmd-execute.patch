@@ -1,7 +1,7 @@
-From a15374142402f8832f8e2bcb24ae9705f8ddee3d Mon Sep 17 00:00:00 2001
+From 3c0a7901b606690cb88f5033a6e505abfb2de0c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Jul 2017 16:21:40 -0500
-Subject: [PATCH 08/22] si2157: check error status bit on cmd execute
+Subject: [PATCH 08/24] si2157: check error status bit on cmd execute
 
 ---
  drivers/media/tuners/si2157.c | 15 +++++++++++----

@@ -1,0 +1,140 @@
+From ce71178abf5d90b5fdf0204c155aae2c971f68df Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 15 Aug 2017 20:47:43 -0500
+Subject: [PATCH 17/24] cx23885: Add analog tuner support to Hauppauge QuadHD
+
+---
+ drivers/media/pci/cx23885/cx23885-cards.c | 32 +++++++++++++++++++++++++++----
+ drivers/media/pci/cx23885/cx23885-dvb.c   | 18 +++++++++++++++++
+ drivers/media/pci/cx23885/cx23885-video.c |  8 +++++++-
+ 3 files changed, 53 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index fdbbeca3bd9f..368b0273eeab 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -765,24 +765,48 @@ struct cx23885_board cx23885_boards[] = {
+ 		} },
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB] = {
+-		.name        = "Hauppauge WinTV-QuadHD-DVB",
++		.name         = "Hauppauge WinTV-QuadHD-DVB",
++		.porta        = CX23885_ANALOG_VIDEO,
+ 		.portb        = CX23885_MPEG_DVB,
+ 		.portc        = CX23885_MPEG_DVB,
++		.tuner_type	= TUNER_ABSENT,
++		.force_bff	= 1,
++		.input          = {{
++			.type   = CX23885_VMUX_TELEVISION,
++			.vmux   =	CX25840_VIN7_CH3 |
++					CX25840_VIN5_CH2 |
++					CX25840_VIN2_CH1 |
++					CX25840_DIF_ON,
++			.amux   = CX25840_AUDIO8,
++		} },
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+-		.name       = "Hauppauge WinTV-QuadHD-DVB(885)",
++		.name         = "Hauppauge WinTV-QuadHD-DVB(885)",
+ 		.portb        = CX23885_MPEG_DVB,
+ 		.portc        = CX23885_MPEG_DVB,
++		.tuner_type   = TUNER_ABSENT,
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC] = {
+-		.name        = "Hauppauge WinTV-QuadHD-ATSC",
++		.name         = "Hauppauge WinTV-QuadHD-ATSC",
++		.porta        = CX23885_ANALOG_VIDEO,
+ 		.portb        = CX23885_MPEG_DVB,
+ 		.portc        = CX23885_MPEG_DVB,
++		.tuner_type	= TUNER_ABSENT,
++		.force_bff	= 1,
++		.input          = {{
++			.type   = CX23885_VMUX_TELEVISION,
++			.vmux   =	CX25840_VIN7_CH3 |
++					CX25840_VIN5_CH2 |
++					CX25840_VIN2_CH1 |
++					CX25840_DIF_ON,
++			.amux   = CX25840_AUDIO8,
++		} },
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885] = {
+-		.name       = "Hauppauge WinTV-QuadHD-ATSC(885)",
++		.name         = "Hauppauge WinTV-QuadHD-ATSC(885)",
+ 		.portb        = CX23885_MPEG_DVB,
+ 		.portc        = CX23885_MPEG_DVB,
++		.tuner_type   = TUNER_ABSENT,
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
+ 		.name		= "Hauppauge WinTV-HVR-1265(161111)",
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index a14807a72c78..eb724c23facf 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -2447,6 +2447,15 @@ static int dvb_register(struct cx23885_tsport *port)
+ 				goto frontend_detach;
+ 			}
+ 			port->i2c_client_tuner = client_tuner;
++
++			/* we only attach tuner for analog on the 888 version */
++			if((dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) && (port->nr==1)){
++				printk(KERN_INFO "%s(): QUADHD_DVB analog setup\n", __func__);
++				dev->ts1.analog_fe.tuner_priv = client_tuner;
++				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
++					info.addr, &dev->i2c_bus[1].i2c_adap,
++					si2157_config);
++			}
+ 			break;
+ 
+ 		/* port c - terrestrial/cable */
+@@ -2539,6 +2548,15 @@ static int dvb_register(struct cx23885_tsport *port)
+ 				goto frontend_detach;
+ 			}
+ 			port->i2c_client_tuner = client_tuner;
++
++			/* we only attach tuner for analog on the 888 version */
++			if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC){
++				printk(KERN_INFO "%s(): QUADHD_ATSC analog setup\n", __func__);
++				dev->ts1.analog_fe.tuner_priv = client_tuner;
++				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
++					info.addr, &dev->i2c_bus[1].i2c_adap,
++					si2157_config);
++			}
+ 			break;
+ 
+ 		/* port c - terrestrial/cable */
+diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
+index 7e696936b98c..afa383f7b59a 100644
+--- a/drivers/media/pci/cx23885/cx23885-video.c
++++ b/drivers/media/pci/cx23885/cx23885-video.c
+@@ -264,6 +264,8 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
+ 		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+ 		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+ 		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
++		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) ||
++		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
+ 		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+ 		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
+ 		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
+@@ -995,7 +997,9 @@ static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+ 	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+ 	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+ 	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+-	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4))
++	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
++	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
++	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC))
+ 		fe = &dev->ts1.analog_fe;
+ 
+ 	if (fe && fe->ops.tuner_ops.set_analog_params) {
+@@ -1026,6 +1030,8 @@ int cx23885_set_frequency(struct file *file, void *priv,
+ 	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+ 	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+ 	case CX23885_BOARD_HAUPPAUGE_HVR1850:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 		ret = cx23885_set_freq_via_ops(dev, f);
+ 		break;
+ 	default:
+-- 
+2.11.0
+

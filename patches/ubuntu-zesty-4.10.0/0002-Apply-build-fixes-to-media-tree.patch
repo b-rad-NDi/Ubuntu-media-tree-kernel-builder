@@ -1,6 +1,6 @@
-From 0269e2f88dc59cfc609fb182ef8469d6c9608470 Mon Sep 17 00:00:00 2001
+From 138e1ca4f417a58fe0196b862e3535b7e9f7d935 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sun, 2 Jul 2017 15:03:21 -0500
+Date: Sat, 7 Oct 2017 14:38:38 -0500
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
@@ -12,6 +12,7 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/pci/ivtv/ivtv-driver.c              | 2 ++
  drivers/media/pci/ivtv/ivtv-irq.c                 | 2 ++
  drivers/media/pci/zoran/zoran_card.c              | 2 ++
+ drivers/media/radio/wl128x/fmdrv_common.c         | 2 +-
  drivers/media/rc/keymaps/rc-cec.c                 | 2 ++
  drivers/media/rc/serial_ir.c                      | 2 ++
  drivers/media/rc/sir_ir.c                         | 2 ++
@@ -27,12 +28,13 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/videobuf2-dma-contig.c    | 4 ++--
  drivers/media/v4l2-core/videobuf2-dma-sg.c        | 6 ++++--
  drivers/media/v4l2-core/videobuf2-vmalloc.c       | 4 ++--
+ include/media/compat.h                            | 6 +++---
  include/media/media-entity.h                      | 2 ++
  include/media/v4l2-fwnode.h                       | 2 ++
- 25 files changed, 51 insertions(+), 7 deletions(-)
+ 27 files changed, 55 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
-index 6e1a1cb98357..6d0dcac6a698 100644
+index 8ac616d2927b..af34e23e53b5 100644
 --- a/drivers/media/cec/cec-api.c
 +++ b/drivers/media/cec/cec-api.c
 @@ -30,6 +30,8 @@
@@ -41,11 +43,11 @@ index 6e1a1cb98357..6d0dcac6a698 100644
  
 +#include <media/compat.h>
 +
+ #include <media/cec-pin.h>
  #include "cec-priv.h"
  
- static inline struct cec_devnode *cec_devnode_data(struct file *filp)
 diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index b516d599d6c4..9b1a6486df0b 100644
+index e3a1fb6d6690..ea04c2288663 100644
 --- a/drivers/media/cec/cec-core.c
 +++ b/drivers/media/cec/cec-core.c
 @@ -29,6 +29,8 @@
@@ -71,7 +73,7 @@ index aaed7cfe5f66..1631b9a9385a 100644
  
  struct af9033_dev {
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index b1887870172d..9c12426a6147 100644
+index 77c2abad24b7..080e5c038b3b 100644
 --- a/drivers/media/media-device.c
 +++ b/drivers/media/media-device.c
 @@ -33,6 +33,8 @@
@@ -97,7 +99,7 @@ index 06bf97d61b42..ec2b6cb5fd0b 100644
  #define MEDIA_NAME		"media"
  
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index e8dc69102f97..206a2de3b7b2 100644
+index 1892d4ef9d88..8c478e65e57a 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
@@ -123,7 +125,7 @@ index 6efe1f71262c..93153d8ba074 100644
  
  static void ivtv_dma_dec_start(struct ivtv_stream *s);
 diff --git a/drivers/media/pci/zoran/zoran_card.c b/drivers/media/pci/zoran/zoran_card.c
-index 4680f001653a..fe554d430d45 100644
+index a6b9ebd20263..ed6c2cee26af 100644
 --- a/drivers/media/pci/zoran/zoran_card.c
 +++ b/drivers/media/pci/zoran/zoran_card.c
 @@ -54,6 +54,8 @@
@@ -135,8 +137,21 @@ index 4680f001653a..fe554d430d45 100644
  extern const struct zoran_format zoran_formats[];
  
  static int card[BUZ_MAX] = { [0 ... (BUZ_MAX-1)] = -1 };
+diff --git a/drivers/media/radio/wl128x/fmdrv_common.c b/drivers/media/radio/wl128x/fmdrv_common.c
+index ab3428bf63fe..2a4ee5f34661 100644
+--- a/drivers/media/radio/wl128x/fmdrv_common.c
++++ b/drivers/media/radio/wl128x/fmdrv_common.c
+@@ -416,7 +416,7 @@ static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+ 	if (!test_bit(FM_FW_DW_INPROGRESS, &fmdev->flag) ||
+ 			test_bit(FM_INTTASK_RUNNING, &fmdev->flag)) {
+ 		/* Fill command header info */
+-		hdr = skb_put(skb, FM_CMD_MSG_HDR_SIZE);
++		hdr = (void*)skb_put(skb, FM_CMD_MSG_HDR_SIZE);
+ 		hdr->hdr = FM_PKT_LOGICAL_CHAN_NUMBER;	/* 0x08 */
+ 
+ 		/* 3 (fm_opcode,rd_wr,dlen) + payload len) */
 diff --git a/drivers/media/rc/keymaps/rc-cec.c b/drivers/media/rc/keymaps/rc-cec.c
-index 354c8e724b8e..3ab5d41476cc 100644
+index 76d34abb7c85..5da1c05b924d 100644
 --- a/drivers/media/rc/keymaps/rc-cec.c
 +++ b/drivers/media/rc/keymaps/rc-cec.c
 @@ -11,6 +11,8 @@
@@ -149,7 +164,7 @@ index 354c8e724b8e..3ab5d41476cc 100644
   * CEC Spec "High-Definition Multimedia Interface Specification" can be obtained
   * here: http://xtreamerdev.googlecode.com/files/CEC_Specs.pdf
 diff --git a/drivers/media/rc/serial_ir.c b/drivers/media/rc/serial_ir.c
-index cb242f2dff11..db4584e93531 100644
+index b2cdf4b89439..28fe915683e2 100644
 --- a/drivers/media/rc/serial_ir.c
 +++ b/drivers/media/rc/serial_ir.c
 @@ -35,6 +35,8 @@
@@ -162,7 +177,7 @@ index cb242f2dff11..db4584e93531 100644
  	int signal_pin;
  	int signal_pin_change;
 diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
-index 8c8f38f58777..2e3e12d40ce6 100644
+index 9769bf7b4172..7d42ab734e8d 100644
 --- a/drivers/media/rc/sir_ir.c
 +++ b/drivers/media/rc/sir_ir.c
 @@ -23,6 +23,8 @@
@@ -188,7 +203,7 @@ index 5b01ff520b82..d46fc1108cf9 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
-index c843070f24c1..bea7f7239d09 100644
+index 50146f263d90..9c29620291bc 100644
 --- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
 +++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
 @@ -44,6 +44,8 @@
@@ -201,7 +216,7 @@ index c843070f24c1..bea7f7239d09 100644
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
-index 65692576690f..6281d011b765 100644
+index cecdcbcd400c..83aeece6b871 100644
 --- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 +++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
 @@ -34,6 +34,8 @@
@@ -214,7 +229,7 @@ index 65692576690f..6281d011b765 100644
  
  MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
 diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
-index ceb953be0770..92216c9ff499 100644
+index f06f09a0876e..ef18c8d28ad9 100644
 --- a/drivers/media/usb/usbtv/usbtv-core.c
 +++ b/drivers/media/usb/usbtv/usbtv-core.c
 @@ -44,6 +44,8 @@
@@ -227,7 +242,7 @@ index ceb953be0770..92216c9ff499 100644
  {
  	int ret;
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 2b719f80de15..69d5cdffe244 100644
+index 6d22b22cb35b..5c0055f15fd8 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -27,6 +27,8 @@
@@ -253,7 +268,7 @@ index fb86d6af398d..635ffa82b30a 100644
   * UVC Controls
   */
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index 851f128eba22..6d7b43a0b1be 100644
+index d741a8e0fdac..11f15ca2b4a9 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
 @@ -24,6 +24,8 @@
@@ -266,7 +281,7 @@ index 851f128eba22..6d7b43a0b1be 100644
  {
  #if IS_ENABLED(CONFIG_I2C)
 diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
-index 7b8288108e8a..e1da487201f2 100644
+index 4ceef217de83..e609bf054f67 100644
 --- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
 +++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
 @@ -17,6 +17,8 @@
@@ -276,10 +291,10 @@ index 7b8288108e8a..e1da487201f2 100644
 +#include <media/compat.h>
 +
  #define has_flash_op(v4l2_flash, op)				\
- 	(v4l2_flash && v4l2_flash->ops->op)
+ 	(v4l2_flash && v4l2_flash->ops && v4l2_flash->ops->op)
  
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 2e9d7e91893e..cf6613c8d8ee 100644
+index fc2453c41dea..0349c94bb9da 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -32,6 +32,8 @@
@@ -292,10 +307,10 @@ index 2e9d7e91893e..cf6613c8d8ee 100644
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
 diff --git a/drivers/media/v4l2-core/videobuf2-dma-contig.c b/drivers/media/v4l2-core/videobuf2-dma-contig.c
-index 2db0413f5d57..fb6a177be461 100644
+index 1b523f7c1e5a..7e1a13fa8d67 100644
 --- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
 +++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
-@@ -356,8 +356,8 @@ static struct dma_buf_ops vb2_dc_dmabuf_ops = {
+@@ -356,8 +356,8 @@ static const struct dma_buf_ops vb2_dc_dmabuf_ops = {
  	.detach = vb2_dc_dmabuf_ops_detach,
  	.map_dma_buf = vb2_dc_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_dc_dmabuf_ops_unmap,
@@ -307,7 +322,7 @@ index 2db0413f5d57..fb6a177be461 100644
  	.mmap = vb2_dc_dmabuf_ops_mmap,
  	.release = vb2_dc_dmabuf_ops_release,
 diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
-index 00a9a003a54c..e6134ebcc762 100644
+index a8198447f7a6..32bc67066383 100644
 --- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
 +++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
 @@ -21,6 +21,8 @@
@@ -319,7 +334,7 @@ index 00a9a003a54c..e6134ebcc762 100644
  static int debug;
  module_param(debug, int, 0644);
  
-@@ -504,8 +506,8 @@ static struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+@@ -506,8 +508,8 @@ static const struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
  	.detach = vb2_dma_sg_dmabuf_ops_detach,
  	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
@@ -331,10 +346,10 @@ index 00a9a003a54c..e6134ebcc762 100644
  	.mmap = vb2_dma_sg_dmabuf_ops_mmap,
  	.release = vb2_dma_sg_dmabuf_ops_release,
 diff --git a/drivers/media/v4l2-core/videobuf2-vmalloc.c b/drivers/media/v4l2-core/videobuf2-vmalloc.c
-index 27d1db3bb8cf..3f778147cdef 100644
+index 5aae15b41437..2f01047984d8 100644
 --- a/drivers/media/v4l2-core/videobuf2-vmalloc.c
 +++ b/drivers/media/v4l2-core/videobuf2-vmalloc.c
-@@ -342,8 +342,8 @@ static struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
+@@ -344,8 +344,8 @@ static const struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
  	.detach = vb2_vmalloc_dmabuf_ops_detach,
  	.map_dma_buf = vb2_vmalloc_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_vmalloc_dmabuf_ops_unmap,
@@ -345,8 +360,25 @@ index 27d1db3bb8cf..3f778147cdef 100644
  	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
  	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
  	.release = vb2_vmalloc_dmabuf_ops_release,
+diff --git a/include/media/compat.h b/include/media/compat.h
+index 58dcb88e07b2..17a5a5a9a1d2 100644
+--- a/include/media/compat.h
++++ b/include/media/compat.h
+@@ -2058,9 +2058,9 @@ static inline void fwnode_handle_get(struct fwnode_handle *fwnode)
+ {
+ }
+ 
+-static inline void fwnode_handle_put(struct fwnode_handle *fwnode)
+-{
+-}
++//static inline void fwnode_handle_put(struct fwnode_handle *fwnode)
++//{
++//}
+ 
+ #endif
+ 
 diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 754182d29668..5c8b454e70b0 100644
+index 222d379960b7..906a82c8f50f 100644
 --- a/include/media/media-entity.h
 +++ b/include/media/media-entity.h
 @@ -26,6 +26,8 @@
@@ -359,7 +391,7 @@ index 754182d29668..5c8b454e70b0 100644
  
  /**
 diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
-index ecc1233a873e..58f81edc929a 100644
+index 7adec9851d9e..a8f79048b444 100644
 --- a/include/media/v4l2-fwnode.h
 +++ b/include/media/v4l2-fwnode.h
 @@ -24,6 +24,8 @@
@@ -370,7 +402,7 @@ index ecc1233a873e..58f81edc929a 100644
 +
  struct fwnode_handle;
  
- /**
+ #define V4L2_FWNODE_CSI2_MAX_DATA_LANES	4
 -- 
 2.11.0
 

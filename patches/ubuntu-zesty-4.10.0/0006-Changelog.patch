@@ -1,24 +1,24 @@
-From 06567f3a41a276a8cb227f3fc4910dfc72bbe696 Mon Sep 17 00:00:00 2001
+From 0a0fb073ffe89fe22a71289e12cfdfa78e84591d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 9 Aug 2017 10:11:12 -0500
+Date: Fri, 6 Oct 2017 16:20:52 -0500
 Subject: [PATCH 6/6] Changelog
 
 ---
- debian.master/changelog | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ debian.master/changelog | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 58f57456e274..5790de46436f 100644
+index d9ef35bb0f4a..eb43162280ed 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,45 @@
-+linux (4.10.0-30201708091011.0+mediatree+hauppauge) zesty; urgency=low
+@@ -1,3 +1,48 @@
++linux (4.10.0-35201710061620.0+mediatree+hauppauge) zesty; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-30.34 rev fb2f47521bb9d6e288fa1caa31148f2d153bdfc7
++    - 4.10.0-35.39 rev 0f390669d7a35ae963c4d41c1d7134a8450e2a1d
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-06-20-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-10-05-20-10.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -41,22 +41,25 @@ index 58f57456e274..5790de46436f 100644
 +    - 0009-si2157-briefly-wait-for-tuning-operation-to-complete.patch
 +    - 0010-Si2157-better-check-for-running-tuner-in-init-Reset-.patch
 +    - 0011-si2157-add-analog-tuner-support-and-dvb-frontend.patch
-+    - 0012-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
-+    - 0013-cx25840-remove-offset-from-chip-specific-registers-A.patch
-+    - 0014-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe-D.patch
-+    - 0015-cx23885-Add-support-for-new-Hauppauge-QuadHD-885-dig.patch
-+    - 0016-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
-+    - 0017-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
-+    - 0018-lgdt3306a-QAM-streaming-improvement-Required-for-sta.patch
-+    - 0019-si2168-spectral-inversion-property-Hauppauge-DualHD-.patch
-+    - 0020-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
-+    - 0021-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
++    - 0012-cx2xxxx-Ensure-i2c-platform-data-object-lifetime.patch
++    - 0013-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
++    - 0014-cx25840-remove-offset-from-chip-specific-registers-A.patch
++    - 0015-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe-D.patch
++    - 0016-cx23885-Add-support-for-new-Hauppauge-QuadHD-885.patch
++    - 0017-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++    - 0018-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
++    - 0019-lgdt3306a-QAM-streaming-improvement-Required-for-sta.patch
++    - 0020-si2168-spectral-inversion-property-Hauppauge-DualHD-.patch
++    - 0021-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    - 0022-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
++    - 0023-em28xx-increase-max-em28xx-boards-to-max-dvb-adapter.patch
++    - 0024-v4l2-core-Reverse-758d90e16-kvmalloc-patch.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 09 Aug 2017 10:11:12 -0500
++ -- Fake User <hidden@email.co>  Fri, 06 Oct 2017 16:20:51 -0500
 +
- linux (4.10.0-30.34) zesty; urgency=low
+ linux (4.10.0-35.39) zesty; urgency=low
  
-   * CVE-2017-7533
+   * linux: 4.10.0-35.39 -proposed tracker (LP: #1716606)
 -- 
 2.11.0
 

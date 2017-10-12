@@ -1,14 +1,14 @@
-From 6ee06c70afc2360254703b6933c04418809ef177 Mon Sep 17 00:00:00 2001
+From 2b6dc5cc7caaf7c27ccffb998726ddd168d3073d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 25 May 2017 15:36:30 -0500
-Subject: [PATCH 06/19] cx23885: Enable new Hauppauge PCIe ImpactVCB variant
+Subject: [PATCH 06/24] cx23885: Enable new Hauppauge PCIe ImpactVCB variant
 
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index c48fa8e25a70..f164f1ceaf56 100644
+index 28eab9c518c5..30b5a754468d 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -1028,6 +1028,10 @@ struct cx23885_subid cx23885_subids[] = {

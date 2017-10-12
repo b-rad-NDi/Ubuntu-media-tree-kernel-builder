@@ -1,0 +1,291 @@
+From ce1e5a132a2a0a400e2374038b27b17a238c0afd Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Fri, 6 Oct 2017 15:49:28 -0500
+Subject: [PATCH 24/24] v4l2-core: Reverse 758d90e16 kvmalloc patch
+
+---
+ drivers/media/v4l2-core/v4l2-async.c       |  5 ++---
+ drivers/media/v4l2-core/v4l2-ctrls.c       | 26 ++++++++++++--------------
+ drivers/media/v4l2-core/v4l2-event.c       |  8 +++-----
+ drivers/media/v4l2-core/v4l2-ioctl.c       |  7 +++----
+ drivers/media/v4l2-core/v4l2-subdev.c      |  8 +++-----
+ drivers/media/v4l2-core/videobuf2-dma-sg.c |  8 ++++----
+ 6 files changed, 27 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+index 11f15ca2b4a9..c8e759bfd343 100644
+--- a/drivers/media/v4l2-core/v4l2-async.c
++++ b/drivers/media/v4l2-core/v4l2-async.c
+@@ -12,7 +12,6 @@
+ #include <linux/err.h>
+ #include <linux/i2c.h>
+ #include <linux/list.h>
+-#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/of.h>
+@@ -208,7 +207,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
+ 	if (!notifier->v4l2_dev)
+ 		return;
+ 
+-	dev = kvmalloc_array(n_subdev, sizeof(*dev), GFP_KERNEL);
++	dev = kmalloc_array(n_subdev, sizeof(*dev), GFP_KERNEL);
+ 	if (!dev) {
+ 		dev_err(notifier->v4l2_dev->dev,
+ 			"Failed to allocate device cache!\n");
+@@ -264,7 +263,7 @@ void v4l2_async_notifier_unregister(struct v4l2_async_notifier *notifier)
+ 		}
+ 		put_device(d);
+ 	}
+-	kvfree(dev);
++	kfree(dev);
+ 
+ 	notifier->v4l2_dev = NULL;
+ 
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index dd1db678718c..36eede3ff098 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -19,7 +19,6 @@
+  */
+ 
+ #include <linux/ctype.h>
+-#include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/export.h>
+ #include <media/v4l2-ioctl.h>
+@@ -1747,9 +1746,8 @@ int v4l2_ctrl_handler_init_class(struct v4l2_ctrl_handler *hdl,
+ 	INIT_LIST_HEAD(&hdl->ctrls);
+ 	INIT_LIST_HEAD(&hdl->ctrl_refs);
+ 	hdl->nr_of_buckets = 1 + nr_of_controls_hint / 8;
+-	hdl->buckets = kvmalloc_array(hdl->nr_of_buckets,
+-				      sizeof(hdl->buckets[0]),
+-				      GFP_KERNEL | __GFP_ZERO);
++	hdl->buckets = kcalloc(hdl->nr_of_buckets, sizeof(hdl->buckets[0]),
++			       GFP_KERNEL);
+ 	hdl->error = hdl->buckets ? 0 : -ENOMEM;
+ 	return hdl->error;
+ }
+@@ -1776,9 +1774,9 @@ void v4l2_ctrl_handler_free(struct v4l2_ctrl_handler *hdl)
+ 		list_del(&ctrl->node);
+ 		list_for_each_entry_safe(sev, next_sev, &ctrl->ev_subs, node)
+ 			list_del(&sev->node);
+-		kvfree(ctrl);
++		kfree(ctrl);
+ 	}
+-	kvfree(hdl->buckets);
++	kfree(hdl->buckets);
+ 	hdl->buckets = NULL;
+ 	hdl->cached = NULL;
+ 	hdl->error = 0;
+@@ -2026,7 +2024,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 		 is_array)
+ 		sz_extra += 2 * tot_ctrl_size;
+ 
+-	ctrl = kvzalloc(sizeof(*ctrl) + sz_extra, GFP_KERNEL);
++	ctrl = kzalloc(sizeof(*ctrl) + sz_extra, GFP_KERNEL);
+ 	if (ctrl == NULL) {
+ 		handler_set_err(hdl, -ENOMEM);
+ 		return NULL;
+@@ -2075,7 +2073,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	}
+ 
+ 	if (handler_new_ref(hdl, ctrl)) {
+-		kvfree(ctrl);
++		kfree(ctrl);
+ 		return NULL;
+ 	}
+ 	mutex_lock(hdl->lock);
+@@ -2845,8 +2843,8 @@ int v4l2_g_ext_ctrls(struct v4l2_ctrl_handler *hdl, struct v4l2_ext_controls *cs
+ 		return class_check(hdl, cs->which);
+ 
+ 	if (cs->count > ARRAY_SIZE(helper)) {
+-		helpers = kvmalloc_array(cs->count, sizeof(helper[0]),
+-					 GFP_KERNEL);
++		helpers = kmalloc_array(cs->count, sizeof(helper[0]),
++					GFP_KERNEL);
+ 		if (helpers == NULL)
+ 			return -ENOMEM;
+ 	}
+@@ -2898,7 +2896,7 @@ int v4l2_g_ext_ctrls(struct v4l2_ctrl_handler *hdl, struct v4l2_ext_controls *cs
+ 	}
+ 
+ 	if (cs->count > ARRAY_SIZE(helper))
+-		kvfree(helpers);
++		kfree(helpers);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(v4l2_g_ext_ctrls);
+@@ -3100,8 +3098,8 @@ static int try_set_ext_ctrls(struct v4l2_fh *fh, struct v4l2_ctrl_handler *hdl,
+ 		return class_check(hdl, cs->which);
+ 
+ 	if (cs->count > ARRAY_SIZE(helper)) {
+-		helpers = kvmalloc_array(cs->count, sizeof(helper[0]),
+-					 GFP_KERNEL);
++		helpers = kmalloc_array(cs->count, sizeof(helper[0]),
++					GFP_KERNEL);
+ 		if (!helpers)
+ 			return -ENOMEM;
+ 	}
+@@ -3178,7 +3176,7 @@ static int try_set_ext_ctrls(struct v4l2_fh *fh, struct v4l2_ctrl_handler *hdl,
+ 	}
+ 
+ 	if (cs->count > ARRAY_SIZE(helper))
+-		kvfree(helpers);
++		kfree(helpers);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/media/v4l2-core/v4l2-event.c b/drivers/media/v4l2-core/v4l2-event.c
+index 968c2eb08b5a..a75df6cb141f 100644
+--- a/drivers/media/v4l2-core/v4l2-event.c
++++ b/drivers/media/v4l2-core/v4l2-event.c
+@@ -21,7 +21,6 @@
+ #include <media/v4l2-fh.h>
+ #include <media/v4l2-event.h>
+ 
+-#include <linux/mm.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/export.h>
+@@ -215,8 +214,7 @@ int v4l2_event_subscribe(struct v4l2_fh *fh,
+ 	if (elems < 1)
+ 		elems = 1;
+ 
+-	sev = kvzalloc(sizeof(*sev) + sizeof(struct v4l2_kevent) * elems,
+-		       GFP_KERNEL);
++	sev = kzalloc(sizeof(*sev) + sizeof(struct v4l2_kevent) * elems, GFP_KERNEL);
+ 	if (!sev)
+ 		return -ENOMEM;
+ 	for (i = 0; i < elems; i++)
+@@ -234,7 +232,7 @@ int v4l2_event_subscribe(struct v4l2_fh *fh,
+ 	spin_unlock_irqrestore(&fh->vdev->fh_lock, flags);
+ 
+ 	if (found_ev) {
+-		kvfree(sev);
++		kfree(sev);
+ 		return 0; /* Already listening */
+ 	}
+ 
+@@ -306,7 +304,7 @@ int v4l2_event_unsubscribe(struct v4l2_fh *fh,
+ 	if (sev && sev->ops && sev->ops->del)
+ 		sev->ops->del(sev);
+ 
+-	kvfree(sev);
++	kfree(sev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 0349c94bb9da..67fe8b616fd6 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -12,7 +12,6 @@
+  *              Mauro Carvalho Chehab <mchehab@infradead.org> (version 2)
+  */
+ 
+-#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+@@ -2868,7 +2867,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+ 			parg = sbuf;
+ 		} else {
+ 			/* too big to allocate from stack */
+-			mbuf = kvmalloc(_IOC_SIZE(cmd), GFP_KERNEL);
++			mbuf = kmalloc(_IOC_SIZE(cmd), GFP_KERNEL);
+ 			if (NULL == mbuf)
+ 				return -ENOMEM;
+ 			parg = mbuf;
+@@ -2917,7 +2916,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+ 		 * array) fits into sbuf (so that mbuf will still remain
+ 		 * unused up to here).
+ 		 */
+-		mbuf = kvmalloc(array_size, GFP_KERNEL);
++		mbuf = kmalloc(array_size, GFP_KERNEL);
+ 		err = -ENOMEM;
+ 		if (NULL == mbuf)
+ 			goto out_array_args;
+@@ -2962,7 +2961,7 @@ video_usercopy(struct file *file, unsigned int cmd, unsigned long arg,
+ 	}
+ 
+ out:
+-	kvfree(mbuf);
++	kfree(mbuf);
+ 	return err;
+ }
+ EXPORT_SYMBOL(video_usercopy);
+diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+index 43fefa73e0a3..da78497ae5ed 100644
+--- a/drivers/media/v4l2-core/v4l2-subdev.c
++++ b/drivers/media/v4l2-core/v4l2-subdev.c
+@@ -17,7 +17,6 @@
+  */
+ 
+ #include <linux/ioctl.h>
+-#include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/videodev2.h>
+@@ -578,14 +577,13 @@ v4l2_subdev_alloc_pad_config(struct v4l2_subdev *sd)
+ 	if (!sd->entity.num_pads)
+ 		return NULL;
+ 
+-	cfg = kvmalloc_array(sd->entity.num_pads, sizeof(*cfg),
+-			     GFP_KERNEL | __GFP_ZERO);
++	cfg = kcalloc(sd->entity.num_pads, sizeof(*cfg), GFP_KERNEL);
+ 	if (!cfg)
+ 		return NULL;
+ 
+ 	ret = v4l2_subdev_call(sd, pad, init_cfg, cfg);
+ 	if (ret < 0 && ret != -ENOIOCTLCMD) {
+-		kvfree(cfg);
++		kfree(cfg);
+ 		return NULL;
+ 	}
+ 
+@@ -595,7 +593,7 @@ EXPORT_SYMBOL_GPL(v4l2_subdev_alloc_pad_config);
+ 
+ void v4l2_subdev_free_pad_config(struct v4l2_subdev_pad_config *cfg)
+ {
+-	kvfree(cfg);
++	kfree(cfg);
+ }
+ EXPORT_SYMBOL_GPL(v4l2_subdev_free_pad_config);
+ #endif /* CONFIG_MEDIA_CONTROLLER */
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+index 32bc67066383..37d86d664de8 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+@@ -121,8 +121,8 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,
+ 	buf->num_pages = size >> PAGE_SHIFT;
+ 	buf->dma_sgt = &buf->sg_table;
+ 
+-	buf->pages = kvmalloc_array(buf->num_pages, sizeof(struct page *),
+-				    GFP_KERNEL | __GFP_ZERO);
++	buf->pages = kzalloc(buf->num_pages * sizeof(struct page *),
++			     GFP_KERNEL);
+ 	if (!buf->pages)
+ 		goto fail_pages_array_alloc;
+ 
+@@ -166,7 +166,7 @@ static void *vb2_dma_sg_alloc(struct device *dev, unsigned long dma_attrs,
+ 	while (num_pages--)
+ 		__free_page(buf->pages[num_pages]);
+ fail_pages_alloc:
+-	kvfree(buf->pages);
++	kfree(buf->pages);
+ fail_pages_array_alloc:
+ 	kfree(buf);
+ 	return ERR_PTR(-ENOMEM);
+@@ -188,7 +188,7 @@ static void vb2_dma_sg_put(void *buf_priv)
+ 		sg_free_table(buf->dma_sgt);
+ 		while (--i >= 0)
+ 			__free_page(buf->pages[i]);
+-		kvfree(buf->pages);
++		kfree(buf->pages);
+ 		put_device(buf->dev);
+ 		kfree(buf);
+ 	}
+-- 
+2.11.0
+
