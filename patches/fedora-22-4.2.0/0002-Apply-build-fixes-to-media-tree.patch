@@ -1,0 +1,806 @@
+From 630082bb2564e0410fad15bdaaea75aec6ea77be Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Thu, 12 Oct 2017 15:36:25 +0000
+Subject: [PATCH 2/3] Apply build fixes to media tree
+
+---
+ drivers/base/regmap/regmap.c                      |  23 ++
+ drivers/media/cec/cec-api.c                       |   2 +
+ drivers/media/cec/cec-core.c                      |   2 +
+ drivers/media/dvb-frontends/af9033.c              |   2 +
+ drivers/media/media-device.c                      |   2 +
+ drivers/media/media-devnode.c                     |   2 +
+ drivers/media/pci/ivtv/ivtv-driver.c              |   2 +
+ drivers/media/pci/ivtv/ivtv-irq.c                 |   2 +
+ drivers/media/pci/solo6x10/solo6x10-gpio.c        |   4 +
+ drivers/media/pci/zoran/zoran_card.c              |   2 +
+ drivers/media/rc/keymaps/rc-cec.c                 |   2 +
+ drivers/media/rc/serial_ir.c                      |   2 +
+ drivers/media/rc/sir_ir.c                         |   2 +
+ drivers/media/usb/em28xx/em28xx-dvb.c             |   2 +-
+ drivers/media/usb/pulse8-cec/pulse8-cec.c         |   2 +
+ drivers/media/usb/rainshadow-cec/rainshadow-cec.c |   2 +
+ drivers/media/usb/usbtv/usbtv-core.c              |   2 +
+ drivers/media/usb/uvc/uvc_driver.c                |   2 +
+ drivers/media/usb/uvc/uvc_video.c                 |   2 +
+ drivers/media/v4l2-core/v4l2-async.c              |   2 +
+ drivers/media/v4l2-core/v4l2-flash-led-class.c    |   2 +
+ drivers/media/v4l2-core/v4l2-ioctl.c              |   2 +
+ drivers/media/v4l2-core/videobuf2-dma-contig.c    |   6 +-
+ drivers/media/v4l2-core/videobuf2-dma-sg.c        |   6 +-
+ drivers/media/v4l2-core/videobuf2-memops.c        |   2 +
+ drivers/media/v4l2-core/videobuf2-vmalloc.c       |   6 +-
+ include/linux/kconfig.h                           |   5 +-
+ include/linux/regmap.h                            |   2 +
+ include/media/compat.h                            |   6 +-
+ include/media/media-entity.h                      |   2 +
+ include/media/v4l2-fwnode.h                       |   2 +
+ mm/Makefile                                       |   2 +
+ mm/frame_vector.c                                 | 267 ++++++++++++++++++++++
+ 33 files changed, 361 insertions(+), 12 deletions(-)
+ create mode 100644 mm/frame_vector.c
+
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 7111d04..f324b8f 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -47,6 +47,29 @@ static int _regmap_bus_reg_write(void *context, unsigned int reg,
+ static int _regmap_bus_raw_write(void *context, unsigned int reg,
+ 				 unsigned int val);
+ 
++/**
++ * regmap_write_bits: Perform a read/modify/write cycle on the register map
++ *
++ * @map: Register map to update
++ * @reg: Register to update
++ * @mask: Bitmask to change
++ * @val: New value for bitmask
++ *
++ * Returns zero for success, a negative number on error.
++ */
++int regmap_write_bits(struct regmap *map, unsigned int reg,
++		      unsigned int mask, unsigned int val)
++{
++	int ret;
++
++	map->lock(map->lock_arg);
++	ret = _regmap_update_bits(map, reg, mask, val, NULL);
++	map->unlock(map->lock_arg);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(regmap_write_bits);
++
+ bool regmap_reg_in_ranges(unsigned int reg,
+ 			  const struct regmap_range *ranges,
+ 			  unsigned int nranges)
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index 8ac616d..af34e23 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -30,6 +30,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/version.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec-pin.h>
+ #include "cec-priv.h"
+ 
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index e3a1fb6..ea04c22 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -29,6 +29,8 @@
+ 
+ #include "cec-priv.h"
+ 
++#include <media/compat.h>
++
+ #define CEC_NUM_DEVICES	256
+ #define CEC_NAME	"cec"
+ 
+diff --git a/drivers/media/dvb-frontends/af9033.c b/drivers/media/dvb-frontends/af9033.c
+index aaed7cf..1631b9a 100644
+--- a/drivers/media/dvb-frontends/af9033.c
++++ b/drivers/media/dvb-frontends/af9033.c
+@@ -15,6 +15,8 @@
+  *    GNU General Public License for more details.
+  */
+ 
++#include <media/compat.h>
++
+ #include "af9033_priv.h"
+ 
+ struct af9033_dev {
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 77c2aba..080e5c0 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -33,6 +33,8 @@
+ #include <media/media-devnode.h>
+ #include <media/media-entity.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /* -----------------------------------------------------------------------------
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index 06bf97d..ec2b6cb 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -43,6 +43,8 @@
+ #include <media/media-devnode.h>
+ #include <media/media-device.h>
+ 
++#include <media/compat.h>
++
+ #define MEDIA_NUM_DEVICES	256
+ #define MEDIA_NAME		"media"
+ 
+diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
+index 1892d4e..8c478e6 100644
+--- a/drivers/media/pci/ivtv/ivtv-driver.c
++++ b/drivers/media/pci/ivtv/ivtv-driver.c
+@@ -60,6 +60,8 @@
+ #include <media/i2c/saa7115.h>
+ #include "tuner-xc2028.h"
+ 
++#include <media/compat.h>
++
+ /* If you have already X v4l cards, then set this to X. This way
+    the device numbers stay matched. Example: you have a WinTV card
+    without radio and a PVR-350 with. Normally this would give a
+diff --git a/drivers/media/pci/ivtv/ivtv-irq.c b/drivers/media/pci/ivtv/ivtv-irq.c
+index 6efe1f7..93153d8 100644
+--- a/drivers/media/pci/ivtv/ivtv-irq.c
++++ b/drivers/media/pci/ivtv/ivtv-irq.c
+@@ -27,6 +27,8 @@
+ #include "ivtv-yuv.h"
+ #include <media/v4l2-event.h>
+ 
++#include <media/compat.h>
++
+ #define DMA_MAGIC_COOKIE 0x000001fe
+ 
+ static void ivtv_dma_dec_start(struct ivtv_stream *s);
+diff --git a/drivers/media/pci/solo6x10/solo6x10-gpio.c b/drivers/media/pci/solo6x10/solo6x10-gpio.c
+index 3d0d1aa..659ddeb 100644
+--- a/drivers/media/pci/solo6x10/solo6x10-gpio.c
++++ b/drivers/media/pci/solo6x10/solo6x10-gpio.c
+@@ -25,6 +25,10 @@
+ 
+ #include "solo6x10.h"
+ 
++#ifdef CONFIG_GPIOLIB
++#undef CONFIG_GPIOLIB
++#endif
++
+ static void solo_gpio_mode(struct solo_dev *solo_dev,
+ 			   unsigned int port_mask, unsigned int mode)
+ {
+diff --git a/drivers/media/pci/zoran/zoran_card.c b/drivers/media/pci/zoran/zoran_card.c
+index a6b9ebd..ed6c2ce 100644
+--- a/drivers/media/pci/zoran/zoran_card.c
++++ b/drivers/media/pci/zoran/zoran_card.c
+@@ -54,6 +54,8 @@
+ #include "zoran_device.h"
+ #include "zoran_procfs.h"
+ 
++#include <media/compat.h>
++
+ extern const struct zoran_format zoran_formats[];
+ 
+ static int card[BUZ_MAX] = { [0 ... (BUZ_MAX-1)] = -1 };
+diff --git a/drivers/media/rc/keymaps/rc-cec.c b/drivers/media/rc/keymaps/rc-cec.c
+index 76d34ab..5da1c05 100644
+--- a/drivers/media/rc/keymaps/rc-cec.c
++++ b/drivers/media/rc/keymaps/rc-cec.c
+@@ -11,6 +11,8 @@
+ #include <media/rc-map.h>
+ #include <linux/module.h>
+ 
++#include <media/compat.h>
++
+ /*
+  * CEC Spec "High-Definition Multimedia Interface Specification" can be obtained
+  * here: http://xtreamerdev.googlecode.com/files/CEC_Specs.pdf
+diff --git a/drivers/media/rc/serial_ir.c b/drivers/media/rc/serial_ir.c
+index b2cdf4b..28fe915 100644
+--- a/drivers/media/rc/serial_ir.c
++++ b/drivers/media/rc/serial_ir.c
+@@ -35,6 +35,8 @@
+ #include <linux/spinlock.h>
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ struct serial_ir_hw {
+ 	int signal_pin;
+ 	int signal_pin_change;
+diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
+index 9769bf7..7d42ab7 100644
+--- a/drivers/media/rc/sir_ir.c
++++ b/drivers/media/rc/sir_ir.c
+@@ -23,6 +23,8 @@
+ 
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ /* SECTION: Definitions */
+ #define PULSE '['
+ 
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 5b01ff5..d46fc11 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+index 50146f2..9c29620 100644
+--- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
++++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+@@ -44,6 +44,8 @@
+ #include <linux/time.h>
+ #include <linux/delay.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec.h>
+ 
+ MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
+diff --git a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
+index cecdcbc..eb13546 100644
+--- a/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
++++ b/drivers/media/usb/rainshadow-cec/rainshadow-cec.c
+@@ -36,6 +36,8 @@
+ 
+ #include <media/cec.h>
+ 
++#include <media/compat.h>
++
+ MODULE_AUTHOR("Hans Verkuil <hverkuil@xs4all.nl>");
+ MODULE_DESCRIPTION("RainShadow Tech HDMI CEC driver");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
+index f06f09a..ef18c8d 100644
+--- a/drivers/media/usb/usbtv/usbtv-core.c
++++ b/drivers/media/usb/usbtv/usbtv-core.c
+@@ -44,6 +44,8 @@
+ 
+ #include "usbtv.h"
+ 
++#include <media/compat.h>
++
+ int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
+ {
+ 	int ret;
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 6d22b22..5c0055f 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -27,6 +27,8 @@
+ 
+ #include "uvcvideo.h"
+ 
++#include <media/compat.h>
++
+ #define DRIVER_AUTHOR		"Laurent Pinchart " \
+ 				"<laurent.pinchart@ideasonboard.com>"
+ #define DRIVER_DESC		"USB Video Class driver"
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index 672e248..ccc811e 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -26,6 +26,8 @@
+ 
+ #include "uvcvideo.h"
+ 
++#include <media/compat.h>
++
+ /* ------------------------------------------------------------------------
+  * UVC Controls
+  */
+diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+index d741a8e..11f15ca 100644
+--- a/drivers/media/v4l2-core/v4l2-async.c
++++ b/drivers/media/v4l2-core/v4l2-async.c
+@@ -24,6 +24,8 @@
+ #include <media/v4l2-device.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ static bool match_i2c(struct v4l2_subdev *sd, struct v4l2_async_subdev *asd)
+ {
+ #if IS_ENABLED(CONFIG_I2C)
+diff --git a/drivers/media/v4l2-core/v4l2-flash-led-class.c b/drivers/media/v4l2-core/v4l2-flash-led-class.c
+index 4ceef21..e609bf05 100644
+--- a/drivers/media/v4l2-core/v4l2-flash-led-class.c
++++ b/drivers/media/v4l2-core/v4l2-flash-led-class.c
+@@ -17,6 +17,8 @@
+ #include <linux/types.h>
+ #include <media/v4l2-flash-led-class.h>
+ 
++#include <media/compat.h>
++
+ #define has_flash_op(v4l2_flash, op)				\
+ 	(v4l2_flash && v4l2_flash->ops && v4l2_flash->ops->op)
+ 
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index fc2453c..0349c94 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -32,6 +32,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-contig.c b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+index af2fc7b..500d326 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-contig.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-contig.c
+@@ -21,6 +21,8 @@
+ #include <media/videobuf2-dma-contig.h>
+ #include <media/videobuf2-memops.h>
+ 
++#include <media/compat.h>
++
+ struct vb2_dc_buf {
+ 	struct device			*dev;
+ 	void				*vaddr;
+@@ -356,8 +358,8 @@ static const struct dma_buf_ops vb2_dc_dmabuf_ops = {
+ 	.detach = vb2_dc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dc_dmabuf_ops_unmap,
+-	.map = vb2_dc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dc_dmabuf_ops_kmap,
++	.kmap = vb2_dc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dc_dmabuf_ops_kmap,
+ 	.vmap = vb2_dc_dmabuf_ops_vmap,
+ 	.mmap = vb2_dc_dmabuf_ops_mmap,
+ 	.release = vb2_dc_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-dma-sg.c b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+index ccbcd85..93bc04a 100644
+--- a/drivers/media/v4l2-core/videobuf2-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf2-dma-sg.c
+@@ -21,6 +21,8 @@
+ #include <media/videobuf2-memops.h>
+ #include <media/videobuf2-dma-sg.h>
+ 
++#include <media/compat.h>
++
+ static int debug;
+ module_param(debug, int, 0644);
+ 
+@@ -517,8 +519,8 @@ static const struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+ 	.detach = vb2_dma_sg_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
+-	.map = vb2_dma_sg_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dma_sg_dmabuf_ops_kmap,
+ 	.vmap = vb2_dma_sg_dmabuf_ops_vmap,
+ 	.mmap = vb2_dma_sg_dmabuf_ops_mmap,
+ 	.release = vb2_dma_sg_dmabuf_ops_release,
+diff --git a/drivers/media/v4l2-core/videobuf2-memops.c b/drivers/media/v4l2-core/videobuf2-memops.c
+index 3c3b517..9a712b5 100644
+--- a/drivers/media/v4l2-core/videobuf2-memops.c
++++ b/drivers/media/v4l2-core/videobuf2-memops.c
+@@ -19,6 +19,8 @@
+ #include <linux/sched.h>
+ #include <linux/file.h>
+ 
++#include <media/compat.h>
++
+ #include <media/videobuf2-v4l2.h>
+ #include <media/videobuf2-memops.h>
+ 
+diff --git a/drivers/media/v4l2-core/videobuf2-vmalloc.c b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+index 97f2b68..8d28a36 100644
+--- a/drivers/media/v4l2-core/videobuf2-vmalloc.c
++++ b/drivers/media/v4l2-core/videobuf2-vmalloc.c
+@@ -21,6 +21,8 @@
+ #include <media/videobuf2-vmalloc.h>
+ #include <media/videobuf2-memops.h>
+ 
++#include <media/compat.h>
++
+ struct vb2_vmalloc_buf {
+ 	void				*vaddr;
+ 	struct frame_vector		*vec;
+@@ -344,8 +346,8 @@ static const struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
+ 	.detach = vb2_vmalloc_dmabuf_ops_detach,
+ 	.map_dma_buf = vb2_vmalloc_dmabuf_ops_map,
+ 	.unmap_dma_buf = vb2_vmalloc_dmabuf_ops_unmap,
+-	.map = vb2_vmalloc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_vmalloc_dmabuf_ops_kmap,
+ 	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
+ 	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
+ 	.release = vb2_vmalloc_dmabuf_ops_release,
+diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
+index 4d74860..7279f68 100644
+--- a/include/linux/kconfig.h
++++ b/include/linux/kconfig.h
+@@ -31,6 +31,7 @@
+  * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
+  * the last step cherry picks the 2nd arg, we get a zero.
+  */
++#define config_enabled(cfg)		___is_defined(cfg)
+ #define __is_defined(x)			___is_defined(x)
+ #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
+ #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
+@@ -40,13 +41,13 @@
+  * otherwise. For boolean options, this is equivalent to
+  * IS_ENABLED(CONFIG_FOO).
+  */
+-#define IS_BUILTIN(option) __is_defined(option)
++#define IS_BUILTIN(option) config_enabled(option)
+ 
+ /*
+  * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
+  * otherwise.
+  */
+-#define IS_MODULE(option) __is_defined(option##_MODULE)
++#define IS_MODULE(option) config_enabled(option##_MODULE)
+ 
+ /*
+  * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 59c55ea..c834c35 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -424,6 +424,8 @@ int regmap_bulk_read(struct regmap *map, unsigned int reg, void *val,
+ 		     size_t val_count);
+ int regmap_update_bits(struct regmap *map, unsigned int reg,
+ 		       unsigned int mask, unsigned int val);
++int regmap_write_bits(struct regmap *map, unsigned int reg,
++		       unsigned int mask, unsigned int val);
+ int regmap_update_bits_async(struct regmap *map, unsigned int reg,
+ 			     unsigned int mask, unsigned int val);
+ int regmap_update_bits_check(struct regmap *map, unsigned int reg,
+diff --git a/include/media/compat.h b/include/media/compat.h
+index a20264c..2b72708 100644
+--- a/include/media/compat.h
++++ b/include/media/compat.h
+@@ -2065,9 +2065,9 @@ static inline void fwnode_handle_get(struct fwnode_handle *fwnode)
+ {
+ }
+ 
+-static inline void fwnode_handle_put(struct fwnode_handle *fwnode)
+-{
+-}
++//static inline void fwnode_handle_put(struct fwnode_handle *fwnode)
++//{
++//}
+ 
+ #endif
+ 
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 222d379..906a82c 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -26,6 +26,8 @@
+ #include <linux/list.h>
+ #include <linux/media.h>
+ 
++#include <media/compat.h>
++
+ /* Enums used internally at the media controller to represent graphs */
+ 
+ /**
+diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
+index 7adec98..a8f7904 100644
+--- a/include/media/v4l2-fwnode.h
++++ b/include/media/v4l2-fwnode.h
+@@ -24,6 +24,8 @@
+ 
+ #include <media/v4l2-mediabus.h>
+ 
++#include <media/compat.h>
++
+ struct fwnode_handle;
+ 
+ #define V4L2_FWNODE_CSI2_MAX_DATA_LANES	4
+diff --git a/mm/Makefile b/mm/Makefile
+index 98c4eae..1d16856 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -78,3 +78,5 @@ obj-$(CONFIG_CMA)	+= cma.o
+ obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+ obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+ obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
++obj-y+= frame_vector.o
++
+diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+new file mode 100644
+index 0000000..93a5609
+--- /dev/null
++++ b/mm/frame_vector.c
+@@ -0,0 +1,267 @@
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/err.h>
++#include <linux/mm.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/pagemap.h>
++#include <linux/sched.h>
++
++/* Container for pinned pfns / pages */
++struct frame_vector {
++	unsigned int nr_allocated;	/* Number of frames we have space for */
++	unsigned int nr_frames;	/* Number of frames stored in ptrs array */
++	bool got_ref;		/* Did we pin pages by getting page ref? */
++	bool is_pfns;		/* Does array contain pages or pfns? */
++	void *ptrs[0];		/* Array of pinned pfns / pages. Use
++				 * pfns_vector_pages() or pfns_vector_pfns()
++				 * for access */
++};
++
++int frame_vector_to_pages(struct frame_vector *vec);
++void frame_vector_to_pfns(struct frame_vector *vec);
++
++//static inline unsigned int frame_vector_count(struct frame_vector *vec)
++//{
++//	return vec->nr_frames;
++//}
++
++static inline struct page **frame_vector_pages(struct frame_vector *vec)
++{
++	if (vec->is_pfns) {
++		int err = frame_vector_to_pages(vec);
++
++		if (err)
++			return ERR_PTR(err);
++	}
++	return (struct page **)(vec->ptrs);
++}
++
++static inline unsigned long *frame_vector_pfns(struct frame_vector *vec)
++{
++	if (!vec->is_pfns)
++		frame_vector_to_pfns(vec);
++	return (unsigned long *)(vec->ptrs);
++}
++
++/*
++ * get_vaddr_frames() - map virtual addresses to pfns
++ * @start:	starting user address
++ * @nr_frames:	number of pages / pfns from start to map
++ * @write:	whether pages will be written to by the caller
++ * @force:	whether to force write access even if user mapping is
++ *		readonly. See description of the same argument of
++		get_user_pages().
++ * @vec:	structure which receives pages / pfns of the addresses mapped.
++ *		It should have space for at least nr_frames entries.
++ *
++ * This function maps virtual addresses from @start and fills @vec structure
++ * with page frame numbers or page pointers to corresponding pages (choice
++ * depends on the type of the vma underlying the virtual address). If @start
++ * belongs to a normal vma, the function grabs reference to each of the pages
++ * to pin them in memory. If @start belongs to VM_IO | VM_PFNMAP vma, we don't
++ * touch page structures and the caller must make sure pfns aren't reused for
++ * anything else while he is using them.
++ *
++ * The function returns number of pages mapped which may be less than
++ * @nr_frames. In particular we stop mapping if there are more vmas of
++ * different type underlying the specified range of virtual addresses.
++ * When the function isn't able to map a single page, it returns error.
++ *
++ * This function takes care of grabbing mmap_sem as necessary.
++ */
++int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
++		     bool write, bool force, struct frame_vector *vec)
++{
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma;
++	int ret = 0;
++	int err;
++	int locked;
++
++	if (nr_frames == 0)
++		return 0;
++
++	if (WARN_ON_ONCE(nr_frames > vec->nr_allocated))
++		nr_frames = vec->nr_allocated;
++
++	down_read(&mm->mmap_sem);
++	locked = 1;
++	vma = find_vma_intersection(mm, start, start + 1);
++	if (!vma) {
++		ret = -EFAULT;
++		goto out;
++	}
++	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
++		vec->got_ref = true;
++		vec->is_pfns = false;
++		ret = get_user_pages_locked(current, mm, start, nr_frames,
++			write, force, (struct page **)(vec->ptrs), &locked);
++		goto out;
++	}
++
++	vec->got_ref = false;
++	vec->is_pfns = true;
++	do {
++		unsigned long *nums = frame_vector_pfns(vec);
++
++		while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
++			err = follow_pfn(vma, start, &nums[ret]);
++			if (err) {
++				if (ret == 0)
++					ret = err;
++				goto out;
++			}
++			start += PAGE_SIZE;
++			ret++;
++		}
++		/*
++		 * We stop if we have enough pages or if VMA doesn't completely
++		 * cover the tail page.
++		 */
++		if (ret >= nr_frames || start < vma->vm_end)
++			break;
++		vma = find_vma_intersection(mm, start, start + 1);
++	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
++out:
++	if (locked)
++		up_read(&mm->mmap_sem);
++	if (!ret)
++		ret = -EFAULT;
++	if (ret > 0)
++		vec->nr_frames = ret;
++	return ret;
++}
++EXPORT_SYMBOL(get_vaddr_frames);
++
++/**
++ * put_vaddr_frames() - drop references to pages if get_vaddr_frames() acquired
++ *			them
++ * @vec:	frame vector to put
++ *
++ * Drop references to pages if get_vaddr_frames() acquired them. We also
++ * invalidate the frame vector so that it is prepared for the next call into
++ * get_vaddr_frames().
++ */
++void put_vaddr_frames(struct frame_vector *vec)
++{
++	int i;
++	struct page **pages;
++
++	if (!vec->got_ref)
++		goto out;
++	pages = frame_vector_pages(vec);
++	/*
++	 * frame_vector_pages() might needed to do a conversion when
++	 * get_vaddr_frames() got pages but vec was later converted to pfns.
++	 * But it shouldn't really fail to convert pfns back...
++	 */
++	if (WARN_ON(IS_ERR(pages)))
++		goto out;
++	for (i = 0; i < vec->nr_frames; i++)
++		put_page(pages[i]);
++	vec->got_ref = false;
++out:
++	vec->nr_frames = 0;
++}
++EXPORT_SYMBOL(put_vaddr_frames);
++
++/**
++ * frame_vector_to_pages - convert frame vector to contain page pointers
++ * @vec:	frame vector to convert
++ *
++ * Convert @vec to contain array of page pointers.  If the conversion is
++ * successful, return 0. Otherwise return an error. Note that we do not grab
++ * page references for the page structures.
++ */
++int frame_vector_to_pages(struct frame_vector *vec)
++{
++	int i;
++	unsigned long *nums;
++	struct page **pages;
++
++	if (!vec->is_pfns)
++		return 0;
++	nums = frame_vector_pfns(vec);
++	for (i = 0; i < vec->nr_frames; i++)
++		if (!pfn_valid(nums[i]))
++			return -EINVAL;
++	pages = (struct page **)nums;
++	for (i = 0; i < vec->nr_frames; i++)
++		pages[i] = pfn_to_page(nums[i]);
++	vec->is_pfns = false;
++	return 0;
++}
++EXPORT_SYMBOL(frame_vector_to_pages);
++
++/**
++ * frame_vector_to_pfns - convert frame vector to contain pfns
++ * @vec:	frame vector to convert
++ *
++ * Convert @vec to contain array of pfns.
++ */
++void frame_vector_to_pfns(struct frame_vector *vec)
++{
++	int i;
++	unsigned long *nums;
++	struct page **pages;
++
++	if (vec->is_pfns)
++		return;
++	pages = (struct page **)(vec->ptrs);
++	nums = (unsigned long *)pages;
++	for (i = 0; i < vec->nr_frames; i++)
++		nums[i] = page_to_pfn(pages[i]);
++	vec->is_pfns = true;
++}
++EXPORT_SYMBOL(frame_vector_to_pfns);
++
++/**
++ * frame_vector_create() - allocate & initialize structure for pinned pfns
++ * @nr_frames:	number of pfns slots we should reserve
++ *
++ * Allocate and initialize struct pinned_pfns to be able to hold @nr_pfns
++ * pfns.
++ */
++struct frame_vector *frame_vector_create(unsigned int nr_frames)
++{
++	struct frame_vector *vec;
++	int size = sizeof(struct frame_vector) + sizeof(void *) * nr_frames;
++
++	if (WARN_ON_ONCE(nr_frames == 0))
++		return NULL;
++	/*
++	 * This is absurdly high. It's here just to avoid strange effects when
++	 * arithmetics overflows.
++	 */
++	if (WARN_ON_ONCE(nr_frames > INT_MAX / sizeof(void *) / 2))
++		return NULL;
++	/*
++	 * Avoid higher order allocations, use vmalloc instead. It should
++	 * be rare anyway.
++	 */
++	if (size <= PAGE_SIZE)
++		vec = kmalloc(size, GFP_KERNEL);
++	else
++		vec = vmalloc(size);
++	if (!vec)
++		return NULL;
++	vec->nr_allocated = nr_frames;
++	vec->nr_frames = 0;
++	return vec;
++}
++EXPORT_SYMBOL(frame_vector_create);
++
++/**
++ * frame_vector_destroy() - free memory allocated to carry frame vector
++ * @vec:	Frame vector to free
++ *
++ * Free structure allocated by frame_vector_create() to carry frames.
++ */
++void frame_vector_destroy(struct frame_vector *vec)
++{
++	/* Make sure put_vaddr_frames() got called properly... */
++	VM_BUG_ON(vec->nr_frames > 0);
++	kvfree(vec);
++}
++EXPORT_SYMBOL(frame_vector_destroy);
+-- 
+2.4.11
+
