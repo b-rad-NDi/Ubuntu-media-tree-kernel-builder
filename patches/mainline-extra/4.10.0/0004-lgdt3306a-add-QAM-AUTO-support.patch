@@ -1,0 +1,60 @@
+From 11272a3a47b48b27c57a33d49294e3cc72432c30 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 16 Mar 2017 23:29:26 +0000
+Subject: [PATCH 04/24] lgdt3306a: add QAM AUTO support
+
+---
+ drivers/media/dvb-frontends/lgdt3306a.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
+index e6dece2c7af6..c34f52d5a983 100644
+--- a/drivers/media/dvb-frontends/lgdt3306a.c
++++ b/drivers/media/dvb-frontends/lgdt3306a.c
+@@ -626,6 +626,9 @@ static int lgdt3306a_set_modulation(struct lgdt3306a_state *state,
+ 	case QAM_256:
+ 		ret = lgdt3306a_set_qam(state, QAM_256);
+ 		break;
++	case QAM_AUTO:
++		ret = lgdt3306a_set_qam(state, QAM_64);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -651,6 +654,7 @@ static int lgdt3306a_agc_setup(struct lgdt3306a_state *state,
+ 		break;
+ 	case QAM_64:
+ 	case QAM_256:
++	case QAM_AUTO:
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -705,6 +709,7 @@ static int lgdt3306a_spectral_inversion(struct lgdt3306a_state *state,
+ 		break;
+ 	case QAM_64:
+ 	case QAM_256:
++	case QAM_AUTO:
+ 		/* Auto ok for QAM */
+ 		ret = lgdt3306a_set_inversion_auto(state, 1);
+ 		break;
+@@ -728,6 +733,7 @@ static int lgdt3306a_set_if(struct lgdt3306a_state *state,
+ 		break;
+ 	case QAM_64:
+ 	case QAM_256:
++	case QAM_AUTO:
+ 		if_freq_khz = state->cfg->qam_if_khz;
+ 		break;
+ 	default:
+@@ -1646,6 +1652,9 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
+ 	case QAM_256:
+ 		 ref_snr = 2800; /* 28dB */
+ 		 break;
++	case QAM_AUTO:
++		 ref_snr = 2200; /* 22dB */
++		 break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.11.0
+

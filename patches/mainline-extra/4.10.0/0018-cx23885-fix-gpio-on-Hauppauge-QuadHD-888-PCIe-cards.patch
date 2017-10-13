@@ -1,0 +1,35 @@
+From 8b04d37f6f90a787cd1d74725e6969a05eb68491 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Fri, 26 May 2017 11:25:19 -0500
+Subject: [PATCH 18/24] cx23885: fix gpio on Hauppauge QuadHD (888) PCIe cards
+
+---
+ drivers/media/pci/cx23885/cx23885-cards.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index 368b0273eeab..9b6c1f1981d3 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -1858,8 +1858,6 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+ 		cx23885_gpio_set(dev, GPIO_2);
+ 		break;
+ 	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+-	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+-	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+ 		/*
+ 		 * HVR5525 GPIO Details:
+@@ -1891,7 +1889,9 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+ 		 */
+ 		break;
+ 	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+ 	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
+ 		/*
+ 		 * GPIO-08 TER1_RESN
+-- 
+2.11.0
+

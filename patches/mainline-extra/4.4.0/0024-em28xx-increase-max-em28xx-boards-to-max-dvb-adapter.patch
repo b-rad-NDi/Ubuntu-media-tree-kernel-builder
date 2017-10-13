@@ -1,0 +1,25 @@
+From 0660e387e16848df18059ce02103d1f6531ab8d6 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 10 Oct 2017 18:03:49 +0000
+Subject: [PATCH 24/25] em28xx: increase max em28xx boards to max dvb adapters
+
+---
+ drivers/media/usb/em28xx/em28xx.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
+index 11275e2..8bf8e82 100644
+--- a/drivers/media/usb/em28xx/em28xx.h
++++ b/drivers/media/usb/em28xx/em28xx.h
+@@ -166,7 +166,7 @@
+ #define EM28XX_STOP_AUDIO       0
+ 
+ /* maximum number of em28xx boards */
+-#define EM28XX_MAXBOARDS 4 /*FIXME: should be bigger */
++#define EM28XX_MAXBOARDS DVB_MAX_ADAPTERS /* All system adapters could be em28xx */
+ 
+ /* maximum number of frames that can be queued */
+ #define EM28XX_NUM_FRAMES 5
+-- 
+2.7.4
+

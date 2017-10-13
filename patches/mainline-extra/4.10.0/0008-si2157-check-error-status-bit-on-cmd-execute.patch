@@ -1,0 +1,46 @@
+From ef71b0cdba8f36f66c9474d2b09e9ff4b749420f Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 20 Jul 2017 16:21:40 -0500
+Subject: [PATCH 08/24] si2157: check error status bit on cmd execute
+
+---
+ drivers/media/tuners/si2157.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index e35b1faf0ddc..9e212172e0c3 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -52,18 +52,25 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
+ 			}
+ 
+ 			/* firmware ready? */
+-			if ((cmd->args[0] >> 7) & 0x01)
++			if (cmd->args[0] & 0x80)
+ 				break;
++			msleep(5);
+ 		}
+ 
+-		dev_dbg(&client->dev, "cmd execution took %d ms\n",
++		dev_dbg(&client->dev, "cmd execution took %d ms, status=%x\n",
+ 				jiffies_to_msecs(jiffies) -
+-				(jiffies_to_msecs(timeout) - TIMEOUT));
++				(jiffies_to_msecs(timeout) - TIMEOUT),
++				cmd->args[0]);
+ 
+-		if (!((cmd->args[0] >> 7) & 0x01)) {
++		if (!(cmd->args[0] & 0x80)) {
+ 			ret = -ETIMEDOUT;
+ 			goto err_mutex_unlock;
+ 		}
++		/* check error status bit */
++		if (cmd->args[0] & 0x40) {
++			ret = -EAGAIN;
++			goto err_mutex_unlock;
++		}
+ 	}
+ 
+ 	mutex_unlock(&dev->i2c_mutex);
+-- 
+2.11.0
+

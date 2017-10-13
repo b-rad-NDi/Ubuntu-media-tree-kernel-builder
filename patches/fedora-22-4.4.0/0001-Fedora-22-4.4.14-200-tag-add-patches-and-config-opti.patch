@@ -1,0 +1,152 @@
+From dfe977e7a0b6b189c289f95b6e74bb9bff37a944 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 11 Oct 2017 16:37:56 +0000
+Subject: [PATCH] Fedora 22 4.4.14-200; tag, add patches, and config options
+
+---
+ config-generic | 42 ++++++++++++++++++++++++++++++++++++++
+ kernel.spec    | 64 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 105 insertions(+), 1 deletion(-)
+
+diff --git a/config-generic b/config-generic
+index f796b90..c7ea0d9 100644
+--- a/config-generic
++++ b/config-generic
+@@ -5785,3 +5785,45 @@ CONFIG_POWERCAP=y
+ # CONFIG_AHCI_QORIQ is not set
+ # CONFIG_COMMON_CLK_SI514 is not set
+ # CONFIG_CLK_QORIQ is not set
++
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_CEC_PLATFORM_DRIVERS=y
++CONFIG_MEDIA_CEC_SUPPORT=y
++CONFIG_MEDIA_CEC_DEBUG=y
++CONFIG_MEDIA_CEC_RC=y
++CONFIG_MEDIA_CONTROLLER_DVB=y
++CONFIG_VIDEO_PCI_SKELETON=m
++# CONFIG_DVB_DEMUX_SECTION_LOSS_LOG is not set
++CONFIG_IR_SPI=m
++CONFIG_IR_SERIAL_TRANSMITTER=y
++CONFIG_IR_SERIAL=m
++CONFIG_IR_SIR=m
++CONFIG_DVB_USB_ZD1301=m
++CONFIG_USB_PULSE8_CEC=m
++CONFIG_USB_RAINSHADOW_CEC=m
++CONFIG_VIDEO_TW5864=m
++CONFIG_VIDEO_TW686X=m
++# CONFIG_VIDEO_IVTV_DEPRECATED_IOCTLS is not set
++CONFIG_VIDEO_VIMC=m
++CONFIG_VIDEO_VIVID_CEC=y
++# CONFIG_INTEL_ATOMISP is not set
++# CONFIG_VIDEO_ATOMISP is not set
++CONFIG_VIDEO_OV5693=m
++CONFIG_VIDEO_OV2722=m
++CONFIG_VIDEO_GC2235=m
++CONFIG_VIDEO_OV8858=m
++CONFIG_VIDEO_MSRLIST_HELPER=m
++CONFIG_VIDEO_MT9M114=m
++CONFIG_VIDEO_AP1302=m
++CONFIG_VIDEO_GC0310=m
++CONFIG_VIDEO_OV2680=m
++CONFIG_VIDEO_LM3554=m
++CONFIG_VIDEO_IMX=m
++CONFIG_VIDEO_MUX=m
++CONFIG_VIDEO_IMX_MEDIA=m
++CONFIG_VIDEO_IMX_CSI=m
++CONFIG_IR_GPIO_TX=m
++CONFIG_IR_PWM_TX=m
++# CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
++# CONFIG_SDR_PLATFORM_DRIVERS is not set
++# CONFIG_VIDEO_SAMSUNG_S5P_CEC is not set
+diff --git a/kernel.spec b/kernel.spec
+index 99e6a09..fb7ec98 100644
+--- a/kernel.spec
++++ b/kernel.spec
+@@ -22,7 +22,7 @@ Summary: The Linux kernel
+ %global zipsed -e 's/\.ko$/\.ko.xz/'
+ %endif
+ 
+-# % define buildid .local
++%define buildid -mediatree+hauppauge
+ 
+ # baserelease defines which build revision of this kernel version we're
+ # building.  We used to call this fedora_build, but the magical name
+@@ -660,6 +660,37 @@ Patch827: misc-mic-Fix-for-double-fetch-security-bug-in-mic_co.patch
+ Patch830: posix_acl-Add-set_posix_acl.patch
+ Patch831: nfsd-check-permissions-when-setting-ACLs.patch
+ 
++### LINUX MEDIA TREE PATCHES ###
++Patch2001: 0001-Linuxtv.org-media-tree-sync-2017-10-05-20-10.patch
++Patch2002: 0002-Apply-build-fixes-to-media-tree.patch
++Patch2003: 0003-Mainline-Fedora-build-fixes.patch
++
++Patch2004: 0001-lgdt3306a-v4.6-i2c-mux-backport.patch
++Patch2005: 0002-em28xx-Hauppauge-DualHD-DVB-ATSC-second-tuner-suppor.patch
++Patch2006: 0003-em28xx-bulk-transfer-implementation-fix.patch
++Patch2007: 0004-em28xx-usb-packet-size-tweaks.patch
++Patch2008: 0005-lgdt3306a-add-QAM-AUTO-support.patch
++Patch2009: 0006-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
++Patch2010: 0007-cx23885-Enable-new-Hauppauge-PCIe-ImpactVCB-variant.patch
++Patch2011: 0008-cx23885-set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++Patch2012: 0009-si2157-check-error-status-bit-on-cmd-execute.patch
++Patch2013: 0010-si2157-briefly-wait-for-tuning-operation-to-complete.patch
++Patch2014: 0011-Si2157-better-check-for-running-tuner-in-init-Reset.patch
++Patch2015: 0012-si2157-add-analog-tuner-support-and-dvb-frontend.patch
++Patch2016: 0013-cx23xxx-Ensure-i2c-platform-data-object-lifetime.patch
++Patch2017: 0014-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
++Patch2018: 0015-cx25840-remove-offset-from-chip-specific-registers-A.patch
++Patch2019: 0016-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe.patch
++Patch2020: 0017-cx23885-Add-support-for-new-Hauppauge-QuadHD-885.patch
++Patch2021: 0018-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++Patch2022: 0019-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
++Patch2023: 0020-lgdt3306a-QAM-streaming-improvement-Required-for.patch
++Patch2024: 0021-si2168-spectral-inversion-property-Hauppauge.patch
++Patch2025: 0022-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++Patch2026: 0023-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
++Patch2027: 0024-em28xx-increase-max-em28xx-boards-to-max-dvb-adapter.patch
++Patch2028: 0025-v4l2-core-Reverse-758d90e16-kvmalloc-patch.patch
++
+ # END OF PATCH DEFINITIONS
+ %endif
+ 
+@@ -1381,6 +1412,37 @@ ApplyPatch misc-mic-Fix-for-double-fetch-security-bug-in-mic_co.patch
+ ApplyPatch posix_acl-Add-set_posix_acl.patch
+ ApplyPatch nfsd-check-permissions-when-setting-ACLs.patch
+ 
++### LINUX MEDIA TREE PATCHES ###
++ApplyPatch 0001-Linuxtv.org-media-tree-sync-2017-10-05-20-10.patch
++ApplyPatch 0002-Apply-build-fixes-to-media-tree.patch
++ApplyPatch 0003-Mainline-Fedora-build-fixes.patch
++
++ApplyPatch 0001-lgdt3306a-v4.6-i2c-mux-backport.patch
++ApplyPatch 0002-em28xx-Hauppauge-DualHD-DVB-ATSC-second-tuner-suppor.patch
++ApplyPatch 0003-em28xx-bulk-transfer-implementation-fix.patch
++ApplyPatch 0004-em28xx-usb-packet-size-tweaks.patch
++ApplyPatch 0005-lgdt3306a-add-QAM-AUTO-support.patch
++ApplyPatch 0006-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
++ApplyPatch 0007-cx23885-Enable-new-Hauppauge-PCIe-ImpactVCB-variant.patch
++ApplyPatch 0008-cx23885-set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++ApplyPatch 0009-si2157-check-error-status-bit-on-cmd-execute.patch
++ApplyPatch 0010-si2157-briefly-wait-for-tuning-operation-to-complete.patch
++ApplyPatch 0011-Si2157-better-check-for-running-tuner-in-init-Reset.patch
++ApplyPatch 0012-si2157-add-analog-tuner-support-and-dvb-frontend.patch
++ApplyPatch 0013-cx23xxx-Ensure-i2c-platform-data-object-lifetime.patch
++ApplyPatch 0014-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
++ApplyPatch 0015-cx25840-remove-offset-from-chip-specific-registers-A.patch
++ApplyPatch 0016-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe.patch
++ApplyPatch 0017-cx23885-Add-support-for-new-Hauppauge-QuadHD-885.patch
++ApplyPatch 0018-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++ApplyPatch 0019-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
++ApplyPatch 0020-lgdt3306a-QAM-streaming-improvement-Required-for.patch
++ApplyPatch 0021-si2168-spectral-inversion-property-Hauppauge.patch
++ApplyPatch 0022-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++ApplyPatch 0023-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
++ApplyPatch 0024-em28xx-increase-max-em28xx-boards-to-max-dvb-adapter.patch
++ApplyPatch 0025-v4l2-core-Reverse-758d90e16-kvmalloc-patch.patch
++
+ # END OF PATCH APPLICATIONS
+ 
+ %endif
+-- 
+2.4.11
+
