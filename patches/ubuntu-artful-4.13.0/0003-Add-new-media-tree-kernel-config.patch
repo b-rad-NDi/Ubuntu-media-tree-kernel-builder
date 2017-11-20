@@ -1,0 +1,26 @@
+From 618ecd44e1456433726c034a10c9131a167bc92e Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Wed, 25 Oct 2017 12:32:28 +0000
+Subject: [PATCH 3/6] Add 'new' media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index ec9ec986291d..b0a03cf15703 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -10262,3 +10262,9 @@ CONFIG_ZSMALLOC=y
+ # CONFIG_ZSMALLOC_STAT is not set
+ CONFIG_ZSWAP=y
+ CONFIG_ZX_TDM=m
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_IR_GPIO_TX=m
++CONFIG_IR_PWM_TX=m
++# CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
++# CONFIG_SDR_PLATFORM_DRIVERS is not set
++
+-- 
+2.14.1
+
