@@ -1,15 +1,16 @@
-From 505a74784d1ff2776506c0bfb3e279be3ecf90b9 Mon Sep 17 00:00:00 2001
+From 30c96862683d06877c537f57786b08b0558a486e Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 03/24] em28xx: usb packet size tweaks
+Subject: [PATCH 03/25] em28xx: usb packet size tweaks
 
+ Commentary needed...
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--
  drivers/media/usb/em28xx/em28xx.h     | 2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 6aab43ea6906..5a625ca6b260 100644
+index 20bfcf13daaa..f253a81e8998 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -205,7 +205,7 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
@@ -31,7 +32,7 @@ index 6aab43ea6906..5a625ca6b260 100644
  	} else {
  		result = em28xx_alloc_urbs(dev, EM28XX_DIGITAL_MODE,
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index 5208189e4ec4..11275e2ae4ad 100644
+index c85292c9883b..421d5a986de0 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -191,7 +191,7 @@
