@@ -1,15 +1,15 @@
-From 0464c9437c95830ff693a3f324917711212bd8d9 Mon Sep 17 00:00:00 2001
+From fb767bbdb1aee58c6624c03f8722963532708a57 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 27 Jun 2017 09:37:15 -0500
-Subject: [PATCH 19/24] lgdt3306a: QAM streaming improvement Required for
- stable viewing on Cablevision NY
+Subject: [PATCH 19/25] lgdt3306a: QAM streaming improvement
 
+ Required for stable viewing on Cablevision NY
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index c34f52d5a983..ffa4982dddd0 100644
+index 7fc8e8d78f14..540651ae1832 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
 @@ -599,6 +599,28 @@ static int lgdt3306a_set_qam(struct lgdt3306a_state *state, int modulation)

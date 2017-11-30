@@ -1,8 +1,10 @@
-From 908e8481b9faf63e381419404ec72e61c3c4e85e Mon Sep 17 00:00:00 2001
+From a0a95602348144395a09d4d3a821cf12e90b574e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 6 Oct 2017 15:49:28 -0500
-Subject: [PATCH 24/24] v4l2-core: Reverse 758d90e16 kvmalloc patch
+Subject: [PATCH 24/25] v4l2-core: Reverse 758d90e16 kvmalloc patch
 
+ In Ubuntu and Fedora, this patch caused GPF on some machines,
+ oopses on others, and general lockups on others. Reverted.
 ---
  drivers/media/v4l2-core/v4l2-async.c       |  5 ++---
  drivers/media/v4l2-core/v4l2-ctrls.c       | 26 ++++++++++++--------------

@@ -1,14 +1,17 @@
-From 39db6dbee8c8179dcd4d8f11a055693b0d564c62 Mon Sep 17 00:00:00 2001
+From 7d6f5830b84c51b37c12d14cc5db8842bc68cc82 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 5 Aug 2017 14:12:16 -0500
-Subject: [PATCH 21/24] si2168: Change from DVB-T to DVB-T/T2 autodetect
+Subject: [PATCH 21/25] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
+ DVB-T2 support is a bit lacking, this switches the PLP to auto detect
+ DVB-T and DVB-T2 signals after tuning. If a DVB-T2 signal is found
+ the signal is processed as DVB-T2, otherwise it is left as DVB-T.
 ---
  drivers/media/dvb-frontends/si2168.c | 39 +++++++++++++++++++++++++++++++++---
  1 file changed, 36 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 41d9c513b7e8..549e85565bf7 100644
+index 41d9c513b7e8..f99adeebd4e5 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -85,7 +85,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
@@ -34,8 +37,8 @@ index 41d9c513b7e8..549e85565bf7 100644
 +
 +	sys = c->delivery_system;
 +	/* check if we found DVBT2 during DVBT tuning */
-+	if(sys == SYS_DVBT){
-+		if((cmd.args[3] & 0x0f) == 7){
++	if (sys == SYS_DVBT) {
++		if ((cmd.args[3] & 0x0f) == 7) {
 +			sys = SYS_DVBT2;
 +		}
 +	}
@@ -56,7 +59,7 @@ index 41d9c513b7e8..549e85565bf7 100644
  	switch (c->delivery_system) {
  	case SYS_DVBT:
 -		delivery_system = 0x20;
-+		delivery_system = 0xf0; /* was 0x20 (DVB-T) but DVB-T/T2 auto-detect is more user friendly */
++		delivery_system = 0xf0; /* T/T2 auto-detect is user friendly */
  		break;
  	case SYS_DVBC_ANNEX_A:
  		delivery_system = 0x30;
@@ -81,10 +84,10 @@ index 41d9c513b7e8..549e85565bf7 100644
  
  	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
  	cmd.args[4] = delivery_system | bandwidth;
-+	if(delivery_system == 0xf0)
++	if (delivery_system == 0xf0)
 +		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
 +
-+	if(config->inversion) /* inverted spectrum, eg si2157 */
++	if (config->inversion) /* inverted spectrum, eg si2157 */
 +		cmd.args[5] |= 1;
 +
  	cmd.wlen = 6;
@@ -94,7 +97,7 @@ index 41d9c513b7e8..549e85565bf7 100644
  	}
  
  	memcpy(cmd.args, "\x14\x00\x0f\x10\x10\x00", 6);
-+	//BUGBUG?? FW defaults to 1, but windows driver uses 30; this call was setting it to 0??
++	/* BUGBUG? FW defaults to 1, but windows driver uses 30; above is 0? */
 +	cmd.args[5] = 30;
  	cmd.wlen = 6;
  	cmd.rlen = 4;
