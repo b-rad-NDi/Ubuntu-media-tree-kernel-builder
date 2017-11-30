@@ -1,8 +1,9 @@
-From 33f51e45c56748555560e931d00777a954473094 Mon Sep 17 00:00:00 2001
+From 0b8d93329b3bd9608ab71afb79d2044a77365a0c Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:04:48 +0000
 Subject: [PATCH 10/25] Si2157: better check for running tuner in init
 
+ Getting the Xtal trim property to check if running is less error prone
  Reset if_frequency if state unknown
 ---
  drivers/media/tuners/si2157.c | 17 +++++++++--------
@@ -47,5 +48,5 @@ index 5d00a4d935fe..f8e9469d406a 100644
  	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
  		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
 -- 
-2.11.0
+2.14.1
 

@@ -1,4 +1,4 @@
-From ac768e3946e40dc73d7f6b1e1df7e92eeece185e Mon Sep 17 00:00:00 2001
+From b0fb3989c1f28a82784e9cb7480a7636dc2d7ec2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 09:43:30 -0500
 Subject: [PATCH 07/25] cx23885: set Hauppauge HVR1255 tuner type to TDA18271
@@ -33,5 +33,5 @@ index 30b5a754468d..7b07c89b358a 100644
  		.input          = {{
  			.type   = CX23885_VMUX_TELEVISION,
 -- 
-2.11.0
+2.14.1
 

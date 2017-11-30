@@ -1,4 +1,4 @@
-From 65da71c466df23f179d40dd565d6f40fbc1b9ffb Mon Sep 17 00:00:00 2001
+From 90abfd8f3bf29bd8ba0aa3715453028fea6af164 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:44:48 +0000
 Subject: [PATCH 16/25] cx23885: Add support for new Hauppauge QuadHD (885)
@@ -170,5 +170,5 @@ index 0b4fd7aa4cf7..c73ef99f7550 100644
  #define GPIO_0 0x00000001
  #define GPIO_1 0x00000002
 -- 
-2.11.0
+2.14.1
 

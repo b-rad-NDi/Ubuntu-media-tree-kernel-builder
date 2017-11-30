@@ -1,4 +1,4 @@
-From 3cc5c0139d9c6dc29551dabe5561c4266c1a8597 Mon Sep 17 00:00:00 2001
+From e8f2ae55ad69fe8bfd35b46e5bc1d10281637990 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 10:50:10 -0500
 Subject: [PATCH 15/25] cx28335: Add support for Hauppauge Starburst 2 PCIe
@@ -72,5 +72,5 @@ index 1ae3a0237ba4..0b4fd7aa4cf7 100644
  #define GPIO_0 0x00000001
  #define GPIO_1 0x00000002
 -- 
-2.11.0
+2.14.1
 

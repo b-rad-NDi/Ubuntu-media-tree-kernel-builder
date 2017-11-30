@@ -1,5 +1,5 @@
-From 190280025d46ae9a411d4ab14abd5a3dd7dd6027 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
+From bab91f64dade296b1cf5a65766502c43c12e46b0 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
 Date: Thu, 16 Mar 2017 23:29:26 +0000
 Subject: [PATCH 04/25] lgdt3306a: add QAM AUTO support
 
@@ -57,5 +57,5 @@ index e6dece2c7af6..7fc8e8d78f14 100644
  		return -EINVAL;
  	}
 -- 
-2.11.0
+2.14.1
 

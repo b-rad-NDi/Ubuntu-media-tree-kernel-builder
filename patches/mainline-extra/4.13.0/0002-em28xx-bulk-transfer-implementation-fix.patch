@@ -1,15 +1,15 @@
-From 218023a80d73887e9e4a094a488fdacdbaf540d7 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 21:33:29 +0000
+From f54f923c5d00abaaf7919f7a2212d5c773c8397d Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 28 Nov 2017 21:44:07 +0000
 Subject: [PATCH 02/25] em28xx: bulk transfer implementation fix
 
  Set appropriate bulk/ISOC transfer size on capture start
 ---
- drivers/media/usb/em28xx/em28xx-core.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/media/usb/em28xx/em28xx-core.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 08b539f0345e..2beba91363ae 100644
+index c8e38c3730a3..38feb9cf8107 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
 @@ -639,6 +639,17 @@ int em28xx_capture_start(struct em28xx *dev, int start)
@@ -28,22 +28,24 @@ index 08b539f0345e..2beba91363ae 100644
 +						EM2874_R5E_TS2_PKT_SIZE, 0x05);
 +			}
  			if (dev->ts == PRIMARY_TS)
- 				rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
- 						start ?
-@@ -650,6 +661,13 @@ int em28xx_capture_start(struct em28xx *dev, int start)
- 						EM2874_TS2_CAPTURE_ENABLE : 0x00,
- 						EM2874_TS2_CAPTURE_ENABLE);
+ 				rc = em28xx_write_reg_bits(dev,
+ 					EM2874_R5F_TS_ENABLE,
+@@ -652,6 +663,15 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 					EM2874_TS2_CAPTURE_ENABLE : 0x00,
+ 					EM2874_TS2_CAPTURE_ENABLE);
  		} else {
 +			if (dev->dvb_xfer_bulk) {
 +				/* Max Tx Size = 188 * EM28XX_DVB_BULK_PACKET_MULTIPLIER */
-+				em28xx_write_reg(dev, EM2874_R5D_TS1_PKT_SIZE, 0xef);
++				em28xx_write_reg(dev,
++						EM2874_R5D_TS1_PKT_SIZE, 0xef);
 +			} else {
 +				/* TS1 Maximum Transfer Size = 188 * 5 */
-+				em28xx_write_reg(dev, EM2874_R5D_TS1_PKT_SIZE, 0x05);
++				em28xx_write_reg(dev,
++						EM2874_R5D_TS1_PKT_SIZE, 0x05);
 +			}
- 			rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
- 					start ?
- 					EM2874_TS1_CAPTURE_ENABLE : 0x00,
+ 			rc = em28xx_write_reg_bits(dev,
+ 				EM2874_R5F_TS_ENABLE,
+ 				start ?
 -- 
-2.11.0
+2.14.1
 

@@ -1,9 +1,10 @@
-From 9dec0349bcb507572c6d79c2048ea7607c530fab Mon Sep 17 00:00:00 2001
+From 6ca547e0b2ad2922553f6bbb49341dd0ef40c0f2 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:42:29 +0000
 Subject: [PATCH 14/25] cx25840: remove offset from chip specific registers
 
- Add labels to some undocumented regs
+ Remove vbi_regs_offset from a group of registers that are 888 specific.
+ Add labels to some undocumented regs.
 ---
  drivers/media/i2c/cx25840/cx25840-core.c | 39 ++++++++++++++++++++------------
  1 file changed, 25 insertions(+), 14 deletions(-)
@@ -86,5 +87,5 @@ index f38bf819d805..517418363f12 100644
  		v = cx25840_read(client, 0x115) | 0x0c;
  		cx25840_write(client, 0x115, v);
 -- 
-2.11.0
+2.14.1
 

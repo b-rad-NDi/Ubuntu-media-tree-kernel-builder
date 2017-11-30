@@ -1,4 +1,4 @@
-From 744120d4f9bd1cd399401b8e4b3ca043f52b18b2 Mon Sep 17 00:00:00 2001
+From cc21272d77c42c0998b0ae79aee0ecfc8701c22e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Jul 2017 16:21:40 -0500
 Subject: [PATCH 08/25] si2157: check error status bit on cmd execute
@@ -43,5 +43,5 @@ index e35b1faf0ddc..1a083dd4c25b 100644
  
  	mutex_unlock(&dev->i2c_mutex);
 -- 
-2.11.0
+2.14.1
 

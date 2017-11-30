@@ -1,16 +1,16 @@
-From 39de8597c935d670599568887147b1a3ea502e33 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 21:36:21 +0000
+From e3a989ac076176c2ce1051129d30bb8e8f7dbd00 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 29 Nov 2017 18:11:00 +0000
 Subject: [PATCH 12/25] si2157: add analog tuning related functions
 
  Include get_analog_params, get_frequency, get_bandwidth
 ---
- drivers/media/tuners/si2157.c      | 268 +++++++++++++++++++++++++++++++++++--
+ drivers/media/tuners/si2157.c      | 276 +++++++++++++++++++++++++++++++++++--
  drivers/media/tuners/si2157_priv.h |   2 +
- 2 files changed, 262 insertions(+), 8 deletions(-)
+ 2 files changed, 269 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index f4efc80f751e..3fd68948c054 100644
+index 8fc3bb075033..2723e8cbbb85 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -1,5 +1,5 @@
@@ -80,22 +80,26 @@ index f4efc80f751e..3fd68948c054 100644
  	memcpy(cmd.args, "\x41\x00\x00\x00\x00\x00\x00\x00", 8);
  	cmd.args[4] = (c->frequency >>  0) & 0xff;
  	cmd.args[5] = (c->frequency >>  8) & 0xff;
-@@ -485,18 +502,250 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -483,20 +500,258 @@ static int si2157_set_params(struct dvb_frontend *fe)
+ 	if (ret)
+ 		goto err;
  
- 	si2157_tune_wait(client, 1); /* wait to complete, ignore any errors */
- 
+-	si2157_tune_wait(client, 1); /* wait to complete, ignore any errors */
++	/* wait for tuning to complete, ignore any errors */
++	si2157_tune_wait(client, 1);
++
 +	dev->bandwidth = bandwidth;
 +	dev->frequency = c->frequency;
 +
- 	return 0;
- err:
++	return 0;
++err:
 +	dev->bandwidth = 0;
 +	dev->frequency = 0;
 +	dev->if_frequency = 0;
- 	dev_dbg(&client->dev, "failed=%d\n", ret);
- 	return ret;
- }
- 
++	dev_dbg(&client->dev, "failed=%d\n", ret);
++	return ret;
++}
++
 +static int si2157_set_analog_params(struct dvb_frontend *fe,
 +				      struct analog_parameters *params)
 +{
@@ -113,15 +117,15 @@ index f4efc80f751e..3fd68948c054 100644
 +	u8 invert_analog = 1; /* analog tuner spectrum; 0=normal, 1=inverted */
 +
 +	if (dev->chiptype != SI2157_CHIPTYPE_SI2157) {
-+		printk(KERN_INFO "%s: Analog tuning not supported for chiptype=%u\n",
++		dev_info(&client->dev, "%s: Analog tuning not supported for chiptype=%u\n",
 +				__func__, dev->chiptype);
 +		ret = -EINVAL;
 +		goto err;
 +	}
 +
-+	if (!dev->active) {
++	if (!dev->active)
 +		si2157_init(fe);
-+	}
++
 +	if (!dev->active) {
 +		ret = -EAGAIN;
 +		goto err;
@@ -129,7 +133,7 @@ index f4efc80f751e..3fd68948c054 100644
 +	if (params->mode == V4L2_TUNER_RADIO) {
 +	/*
 +	 * std = "fm";
-+	 * bandwidth = 1700000; //best we can do for FM on si2157 tuner, AGC will be a mess though
++	 * bandwidth = 1700000; //best can do for FM, AGC will be a mess though
 +	 * if_frequency = 1250000;  //HVR-225x(saa7164), HVR-12xx(cx23885)
 +	 * if_frequency = 6600000;  //HVR-9xx(cx231xx)
 +	 * if_frequency = 5500000;  //HVR-19xx(pvrusb2)
@@ -142,28 +146,28 @@ index f4efc80f751e..3fd68948c054 100644
 +	do_div(tmp_lval, 10); /* convert to HZ */
 +	freq = (u32)tmp_lval;
 +
-+	if(freq < 1000000) /* is freq in KHz */
++	if (freq < 1000000) /* is freq in KHz */
 +		freq = freq * 1000;
 +	dev->frequency = freq;
 +
 +	if (params->std & (V4L2_STD_B|V4L2_STD_GH)) {
-+		if(freq >= 470000000){
++		if (freq >= 470000000) {
 +			std = "palGH";
 +			bandwidth = 8000000;
 +			if_frequency = 6000000; /* matches tda18271C2, works w/cx23885 */
 +			system = 1;
-+			if(params->std & (V4L2_STD_SECAM_G|V4L2_STD_SECAM_H)){
++			if (params->std & (V4L2_STD_SECAM_G|V4L2_STD_SECAM_H)) {
 +				std = "secamGH";
-+				color=0x10;
++				color = 0x10;
 +			}
 +		} else {
 +			std = "palB";
 +			bandwidth = 7000000;
 +			if_frequency = 6000000; /* matches tda18271C2, works w/cx23885 */;
 +			system = 0;
-+			if(params->std & V4L2_STD_SECAM_B){
++			if (params->std & V4L2_STD_SECAM_B) {
 +				std = "secamB";
-+				color=0x10;
++				color = 0x10;
 +			}
 +		}
 +	} else if (params->std & V4L2_STD_MN) {
@@ -181,20 +185,20 @@ index f4efc80f751e..3fd68948c054 100644
 +		bandwidth = 8000000;
 +		if_frequency = 6900000; /* matches tda18271C2, does not work yet w/cx23885 */
 +		system = 5;
-+		if (params->std & V4L2_STD_SECAM_DK){
++		if (params->std & V4L2_STD_SECAM_DK) {
 +			std = "secamDK";
-+			color=0x10;
++			color = 0x10;
 +		}
 +	} else if (params->std & V4L2_STD_SECAM_L) {
 +		std = "secamL";
 +		bandwidth = 8000000;
 +		if_frequency = 6750000; /* not tested yet w/cx23885 */
-+		system = 6;  color=0x10;
++		system = 6;  color = 0x10;
 +	} else if (params->std & V4L2_STD_SECAM_LC) {
 +		std = "secamL'";
 +		bandwidth = 7000000;
 +		if_frequency = 1250000; /* not tested yet w/cx23885 */
-+		system = 7;  color=0x10;
++		system = 7;  color = 0x10;
 +	} else {
 +		std = "unknown";
 +	}
@@ -208,9 +212,11 @@ index f4efc80f751e..3fd68948c054 100644
 +
 +	/* set analog IF port */
 +	memcpy(cmd.args, "\x14\x00\x03\x06\x08\x02", 6);
-+	/* in using dev->if_port, we assume analog and digital IF's are always on different ports */
-+	cmd.args[4] = (dev->if_port==1)?8:10; /* assumes if_port definition is 0 or 1 for digital out */
-+	cmd.args[5] = (dev->if_port==1)?2:1;  /* Analog AGC assumed to be external */
++	/* in using dev->if_port, we assume analog and digital IF's */
++	/*  are always on different ports */
++	/* assumes if_port definition is 0 or 1 for digital out */
++	cmd.args[4] = (dev->if_port == 1)?8:10;
++	cmd.args[5] = (dev->if_port == 1)?2:1; /* Analog AGC assumed external */
 +	cmd.wlen = 6;
 +	cmd.rlen = 4;
 +	ret = si2157_cmd_execute(client, &cmd);
@@ -225,7 +231,8 @@ index f4efc80f751e..3fd68948c054 100644
 +	if (ret)
 +		goto err;
 +
-+	dev->if_frequency = if_frequency | 1; /* make this distinct from a digital IF */
++	/* make this distinct from a digital IF */
++	dev->if_frequency = if_frequency | 1;
 +
 +	/* calc and set tuner analog if center frequency */
 +	if_frequency = if_frequency + 1250000 - (bandwidth/2);
@@ -251,7 +258,7 @@ index f4efc80f751e..3fd68948c054 100644
 +	/* set analog video mode */
 +	memcpy(cmd.args, "\x14\x00\x04\x06\x00\x00", 6);
 +	cmd.args[4] = system | color;
-+#if 1 /* BUGBUG - can use dev->inversion if we assume it applies to both digital and analog */
++#if 1 /* can use dev->inversion if assumed it applies to both digital/analog */
 +	if (invert_analog)
 +		cmd.args[5] |= 0x02;
 +#else
@@ -276,38 +283,40 @@ index f4efc80f751e..3fd68948c054 100644
 +	if (ret)
 +		goto err;
 +
-+	si2157_tune_wait(client, 0); /* wait for tuning to complete, ignore any errors */
++	/* wait for tuning to complete, ignore any errors */
++	si2157_tune_wait(client, 0);
 +
-+#if 1//testing
++#if 1 /* testing */
 +	/* get tuner status, RSSI values */
 +	memcpy(cmd.args, "\x42\x01", 2);
 +	cmd.wlen = 2;
 +	cmd.rlen = 12;
 +	ret = si2157_cmd_execute(client, &cmd);
 +
-+	printk(KERN_INFO "%s: tuner status: ret=%d rssi=%d mode=%x freq=%d\n",
++	dev_info(&client->dev, "%s: tuner status: ret=%d rssi=%d mode=%x freq=%d\n",
 +		__func__, ret, cmd.args[3], cmd.args[8],
-+		cmd.args[7]<<24 | cmd.args[6]<<16 | cmd.args[5]<<8 | cmd.args[4]);
++		(cmd.args[7]<<24 | cmd.args[6]<<16 |
++		cmd.args[5]<<8 | cmd.args[4]));
 +#endif
 +
 +	dev->bandwidth = bandwidth;
-+
-+	return 0;
-+err:
+ 
+ 	return 0;
+ err:
 +	dev->bandwidth = 0;
 +	dev->frequency = 0;
 +	dev->if_frequency = 0;
-+	dev_dbg(&client->dev, "failed=%d\n", ret);
-+	return ret;
-+}
-+
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
+ 	return ret;
+ }
+ 
 +static int si2157_get_frequency(struct dvb_frontend *fe, u32 *frequency)
 +{
 +	struct i2c_client *client = fe->tuner_priv;
 +	struct si2157_dev *dev = i2c_get_clientdata(client);
 +
 +	*frequency = dev->frequency;
-+	printk(KERN_INFO "%s: freq=%u\n", __func__, dev->frequency);
++	dev_info(&client->dev, "%s: freq=%u\n", __func__, dev->frequency);
 +	return 0;
 +}
 +
@@ -317,7 +326,7 @@ index f4efc80f751e..3fd68948c054 100644
 +	struct si2157_dev *dev = i2c_get_clientdata(client);
 +
 +	*bandwidth = dev->bandwidth;
-+	printk(KERN_INFO "%s: bandwidth=%u\n", __func__, dev->bandwidth);
++	dev_info(&client->dev, "%s: bandwidth=%u\n", __func__, dev->bandwidth);
 +	return 0;
 +}
 +
@@ -328,11 +337,11 @@ index f4efc80f751e..3fd68948c054 100644
  
 -	*frequency = dev->if_frequency;
 +	*frequency = dev->if_frequency & ~1; /* strip analog IF indicator bit */
-+	printk(KERN_INFO "%s: if_frequency=%u\n", __func__, *frequency);
++	dev_info(&client->dev, "%s: if_frequency=%u\n", __func__, *frequency);
  	return 0;
  }
  
-@@ -552,7 +801,7 @@ static int si2157_setup_configuration(struct dvb_frontend *fe,
+@@ -554,7 +809,7 @@ static int si2157_setup_configuration(struct dvb_frontend *fe,
  
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
@@ -341,7 +350,7 @@ index f4efc80f751e..3fd68948c054 100644
  		.frequency_min  = 42000000,
  		.frequency_max  = 870000000,
  	},
-@@ -560,7 +809,10 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -562,7 +817,10 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -352,7 +361,7 @@ index f4efc80f751e..3fd68948c054 100644
  	.get_if_frequency = si2157_get_if_frequency,
  };
  
-@@ -583,7 +835,7 @@ static void si2157_stat_work(struct work_struct *work)
+@@ -585,7 +843,7 @@ static void si2157_stat_work(struct work_struct *work)
  		goto err;
  
  	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
@@ -375,5 +384,5 @@ index 2801aaa5ffe2..b51259b600f8 100644
  
  #if defined(CONFIG_MEDIA_CONTROLLER)
 -- 
-2.11.0
+2.14.1
 

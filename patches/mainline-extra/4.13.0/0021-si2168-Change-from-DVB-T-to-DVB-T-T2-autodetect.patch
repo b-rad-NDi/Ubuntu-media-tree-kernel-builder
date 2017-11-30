@@ -1,4 +1,4 @@
-From 7d6f5830b84c51b37c12d14cc5db8842bc68cc82 Mon Sep 17 00:00:00 2001
+From ef9becad0169e60327399aff525153ca99357653 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 5 Aug 2017 14:12:16 -0500
 Subject: [PATCH 21/25] si2168: Change from DVB-T to DVB-T/T2 autodetect
@@ -103,5 +103,5 @@ index 41d9c513b7e8..f99adeebd4e5 100644
  	cmd.rlen = 4;
  	ret = si2168_cmd_execute(client, &cmd);
 -- 
-2.11.0
+2.14.1
 

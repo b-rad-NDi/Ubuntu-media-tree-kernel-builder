@@ -1,4 +1,4 @@
-From 0d68d52752f63817a800e263c43b3d4ded29ab99 Mon Sep 17 00:00:00 2001
+From 7eb124305a47b5d54454083f1cbfdf98bc8210a5 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 18:19:10 +0000
 Subject: [PATCH 13/25] cx23885: add support for Hauppauge HVR1265 K4
@@ -262,5 +262,5 @@ index a3837b7cdd83..1ae3a0237ba4 100644
  #define GPIO_0 0x00000001
  #define GPIO_1 0x00000002
 -- 
-2.11.0
+2.14.1
 

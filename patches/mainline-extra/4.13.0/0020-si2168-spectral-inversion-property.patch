@@ -1,4 +1,4 @@
-From 5eced8b49a90f27e089802dc2e8fd27e37fa5bb2 Mon Sep 17 00:00:00 2001
+From 26a8477be6a0b848f260d306fb8155abf648a5e6 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:47:46 +0000
 Subject: [PATCH 20/25] si2168: spectral inversion property
@@ -24,10 +24,10 @@ index 3225d0cc93c7..0f712331572a 100644
  
  #endif
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index f253a81e8998..55f99cf9d6ef 100644
+index 38ab536fe363..0d9b8d6a32c6 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -1730,6 +1730,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1727,6 +1727,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			si2168_config.i2c_adapter = &adapter;
  			si2168_config.fe = &dvb->fe[0];
  			si2168_config.ts_mode = SI2168_TS_PARALLEL;
@@ -35,7 +35,7 @@ index f253a81e8998..55f99cf9d6ef 100644
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
  			info.addr = 0x64;
-@@ -1914,6 +1915,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1911,6 +1912,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			si2168_config.i2c_adapter = &adapter;
  			si2168_config.fe = &dvb->fe[0];
  			si2168_config.ts_mode = SI2168_TS_SERIAL;
@@ -44,5 +44,5 @@ index f253a81e8998..55f99cf9d6ef 100644
  			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
  			if (dev->ts == PRIMARY_TS)
 -- 
-2.11.0
+2.14.1
 

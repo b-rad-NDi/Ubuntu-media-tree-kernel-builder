@@ -1,10 +1,10 @@
-From 8a05e851bbe8b71bdf5531593f8a7500fc7d293c Mon Sep 17 00:00:00 2001
+From 2f3c3c1a9ff26435d81dcb2f88ed501026b32f4f Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:02:05 +0000
 Subject: [PATCH 09/25] si2157: briefly wait for tuning operation to complete
 
- Enable si2157 tuner status flags. Waits up 40ms for tuning operation, then from
- 30-150ms (dig/analog) for signal lock
+ Enable si2157 tuner status flags. Waits up 40ms for tuning operation,
+ then from 30-150ms (dig/analog) for signal lock
 ---
  drivers/media/tuners/si2157.c | 102 ++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 102 insertions(+)
@@ -137,5 +137,5 @@ index 1a083dd4c25b..5d00a4d935fe 100644
  err:
  	dev_dbg(&client->dev, "failed=%d\n", ret);
 -- 
-2.11.0
+2.14.1
 

@@ -1,49 +1,57 @@
-From 049a9927c9cad5c6d4b1f0f12ddbdd34caf05bc6 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 17:40:20 +0000
+From 637f68a469fb84f42001dda08cae2a32165637e5 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 29 Nov 2017 17:44:56 +0000
 Subject: [PATCH 11/25] si2157: add dvb frontend attach/release for tuner type
 
  Adds tuner type TUNER_SILABS_SI2157 to tuner core. Includes dvb attach/release
- functions with hybrid_tuner_instance_list for mutliple frontend support
+ functions with hybrid_tuner_instance_list for mutliple frontend support.
+
+ Renamed si2157_attach function in saa7164 driver to fix compilation error
+ caused by introduction of si2157_attach in the si2157 driver.
 ---
- drivers/media/pci/saa7164/saa7164-dvb.c |   6 +-
- drivers/media/tuners/si2157.c           | 251 +++++++++++++++++++++++++-------
+ drivers/media/pci/saa7164/saa7164-dvb.c |  11 +-
+ drivers/media/tuners/si2157.c           | 256 +++++++++++++++++++++++++-------
  drivers/media/tuners/si2157.h           |  14 ++
  drivers/media/tuners/si2157_priv.h      |   5 +
  drivers/media/tuners/tuner-types.c      |  15 ++
- drivers/media/v4l2-core/tuner-core.c    |  22 +++
+ drivers/media/v4l2-core/tuner-core.c    |  21 +++
  include/media/tuner.h                   |   2 +
- 7 files changed, 257 insertions(+), 58 deletions(-)
+ 7 files changed, 265 insertions(+), 59 deletions(-)
 
 diff --git a/drivers/media/pci/saa7164/saa7164-dvb.c b/drivers/media/pci/saa7164/saa7164-dvb.c
-index e76d3bafe2ce..a557e2920bd4 100644
+index e76d3bafe2ce..9522c6c80566 100644
 --- a/drivers/media/pci/saa7164/saa7164-dvb.c
 +++ b/drivers/media/pci/saa7164/saa7164-dvb.c
-@@ -110,7 +110,7 @@ static struct si2157_config hauppauge_hvr2255_tuner_config = {
+@@ -110,8 +110,9 @@ static struct si2157_config hauppauge_hvr2255_tuner_config = {
  	.if_port = 1,
  };
  
 -static int si2157_attach(struct saa7164_port *port, struct i2c_adapter *adapter,
-+static int si2157_attach_priv(struct saa7164_port *port, struct i2c_adapter *adapter,
- 	struct dvb_frontend *fe, u8 addr8bit, struct si2157_config *cfg)
+-	struct dvb_frontend *fe, u8 addr8bit, struct si2157_config *cfg)
++static int si2157_attach_priv(struct saa7164_port *port,
++	struct i2c_adapter *adapter, struct dvb_frontend *fe,
++	u8 addr8bit, struct si2157_config *cfg)
  {
  	struct i2c_board_info bi;
-@@ -624,11 +624,11 @@ int saa7164_dvb_register(struct saa7164_port *port)
+ 	struct i2c_client *tuner;
+@@ -624,11 +625,13 @@ int saa7164_dvb_register(struct saa7164_port *port)
  		if (port->dvb.frontend != NULL) {
  
  			if (port->nr == 0) {
 -				si2157_attach(port, &dev->i2c_bus[0].i2c_adap,
-+				si2157_attach_priv(port, &dev->i2c_bus[0].i2c_adap,
++				si2157_attach_priv(port,
++					      &dev->i2c_bus[0].i2c_adap,
  					      port->dvb.frontend, 0xc0,
  					      &hauppauge_hvr2255_tuner_config);
  			} else {
 -				si2157_attach(port, &dev->i2c_bus[1].i2c_adap,
-+				si2157_attach_priv(port, &dev->i2c_bus[1].i2c_adap,
++				si2157_attach_priv(port,
++					      &dev->i2c_bus[1].i2c_adap,
  					      port->dvb.frontend, 0xc0,
  					      &hauppauge_hvr2255_tuner_config);
  			}
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index f8e9469d406a..f4efc80f751e 100644
+index f8e9469d406a..8fc3bb075033 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -18,6 +18,11 @@
@@ -58,7 +66,7 @@ index f8e9469d406a..f4efc80f751e 100644
  /* execute firmware command */
  static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
  {
-@@ -495,6 +500,56 @@ static int si2157_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
+@@ -495,6 +500,58 @@ static int si2157_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
  	return 0;
  }
  
@@ -66,13 +74,14 @@ index f8e9469d406a..f4efc80f751e 100644
 +{
 +	struct i2c_client *client = fe->tuner_priv;
 +	struct si2157_dev *dev = NULL;
-+	printk(KERN_INFO "%s: client=%p\n", __func__, client);
-+	if(client == NULL)
++
++	pr_info("%s: client=%p\n", __func__, client);
++	if (client == NULL)
 +		return;
 +
 +	dev = i2c_get_clientdata(client);
-+	printk(KERN_INFO "%s: dev=%p\n", __func__, dev);
-+	if(dev == NULL)
++	pr_info("%s: dev=%p\n", __func__, dev);
++	if (dev == NULL)
 +		return;
 +
 +	mutex_lock(&si2157_list_mutex);
@@ -88,13 +97,14 @@ index f8e9469d406a..f4efc80f751e 100644
 +{
 +	struct i2c_client *client = fe->tuner_priv;
 +	struct si2157_dev *dev = NULL;
-+	printk(KERN_INFO "%s: client=%p\n", __func__, client);
-+	if(client == NULL)
++
++	pr_info("%s: client=%p\n", __func__, client);
++	if (client == NULL)
 +		return -1;
 +
 +	dev = i2c_get_clientdata(client);
-+	printk(KERN_INFO "%s: dev=%p\n", __func__, dev);
-+	if(dev == NULL)
++	pr_info("%s: dev=%p\n", __func__, dev);
++	if (dev == NULL)
 +		return -1;
 +
 +	if (cfg) {
@@ -115,7 +125,7 @@ index f8e9469d406a..f4efc80f751e 100644
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
  		.name           = "Silicon Labs Si2141/Si2146/2147/2148/2157/2158",
-@@ -505,6 +560,7 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -505,6 +562,7 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -123,7 +133,7 @@ index f8e9469d406a..f4efc80f751e 100644
  	.get_if_frequency = si2157_get_if_frequency,
  };
  
-@@ -541,60 +597,22 @@ static int si2157_probe(struct i2c_client *client,
+@@ -541,60 +599,23 @@ static int si2157_probe(struct i2c_client *client,
  {
  	struct si2157_config *cfg = client->dev.platform_data;
  	struct dvb_frontend *fe = cfg->fe;
@@ -133,18 +143,19 @@ index f8e9469d406a..f4efc80f751e 100644
 +	struct si2157_dev *dev = NULL;
 +	unsigned short addr = client->addr;
 +	int ret = 0;
++
++	pr_info("%s: probing si2157 tuner fe=%p cfg=%p addr=0X%2x\n",
++			__func__, fe, cfg, addr);
++	fe->tuner_priv = client;
++	si2157_setup_configuration(fe, cfg);
  
 -	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 -	if (!dev) {
 -		ret = -ENOMEM;
 -		dev_err(&client->dev, "kzalloc() failed\n");
-+	printk(KERN_INFO "%s: probing si2157 tuner fe=%p cfg=%p addr=0X%2x\n",
-+			__func__, fe, cfg, addr);
-+	fe->tuner_priv = client;
-+	si2157_setup_configuration(fe, cfg);
-+
 +	if (!dvb_attach(si2157_attach, fe, (u8)addr, client->adapter, cfg)) {
-+		printk(KERN_ERR "%s: attaching si2157 tuner failed\n", __func__);
++		dev_err(&client->dev, "%s: attaching si2157 tuner failed\n",
++				__func__);
  		goto err;
  	}
  
@@ -195,7 +206,7 @@ index f8e9469d406a..f4efc80f751e 100644
  
  	dev_info(&client->dev, "Silicon Labs %s successfully attached\n",
  			dev->chiptype == SI2157_CHIPTYPE_SI2141 ?  "Si2141" :
-@@ -603,8 +621,6 @@ static int si2157_probe(struct i2c_client *client,
+@@ -603,8 +624,6 @@ static int si2157_probe(struct i2c_client *client,
  
  	return 0;
  
@@ -204,12 +215,13 @@ index f8e9469d406a..f4efc80f751e 100644
  err:
  	dev_dbg(&client->dev, "failed=%d\n", ret);
  	return ret;
-@@ -613,7 +629,12 @@ static int si2157_probe(struct i2c_client *client,
+@@ -613,7 +632,13 @@ static int si2157_probe(struct i2c_client *client,
  static int si2157_remove(struct i2c_client *client)
  {
  	struct si2157_dev *dev = i2c_get_clientdata(client);
 -	struct dvb_frontend *fe = dev->fe;
 +	struct dvb_frontend *fe = NULL;
++
 +	if (dev == NULL) {
 +		pr_info("dev is NULL\n");
 +		return 0;
@@ -218,7 +230,7 @@ index f8e9469d406a..f4efc80f751e 100644
  
  	dev_dbg(&client->dev, "\n");
  
-@@ -626,8 +647,7 @@ static int si2157_remove(struct i2c_client *client)
+@@ -626,8 +651,7 @@ static int si2157_remove(struct i2c_client *client)
  #endif
  
  	memset(&fe->ops.tuner_ops, 0, sizeof(struct dvb_tuner_ops));
@@ -228,7 +240,7 @@ index f8e9469d406a..f4efc80f751e 100644
  
  	return 0;
  }
-@@ -652,7 +672,128 @@ static struct i2c_driver si2157_driver = {
+@@ -652,7 +676,129 @@ static struct i2c_driver si2157_driver = {
  
  module_i2c_driver(si2157_driver);
  
@@ -268,20 +280,22 @@ index f8e9469d406a..f4efc80f751e 100644
 +			hybrid_tuner_instance_list,
 +			i2c, addr, "si2157");
 +
-+	printk(KERN_INFO "%s: instance=%d\n", __func__, instance);
++	pr_info("%s: instance=%d\n", __func__, instance);
 +	switch (instance) {
 +	case 0:
 +		goto fail;
 +	case 1:
 +		/* new tuner instance */
-+		pr_info("%s(): new instance for tuner @0x%02x\n", __func__, addr);
-+		dev->addr= addr;
++		pr_info("%s(): new instance for tuner @0x%02x\n",
++				__func__, addr);
++		dev->addr = addr;
 +		i2c_set_clientdata(client, dev);
 +
 +		si2157_setup_configuration(fe, cfg);
 +
 +		dev->fe = fe;
-+		dev->chiptype = (u8)SI2157_CHIPTYPE_SI2157; //BUGBUG - should this come from config?
++		/* BUGBUG - should chiptype come from config? */
++		dev->chiptype = (u8)SI2157_CHIPTYPE_SI2157;
 +		dev->if_frequency = 0;
 +
 +		mutex_init(&dev->i2c_mutex);
@@ -294,7 +308,7 @@ index f8e9469d406a..f4efc80f751e 100644
 +				 __func__, addr);
 +
 +		/* allow dvb driver to override configuration settings */
-+		if(cfg)
++		if (cfg)
 +			si2157_setup_configuration(fe, cfg);
 +
 +		break;
@@ -313,7 +327,6 @@ index f8e9469d406a..f4efc80f751e 100644
 +	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
 +
 +#ifdef CONFIG_MEDIA_CONTROLLER
-+	/* BUGBUG - should this only happen when instance == 1?? */
 +	if (instance == 1 && cfg->mdev) {
 +		pr_info("cfg->mdev=%p\n", cfg->mdev);
 +		dev->mdev = cfg->mdev;
@@ -345,10 +358,10 @@ index f8e9469d406a..f4efc80f751e 100644
 +	return fe;
 +
 +fail:
-+	printk(KERN_INFO "%s: Failed\n", __func__);
++	pr_info("%s: Failed\n", __func__);
 +	mutex_unlock(&si2157_list_mutex);
 +
-+	if(fe && (instance == 1))
++	if (fe && (instance == 1))
 +		si2157_release(fe);
 +	return NULL;
 +}
@@ -359,7 +372,7 @@ index f8e9469d406a..f4efc80f751e 100644
  MODULE_LICENSE("GPL");
  MODULE_FIRMWARE(SI2158_A20_FIRMWARE);
 diff --git a/drivers/media/tuners/si2157.h b/drivers/media/tuners/si2157.h
-index 76807f5b3cf8..04b98ef4fdd6 100644
+index 76807f5b3cf8..fd008cc4cd82 100644
 --- a/drivers/media/tuners/si2157.h
 +++ b/drivers/media/tuners/si2157.h
 @@ -46,4 +46,18 @@ struct si2157_config {
@@ -376,7 +389,7 @@ index 76807f5b3cf8..04b98ef4fdd6 100644
 +						   struct i2c_adapter *i2c,
 +						   struct si2157_config *cfg)
 +{
-+	printk(KERN_WARNING "%s: driver disabled by Kconfig\n", __func__);
++	pr_err("%s: driver disabled by Kconfig\n", __func__);
 +	return NULL;
 +}
 +#endif
@@ -440,7 +453,7 @@ index 98bc15a388be..e022ab8d093e 100644
  EXPORT_SYMBOL(tuners);
  
 diff --git a/drivers/media/v4l2-core/tuner-core.c b/drivers/media/v4l2-core/tuner-core.c
-index 8db45dfc271b..9280f0a77a8d 100644
+index 8db45dfc271b..6bd4cad9a817 100644
 --- a/drivers/media/v4l2-core/tuner-core.c
 +++ b/drivers/media/v4l2-core/tuner-core.c
 @@ -40,6 +40,7 @@
@@ -451,28 +464,27 @@ index 8db45dfc271b..9280f0a77a8d 100644
  
  #define UNSET (-1U)
  
-@@ -396,6 +397,27 @@ static void set_type(struct i2c_client *c, unsigned int type,
+@@ -396,6 +397,26 @@ static void set_type(struct i2c_client *c, unsigned int type,
  		tune_now = 0;
  		break;
  	}
 +	case TUNER_SILABS_SI2157:
 +	{
 +		static struct si2157_config silabs_config = {
-+		//	.tuner_address           = 0xC0 >> 1,      /* address of the tuner */
-+		//	.crystal_trim_xo_cap     = 8,
-+		//	.indirect_i2c_connection = 1, /* tuner connected directly(?) */
 +			.inversion = true,
-+			.if_port   = 1, /*if_port selects the digital IF port, analog assumed to be the other port */
++			.if_port   = 1, /* selects the digital IF port */
++					/* analog assumed to be other port */
 +		};
 +
-+		printk(KERN_INFO "%s: looking for si2157 tuner on i2c bus: %d\n",
++		dprintk("%s: looking for si2157 tuner on i2c bus: %d\n",
 +		       __func__, i2c_adapter_id(t->i2c->adapter));
 +
-+		if (!dvb_attach(si2157_attach, &t->fe, t->i2c->addr, t->i2c->adapter, &silabs_config)) {
-+			printk(KERN_ERR "%s: attaching si2157 tuner failed\n", __func__);
++		if (!dvb_attach(si2157_attach, &t->fe, t->i2c->addr,
++				t->i2c->adapter, &silabs_config)) {
++			dprintk("%s: attaching si2157 tuner failed\n", __func__);
 +			goto attach_failed;
 +		}
-+		printk(KERN_INFO "%s: si2157 tuner attached\n", __func__);
++		dprintk("%s: si2157 tuner attached\n", __func__);
 +		tune_now = 0;
 +		break;
 +	}
@@ -493,5 +505,5 @@ index b3edc14e763f..cab980a0c5d2 100644
  #define TDA9887_PRESENT			(1<<0)
  #define TDA9887_PORT1_INACTIVE		(1<<1)
 -- 
-2.11.0
+2.14.1
 

@@ -1,18 +1,18 @@
-From af7af079a68ee3148b41a1ea7506540cd9f8e3ef Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 20:12:04 +0000
+From 3b23ea46c75892d233e7a1db5381063deed81783 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 28 Nov 2017 21:31:59 +0000
 Subject: [PATCH 01/25] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
  Add has_dual_ts field, allows secondary demod/tuner attached to em28xx device.
 ---
- drivers/media/usb/em28xx/em28xx-cards.c | 128 +++++++++++++++++++++++++++++++-
- drivers/media/usb/em28xx/em28xx-core.c  |  47 ++++++++++--
- drivers/media/usb/em28xx/em28xx-dvb.c   |  36 +++++++--
+ drivers/media/usb/em28xx/em28xx-cards.c | 129 +++++++++++++++++++++++++++++++-
+ drivers/media/usb/em28xx/em28xx-core.c  |  50 +++++++++++--
+ drivers/media/usb/em28xx/em28xx-dvb.c   |  33 ++++++--
  drivers/media/usb/em28xx/em28xx.h       |  12 +++
- 4 files changed, 205 insertions(+), 18 deletions(-)
+ 4 files changed, 206 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 4c57fd7929cb..3efd5a28b171 100644
+index 4c57fd7929cb..4ebc2d875e87 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2403,6 +2403,7 @@ struct em28xx_board em28xx_boards[] = {
@@ -118,7 +118,7 @@ index 4c57fd7929cb..3efd5a28b171 100644
  	if (has_vendor_audio) {
  		dev_err(&interface->dev,
  			"Audio interface %i found (Vendor Class)\n", ifnum);
-@@ -3712,6 +3762,64 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+@@ -3712,6 +3762,65 @@ static int em28xx_usb_probe(struct usb_interface *interface,
  			dev->dvb_xfer_bulk ? "bulk" : "isoc");
  	}
  
@@ -151,7 +151,8 @@ index 4c57fd7929cb..3efd5a28b171 100644
 +
 +		/* Select USB transfer types to use */
 +		if (has_dvb) {
-+			if (!dev->dvb_ep_isoc_ts2 || (try_bulk && dev->dvb_ep_bulk_ts2))
++			if (!dev->dvb_ep_isoc_ts2 ||
++			   (try_bulk && dev->dvb_ep_bulk_ts2))
 +				dev->dev_next->dvb_xfer_bulk = 1;
 +			dev_info(&dev->intf->dev, "dvb ts2 set to %s mode.\n",
 +				dev->dev_next->dvb_xfer_bulk ? "bulk" : "isoc");
@@ -183,7 +184,7 @@ index 4c57fd7929cb..3efd5a28b171 100644
  	kref_init(&dev->ref);
  
  	request_modules(dev);
-@@ -3754,15 +3862,29 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
+@@ -3754,15 +3863,29 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
  	if (!dev)
  		return;
  
@@ -215,10 +216,10 @@ index 4c57fd7929cb..3efd5a28b171 100644
  }
  
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 1d0d8cc06103..08b539f0345e 100644
+index 1d0d8cc06103..c8e38c3730a3 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
-@@ -638,10 +638,23 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+@@ -638,10 +638,26 @@ int em28xx_capture_start(struct em28xx *dev, int start)
  	    dev->chip_id == CHIP_ID_EM28174 ||
  	    dev->chip_id == CHIP_ID_EM28178) {
  		/* The Transport Stream Enable Register moved in em2874 */
@@ -228,25 +229,28 @@ index 1d0d8cc06103..08b539f0345e 100644
 -					   EM2874_TS1_CAPTURE_ENABLE);
 +		if (dev->board.has_dual_ts) {
 +			if (dev->ts == PRIMARY_TS)
-+				rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
-+						start ?
-+						EM2874_TS1_CAPTURE_ENABLE : 0x00,
-+						EM2874_TS1_CAPTURE_ENABLE);
-+			else
-+				rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
-+						start ?
-+						EM2874_TS2_CAPTURE_ENABLE : 0x00,
-+						EM2874_TS2_CAPTURE_ENABLE);
-+		} else {
-+			rc = em28xx_write_reg_bits(dev, EM2874_R5F_TS_ENABLE,
++				rc = em28xx_write_reg_bits(dev,
++					EM2874_R5F_TS_ENABLE,
 +					start ?
 +					EM2874_TS1_CAPTURE_ENABLE : 0x00,
 +					EM2874_TS1_CAPTURE_ENABLE);
++			else
++				rc = em28xx_write_reg_bits(dev,
++					EM2874_R5F_TS_ENABLE,
++					start ?
++					EM2874_TS2_CAPTURE_ENABLE : 0x00,
++					EM2874_TS2_CAPTURE_ENABLE);
++		} else {
++			rc = em28xx_write_reg_bits(dev,
++				EM2874_R5F_TS_ENABLE,
++				start ?
++				EM2874_TS1_CAPTURE_ENABLE : 0x00,
++				EM2874_TS1_CAPTURE_ENABLE);
 +		}
  	} else {
  		/* FIXME: which is the best order? */
  		/* video registers are sampled by VREF */
-@@ -1077,7 +1090,11 @@ int em28xx_register_extension(struct em28xx_ops *ops)
+@@ -1077,7 +1093,11 @@ int em28xx_register_extension(struct em28xx_ops *ops)
  	mutex_lock(&em28xx_devlist_mutex);
  	list_add_tail(&ops->next, &em28xx_extension_devlist);
  	list_for_each_entry(dev, &em28xx_devlist, devlist) {
@@ -259,7 +263,7 @@ index 1d0d8cc06103..08b539f0345e 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  	pr_info("em28xx: Registered (%s) extension\n", ops->name);
-@@ -1091,7 +1108,11 @@ void em28xx_unregister_extension(struct em28xx_ops *ops)
+@@ -1091,7 +1111,11 @@ void em28xx_unregister_extension(struct em28xx_ops *ops)
  
  	mutex_lock(&em28xx_devlist_mutex);
  	list_for_each_entry(dev, &em28xx_devlist, devlist) {
@@ -272,7 +276,7 @@ index 1d0d8cc06103..08b539f0345e 100644
  	}
  	list_del(&ops->next);
  	mutex_unlock(&em28xx_devlist_mutex);
-@@ -1106,8 +1127,11 @@ void em28xx_init_extension(struct em28xx *dev)
+@@ -1106,8 +1130,11 @@ void em28xx_init_extension(struct em28xx *dev)
  	mutex_lock(&em28xx_devlist_mutex);
  	list_add_tail(&dev->devlist, &em28xx_devlist);
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
@@ -285,7 +289,7 @@ index 1d0d8cc06103..08b539f0345e 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  }
-@@ -1118,8 +1142,11 @@ void em28xx_close_extension(struct em28xx *dev)
+@@ -1118,8 +1145,11 @@ void em28xx_close_extension(struct em28xx *dev)
  
  	mutex_lock(&em28xx_devlist_mutex);
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
@@ -298,7 +302,7 @@ index 1d0d8cc06103..08b539f0345e 100644
  	}
  	list_del(&dev->devlist);
  	mutex_unlock(&em28xx_devlist_mutex);
-@@ -1134,6 +1161,8 @@ int em28xx_suspend_extension(struct em28xx *dev)
+@@ -1134,6 +1164,8 @@ int em28xx_suspend_extension(struct em28xx *dev)
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
  		if (ops->suspend)
  			ops->suspend(dev);
@@ -307,7 +311,7 @@ index 1d0d8cc06103..08b539f0345e 100644
  	}
  	mutex_unlock(&em28xx_devlist_mutex);
  	return 0;
-@@ -1148,6 +1177,8 @@ int em28xx_resume_extension(struct em28xx *dev)
+@@ -1148,6 +1180,8 @@ int em28xx_resume_extension(struct em28xx *dev)
  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
  		if (ops->resume)
  			ops->resume(dev);
@@ -317,29 +321,26 @@ index 1d0d8cc06103..08b539f0345e 100644
  	mutex_unlock(&em28xx_devlist_mutex);
  	return 0;
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index d46fc1108cf9..20bfcf13daaa 100644
+index d46fc1108cf9..a85f81a72807 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -199,7 +199,7 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
+@@ -199,7 +199,6 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
  	int rc;
  	struct em28xx_i2c_bus *i2c_bus = dvb->adapter.priv;
  	struct em28xx *dev = i2c_bus->dev;
 -	struct usb_device *udev = interface_to_usbdev(dev->intf);
-+//	struct usb_device *udev = interface_to_usbdev(dev->intf);
  	int dvb_max_packet_size, packet_multiplier, dvb_alt;
  
  	if (dev->dvb_xfer_bulk) {
-@@ -218,7 +218,8 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
+@@ -218,7 +217,6 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
  		dvb_alt = dev->dvb_alt_isoc;
  	}
  
 -	usb_set_interface(udev, dev->ifnum, dvb_alt);
-+	/* moved to em28xx_dvb_init*/
-+	//usb_set_interface(udev, dev->ifnum, dvb_alt);
  	rc = em28xx_set_mode(dev, EM28XX_DIGITAL_MODE);
  	if (rc < 0)
  		return rc;
-@@ -1128,8 +1129,9 @@ static void em28xx_unregister_dvb(struct em28xx_dvb *dvb)
+@@ -1128,8 +1126,9 @@ static void em28xx_unregister_dvb(struct em28xx_dvb *dvb)
  
  static int em28xx_dvb_init(struct em28xx *dev)
  {
@@ -350,7 +351,7 @@ index d46fc1108cf9..20bfcf13daaa 100644
  
  	if (dev->is_audio_only) {
  		/* Shouldn't initialize IR for this interface */
-@@ -1914,7 +1916,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1914,7 +1913,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			si2168_config.ts_mode = SI2168_TS_SERIAL;
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
@@ -362,7 +363,7 @@ index d46fc1108cf9..20bfcf13daaa 100644
  			info.platform_data = &si2168_config;
  			request_module(info.type);
  			client = i2c_new_device(&dev->i2c_adap[dev->def_i2c_bus], &info);
-@@ -1940,7 +1945,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1940,7 +1942,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
  #endif
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
@@ -374,7 +375,7 @@ index d46fc1108cf9..20bfcf13daaa 100644
  			info.platform_data = &si2157_config;
  			request_module(info.type);
  			client = i2c_new_device(adapter, &info);
-@@ -1976,7 +1984,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1976,7 +1981,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
  			lgdt3306a_config.fe = &dvb->fe[0];
  			lgdt3306a_config.i2c_adapter = &adapter;
  			strlcpy(info.type, "lgdt3306a", sizeof(info.type));
@@ -386,7 +387,7 @@ index d46fc1108cf9..20bfcf13daaa 100644
  			info.platform_data = &lgdt3306a_config;
  			request_module(info.type);
  			client = i2c_new_device(&dev->i2c_adap[dev->def_i2c_bus],
-@@ -2003,7 +2014,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -2003,7 +2011,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
  #endif
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2157", sizeof(info.type));
@@ -398,7 +399,7 @@ index d46fc1108cf9..20bfcf13daaa 100644
  			info.platform_data = &si2157_config;
  			request_module(info.type);
  
-@@ -2046,6 +2060,14 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -2046,6 +2057,14 @@ static int em28xx_dvb_init(struct em28xx *dev)
  	if (result < 0)
  		goto out_free;
  
@@ -472,5 +473,5 @@ index 88084f24f033..c85292c9883b 100644
  
  #define kref_to_dev(d) container_of(d, struct em28xx, ref)
 -- 
-2.11.0
+2.14.1
 

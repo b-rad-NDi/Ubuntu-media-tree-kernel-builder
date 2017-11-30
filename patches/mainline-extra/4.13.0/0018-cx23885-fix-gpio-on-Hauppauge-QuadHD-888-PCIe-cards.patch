@@ -1,4 +1,4 @@
-From a7588b3188e82d415f4b433f45dfc75ad66450f2 Mon Sep 17 00:00:00 2001
+From 35462f0d8abaab6414c3cf15366569ac68f54096 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 11:25:19 -0500
 Subject: [PATCH 18/25] cx23885: fix gpio on Hauppauge QuadHD (888) PCIe cards
@@ -32,5 +32,5 @@ index 368b0273eeab..9b6c1f1981d3 100644
  		/*
  		 * GPIO-08 TER1_RESN
 -- 
-2.11.0
+2.14.1
 

@@ -1,4 +1,4 @@
-From a0a95602348144395a09d4d3a821cf12e90b574e Mon Sep 17 00:00:00 2001
+From 98902d8c53a8a0f8761fc173dd84d8a3243e78a5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 6 Oct 2017 15:49:28 -0500
 Subject: [PATCH 24/25] v4l2-core: Reverse 758d90e16 kvmalloc patch
@@ -289,5 +289,5 @@ index 6808231a6bdc..8e638ee1367f 100644
  		kfree(buf);
  	}
 -- 
-2.11.0
+2.14.1
 

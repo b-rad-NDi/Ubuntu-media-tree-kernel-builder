@@ -1,4 +1,4 @@
-From ad4f062924b93d0b4dbdabd50377b7f2971d962f Mon Sep 17 00:00:00 2001
+From 9a4983c531e1b9740f0e850574af0543662fb403 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:00:42 -0500
 Subject: [PATCH 05/25] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
@@ -9,7 +9,7 @@ Subject: [PATCH 05/25] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
  1 file changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 3efd5a28b171..129577a423a5 100644
+index 4ebc2d875e87..3da042c27a7c 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -508,8 +508,10 @@ static struct em28xx_reg_seq plex_px_bcud[] = {
@@ -72,5 +72,5 @@ index 3efd5a28b171..129577a423a5 100644
  	{ USB_DEVICE(0x0413, 0x6f07),
  			.driver_info = EM2861_BOARD_LEADTEK_VC100 },
 -- 
-2.11.0
+2.14.1
 

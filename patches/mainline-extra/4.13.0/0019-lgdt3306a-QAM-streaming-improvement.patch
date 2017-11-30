@@ -1,4 +1,4 @@
-From fb767bbdb1aee58c6624c03f8722963532708a57 Mon Sep 17 00:00:00 2001
+From 5a3dc4442a182aab3db3a7454f318ee8bce1a1e6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 27 Jun 2017 09:37:15 -0500
 Subject: [PATCH 19/25] lgdt3306a: QAM streaming improvement
@@ -42,5 +42,5 @@ index 7fc8e8d78f14..540651ae1832 100644
  	ret = lgdt3306a_soft_reset(state);
  	if (lg_chkerr(ret))
 -- 
-2.11.0
+2.14.1
 
