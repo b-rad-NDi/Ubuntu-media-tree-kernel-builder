@@ -549,7 +549,7 @@ function regen_changelog()
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Additional patches" >>  /tmp/tmpkrn_changelog.mod
-	for i in `ls ${KB_PATCH_DIR}/extra/*.patch | sort` ; do
+	for i in `ls ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/*.patch | sort` ; do
 		echo "    - `basename $i`" >>  /tmp/tmpkrn_changelog.mod
 	done
 	echo "" >>  /tmp/tmpkrn_changelog.mod
