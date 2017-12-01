@@ -1,6 +1,6 @@
-From 363da46f412876e8c584e67915ea828207416c68 Mon Sep 17 00:00:00 2001
+From ac16aa7395991ead44782552ac1aae76a52c15f8 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 20:13:10 +0000
+Date: Fri, 1 Dec 2017 20:33:59 +0000
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
@@ -29,10 +29,11 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/videobuf2-dma-sg.c        | 6 ++++--
  drivers/media/v4l2-core/videobuf2-vmalloc.c       | 4 ++--
  include/linux/kconfig.h                           | 5 +++--
+ include/linux/pci_ids.h                           | 1 +
  include/media/compat.h                            | 6 +++---
  include/media/media-entity.h                      | 2 ++
  include/media/v4l2-fwnode.h                       | 2 ++
- 28 files changed, 61 insertions(+), 12 deletions(-)
+ 29 files changed, 62 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index 8ac616d..af34e23 100644
@@ -391,6 +392,18 @@ index 4d74860..7279f68 100644
  
  /*
   * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index c71e532..4adf616 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -576,6 +576,7 @@
+ #define PCI_DEVICE_ID_AMD_CS5536_EHC    0x2095
+ #define PCI_DEVICE_ID_AMD_CS5536_UDC    0x2096
+ #define PCI_DEVICE_ID_AMD_CS5536_UOC    0x2097
++#define PCI_DEVICE_ID_AMD_CS5536_DEV_IDE    0x2092
+ #define PCI_DEVICE_ID_AMD_CS5536_IDE    0x209A
+ #define PCI_DEVICE_ID_AMD_LX_VIDEO  0x2081
+ #define PCI_DEVICE_ID_AMD_LX_AES    0x2082
 diff --git a/include/media/compat.h b/include/media/compat.h
 index a20264c..2b72708 100644
 --- a/include/media/compat.h
