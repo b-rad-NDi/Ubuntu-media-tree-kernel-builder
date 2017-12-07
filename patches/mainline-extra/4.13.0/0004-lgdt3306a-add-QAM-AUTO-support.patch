@@ -1,28 +1,69 @@
-From bab91f64dade296b1cf5a65766502c43c12e46b0 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 16 Mar 2017 23:29:26 +0000
-Subject: [PATCH 04/25] lgdt3306a: add QAM AUTO support
+From c656c03768679f6a276ef31b52a1710970531ddf Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 7 Dec 2017 22:06:50 +0000
+Subject: [PATCH 04/26] lgdt3306a: add QAM AUTO support
 
- Commentary required...
+As configured currently, modulation in the driver is set to auto detect,
+no matter what the user sets modulation to. This leads to both QAM64
+and QAM256 having the same effect. QAM AUTO is explicitly added here for
+compatibility with scanning programs. Also included is a module option
+to enforce a specific QAM modulation if desired. The true  modulation is
+read before calculating the snr.
+Changes are backwards compatible with current behaviour.
 ---
- drivers/media/dvb-frontends/lgdt3306a.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/media/dvb-frontends/lgdt3306a.c | 42 ++++++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index e6dece2c7af6..7fc8e8d78f14 100644
+index e6dece2c7af6..1d1265d09fa5 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
-@@ -626,6 +626,9 @@ static int lgdt3306a_set_modulation(struct lgdt3306a_state *state,
- 	case QAM_256:
- 		ret = lgdt3306a_set_qam(state, QAM_256);
+@@ -31,6 +31,17 @@ static int debug;
+ module_param(debug, int, 0644);
+ MODULE_PARM_DESC(debug, "set debug level (info=1, reg=2 (or-able))");
+ 
++/*
++ * Older drivers treated QAM64 and QAM256 the same; that is the HW always
++ * used "Auto" mode during detection.  Setting "forced_manual"=1 allows
++ * the user to treat these modes as separate.  For backwards compatibility,
++ * it's off by default.  QAM_AUTO can now be specified to achive that
++ * effect even if "forced_manual"=1
++ */
++static int forced_manual;
++module_param(forced_manual, int, 0644);
++MODULE_PARM_DESC(forced_manual, "if set, QAM64 and QAM256 will only lock to modulation specified");
++
+ #define DBG_INFO 1
+ #define DBG_REG  2
+ #define DBG_DUMP 4 /* FGR - comment out to remove dump code */
+@@ -567,7 +578,12 @@ static int lgdt3306a_set_qam(struct lgdt3306a_state *state, int modulation)
+ 	/* 3. : 64QAM/256QAM detection(manual, auto) */
+ 	ret = lgdt3306a_read_reg(state, 0x0009, &val);
+ 	val &= 0xfc;
+-	val |= 0x02; /* STDOPDETCMODE[1:0]=1=Manual 2=Auto */
++	/* Check for forced Manual modulation modes; otherwise always "auto" */
++	if(forced_manual && (modulation != QAM_AUTO)){
++		val |= 0x01; /* STDOPDETCMODE[1:0]= 1=Manual */
++	} else {
++		val |= 0x02; /* STDOPDETCMODE[1:0]= 2=Auto */
++	}
+ 	ret = lgdt3306a_write_reg(state, 0x0009, val);
+ 	if (lg_chkerr(ret))
+ 		goto fail;
+@@ -621,10 +637,9 @@ static int lgdt3306a_set_modulation(struct lgdt3306a_state *state,
+ 		ret = lgdt3306a_set_vsb(state);
  		break;
+ 	case QAM_64:
+-		ret = lgdt3306a_set_qam(state, QAM_64);
+-		break;
+ 	case QAM_256:
+-		ret = lgdt3306a_set_qam(state, QAM_256);
 +	case QAM_AUTO:
-+		ret = lgdt3306a_set_qam(state, QAM_64);
-+		break;
++		ret = lgdt3306a_set_qam(state, p->modulation);
+ 		break;
  	default:
  		return -EINVAL;
- 	}
-@@ -651,6 +654,7 @@ static int lgdt3306a_agc_setup(struct lgdt3306a_state *state,
+@@ -651,6 +666,7 @@ static int lgdt3306a_agc_setup(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -30,7 +71,7 @@ index e6dece2c7af6..7fc8e8d78f14 100644
  		break;
  	default:
  		return -EINVAL;
-@@ -705,6 +709,7 @@ static int lgdt3306a_spectral_inversion(struct lgdt3306a_state *state,
+@@ -705,6 +721,7 @@ static int lgdt3306a_spectral_inversion(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -38,7 +79,7 @@ index e6dece2c7af6..7fc8e8d78f14 100644
  		/* Auto ok for QAM */
  		ret = lgdt3306a_set_inversion_auto(state, 1);
  		break;
-@@ -728,6 +733,7 @@ static int lgdt3306a_set_if(struct lgdt3306a_state *state,
+@@ -728,6 +745,7 @@ static int lgdt3306a_set_if(struct lgdt3306a_state *state,
  		break;
  	case QAM_64:
  	case QAM_256:
@@ -46,16 +87,51 @@ index e6dece2c7af6..7fc8e8d78f14 100644
  		if_freq_khz = state->cfg->qam_if_khz;
  		break;
  	default:
-@@ -1646,6 +1652,9 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
- 	case QAM_256:
- 		 ref_snr = 2800; /* 28dB */
+@@ -1586,6 +1604,7 @@ static int lgdt3306a_read_status(struct dvb_frontend *fe,
+ 		switch (state->current_modulation) {
+ 		case QAM_256:
+ 		case QAM_64:
++		case QAM_AUTO:
+ 			if (lgdt3306a_qam_lock_poll(state) == LG3306_LOCK) {
+ 				*status |= FE_HAS_VITERBI;
+ 				*status |= FE_HAS_SYNC;
+@@ -1629,6 +1648,7 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
+ 	 * Calculate some sort of "strength" from SNR
+ 	 */
+ 	struct lgdt3306a_state *state = fe->demodulator_priv;
++	u8 val;
+ 	u16 snr; /* snr_x10 */
+ 	int ret;
+ 	u32 ref_snr; /* snr*100 */
+@@ -1641,11 +1661,15 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
+ 		 ref_snr = 1600; /* 16dB */
  		 break;
+ 	case QAM_64:
+-		 ref_snr = 2200; /* 22dB */
+-		 break;
+ 	case QAM_256:
+-		 ref_snr = 2800; /* 28dB */
+-		 break;
 +	case QAM_AUTO:
-+		ref_snr = 2200; /* 22dB */
++		/* need to know actual modulation to set proper SNR baseline */
++		lgdt3306a_read_reg(state, 0x00a6, &val);
++		if(val & 0x04)
++			ref_snr = 2800; /* QAM-256 28dB */
++		else
++			ref_snr = 2200; /* QAM-64  22dB */
 +		break;
  	default:
  		return -EINVAL;
  	}
+@@ -2115,7 +2139,7 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
+ 		.frequency_min      = 54000000,
+ 		.frequency_max      = 858000000,
+ 		.frequency_stepsize = 62500,
+-		.caps = FE_CAN_QAM_64 | FE_CAN_QAM_256 | FE_CAN_8VSB
++		.caps = FE_CAN_QAM_AUTO | FE_CAN_QAM_64 | FE_CAN_QAM_256 | FE_CAN_8VSB
+ 	},
+ 	.i2c_gate_ctrl        = lgdt3306a_i2c_gate_ctrl,
+ 	.init                 = lgdt3306a_init,
 -- 
 2.14.1
 
