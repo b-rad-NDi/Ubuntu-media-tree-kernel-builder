@@ -1,9 +1,10 @@
-From 90abfd8f3bf29bd8ba0aa3715453028fea6af164 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 21:44:48 +0000
-Subject: [PATCH 16/25] cx23885: Add support for new Hauppauge QuadHD (885)
+From c3333395316e740dbcc1f5d6654331c766d0ccf0 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 7 Dec 2017 22:21:07 +0000
+Subject: [PATCH 16/26] Add support for new Hauppauge QuadHD (885)
 
- Add new PCIe boards to driver list and differentiate them from 888 models
+ Add new QuadHD digital only PCIe boards to driver list.
+ Differentiate them from 888 digital/analog QuadHD models.
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 42 ++++++++++++++++++++++---------
  drivers/media/pci/cx23885/cx23885-core.c  |  8 ++++++
@@ -133,12 +134,12 @@ index 8f63df1cb418..8afddd6795aa 100644
  	if (cx23885_boards[dev->board].clk_freq > 0)
  		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index fdc893263491..86d3ba5fd44d 100644
+index e7f67244129f..9bdde2c8dd5d 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2331,6 +2331,9 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2332,6 +2332,9 @@ static int dvb_register(struct cx23885_tsport *port)
+ 		}
  		break;
- 	}
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
 +		pr_info("%s(): board=%d port=%d\n", __func__,
@@ -146,7 +147,7 @@ index fdc893263491..86d3ba5fd44d 100644
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
-@@ -2428,6 +2431,9 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2429,6 +2432,9 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
@@ -157,7 +158,7 @@ index fdc893263491..86d3ba5fd44d 100644
  		/* port b - Terrestrial/cable */
  		case 1:
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index 0b4fd7aa4cf7..c73ef99f7550 100644
+index 4648f312cc16..608e1a44f6cd 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
 @@ -110,6 +110,8 @@
