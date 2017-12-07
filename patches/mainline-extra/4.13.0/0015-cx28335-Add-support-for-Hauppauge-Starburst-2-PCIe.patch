@@ -1,13 +1,15 @@
-From e8f2ae55ad69fe8bfd35b46e5bc1d10281637990 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Fri, 26 May 2017 10:50:10 -0500
-Subject: [PATCH 15/25] cx28335: Add support for Hauppauge Starburst 2 PCIe
+From da3727d916dbd678d94721293f6bed8436424b64 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 7 Dec 2017 22:18:51 +0000
+Subject: [PATCH 15/26] Add support for Hauppauge Starburst 2 PCIe
 
  Add new PCIe DVB-S/S2 to driver list
+ A single port Hauppauge HVR-5525
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 11 +++++++++++
+ drivers/media/pci/cx23885/cx23885-dvb.c   |  5 +++--
  drivers/media/pci/cx23885/cx23885.h       |  1 +
- 2 files changed, 12 insertions(+)
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
 index 9f879e1d5f4b..638c44cde6be 100644
@@ -59,8 +61,34 @@ index 9f879e1d5f4b..638c44cde6be 100644
  		ts1->gen_ctrl_val  = 0x5; /* Parallel */
  		ts1->ts_clk_en_val = 0x1; /* Enable TS_CLK */
  		ts1->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index fdc893263491..e7f67244129f 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -2229,10 +2229,12 @@ static int dvb_register(struct cx23885_tsport *port)
+ 		}
+ 		port->i2c_client_tuner = client_tuner;
+ 		break;
+-	case CX23885_BOARD_HAUPPAUGE_HVR5525: {
++	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
++	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+ 		struct m88rs6000t_config m88rs6000t_config;
+ 		struct a8293_platform_data a8293_pdata = {};
+ 
++		pr_info("%s(): port=%d\n", __func__, port->nr);
+ 		switch (port->nr) {
+ 
+ 		/* port b - satellite */
+@@ -2329,7 +2331,6 @@ static int dvb_register(struct cx23885_tsport *port)
+ 			break;
+ 		}
+ 		break;
+-	}
+ 	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+ 		switch (port->nr) {
+ 		/* port b - Terrestrial/cable */
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index 1ae3a0237ba4..0b4fd7aa4cf7 100644
+index f59f1724f340..4648f312cc16 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
 @@ -109,6 +109,7 @@
