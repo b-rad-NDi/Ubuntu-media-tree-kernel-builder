@@ -1,7 +1,7 @@
-From 0b8d93329b3bd9608ab71afb79d2044a77365a0c Mon Sep 17 00:00:00 2001
+From 5a8b6bc7a4ee86da918d77032b3ccd710614d522 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:04:48 +0000
-Subject: [PATCH 10/25] Si2157: better check for running tuner in init
+Subject: [PATCH 10/27] si2157: better check for running tuner in init
 
  Getting the Xtal trim property to check if running is less error prone
  Reset if_frequency if state unknown
