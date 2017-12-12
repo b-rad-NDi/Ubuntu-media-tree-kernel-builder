@@ -1,17 +1,17 @@
-From ef9becad0169e60327399aff525153ca99357653 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Sat, 5 Aug 2017 14:12:16 -0500
-Subject: [PATCH 21/25] si2168: Change from DVB-T to DVB-T/T2 autodetect
+From 9f88d0289b4c50996b145702379fb9d29608dbf6 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 12 Dec 2017 20:14:10 +0000
+Subject: [PATCH 21/27] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
  DVB-T2 support is a bit lacking, this switches the PLP to auto detect
  DVB-T and DVB-T2 signals after tuning. If a DVB-T2 signal is found
  the signal is processed as DVB-T2, otherwise it is left as DVB-T.
 ---
- drivers/media/dvb-frontends/si2168.c | 39 +++++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
+ drivers/media/dvb-frontends/si2168.c | 35 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 32 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 41d9c513b7e8..f99adeebd4e5 100644
+index 396d220256c5..3752bb2844ab 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -85,7 +85,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
@@ -80,20 +80,16 @@ index 41d9c513b7e8..f99adeebd4e5 100644
  	}
  
  	memcpy(cmd.args, "\x51\x03", 2);
-@@ -337,6 +362,12 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -337,6 +362,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
  	cmd.args[4] = delivery_system | bandwidth;
 +	if (delivery_system == 0xf0)
 +		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
-+
-+	if (config->inversion) /* inverted spectrum, eg si2157 */
-+		cmd.args[5] |= 1;
-+
+ 	if (config->inversion) /* inverted spectrum, eg si2157 */
+ 		cmd.args[5] |= 1;
  	cmd.wlen = 6;
- 	cmd.rlen = 4;
- 	ret = si2168_cmd_execute(client, &cmd);
-@@ -356,6 +387,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -358,6 +385,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  	}
  
  	memcpy(cmd.args, "\x14\x00\x0f\x10\x10\x00", 6);
