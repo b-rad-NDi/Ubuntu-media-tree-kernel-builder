@@ -10,17 +10,17 @@ driver is reached via i2c_new_device, then when it is
 eventually destroyed remove is called, which further
 decrements the module usage count to negative. After this
 occurs the driver is in a bad state and no longer works.
-This problem is reachable via the em28xx driver.
 Also fixed by NULLing out the release callback is a double
 kfree of state, which introduces arbitrary oopses/GPF.
+This problem is only currently reachable via the em28xx driver.
 
-On disconnect before:
+On disconnect of Hauppauge SoloHD before:
 
 lsmod | grep lgdt3306a
 lgdt3306a              28672  -1
 i2c_mux                16384  1 lgdt3306a
 
-On disconnect after:
+On disconnect of Hauppauge SoloHD after:
 
 lsmod | grep lgdt3306a
 lgdt3306a              28672  0

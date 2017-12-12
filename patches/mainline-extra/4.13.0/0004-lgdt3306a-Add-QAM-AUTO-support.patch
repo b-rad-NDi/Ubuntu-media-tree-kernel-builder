@@ -6,9 +6,10 @@ Subject: [PATCH 04/27] lgdt3306a: Add QAM AUTO support
 As configured currently, modulation in the driver is set to auto detect,
 no matter what the user sets modulation to. This leads to both QAM64
 and QAM256 having the same effect. QAM AUTO is explicitly added here for
-compatibility with scanning programs. Also included is a module option
-to enforce a specific QAM modulation if desired. The true  modulation is
-read before calculating the snr.
+compatibility with scanning software who can use AUTO instead of doing
+essentially the same scan twice.
+Also included is a module option to enforce a specific QAM modulation if
+desired. The true  modulation is read before calculating the snr.
 Changes are backwards compatible with current behaviour.
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 42 ++++++++++++++++++++++++++-------
