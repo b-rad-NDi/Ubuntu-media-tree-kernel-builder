@@ -81,18 +81,6 @@ index 2dd4a7af7dd7..d27b326d96f4 100644
  COMPATIBLE_IOCTL(DMX_GET_STC)
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index c71e532da458..4adf6161ec77 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -576,6 +576,7 @@
- #define PCI_DEVICE_ID_AMD_CS5536_EHC    0x2095
- #define PCI_DEVICE_ID_AMD_CS5536_UDC    0x2096
- #define PCI_DEVICE_ID_AMD_CS5536_UOC    0x2097
-+#define PCI_DEVICE_ID_AMD_CS5536_DEV_IDE    0x2092
- #define PCI_DEVICE_ID_AMD_CS5536_IDE    0x209A
- #define PCI_DEVICE_ID_AMD_LX_VIDEO  0x2081
- #define PCI_DEVICE_ID_AMD_LX_AES    0x2082
 -- 
 2.14.1
 
