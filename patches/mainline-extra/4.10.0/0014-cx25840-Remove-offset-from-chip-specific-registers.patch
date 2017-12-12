@@ -1,15 +1,16 @@
-From a598f08df1f551d12c3b3b205218a3e3de0fcb89 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 25 May 2017 16:46:30 -0500
-Subject: [PATCH 14/24] cx25840: remove offset from chip specific registers Add
- labels to some undocumented
+From b4b2b8fb3896654621558c6c743c0030b5fb89dd Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 12 Dec 2017 19:52:35 +0000
+Subject: [PATCH 14/27] cx25840: Remove offset from chip specific registers
 
+ Remove vbi_regs_offset from a group of registers that are 888 specific.
+ Add labels to some undocumented regs.
 ---
- drivers/media/i2c/cx25840/cx25840-core.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+ drivers/media/i2c/cx25840/cx25840-core.c | 39 ++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/media/i2c/cx25840/cx25840-core.c b/drivers/media/i2c/cx25840/cx25840-core.c
-index f38bf819d805..25e430e62a1b 100644
+index 940c8b171249..9d2bb6d10110 100644
 --- a/drivers/media/i2c/cx25840/cx25840-core.c
 +++ b/drivers/media/i2c/cx25840/cx25840-core.c
 @@ -668,14 +668,14 @@ static void cx23885_initialize(struct i2c_client *client)
@@ -29,7 +30,7 @@ index f38bf819d805..25e430e62a1b 100644
  	if (is_cx23888(state))
  		cx25840_write4(client, 0x454, 0x6628021F);
  	else
-@@ -1111,16 +1111,18 @@ static int set_input(struct i2c_client *client, enum cx25840_video_input vid_inp
+@@ -1111,16 +1111,25 @@ static int set_input(struct i2c_client *client, enum cx25840_video_input vid_inp
  			cx25840_write4(client, 0x410, 0xffff0dbf);
  			cx25840_write4(client, 0x414, 0x00137d03);
  
@@ -43,33 +44,41 @@ index f38bf819d805..25e430e62a1b 100644
 -			cx25840_write4(client, state->vbi_regs_offset + 0x44c, 0x161f1000);
 -			cx25840_write4(client, state->vbi_regs_offset + 0x450, 0x00000802);
 -
-+			/* BUGBUG These are not VBI controls, so vbi_regs_offset was not correct */
-+			if (is_cx23888(state)){
-+				cx25840_write4(client, 0x42c, 0x42600000);//888 MISC_TIM_CTRL
-+				cx25840_write4(client, 0x430, 0x0000039b);//888 FIELD_COUNT
-+				cx25840_write4(client, 0x438, 0x00000000);//888 VSCALE_CTRL
-+
-+				cx25840_write4(client, 0x440, 0xF8E3E824);//888 DFE_CTRL1
-+				cx25840_write4(client, 0x444, 0x401040dc);//888 DFE_CTRL2
-+				cx25840_write4(client, 0x448, 0xcd3f02a0);//888 DFE_CTRL3
-+				cx25840_write4(client, 0x44c, 0x161f1000);//888 PLL_CTRL
-+				cx25840_write4(client, 0x450, 0x00000802);//888 HTL_CTRL
++			/* These are not VBI controls */
++			if (is_cx23888(state)) {
++				/* 888 MISC_TIM_CTRL */
++				cx25840_write4(client, 0x42c, 0x42600000);
++				/* 888 FIELD_COUNT */
++				cx25840_write4(client, 0x430, 0x0000039b);
++				/* 888 VSCALE_CTRL */
++				cx25840_write4(client, 0x438, 0x00000000);
++				/* 888 DFE_CTRL1 */
++				cx25840_write4(client, 0x440, 0xF8E3E824);
++				/* 888 DFE_CTRL2 */
++				cx25840_write4(client, 0x444, 0x401040dc);
++				/* 888 DFE_CTRL3 */
++				cx25840_write4(client, 0x448, 0xcd3f02a0);
++				/* 888 PLL_CTRL */
++				cx25840_write4(client, 0x44c, 0x161f1000);
++				/* 888 HTL_CTRL */
++				cx25840_write4(client, 0x450, 0x00000802);
 +			}
  			cx25840_write4(client, 0x91c, 0x01000000);
  			cx25840_write4(client, 0x8e0, 0x03063870);
  			cx25840_write4(client, 0x8d4, 0x7FFF0024);
-@@ -1397,8 +1399,8 @@ static int cx25840_set_fmt(struct v4l2_subdev *sd,
- 	 */
- 	if ((fmt->width * 16 < Hsrc) || (Hsrc < fmt->width) ||
- 			(Vlines * 8 < Vsrc) || (Vsrc + 1 < Vlines)) {
+@@ -1398,8 +1407,9 @@ static int cx25840_set_fmt(struct v4l2_subdev *sd,
+ 	if ((fmt->width == 0) || (Vlines == 0) ||
+ 	    (fmt->width * 16 < Hsrc) || (Hsrc < fmt->width) ||
+ 	    (Vlines * 8 < Vsrc) || (Vsrc + 1 < Vlines)) {
 -		v4l_err(client, "%dx%d is not a valid size!\n",
 -				fmt->width, fmt->height);
 +		v4l_err(client, "%dx%d is not a valid size! (Hsrc=%d, Vsrc=%d, Vlines=%d, is_50Hz=%u)\n",
-+				fmt->width, fmt->height, Hsrc, Vsrc, Vlines, is_50Hz);
++				fmt->width, fmt->height, Hsrc, Vsrc,
++				Vlines, is_50Hz);
  		return -ERANGE;
  	}
  	if (format->which == V4L2_SUBDEV_FORMAT_TRY)
-@@ -1726,6 +1728,7 @@ static int cx25840_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -1727,6 +1737,7 @@ static int cx25840_s_stream(struct v4l2_subdev *sd, int enable)
  	if (is_cx2388x(state) || is_cx231xx(state))
  		return 0;
  

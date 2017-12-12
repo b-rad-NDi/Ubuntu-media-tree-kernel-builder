@@ -1,14 +1,16 @@
-From 9d1bc26a01c1c19a485e2d5c7e47f34a4d5553f4 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 5 Oct 2017 14:38:25 -0500
-Subject: [PATCH 16/24] cx23885: Add support for new Hauppauge QuadHD (885)
+From d0c7183e4b1085522edb07f737f4968f4d0ef219 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 7 Dec 2017 22:21:07 +0000
+Subject: [PATCH 16/27] cx23885: Add support for new Hauppauge QuadHD (885)
 
+ Add new QuadHD digital only PCIe boards to driver list.
+ Differentiate them from 888 digital/analog QuadHD models.
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 42 ++++++++++++++++++++++---------
  drivers/media/pci/cx23885/cx23885-core.c  |  8 ++++++
- drivers/media/pci/cx23885/cx23885-dvb.c   |  4 +++
+ drivers/media/pci/cx23885/cx23885-dvb.c   |  6 +++++
  drivers/media/pci/cx23885/cx23885.h       |  2 ++
- 4 files changed, 44 insertions(+), 12 deletions(-)
+ 4 files changed, 46 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
 index 638c44cde6be..fdbbeca3bd9f 100644
@@ -113,7 +115,7 @@ index 638c44cde6be..fdbbeca3bd9f 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 8f63df1cb418..5424a51cf265 100644
+index 8f63df1cb418..8afddd6795aa 100644
 --- a/drivers/media/pci/cx23885/cx23885-core.c
 +++ b/drivers/media/pci/cx23885/cx23885-core.c
 @@ -869,6 +869,14 @@ static int cx23885_dev_setup(struct cx23885_dev *dev)
@@ -122,9 +124,9 @@ index 8f63df1cb418..5424a51cf265 100644
  
 +	if (dev->pci->device == 0x8852) {
 +		/* no DIF on cx23885, so no analog tuner support possible */
-+		if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
++		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
 +			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
-+		else if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
++		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
 +			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
 +	}
 +
@@ -132,29 +134,31 @@ index 8f63df1cb418..5424a51cf265 100644
  	if (cx23885_boards[dev->board].clk_freq > 0)
  		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index f8d939e98c7e..a14807a72c78 100644
+index 897f59bf95e9..99168c52b658 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2396,6 +2396,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2335,6 +2335,9 @@ static int dvb_register(struct cx23885_tsport *port)
+ 		}
  		break;
- 	}
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
-+		printk(KERN_INFO "%s(): board=%d port=%d\n", __func__, dev->board, port->nr);
++		pr_info("%s(): board=%d port=%d\n", __func__,
++			dev->board, port->nr);
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
-@@ -2499,6 +2501,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2432,6 +2435,9 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
-+		printk(KERN_INFO "%s(): board=%d port=%d\n", __func__, dev->board, port->nr);
++		pr_info("%s(): board=%d port=%d\n", __func__,
++			dev->board, port->nr);
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index 0b4fd7aa4cf7..c73ef99f7550 100644
+index 4648f312cc16..608e1a44f6cd 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
 @@ -110,6 +110,8 @@
