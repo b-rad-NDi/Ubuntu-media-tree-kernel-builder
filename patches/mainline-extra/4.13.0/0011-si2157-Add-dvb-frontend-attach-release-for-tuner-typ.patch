@@ -1,7 +1,7 @@
-From 6d505bb46e51a326d46017d2ad9f0c720dfb7217 Mon Sep 17 00:00:00 2001
+From 69047fb8339eab3c04763d071b90c1049e084c2a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 8 Dec 2017 22:15:42 +0000
-Subject: [PATCH 11/27] si2157: add dvb frontend attach/release for tuner type
+Subject: [PATCH 11/27] si2157: Add dvb frontend attach/release for tuner type
 
  Adds tuner type TUNER_SILABS_SI2157 to tuner core. Includes dvb attach/release
  functions with hybrid_tuner_instance_list for mutliple frontend support.

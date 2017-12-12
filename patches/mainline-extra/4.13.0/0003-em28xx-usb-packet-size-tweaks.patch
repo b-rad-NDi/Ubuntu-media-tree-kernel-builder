@@ -1,7 +1,7 @@
-From 608eeabe1033d0cee74b23df65f3722a73263ae4 Mon Sep 17 00:00:00 2001
+From 84fbba68f8645a3b290223b38f422c69d8ba94a3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
-Subject: [PATCH 03/25] em28xx: usb packet size tweaks
+Subject: [PATCH 03/27] em28xx: usb packet size tweaks
 
  Commentary needed...
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 03/25] em28xx: usb packet size tweaks
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a85f81a72807..38ab536fe363 100644
+index 2dd61c62a77f..bd3702445193 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -204,7 +204,7 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)

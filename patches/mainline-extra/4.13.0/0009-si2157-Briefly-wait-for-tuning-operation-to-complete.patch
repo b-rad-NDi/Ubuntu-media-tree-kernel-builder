@@ -1,7 +1,7 @@
-From 2f3c3c1a9ff26435d81dcb2f88ed501026b32f4f Mon Sep 17 00:00:00 2001
+From 6c0e82e2e7c6e861467522a06a62319e72ff2abd Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:02:05 +0000
-Subject: [PATCH 09/25] si2157: briefly wait for tuning operation to complete
+Subject: [PATCH 09/27] si2157: Briefly wait for tuning operation to complete
 
  Enable si2157 tuner status flags. Waits up 40ms for tuning operation,
  then from 30-150ms (dig/analog) for signal lock

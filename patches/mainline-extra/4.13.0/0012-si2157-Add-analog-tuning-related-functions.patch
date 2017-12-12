@@ -1,7 +1,7 @@
-From e3a989ac076176c2ce1051129d30bb8e8f7dbd00 Mon Sep 17 00:00:00 2001
+From 576dc67ade8de30555bde9b838ecc5d798285682 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 29 Nov 2017 18:11:00 +0000
-Subject: [PATCH 12/25] si2157: add analog tuning related functions
+Subject: [PATCH 12/27] si2157: Add analog tuning related functions
 
  Include get_analog_params, get_frequency, get_bandwidth
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 12/25] si2157: add analog tuning related functions
  2 files changed, 269 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 8fc3bb075033..2723e8cbbb85 100644
+index 07e879f9f6f8..2f79bdbcba16 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -1,5 +1,5 @@
@@ -341,7 +341,7 @@ index 8fc3bb075033..2723e8cbbb85 100644
  	return 0;
  }
  
-@@ -554,7 +809,7 @@ static int si2157_setup_configuration(struct dvb_frontend *fe,
+@@ -557,7 +812,7 @@ static int si2157_setup_configuration(struct dvb_frontend *fe,
  
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
@@ -350,7 +350,7 @@ index 8fc3bb075033..2723e8cbbb85 100644
  		.frequency_min  = 42000000,
  		.frequency_max  = 870000000,
  	},
-@@ -562,7 +817,10 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -565,7 +820,10 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -361,7 +361,7 @@ index 8fc3bb075033..2723e8cbbb85 100644
  	.get_if_frequency = si2157_get_if_frequency,
  };
  
-@@ -585,7 +843,7 @@ static void si2157_stat_work(struct work_struct *work)
+@@ -588,7 +846,7 @@ static void si2157_stat_work(struct work_struct *work)
  		goto err;
  
  	c->strength.stat[0].scale = FE_SCALE_DECIBEL;

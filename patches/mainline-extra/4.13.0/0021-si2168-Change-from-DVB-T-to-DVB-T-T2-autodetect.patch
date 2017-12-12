@@ -1,4 +1,4 @@
-From 9f88d0289b4c50996b145702379fb9d29608dbf6 Mon Sep 17 00:00:00 2001
+From c66967c6fb05922764d8c000ee7314d6d1b73b68 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 20:14:10 +0000
 Subject: [PATCH 21/27] si2168: Change from DVB-T to DVB-T/T2 autodetect

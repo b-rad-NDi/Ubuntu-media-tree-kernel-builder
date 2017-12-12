@@ -1,7 +1,7 @@
-From d670ca0eed55a5eee00583086031e157a9f31721 Mon Sep 17 00:00:00 2001
+From 5be4884ae995ad85be92b0774fd844dfdbf53bb9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 1 Dec 2017 17:48:14 +0000
-Subject: [PATCH 02/26] em28xx: bulk transfer implementation fix
+Subject: [PATCH 02/27] em28xx: Bulk transfer implementation fix
 
  Set appropriate bulk/ISOC transfer multiplier on capture start.
 ---

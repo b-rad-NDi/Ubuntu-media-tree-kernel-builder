@@ -1,7 +1,7 @@
-From c656c03768679f6a276ef31b52a1710970531ddf Mon Sep 17 00:00:00 2001
+From c5678e0be3c9e10e4bb03670a87af18160db1fa2 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 7 Dec 2017 22:06:50 +0000
-Subject: [PATCH 04/26] lgdt3306a: add QAM AUTO support
+Subject: [PATCH 04/27] lgdt3306a: Add QAM AUTO support
 
 As configured currently, modulation in the driver is set to auto detect,
 no matter what the user sets modulation to. This leads to both QAM64
@@ -15,7 +15,7 @@ Changes are backwards compatible with current behaviour.
  1 file changed, 33 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index e6dece2c7af6..1d1265d09fa5 100644
+index e6dece2c7af6..e62d5039195e 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
 @@ -31,6 +31,17 @@ static int debug;

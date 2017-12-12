@@ -1,4 +1,4 @@
-From 44f17d225b18f2b07a85495d94c457b54611f2d1 Mon Sep 17 00:00:00 2001
+From 1fa96ff20ea5713cd8d481016980db5ef5d6fd32 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 20:11:45 +0000
 Subject: [PATCH 20/27] si2168: Spectral inversion property

@@ -1,7 +1,7 @@
-From c3333395316e740dbcc1f5d6654331c766d0ccf0 Mon Sep 17 00:00:00 2001
+From ac346889efb2c13339e0431fe11bfa68f8ef2f2c Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 7 Dec 2017 22:21:07 +0000
-Subject: [PATCH 16/26] Add support for new Hauppauge QuadHD (885)
+Subject: [PATCH 16/27] cx23885: Add support for new Hauppauge QuadHD (885)
 
  Add new QuadHD digital only PCIe boards to driver list.
  Differentiate them from 888 digital/analog QuadHD models.
@@ -134,10 +134,10 @@ index 8f63df1cb418..8afddd6795aa 100644
  	if (cx23885_boards[dev->board].clk_freq > 0)
  		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index e7f67244129f..9bdde2c8dd5d 100644
+index 897f59bf95e9..99168c52b658 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2332,6 +2332,9 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2335,6 +2335,9 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
@@ -147,7 +147,7 @@ index e7f67244129f..9bdde2c8dd5d 100644
  		switch (port->nr) {
  		/* port b - Terrestrial/cable */
  		case 1:
-@@ -2429,6 +2432,9 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2432,6 +2435,9 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		break;
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:

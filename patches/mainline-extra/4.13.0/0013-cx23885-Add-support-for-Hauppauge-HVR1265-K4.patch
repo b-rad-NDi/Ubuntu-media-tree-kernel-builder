@@ -1,7 +1,7 @@
-From 7eb124305a47b5d54454083f1cbfdf98bc8210a5 Mon Sep 17 00:00:00 2001
+From 7c109c2b33bb2b24b2996c62d1978f9079146f3d Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 18:19:10 +0000
-Subject: [PATCH 13/25] cx23885: add support for Hauppauge HVR1265 K4
+Subject: [PATCH 13/27] cx23885: Add support for Hauppauge HVR1265 K4
 
  Add new PCIe board to driver list and board register/configure functions
 ---
@@ -121,7 +121,7 @@ index 7b07c89b358a..9f879e1d5f4b 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index e795ddeb7fe2..fdc893263491 100644
+index 67ad04138183..91e760c381b2 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -930,6 +930,18 @@ static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
@@ -192,7 +192,7 @@ index e795ddeb7fe2..fdc893263491 100644
  	default:
  		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
 diff --git a/drivers/media/pci/cx23885/cx23885-input.c b/drivers/media/pci/cx23885/cx23885-input.c
-index 944b70831f12..4b21c3306d8c 100644
+index 0f4e54294bb7..be49589a61d2 100644
 --- a/drivers/media/pci/cx23885/cx23885-input.c
 +++ b/drivers/media/pci/cx23885/cx23885-input.c
 @@ -94,6 +94,7 @@ void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
@@ -250,7 +250,7 @@ index ecc580af0148..7e696936b98c 100644
  		ret = cx23885_set_freq_via_ops(dev, f);
  		break;
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index a3837b7cdd83..1ae3a0237ba4 100644
+index 85643fd34133..f59f1724f340 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
 @@ -108,6 +108,7 @@

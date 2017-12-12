@@ -1,7 +1,7 @@
-From ebd3ef8a4284e33db89a12fdebdad307a8b1a944 Mon Sep 17 00:00:00 2001
+From f2f5116fa59a9bdac756b84575e9712ceff138c7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 15 Aug 2017 20:50:13 -0500
-Subject: [PATCH 23/25] em28xx: increase max em28xx boards to max dvb adapters
+Subject: [PATCH 23/27] em28xx: Increase max em28xx boards to max dvb adapters
 
  Maximum 4 em28xx boards is too low, this can be maxed out by two devices.
  This allows all the dvb adapters in the system to be em28xx if so desired.

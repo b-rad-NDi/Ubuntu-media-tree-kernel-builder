@@ -1,4 +1,4 @@
-From 924349a5e50880212cf51af783245ebac19adec5 Mon Sep 17 00:00:00 2001
+From 4deda995222821d67402f482e7061d9160d85e12 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 20:07:52 +0000
 Subject: [PATCH 15/27] cx23885: Add support for Hauppauge Starburst 2 PCIe
