@@ -1,19 +1,20 @@
-From 10fed31b6a7653e1b138a57f1fa89d9024107e72 Mon Sep 17 00:00:00 2001
+From 21b9b317bd3bad04fa801827347e47fa13eceb1f Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 1 Dec 2017 17:30:36 +0000
-Subject: [PATCH 01/26] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
+Date: Tue, 12 Dec 2017 19:46:59 +0000
+Subject: [PATCH 01/27] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
- Add has_dual_ts field, allows secondary demod/tuner to be
+ Allow for use of secondart TS port on em28xx.
+ Adds has_dual_ts field, allows secondary demod/tuner to be
  added to a single em28xx device.
 ---
- drivers/media/usb/em28xx/em28xx-cards.c | 129 +++++++++++++++++++++++++++++++-
+ drivers/media/usb/em28xx/em28xx-cards.c | 126 +++++++++++++++++++++++++++++++-
  drivers/media/usb/em28xx/em28xx-core.c  |  42 +++++++++--
- drivers/media/usb/em28xx/em28xx-dvb.c   |  33 ++++++--
+ drivers/media/usb/em28xx/em28xx-dvb.c   |  33 +++++++--
  drivers/media/usb/em28xx/em28xx.h       |  12 +++
- 4 files changed, 198 insertions(+), 18 deletions(-)
+ 4 files changed, 196 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 4c57fd7929cb..4ebc2d875e87 100644
+index 4c57fd7929cb..e4fbbbc8cf63 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2403,6 +2403,7 @@ struct em28xx_board em28xx_boards[] = {
@@ -78,37 +79,34 @@ index 4c57fd7929cb..4ebc2d875e87 100644
  /* high bandwidth multiplier, as encoded in highspeed endpoint descriptors */
  #define hb_mult(wMaxPacketSize) (1 + (((wMaxPacketSize) >> 11) & 0x03))
  
-@@ -3446,7 +3478,8 @@ static int em28xx_usb_probe(struct usb_interface *interface,
- 	struct usb_device *udev;
- 	struct em28xx *dev = NULL;
- 	int retval;
--	bool has_vendor_audio = false, has_video = false, has_dvb = false;
-+	bool has_vendor_audio = false, has_video = false;
-+	bool has_dvb = false, has_dvb_ts2 = false;
- 	int i, nr, try_bulk;
- 	const int ifnum = interface->altsetting[0].desc.bInterfaceNumber;
- 	char *speed;
-@@ -3552,6 +3585,19 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+@@ -3552,6 +3584,17 @@ static int em28xx_usb_probe(struct usb_interface *interface,
  						}
  					}
  					break;
 +				case 0x85:
 +					if (usb_endpoint_xfer_isoc(e)) {
 +						if (size > dev->dvb_max_pkt_size_isoc_ts2) {
-+							has_dvb_ts2 = true; /* see NOTE (~) */
 +							dev->dvb_ep_isoc_ts2 = e->bEndpointAddress;
 +							dev->dvb_max_pkt_size_isoc_ts2 = size;
 +							dev->dvb_alt_isoc = i;
 +						}
 +					} else {
-+						has_dvb_ts2 = true;
 +						dev->dvb_ep_bulk_ts2 = e->bEndpointAddress;
 +					}
 +					break;
  				}
  			}
  			/* NOTE:
-@@ -3633,6 +3679,10 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+@@ -3566,6 +3609,8 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+ 			 *  0x83	isoc*		=> audio
+ 			 *  0x84	isoc		=> digital
+ 			 *  0x84	bulk		=> analog or digital**
++			 *  0x85	isoc		=> digital TS2
++			 *  0x85	bulk		=> digital TS2
+ 			 * (*: audio should always be isoc)
+ 			 * (**: analog, if ep 0x82 is isoc, otherwise digital)
+ 			 *
+@@ -3633,6 +3678,10 @@ static int em28xx_usb_probe(struct usb_interface *interface,
  	dev->has_video = has_video;
  	dev->ifnum = ifnum;
  
@@ -119,7 +117,7 @@ index 4c57fd7929cb..4ebc2d875e87 100644
  	if (has_vendor_audio) {
  		dev_err(&interface->dev,
  			"Audio interface %i found (Vendor Class)\n", ifnum);
-@@ -3712,6 +3762,65 @@ static int em28xx_usb_probe(struct usb_interface *interface,
+@@ -3712,6 +3761,65 @@ static int em28xx_usb_probe(struct usb_interface *interface,
  			dev->dvb_xfer_bulk ? "bulk" : "isoc");
  	}
  
@@ -185,7 +183,7 @@ index 4c57fd7929cb..4ebc2d875e87 100644
  	kref_init(&dev->ref);
  
  	request_modules(dev);
-@@ -3754,15 +3863,29 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
+@@ -3754,15 +3862,29 @@ static void em28xx_usb_disconnect(struct usb_interface *interface)
  	if (!dev)
  		return;
  
@@ -314,7 +312,7 @@ index 1d0d8cc06103..ef38e567c4bb 100644
  	mutex_unlock(&em28xx_devlist_mutex);
  	return 0;
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index d46fc1108cf9..a85f81a72807 100644
+index cca2b14a156b..2dd61c62a77f 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -199,7 +199,6 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
