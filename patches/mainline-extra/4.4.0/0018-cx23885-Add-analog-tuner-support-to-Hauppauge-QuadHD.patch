@@ -1,13 +1,14 @@
-From b25b2a16911f4341dd2b1ebc7d6a819ed73fa445 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 18:03:48 +0000
-Subject: [PATCH 18/25] cx23885: Add analog tuner support to Hauppauge QuadHD
+From 7ff8d5db3bacbebb6a3d0e5012e971321bdc4188 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 28 Nov 2017 23:57:17 +0000
+Subject: [PATCH 18/28] cx23885: Add analog tuner support to Hauppauge QuadHD
 
+ Add si2157 analog frontend to 888 Hauppauge QuadHD boards
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 32 +++++++++++++++++++++++++++----
- drivers/media/pci/cx23885/cx23885-dvb.c   | 18 +++++++++++++++++
+ drivers/media/pci/cx23885/cx23885-dvb.c   | 20 +++++++++++++++++++
  drivers/media/pci/cx23885/cx23885-video.c |  8 +++++++-
- 3 files changed, 53 insertions(+), 5 deletions(-)
+ 3 files changed, 55 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
 index fdbbeca..368b027 100644
@@ -67,37 +68,39 @@ index fdbbeca..368b027 100644
  	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
  		.name		= "Hauppauge WinTV-HVR-1265(161111)",
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index a14807a..eb724c2 100644
+index 99168c5..53e59e4 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2447,6 +2447,15 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2384,6 +2384,16 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
 +
 +			/* we only attach tuner for analog on the 888 version */
-+			if((dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) && (port->nr==1)){
-+				printk(KERN_INFO "%s(): QUADHD_DVB analog setup\n", __func__);
++			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) {
++				pr_info("%s(): QUADHD_DVB analog setup\n",
++					__func__);
 +				dev->ts1.analog_fe.tuner_priv = client_tuner;
 +				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
 +					info.addr, &dev->i2c_bus[1].i2c_adap,
-+					si2157_config);
++					&si2157_config);
 +			}
  			break;
  
  		/* port c - terrestrial/cable */
-@@ -2539,6 +2548,15 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2473,6 +2483,16 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
 +
 +			/* we only attach tuner for analog on the 888 version */
-+			if(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC){
-+				printk(KERN_INFO "%s(): QUADHD_ATSC analog setup\n", __func__);
++			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) {
++				pr_info("%s(): QUADHD_ATSC analog setup\n",
++					__func__);
 +				dev->ts1.analog_fe.tuner_priv = client_tuner;
 +				dvb_attach(si2157_attach, &dev->ts1.analog_fe,
 +					info.addr, &dev->i2c_bus[1].i2c_adap,
-+					si2157_config);
++					&si2157_config);
 +			}
  			break;
  

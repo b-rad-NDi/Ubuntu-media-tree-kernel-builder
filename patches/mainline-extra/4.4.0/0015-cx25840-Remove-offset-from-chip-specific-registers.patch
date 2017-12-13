@@ -1,0 +1,91 @@
+From c96ed25db9a40db9bd8e0f746ac52081c3ad6e22 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 12 Dec 2017 19:52:35 +0000
+Subject: [PATCH 15/28] cx25840: Remove offset from chip specific registers
+
+ Remove vbi_regs_offset from a group of registers that are 888 specific.
+ Add labels to some undocumented regs.
+---
+ drivers/media/i2c/cx25840/cx25840-core.c | 39 ++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/media/i2c/cx25840/cx25840-core.c b/drivers/media/i2c/cx25840/cx25840-core.c
+index 940c8b1..9d2bb6d 100644
+--- a/drivers/media/i2c/cx25840/cx25840-core.c
++++ b/drivers/media/i2c/cx25840/cx25840-core.c
+@@ -668,14 +668,14 @@ static void cx23885_initialize(struct i2c_client *client)
+ 	 */
+ 	cx25840_write4(client, 0x404, 0x0010253e);
+ 
+-	/* CC on  - Undocumented Register */
++	/* CC on  -  VBI_LINE_CTRL3, FLD_VBI_MD_LINE12 */
+ 	cx25840_write(client, state->vbi_regs_offset + 0x42f, 0x66);
+ 
+ 	/* HVR-1250 / HVR1850 DIF related */
+ 	/* Power everything up */
+ 	cx25840_write4(client, 0x130, 0x0);
+ 
+-	/* Undocumented */
++	/* SRC_COMB_CFG */
+ 	if (is_cx23888(state))
+ 		cx25840_write4(client, 0x454, 0x6628021F);
+ 	else
+@@ -1111,16 +1111,25 @@ static int set_input(struct i2c_client *client, enum cx25840_video_input vid_inp
+ 			cx25840_write4(client, 0x410, 0xffff0dbf);
+ 			cx25840_write4(client, 0x414, 0x00137d03);
+ 
+-			cx25840_write4(client, state->vbi_regs_offset + 0x42c, 0x42600000);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x430, 0x0000039b);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x438, 0x00000000);
+-
+-			cx25840_write4(client, state->vbi_regs_offset + 0x440, 0xF8E3E824);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x444, 0x401040dc);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x448, 0xcd3f02a0);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x44c, 0x161f1000);
+-			cx25840_write4(client, state->vbi_regs_offset + 0x450, 0x00000802);
+-
++			/* These are not VBI controls */
++			if (is_cx23888(state)) {
++				/* 888 MISC_TIM_CTRL */
++				cx25840_write4(client, 0x42c, 0x42600000);
++				/* 888 FIELD_COUNT */
++				cx25840_write4(client, 0x430, 0x0000039b);
++				/* 888 VSCALE_CTRL */
++				cx25840_write4(client, 0x438, 0x00000000);
++				/* 888 DFE_CTRL1 */
++				cx25840_write4(client, 0x440, 0xF8E3E824);
++				/* 888 DFE_CTRL2 */
++				cx25840_write4(client, 0x444, 0x401040dc);
++				/* 888 DFE_CTRL3 */
++				cx25840_write4(client, 0x448, 0xcd3f02a0);
++				/* 888 PLL_CTRL */
++				cx25840_write4(client, 0x44c, 0x161f1000);
++				/* 888 HTL_CTRL */
++				cx25840_write4(client, 0x450, 0x00000802);
++			}
+ 			cx25840_write4(client, 0x91c, 0x01000000);
+ 			cx25840_write4(client, 0x8e0, 0x03063870);
+ 			cx25840_write4(client, 0x8d4, 0x7FFF0024);
+@@ -1398,8 +1407,9 @@ static int cx25840_set_fmt(struct v4l2_subdev *sd,
+ 	if ((fmt->width == 0) || (Vlines == 0) ||
+ 	    (fmt->width * 16 < Hsrc) || (Hsrc < fmt->width) ||
+ 	    (Vlines * 8 < Vsrc) || (Vsrc + 1 < Vlines)) {
+-		v4l_err(client, "%dx%d is not a valid size!\n",
+-				fmt->width, fmt->height);
++		v4l_err(client, "%dx%d is not a valid size! (Hsrc=%d, Vsrc=%d, Vlines=%d, is_50Hz=%u)\n",
++				fmt->width, fmt->height, Hsrc, Vsrc,
++				Vlines, is_50Hz);
+ 		return -ERANGE;
+ 	}
+ 	if (format->which == V4L2_SUBDEV_FORMAT_TRY)
+@@ -1727,6 +1737,7 @@ static int cx25840_s_stream(struct v4l2_subdev *sd, int enable)
+ 	if (is_cx2388x(state) || is_cx231xx(state))
+ 		return 0;
+ 
++	/* PIN_CTRL1 */
+ 	if (enable) {
+ 		v = cx25840_read(client, 0x115) | 0x0c;
+ 		cx25840_write(client, 0x115, v);
+-- 
+2.7.4
+

@@ -1,14 +1,17 @@
-From a4f0bf4497b5b75ea3c3ced1471c3cc56295de68 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 18:03:49 +0000
-Subject: [PATCH 22/25] si2168: Change from DVB-T to DVB-T/T2 autodetect
+From 8a56af2b1649daadac2e7223e4a70b0fa7d9213e Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 12 Dec 2017 20:14:10 +0000
+Subject: [PATCH 22/28] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
+ DVB-T2 support is a bit lacking, this switches the PLP to auto detect
+ DVB-T and DVB-T2 signals after tuning. If a DVB-T2 signal is found
+ the signal is processed as DVB-T2, otherwise it is left as DVB-T.
 ---
- drivers/media/dvb-frontends/si2168.c | 39 +++++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
+ drivers/media/dvb-frontends/si2168.c | 35 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 32 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index b2e3dc9..673201f 100644
+index 32330cc..1eab066 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -125,7 +125,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
@@ -34,8 +37,8 @@ index b2e3dc9..673201f 100644
 +
 +	sys = c->delivery_system;
 +	/* check if we found DVBT2 during DVBT tuning */
-+	if(sys == SYS_DVBT){
-+		if((cmd.args[3] & 0x0f) == 7){
++	if (sys == SYS_DVBT) {
++		if ((cmd.args[3] & 0x0f) == 7) {
 +			sys = SYS_DVBT2;
 +		}
 +	}
@@ -56,7 +59,7 @@ index b2e3dc9..673201f 100644
  	switch (c->delivery_system) {
  	case SYS_DVBT:
 -		delivery_system = 0x20;
-+		delivery_system = 0xf0; /* was 0x20 (DVB-T) but DVB-T/T2 auto-detect is more user friendly */
++		delivery_system = 0xf0; /* T/T2 auto-detect is user friendly */
  		break;
  	case SYS_DVBC_ANNEX_A:
  		delivery_system = 0x30;
@@ -77,24 +80,20 @@ index b2e3dc9..673201f 100644
  	}
  
  	memcpy(cmd.args, "\x51\x03", 2);
-@@ -377,6 +402,12 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -377,6 +402,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
  	cmd.args[4] = delivery_system | bandwidth;
-+	if(delivery_system == 0xf0)
++	if (delivery_system == 0xf0)
 +		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
-+
-+	if(config->inversion) /* inverted spectrum, eg si2157 */
-+		cmd.args[5] |= 1;
-+
+ 	if (config->inversion) /* inverted spectrum, eg si2157 */
+ 		cmd.args[5] |= 1;
  	cmd.wlen = 6;
- 	cmd.rlen = 4;
- 	ret = si2168_cmd_execute(client, &cmd);
-@@ -396,6 +427,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -398,6 +425,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  	}
  
  	memcpy(cmd.args, "\x14\x00\x0f\x10\x10\x00", 6);
-+	//BUGBUG?? FW defaults to 1, but windows driver uses 30; this call was setting it to 0??
++	/* BUGBUG? FW defaults to 1, but windows driver uses 30; above is 0? */
 +	cmd.args[5] = 30;
  	cmd.wlen = 6;
  	cmd.rlen = 4;

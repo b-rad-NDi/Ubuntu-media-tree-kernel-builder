@@ -1,14 +1,15 @@
-From 48d0e89192df4ecdbb838020badc34b77bbb6b6e Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 18:03:45 +0000
-Subject: [PATCH 06/25] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
+From 19e722b686580008efff065190d0f4f7b6eb3b5c Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 7 Aug 2017 13:00:42 -0500
+Subject: [PATCH 06/28] em28xx: Add Hauppauge SoloHD/DualHD bulk models support
 
+ Add additional pids to driver list
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 22 +++++++++++++++++-----
  1 file changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 2160dce..c461fbb 100644
+index e4fbbbc..7e14768 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -508,8 +508,10 @@ static struct em28xx_reg_seq plex_px_bcud[] = {

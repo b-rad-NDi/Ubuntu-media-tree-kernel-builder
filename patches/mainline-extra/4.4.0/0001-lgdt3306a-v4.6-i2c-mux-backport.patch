@@ -1,7 +1,7 @@
-From f0805379e5783c8938c2e7397afa93f947275a18 Mon Sep 17 00:00:00 2001
+From 4c0754e06b14b273334f1fdcd39bb9962d0601fc Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:37:35 +0000
-Subject: [PATCH 01/25] lgdt3306a: v4.6 i2c mux backport
+Subject: [PATCH 01/28] lgdt3306a: v4.6 i2c mux backport
 
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 180 ++++++++++++++++++++++++++++----
@@ -305,7 +305,7 @@ index 6ce337e..8b3388f 100644
  	struct dvb_frontend **fe;
  	struct i2c_adapter **i2c_adapter;
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index d46fc11..86e9520 100644
+index cca2b14..f42167d 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -1975,6 +1975,7 @@ static int em28xx_dvb_init(struct em28xx *dev)

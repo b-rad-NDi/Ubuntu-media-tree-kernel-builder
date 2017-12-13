@@ -1,14 +1,15 @@
-From 645bffca2499f29a6e0cfa30e055b1449b0b001a Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 18:03:49 +0000
-Subject: [PATCH 23/25] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
+From 4034f25de80595aa8cabb959e3c4563c81e3b75b Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 7 Aug 2017 13:11:52 -0500
+Subject: [PATCH 23/28] em28xx: Enable Hauppauge SoloHD rebranded 292e SE
 
+ Add a missing device to the driver table.
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index c461fbb..1a7e750 100644
+index 7e14768..82c7f8a 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2620,6 +2620,8 @@ struct usb_device_id em28xx_id_table[] = {
