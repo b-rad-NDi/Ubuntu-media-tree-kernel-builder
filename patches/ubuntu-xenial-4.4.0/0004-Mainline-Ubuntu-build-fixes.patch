@@ -1,6 +1,6 @@
-From f26cc775f652937590d6fa2a8a5aa8686d9e627b Mon Sep 17 00:00:00 2001
+From e39202ced425aad781f0c350d86b260680678302 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
-Date: Tue, 10 Oct 2017 21:00:55 +0000
+Date: Wed, 13 Dec 2017 19:54:51 +0000
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -9,7 +9,10 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/net/ethernet/via/via-velocity.c | 10 +++----
  drivers/usb/gadget/function/uvc_queue.c |  3 ++-
  fs/compat_ioctl.c                       |  2 --
- 5 files changed, 31 insertions(+), 39 deletions(-)
+ include/linux/compiler-gcc.h            |  3 +++
+ include/linux/kconfig.h                 |  7 +++++
+ security/apparmor/include/lib.h         |  2 +-
+ 8 files changed, 42 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..32747b7 100644
@@ -241,6 +244,51 @@ index dcf2653..521330f 100644
  COMPATIBLE_IOCTL(DMX_GET_STC)
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 744334e..e354b3f 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -3,6 +3,9 @@
+ #error "Please don't include <linux/compiler-gcc.h> directly, include <linux/compiler.h> instead."
+ #endif
+ 
++#define annotate_reachable()
++#define annotate_unreachable()
++
+ /*
+  * Common definitions for all gcc versions go here.
+  */
+diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
+index fec5076..7cf4b8d 100644
+--- a/include/linux/kconfig.h
++++ b/include/linux/kconfig.h
+@@ -36,6 +36,13 @@
+ #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
+ #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
+ 
++#define __ARG_PLACEHOLDER_1 0,
++#define config_enabled(cfg) _config_enabled(cfg)
++#define _config_enabled(value) __config_enabled(__ARG_PLACEHOLDER_##value)
++#define __config_enabled(arg1_or_junk) ___config_enabled(arg1_or_junk 1, 0)
++#define ___config_enabled(__ignored, val, ...) val
++
++
+ /*
+  * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
+  * otherwise. For boolean options, this is equivalent to
+diff --git a/security/apparmor/include/lib.h b/security/apparmor/include/lib.h
+index 954e22a..3f3b8d0 100644
+--- a/security/apparmor/include/lib.h
++++ b/security/apparmor/include/lib.h
+@@ -56,7 +56,7 @@
+ 	} while (0)
+ 
+ /* Flag indicating whether initialization completed */
+-extern int apparmor_initialized __initdata;
++extern int apparmor_initialized;
+ 
+ /* fn's in lib */
+ char *aa_split_fqname(char *args, char **ns_name);
 -- 
 2.7.4
 
