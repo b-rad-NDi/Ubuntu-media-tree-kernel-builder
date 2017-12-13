@@ -1,4 +1,4 @@
-From cff4e5b08395544621a27dfc8ad78a8f04b495b8 Mon Sep 17 00:00:00 2001
+From ff8aa85c1cc975db869079b6f4649aec60df11b7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
 Subject: [PATCH 03/27] em28xx: usb packet size tweaks

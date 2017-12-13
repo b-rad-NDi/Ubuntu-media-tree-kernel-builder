@@ -1,4 +1,4 @@
-From d0c7183e4b1085522edb07f737f4968f4d0ef219 Mon Sep 17 00:00:00 2001
+From d0ed9df69ec5b1ff6c269d485025cfec220e66b8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 7 Dec 2017 22:21:07 +0000
 Subject: [PATCH 16/27] cx23885: Add support for new Hauppauge QuadHD (885)

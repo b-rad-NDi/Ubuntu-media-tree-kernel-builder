@@ -1,4 +1,4 @@
-From 20dff9b46c90e713e5e7707afbb7c93dc4affb88 Mon Sep 17 00:00:00 2001
+From 458b5ef509d0b6a8199bf9cebca2cbb67f617d87 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 7 Dec 2017 22:06:50 +0000
 Subject: [PATCH 04/27] lgdt3306a: Add QAM AUTO support

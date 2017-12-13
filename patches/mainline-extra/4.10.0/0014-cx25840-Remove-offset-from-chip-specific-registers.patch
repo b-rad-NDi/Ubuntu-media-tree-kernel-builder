@@ -1,4 +1,4 @@
-From b4b2b8fb3896654621558c6c743c0030b5fb89dd Mon Sep 17 00:00:00 2001
+From c25bc76b2c984fbb0e180f6880c4b4a1e9a434e0 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 19:52:35 +0000
 Subject: [PATCH 14/27] cx25840: Remove offset from chip specific registers

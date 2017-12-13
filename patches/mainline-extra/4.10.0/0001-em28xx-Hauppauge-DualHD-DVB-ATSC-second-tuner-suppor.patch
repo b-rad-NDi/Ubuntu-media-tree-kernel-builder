@@ -1,4 +1,4 @@
-From f1bd7c813876164dcfe3b18b1bb004a944930dc0 Mon Sep 17 00:00:00 2001
+From 3f838cb63437c8c02059beeec50303e166ec7ad4 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 19:46:59 +0000
 Subject: [PATCH 01/27] em28xx: Hauppauge DualHD DVB/ATSC second tuner support

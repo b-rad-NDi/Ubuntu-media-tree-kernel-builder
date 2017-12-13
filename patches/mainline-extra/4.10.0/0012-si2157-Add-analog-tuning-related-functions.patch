@@ -1,4 +1,4 @@
-From a4686c4e213ac8c5c61f2732b0035e80a436a2a8 Mon Sep 17 00:00:00 2001
+From 2286da12619b6e7822c084797f5ab91dc0ed847a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 29 Nov 2017 18:11:00 +0000
 Subject: [PATCH 12/27] si2157: Add analog tuning related functions

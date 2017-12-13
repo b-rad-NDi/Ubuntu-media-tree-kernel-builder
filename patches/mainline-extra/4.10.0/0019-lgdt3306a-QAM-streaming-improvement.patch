@@ -1,4 +1,4 @@
-From 4410cb43937a3455e5b22c1d042667dd36e8ca63 Mon Sep 17 00:00:00 2001
+From d085b2b57688d9ab2789447bf239de926557ea7a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 27 Jun 2017 09:37:15 -0500
 Subject: [PATCH 19/27] lgdt3306a: QAM streaming improvement

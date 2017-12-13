@@ -1,4 +1,4 @@
-From dc8f64856be43c903f23d8fdb16c8efd67d81683 Mon Sep 17 00:00:00 2001
+From 8bd7976fb56ba264e2d00a0cc46db69211c5c275 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:04:48 +0000
 Subject: [PATCH 10/27] si2157: Better check for running tuner in init

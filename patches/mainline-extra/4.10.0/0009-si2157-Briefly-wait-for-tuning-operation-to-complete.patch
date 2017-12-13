@@ -1,4 +1,4 @@
-From 49dbd8281e7c31390cca44aa77cee9873e0df06f Mon Sep 17 00:00:00 2001
+From 1ab75cee12ceb931a2bfd3e4ab2e8de4aa446bec Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 21:02:05 +0000
 Subject: [PATCH 09/27] si2157: Briefly wait for tuning operation to complete

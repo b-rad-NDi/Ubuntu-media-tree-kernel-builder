@@ -1,4 +1,4 @@
-From d3ea5b35c466cd37e9d0c05851184a65510e5327 Mon Sep 17 00:00:00 2001
+From 4a5dabe2162248c1cbdc65152abdfacca73b4956 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 8 Dec 2017 22:15:42 +0000
 Subject: [PATCH 11/27] si2157: Add dvb frontend attach/release for tuner type

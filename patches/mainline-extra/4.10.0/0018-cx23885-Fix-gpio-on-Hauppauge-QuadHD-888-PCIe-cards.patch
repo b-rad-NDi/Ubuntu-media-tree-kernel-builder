@@ -1,4 +1,4 @@
-From a84c64b725318556798729c71e4658292e609141 Mon Sep 17 00:00:00 2001
+From 895e38d93aeda6098d5b48e3a1e2534ea95316f5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 26 May 2017 11:25:19 -0500
 Subject: [PATCH 18/27] cx23885: Fix gpio on Hauppauge QuadHD (888) PCIe cards

@@ -1,4 +1,4 @@
-From 850323f52e2979428f4e99c5757e11feb2f45b12 Mon Sep 17 00:00:00 2001
+From 1e4a42306fcfc3565b7646e72189c95cab5b99b3 Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Tue, 21 Nov 2017 18:19:10 +0000
 Subject: [PATCH 13/27] cx23885: Add support for Hauppauge HVR1265 K4

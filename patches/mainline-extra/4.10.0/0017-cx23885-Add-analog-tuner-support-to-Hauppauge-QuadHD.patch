@@ -1,4 +1,4 @@
-From 494a2b59244c4cc3837f92afe759e526ab6cc2bf Mon Sep 17 00:00:00 2001
+From 5a33af4c109d6dc96e358e1232f9d16e62e0cbea Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
 Subject: [PATCH 17/27] cx23885: Add analog tuner support to Hauppauge QuadHD

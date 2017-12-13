@@ -1,4 +1,4 @@
-From e46a6cf9f4368b645fee64767f179e262a03b3fc Mon Sep 17 00:00:00 2001
+From 323f0f0e6d523b98d687f5d4b217575fed755495 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Aug 2017 13:00:42 -0500
 Subject: [PATCH 05/27] em28xx: Add Hauppauge SoloHD/DualHD bulk models support

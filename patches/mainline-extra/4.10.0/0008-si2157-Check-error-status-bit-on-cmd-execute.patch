@@ -1,4 +1,4 @@
-From 67074316bb5f028d19bb344410f232386c600acd Mon Sep 17 00:00:00 2001
+From 2f362dbb87e4c0c366263c0deac6bf3fd92ce11d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 20 Jul 2017 16:21:40 -0500
 Subject: [PATCH 08/27] si2157: Check error status bit on cmd execute
