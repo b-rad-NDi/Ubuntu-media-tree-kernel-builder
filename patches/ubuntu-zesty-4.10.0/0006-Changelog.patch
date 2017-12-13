@@ -1,24 +1,24 @@
-From 0a0fb073ffe89fe22a71289e12cfdfa78e84591d Mon Sep 17 00:00:00 2001
+From cc1dc0c927be1a443f6d2e279d9e5f40c68fcd77 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 6 Oct 2017 16:20:52 -0500
+Date: Wed, 13 Dec 2017 14:15:16 -0600
 Subject: [PATCH 6/6] Changelog
 
 ---
- debian.master/changelog | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ debian.master/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index d9ef35bb0f4a..eb43162280ed 100644
+index 0c7c7a73dad3..8f3732c405b6 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,48 @@
-+linux (4.10.0-35201710061620.0+mediatree+hauppauge) zesty; urgency=low
+@@ -1,3 +1,51 @@
++linux (4.10.0-42201712131415.0+mediatree+hauppauge) zesty; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-35.39 rev 0f390669d7a35ae963c4d41c1d7134a8450e2a1d
++    - 4.10.0-42.46 rev f8e6222a443541cd986d9e60705613f34e2cff68
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2017-10-05-20-10.patch
++    - 0001-Linuxtv.org-media-tree-sync-2017-12-12-12-12.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -31,35 +31,38 @@ index d9ef35bb0f4a..eb43162280ed 100644
 +
 +  * Additional patches
 +    - 0001-em28xx-Hauppauge-DualHD-DVB-ATSC-second-tuner-suppor.patch
-+    - 0002-em28xx-bulk-transfer-implementation-fix.patch
++    - 0002-em28xx-Bulk-transfer-implementation-fix.patch
 +    - 0003-em28xx-usb-packet-size-tweaks.patch
-+    - 0004-lgdt3306a-add-QAM-AUTO-support.patch
++    - 0004-lgdt3306a-Add-QAM-AUTO-support.patch
 +    - 0005-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models-suppo.patch
 +    - 0006-cx23885-Enable-new-Hauppauge-PCIe-ImpactVCB-variant.patch
-+    - 0007-cx23885-set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
-+    - 0008-si2157-check-error-status-bit-on-cmd-execute.patch
-+    - 0009-si2157-briefly-wait-for-tuning-operation-to-complete.patch
-+    - 0010-Si2157-better-check-for-running-tuner-in-init-Reset-.patch
-+    - 0011-si2157-add-analog-tuner-support-and-dvb-frontend.patch
-+    - 0012-cx2xxxx-Ensure-i2c-platform-data-object-lifetime.patch
-+    - 0013-cx23885-add-support-for-Hauppauge-HVR1265-K4.patch
-+    - 0014-cx25840-remove-offset-from-chip-specific-registers-A.patch
-+    - 0015-cx28335-Add-support-for-Hauppauge-Starburst-2-PCIe-D.patch
++    - 0007-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    - 0008-si2157-Check-error-status-bit-on-cmd-execute.patch
++    - 0009-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
++    - 0010-si2157-Better-check-for-running-tuner-in-init.patch
++    - 0011-si2157-Add-dvb-frontend-attach-release-for-tuner-typ.patch
++    - 0012-si2157-Add-analog-tuning-related-functions.patch
++    - 0013-cx23885-Add-support-for-Hauppauge-HVR1265-K4.patch
++    - 0014-cx25840-Remove-offset-from-chip-specific-registers.patch
++    - 0015-cx23885-Add-support-for-Hauppauge-Starburst-2-PCIe.patch
 +    - 0016-cx23885-Add-support-for-new-Hauppauge-QuadHD-885.patch
 +    - 0017-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
-+    - 0018-cx23885-fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
-+    - 0019-lgdt3306a-QAM-streaming-improvement-Required-for-sta.patch
-+    - 0020-si2168-spectral-inversion-property-Hauppauge-DualHD-.patch
++    - 0018-cx23885-Fix-gpio-on-Hauppauge-QuadHD-888-PCIe-cards.patch
++    - 0019-lgdt3306a-QAM-streaming-improvement.patch
++    - 0020-si2168-Spectral-inversion-property.patch
 +    - 0021-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    - 0022-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
-+    - 0023-em28xx-increase-max-em28xx-boards-to-max-dvb-adapter.patch
-+    - 0024-v4l2-core-Reverse-758d90e16-kvmalloc-patch.patch
++    - 0023-em28xx-Increase-max-em28xx-boards-to-max-dvb-adapter.patch
++    - 0024-cx231xx-Add-support-for-Hauppauge-HVR-935.patch
++    - 0025-cx231xx-Add-second-frontend-option.patch
++    - 0026-cx231xx-Add-support-for-Hauppauge-HVR-975.patch
++    - 0027-lgdt3306a-Set-fe-ops.release-to-NULL-if-probed.patch
 +
-+ -- Fake User <hidden@email.co>  Fri, 06 Oct 2017 16:20:51 -0500
++ -- Fake User <hidden@email.co>  Wed, 13 Dec 2017 14:15:16 -0600
 +
- linux (4.10.0-35.39) zesty; urgency=low
+ linux (4.10.0-42.46) zesty; urgency=low
  
-   * linux: 4.10.0-35.39 -proposed tracker (LP: #1716606)
+   * linux: 4.10.0-42.46 -proposed tracker (LP: #1736152)
 -- 
 2.11.0
 
