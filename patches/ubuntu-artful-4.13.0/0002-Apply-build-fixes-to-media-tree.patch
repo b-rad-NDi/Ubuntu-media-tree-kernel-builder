@@ -1,6 +1,6 @@
-From 892286ec2d5462f3b628e3265ae5e0b7b42d3429 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 12 Dec 2017 19:39:07 +0000
+From 9e9cdf2042d660988bbe56125bdfedcf9a163341 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 13 Dec 2017 20:51:21 -0600
 Subject: [PATCH 2/6] Apply build fixes to media tree
 
 ---
@@ -28,6 +28,7 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/pci/ttpci/av7110_ir.c                | 1 +
  drivers/media/pci/tw686x/tw686x-core.c             | 2 ++
  drivers/media/platform/vim2m.c                     | 2 ++
+ drivers/media/radio/radio-cadet.c                  | 2 ++
  drivers/media/radio/wl128x/fmdrv_common.c          | 5 ++++-
  drivers/media/rc/ene_ir.c                          | 2 ++
  drivers/media/rc/igorplugusb.c                     | 2 ++
@@ -46,7 +47,7 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-fwnode.c              | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c               | 2 ++
  include/linux/compiler-gcc.h                       | 3 +++
- 42 files changed, 89 insertions(+), 2 deletions(-)
+ 43 files changed, 91 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index 93fac43405bc..9b7e960440b9 100644
@@ -356,6 +357,19 @@ index 065483e62db4..5b82b479b557 100644
 +
  MODULE_DESCRIPTION("Virtual device for mem2mem framework testing");
  MODULE_AUTHOR("Pawel Osciak, <pawel@osciak.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/media/radio/radio-cadet.c b/drivers/media/radio/radio-cadet.c
+index 7575e5370a49..79bae4e61afe 100644
+--- a/drivers/media/radio/radio-cadet.c
++++ b/drivers/media/radio/radio-cadet.c
+@@ -45,6 +45,8 @@
+ #include <media/v4l2-fh.h>
+ #include <media/v4l2-event.h>
+ 
++#include <media/compat.h>
++
+ MODULE_AUTHOR("Fred Gleason, Russell Kroll, Quay Lu, Donald Song, Jason Lewis, Scott McGrath, William McGrath");
+ MODULE_DESCRIPTION("A driver for the ADS Cadet AM/FM/RDS radio card.");
  MODULE_LICENSE("GPL");
 diff --git a/drivers/media/radio/wl128x/fmdrv_common.c b/drivers/media/radio/wl128x/fmdrv_common.c
 index 800d69c3f80b..fcd217c1bd02 100644
