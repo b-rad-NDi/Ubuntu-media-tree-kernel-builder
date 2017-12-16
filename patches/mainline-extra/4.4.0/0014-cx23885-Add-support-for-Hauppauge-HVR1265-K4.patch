@@ -1,16 +1,17 @@
-From d3024daf65d923f0c602f0de2cb9a6b49278c6c7 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Tue, 21 Nov 2017 18:19:10 +0000
+From 00b4546a58e1706627fee332c1c6227b8bf47e66 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Sat, 16 Dec 2017 19:10:16 +0000
 Subject: [PATCH 14/28] cx23885: Add support for Hauppauge HVR1265 K4
 
  Add new PCIe board to driver list and board register/configure functions
+ cx23885 + lgdt3306a + si2157 (digital/analog)
 ---
- drivers/media/pci/cx23885/cx23885-cards.c | 52 ++++++++++++++++++++++++++++++
- drivers/media/pci/cx23885/cx23885-dvb.c   | 53 +++++++++++++++++++++++++++++++
+ drivers/media/pci/cx23885/cx23885-cards.c | 52 +++++++++++++++++++++++++++++
+ drivers/media/pci/cx23885/cx23885-dvb.c   | 54 +++++++++++++++++++++++++++++++
  drivers/media/pci/cx23885/cx23885-input.c |  3 ++
  drivers/media/pci/cx23885/cx23885-video.c |  5 ++-
  drivers/media/pci/cx23885/cx23885.h       |  1 +
- 5 files changed, 113 insertions(+), 1 deletion(-)
+ 5 files changed, 114 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
 index 7b07c89..9f879e1 100644
@@ -121,7 +122,7 @@ index 7b07c89..9f879e1 100644
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
  	case CX23885_BOARD_MYGICA_X8506:
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 67ad041..91e760c 100644
+index 67ad041..e624139 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -930,6 +930,18 @@ static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
@@ -143,7 +144,7 @@ index 67ad041..91e760c 100644
  static int netup_altera_fpga_rw(void *device, int flag, int data, int read)
  {
  	struct cx23885_dev *dev = (struct cx23885_dev *)device;
-@@ -2490,6 +2502,47 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2490,6 +2502,48 @@ static int dvb_register(struct cx23885_tsport *port)
  			break;
  		}
  		break;
@@ -160,6 +161,7 @@ index 67ad041..91e760c 100644
 +				break;
 +
 +			/* attach tuner */
++			memset(&si2157_config, 0, sizeof(si2157_config));
 +			si2157_config.fe = fe0->dvb.frontend;
 +			si2157_config.if_port = 1;
 +			si2157_config.inversion = 1;
