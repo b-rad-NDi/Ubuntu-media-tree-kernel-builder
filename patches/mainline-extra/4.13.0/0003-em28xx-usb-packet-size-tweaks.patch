@@ -3,7 +3,17 @@ From: Brad Love <hidden@email.co>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
 Subject: [PATCH 03/27] em28xx: usb packet size tweaks
 
- Commentary needed...
+This changes the size of bulk transfers to have three beneficial alignments.
+Before:
+# 512 * 384 = 196608
+## 196608 % 188 != 0
+## 196608 % 192 != 0
+
+After:
+# 188 * 384 * 2 = 144384
+## 144384 % 188 = 0
+## 144384 % 192 = 0
+## 144384 % 512 = 0
 ---
  drivers/media/usb/em28xx/em28xx-dvb.c | 4 ++--
  drivers/media/usb/em28xx/em28xx.h     | 2 +-
@@ -40,7 +50,7 @@ index c85292c9883b..421d5a986de0 100644
   */
  #define EM28XX_BULK_PACKET_MULTIPLIER 384
 -#define EM28XX_DVB_BULK_PACKET_MULTIPLIER 384
-+#define EM28XX_DVB_BULK_PACKET_MULTIPLIER 240
++#define EM28XX_DVB_BULK_PACKET_MULTIPLIER (384 * 2)
  
  #define EM28XX_INTERLACED_DEFAULT 1
  
