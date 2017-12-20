@@ -1,21 +1,21 @@
-From cc1dc0c927be1a443f6d2e279d9e5f40c68fcd77 Mon Sep 17 00:00:00 2001
+From fa1706ea16f219a43e5ae732615d5adf393993e4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 13 Dec 2017 14:15:16 -0600
+Date: Sat, 16 Dec 2017 20:24:28 -0600
 Subject: [PATCH 6/6] Changelog
 
 ---
- debian.master/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.master/changelog | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0c7c7a73dad3..8f3732c405b6 100644
+index b987e6331c47..f620b87956ef 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,51 @@
-+linux (4.10.0-42201712131415.0+mediatree+hauppauge) zesty; urgency=low
+@@ -1,3 +1,52 @@
++linux (4.13.0-19201712162024.0+mediatree+hauppauge) artful; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-42.46 rev f8e6222a443541cd986d9e60705613f34e2cff68
++    - 4.13.0-19.22 rev a2d46e16208b74981109f721864f4ea65de77dcb
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2017-12-12-12-12.patch
@@ -57,12 +57,13 @@ index 0c7c7a73dad3..8f3732c405b6 100644
 +    - 0025-cx231xx-Add-second-frontend-option.patch
 +    - 0026-cx231xx-Add-support-for-Hauppauge-HVR-975.patch
 +    - 0027-lgdt3306a-Set-fe-ops.release-to-NULL-if-probed.patch
++    - 0028-dvb-frontends-Add-delay-to-Si2168-restart.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 13 Dec 2017 14:15:16 -0600
++ -- Fake User <hidden@email.co>  Sat, 16 Dec 2017 20:24:28 -0600
 +
- linux (4.10.0-42.46) zesty; urgency=low
+ linux (4.13.0-19.22) artful; urgency=low
  
-   * linux: 4.10.0-42.46 -proposed tracker (LP: #1736152)
+   * linux: 4.13.0-19.22 -proposed tracker (LP: #1736118)
 -- 
-2.11.0
+2.14.1
 
