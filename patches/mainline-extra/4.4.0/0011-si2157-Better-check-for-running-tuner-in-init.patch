@@ -18,7 +18,7 @@ index 5d00a4d..f8e9469 100644
  	const struct firmware *fw;
  	const char *fw_name;
 -	unsigned int uitmp, chip_id;
-+	unsigned int uitmp, chip_id, xtal_trim;
++	unsigned int chip_id, xtal_trim;
  
  	dev_dbg(&client->dev, "\n");
  

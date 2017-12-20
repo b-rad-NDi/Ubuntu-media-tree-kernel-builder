@@ -20,15 +20,6 @@ index 07e879f..2f79bdb 100644
   *
   * Copyright (C) 2014 Antti Palosaari <crope@iki.fi>
   *
-@@ -96,7 +96,7 @@ static int si2157_init(struct dvb_frontend *fe)
- 	struct si2157_cmd cmd;
- 	const struct firmware *fw;
- 	const char *fw_name;
--	unsigned int uitmp, chip_id, xtal_trim;
-+	unsigned int chip_id, xtal_trim;
- 
- 	dev_dbg(&client->dev, "\n");
- 
 @@ -244,6 +244,23 @@ skip_fw_download:
  	dev_info(&client->dev, "firmware version: %c.%c.%d\n",
  			cmd.args[6], cmd.args[7], cmd.args[8]);

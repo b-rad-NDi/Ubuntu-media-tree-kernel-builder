@@ -1,16 +1,16 @@
-From 2286da12619b6e7822c084797f5ab91dc0ed847a Mon Sep 17 00:00:00 2001
+From d26945ebd0df33824ad50cc1b313b66ec61c8efa Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 29 Nov 2017 18:11:00 +0000
-Subject: [PATCH 12/27] si2157: Add analog tuning related functions
+Subject: [PATCH 12/28] si2157: Add analog tuning related functions
 
  Include get_analog_params, get_frequency, get_bandwidth
 ---
- drivers/media/tuners/si2157.c      | 276 +++++++++++++++++++++++++++++++++++--
+ drivers/media/tuners/si2157.c      | 274 +++++++++++++++++++++++++++++++++++--
  drivers/media/tuners/si2157_priv.h |   2 +
- 2 files changed, 269 insertions(+), 9 deletions(-)
+ 2 files changed, 268 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 07e879f9f6f8..2f79bdbcba16 100644
+index 63bc666f0381..a5cc3a5ad0e9 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -1,5 +1,5 @@
@@ -20,15 +20,6 @@ index 07e879f9f6f8..2f79bdbcba16 100644
   *
   * Copyright (C) 2014 Antti Palosaari <crope@iki.fi>
   *
-@@ -96,7 +96,7 @@ static int si2157_init(struct dvb_frontend *fe)
- 	struct si2157_cmd cmd;
- 	const struct firmware *fw;
- 	const char *fw_name;
--	unsigned int uitmp, chip_id, xtal_trim;
-+	unsigned int chip_id, xtal_trim;
- 
- 	dev_dbg(&client->dev, "\n");
- 
 @@ -244,6 +244,23 @@ static int si2157_init(struct dvb_frontend *fe)
  	dev_info(&client->dev, "firmware version: %c.%c.%d\n",
  			cmd.args[6], cmd.args[7], cmd.args[8]);
