@@ -1,15 +1,16 @@
-From 8560d2e2b6173d919b9434e0e66daa8a84cf9e2f Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jul 2017 16:21:40 -0500
-Subject: [PATCH 08/27] si2157: Check error status bit on cmd execute
+From cdc21be22be3138485f5b34abfa5563970481389 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Tue, 19 Dec 2017 23:08:16 +0000
+Subject: [PATCH 08/28] si2157: Check error status bit on cmd execute
 
- Check error status bit on command execute, if error bit is set return -EAGAIN
+Check error status bit on command execute, if error bit is set return -EAGAIN
+Ignore -EAGAIN in probe during device check.
 ---
- drivers/media/tuners/si2157.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/media/tuners/si2157.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e35b1faf0ddc..1a083dd4c25b 100644
+index e35b1faf0ddc..a6bf7dd57700 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -52,18 +52,25 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
@@ -42,6 +43,15 @@ index e35b1faf0ddc..1a083dd4c25b 100644
  	}
  
  	mutex_unlock(&dev->i2c_mutex);
+@@ -455,7 +462,7 @@ static int si2157_probe(struct i2c_client *client,
+ 	cmd.wlen = 0;
+ 	cmd.rlen = 1;
+ 	ret = si2157_cmd_execute(client, &cmd);
+-	if (ret)
++	if (ret && (ret != -EAGAIN))
+ 		goto err_kfree;
+ 
+ 	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
 -- 
 2.14.1
 
