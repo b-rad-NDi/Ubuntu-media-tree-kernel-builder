@@ -1,13 +1,13 @@
-From 4a5dabe2162248c1cbdc65152abdfacca73b4956 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Fri, 8 Dec 2017 22:15:42 +0000
-Subject: [PATCH 11/27] si2157: Add dvb frontend attach/release for tuner type
+From 4c31cbfa1b0422b923b9c5676d87720fe3625d02 Mon Sep 17 00:00:00 2001
+From: root <hidden@email.co>
+Date: Wed, 20 Dec 2017 18:55:08 +0000
+Subject: [PATCH 11/28] si2157: Add dvb frontend attach/release for tuner type
 
- Adds tuner type TUNER_SILABS_SI2157 to tuner core. Includes dvb attach/release
- functions with hybrid_tuner_instance_list for mutliple frontend support.
+Adds tuner type TUNER_SILABS_SI2157 to tuner core. Includes dvb attach/release
+functions with hybrid_tuner_instance_list for mutliple frontend support.
 
- Renamed si2157_attach function in saa7164 driver to fix compilation error
- caused by introduction of si2157_attach in the si2157 driver.
+Renamed si2157_attach function in saa7164 driver to fix compilation error
+caused by introduction of si2157_attach in the si2157 driver.
 ---
  drivers/media/pci/saa7164/saa7164-dvb.c |  11 +-
  drivers/media/tuners/si2157.c           | 259 +++++++++++++++++++++++++-------
@@ -51,7 +51,7 @@ index e76d3bafe2ce..9522c6c80566 100644
  					      &hauppauge_hvr2255_tuner_config);
  			}
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index f8e9469d406a..07e879f9f6f8 100644
+index 8f863ed23360..63bc666f0381 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -18,6 +18,11 @@
@@ -150,17 +150,17 @@ index f8e9469d406a..07e879f9f6f8 100644
 +	pr_info("%s: probing si2157 tuner fe=%p cfg=%p addr=0X%2x\n",
 +			__func__, fe, cfg, addr);
 +	fe->tuner_priv = client;
-+	si2157_setup_configuration(fe, cfg);
  
 -	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 -	if (!dev) {
 -		ret = -ENOMEM;
 -		dev_err(&client->dev, "kzalloc() failed\n");
-+	if (!dvb_attach(si2157_attach, fe, (u8)addr, client->adapter, cfg)) {
++	if (si2157_attach(fe, (u8)addr, client->adapter, cfg) == NULL) {
 +		dev_err(&client->dev, "%s: attaching si2157 tuner failed\n",
 +				__func__);
  		goto err;
  	}
++	fe->ops.tuner_ops.release = NULL;
  
 -	i2c_set_clientdata(client, dev);
 -	dev->fe = cfg->fe;
@@ -176,7 +176,7 @@ index f8e9469d406a..07e879f9f6f8 100644
 -	cmd.wlen = 0;
 -	cmd.rlen = 1;
 -	ret = si2157_cmd_execute(client, &cmd);
--	if (ret)
+-	if (ret && (ret != -EAGAIN))
 -		goto err_kfree;
 -
 -	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
