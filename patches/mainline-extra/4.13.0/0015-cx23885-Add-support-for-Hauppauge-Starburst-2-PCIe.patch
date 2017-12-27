@@ -1,15 +1,16 @@
-From 4deda995222821d67402f482e7061d9160d85e12 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 12 Dec 2017 20:07:52 +0000
-Subject: [PATCH 15/27] cx23885: Add support for Hauppauge Starburst 2 PCIe
+From db7403b062a42eb3f64b08916615c1f7ed045d94 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 27 Dec 2017 14:34:18 -0600
+Subject: [PATCH 15/28] cx23885: Add support for Hauppauge Starburst 2 PCIe
 
- Add new PCIe DVB-S/S2.
+Add new PCIe DVB-S/S2.
 A single port Hauppauge HVR-5525
+cx23885 + a8293 + m88rs6000t
 ---
  drivers/media/pci/cx23885/cx23885-cards.c | 11 +++++++++++
- drivers/media/pci/cx23885/cx23885-dvb.c   | 16 ++++++++++------
+ drivers/media/pci/cx23885/cx23885-dvb.c   | 19 +++++++++++--------
  drivers/media/pci/cx23885/cx23885.h       |  1 +
- 3 files changed, 22 insertions(+), 6 deletions(-)
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
 index 9f879e1d5f4b..638c44cde6be 100644
@@ -62,27 +63,35 @@ index 9f879e1d5f4b..638c44cde6be 100644
  		ts1->ts_clk_en_val = 0x1; /* Enable TS_CLK */
  		ts1->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 91e760c381b2..897f59bf95e9 100644
+index e6241396480e..71dbffb75568 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2229,10 +2229,15 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -1206,6 +1206,8 @@ static int dvb_register(struct cx23885_tsport *port)
+ 	struct si2157_config si2157_config;
+ 	struct ts2020_config ts2020_config;
+ 	struct m88ds3103_platform_data m88ds3103_pdata;
++	struct m88rs6000t_config m88rs6000t_config = {};
++	struct a8293_platform_data a8293_pdata = {};
+ 	struct i2c_board_info info;
+ 	struct i2c_adapter *adapter;
+ 	struct i2c_client *client_demod = NULL, *client_tuner = NULL;
+@@ -2229,10 +2231,12 @@ static int dvb_register(struct cx23885_tsport *port)
  		}
  		port->i2c_client_tuner = client_tuner;
  		break;
 -	case CX23885_BOARD_HAUPPAUGE_HVR5525: {
+-		struct m88rs6000t_config m88rs6000t_config;
+-		struct a8293_platform_data a8293_pdata = {};
 +	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
 +	case CX23885_BOARD_HAUPPAUGE_HVR5525:
 +		i2c_bus = &dev->i2c_bus[0];
 +		i2c_bus2 = &dev->i2c_bus[1];
-+
- 		struct m88rs6000t_config m88rs6000t_config;
- 		struct a8293_platform_data a8293_pdata = {};
  
 +		pr_info("%s(): port=%d\n", __func__, port->nr);
  		switch (port->nr) {
  
  		/* port b - satellite */
-@@ -2240,7 +2245,7 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2240,7 +2244,7 @@ static int dvb_register(struct cx23885_tsport *port)
  			/* attach frontend */
  			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
  					&hauppauge_hvr5525_m88ds3103_config,
@@ -91,7 +100,7 @@ index 91e760c381b2..897f59bf95e9 100644
  			if (fe0->dvb.frontend == NULL)
  				break;
  
-@@ -2251,7 +2256,7 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2251,7 +2255,7 @@ static int dvb_register(struct cx23885_tsport *port)
  			info.addr = 0x0b;
  			info.platform_data = &a8293_pdata;
  			request_module("a8293");
@@ -100,7 +109,7 @@ index 91e760c381b2..897f59bf95e9 100644
  			if (!client_sec || !client_sec->dev.driver)
  				goto frontend_detach;
  			if (!try_module_get(client_sec->dev.driver->owner)) {
-@@ -2293,7 +2298,7 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2293,7 +2297,7 @@ static int dvb_register(struct cx23885_tsport *port)
  			info.addr = 0x64;
  			info.platform_data = &si2168_config;
  			request_module("%s", info.type);
@@ -109,7 +118,7 @@ index 91e760c381b2..897f59bf95e9 100644
  			if (!client_demod || !client_demod->dev.driver)
  				goto frontend_detach;
  			if (!try_module_get(client_demod->dev.driver->owner)) {
-@@ -2311,7 +2316,7 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2311,7 +2315,7 @@ static int dvb_register(struct cx23885_tsport *port)
  			info.addr = 0x60;
  			info.platform_data = &si2157_config;
  			request_module("%s", info.type);
@@ -118,7 +127,7 @@ index 91e760c381b2..897f59bf95e9 100644
  			if (!client_tuner || !client_tuner->dev.driver) {
  				module_put(client_demod->dev.driver->owner);
  				i2c_unregister_device(client_demod);
-@@ -2329,7 +2334,6 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2329,7 +2333,6 @@ static int dvb_register(struct cx23885_tsport *port)
  			break;
  		}
  		break;
