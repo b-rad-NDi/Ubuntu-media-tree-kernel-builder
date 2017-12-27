@@ -1,4 +1,4 @@
-From 422af53c3480b92e7cbb57f7cf8dcad9b2d7c400 Mon Sep 17 00:00:00 2001
+From fa1706ea16f219a43e5ae732615d5adf393993e4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Sat, 16 Dec 2017 20:24:28 -0600
 Subject: [PATCH 6/6] Changelog
@@ -8,14 +8,14 @@ Subject: [PATCH 6/6] Changelog
  1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0c7c7a73dad3..7aa00fe2320c 100644
+index b987e6331c47..f620b87956ef 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,52 @@
-+linux (4.10.0-42201712162024.0+mediatree+hauppauge) zesty; urgency=low
++linux (4.13.0-19201712162024.0+mediatree+hauppauge) artful; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.10.0-42.46 rev f8e6222a443541cd986d9e60705613f34e2cff68
++    - 4.13.0-19.22 rev a2d46e16208b74981109f721864f4ea65de77dcb
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2017-12-12-12-12.patch
@@ -61,9 +61,9 @@ index 0c7c7a73dad3..7aa00fe2320c 100644
 +
 + -- Fake User <hidden@email.co>  Sat, 16 Dec 2017 20:24:28 -0600
 +
- linux (4.10.0-42.46) zesty; urgency=low
+ linux (4.13.0-19.22) artful; urgency=low
  
-   * linux: 4.10.0-42.46 -proposed tracker (LP: #1736152)
+   * linux: 4.13.0-19.22 -proposed tracker (LP: #1736118)
 -- 
-2.11.0
+2.14.1
 
