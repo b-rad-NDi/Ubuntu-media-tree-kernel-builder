@@ -3,7 +3,11 @@ From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 1 Dec 2017 17:48:14 +0000
 Subject: [PATCH 03/28] em28xx: Bulk transfer implementation fix
 
- Set appropriate bulk/ISOC transfer multiplier on capture start.
+Set appropriate bulk/ISOC transfer multiplier on capture start.
+This sets ISOC transfer to 940 bytes (188 * 5)
+This sets bulk transfer to 48128 bytes (188 * 256)
+
+The above values are maximum allowed.
 ---
  drivers/media/usb/em28xx/em28xx-core.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
@@ -17,11 +21,11 @@ index ef38e56..b72335e 100644
  	    dev->chip_id == CHIP_ID_EM28178) {
  		/* The Transport Stream Enable Register moved in em2874 */
 +		if (dev->dvb_xfer_bulk) {
-+			/* Max Tx Size = 188 * 128 = 24064 - LCM(188,512) */
++			/* Max Tx Size = 188 * 256 = 48128 - LCM(188,512) * 2 */
 +			em28xx_write_reg(dev, (dev->ts == PRIMARY_TS) ?
 +					EM2874_R5D_TS1_PKT_SIZE :
 +					EM2874_R5E_TS2_PKT_SIZE,
-+					0x80);
++					0xFF);
 +		} else {
 +			/* TS2 Maximum Transfer Size = 188 * 5 */
 +			em28xx_write_reg(dev, (dev->ts == PRIMARY_TS) ?

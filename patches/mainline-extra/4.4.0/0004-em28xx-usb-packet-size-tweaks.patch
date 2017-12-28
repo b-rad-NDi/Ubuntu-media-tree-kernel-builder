@@ -7,17 +7,18 @@ Hauppauge em28xx bulk devices exhibit continuity errors and missing/corrupted
 packets, when run in VMWare virtual machines. Unknown if other manufacturers
 bulk models exhibit the same issue. KVM/Qemu is unaffected.
 
-This changes the size of bulk transfers to have a beneficial alignment.
+According to documentation the maximum packet multiplier for em28xx in bulk
+transfer mode is 256 * 188 bytes. This changes the size of bulk transfers to
+maximum supported value and have a bonus beneficial alignment.
 Before:
 # 512 * 384 = 196608
 ## 196608 % 188 != 0
 
 After:
-# 512 * 47 * 8 = 192512    (188 * 128 * 8)
-## 192512 % 188 = 0
+# 512 * 47 * 2 = 48128    (188 * 128 * 2)
+## 48128 % 188 = 0
 
-Next common multiple is 216576, keeping it under the original max
-for backwards compatibility.
+This sets up USB to expect just as many bytes as the em28xx is set to emit.
 
 Successful usage under load afterwards natively and in both VMWare
 and KVM/Qemu virtual machines.
@@ -34,7 +35,7 @@ index c85292c..7542f33 100644
   */
  #define EM28XX_BULK_PACKET_MULTIPLIER 384
 -#define EM28XX_DVB_BULK_PACKET_MULTIPLIER 384
-+#define EM28XX_DVB_BULK_PACKET_MULTIPLIER 376   /* mod 47 for 188 alignment */
++#define EM28XX_DVB_BULK_PACKET_MULTIPLIER 94
  
  #define EM28XX_INTERLACED_DEFAULT 1
  
