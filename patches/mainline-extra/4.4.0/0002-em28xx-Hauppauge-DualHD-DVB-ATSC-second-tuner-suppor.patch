@@ -1,7 +1,7 @@
-From dcf56a02f4a180b98b27011d7a2c5423172b617b Mon Sep 17 00:00:00 2001
+From 62ca6fe5ced7ca198db84e6f82cfa7c506051e7c Mon Sep 17 00:00:00 2001
 From: root <hidden@email.co>
 Date: Wed, 13 Dec 2017 20:00:53 +0000
-Subject: [PATCH 02/28] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
+Subject: [PATCH 02/29] em28xx: Hauppauge DualHD DVB/ATSC second tuner support
 
  Allow for use of secondart TS port on em28xx.
  Adds has_dual_ts field, allows secondary demod/tuner to be
@@ -312,7 +312,7 @@ index 1d0d8cc..ef38e56 100644
  	mutex_unlock(&em28xx_devlist_mutex);
  	return 0;
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index f42167d..75c884e 100644
+index cca2b14..2dd61c6 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -199,7 +199,6 @@ static int em28xx_start_streaming(struct em28xx_dvb *dvb)
@@ -366,9 +366,9 @@ index f42167d..75c884e 100644
  			info.platform_data = &si2157_config;
  			request_module(info.type);
  			client = i2c_new_device(adapter, &info);
-@@ -1977,7 +1982,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1976,7 +1981,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+ 			lgdt3306a_config.fe = &dvb->fe[0];
  			lgdt3306a_config.i2c_adapter = &adapter;
- 			lgdt3306a_config.has_tuner_i2c_adapter = 1;
  			strlcpy(info.type, "lgdt3306a", sizeof(info.type));
 -			info.addr = 0x59;
 +			if (dev->ts == PRIMARY_TS)
@@ -378,7 +378,7 @@ index f42167d..75c884e 100644
  			info.platform_data = &lgdt3306a_config;
  			request_module(info.type);
  			client = i2c_new_device(&dev->i2c_adap[dev->def_i2c_bus],
-@@ -2004,7 +2012,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -2003,7 +2011,10 @@ static int em28xx_dvb_init(struct em28xx *dev)
  #endif
  			memset(&info, 0, sizeof(struct i2c_board_info));
  			strlcpy(info.type, "si2157", sizeof(info.type));
@@ -390,7 +390,7 @@ index f42167d..75c884e 100644
  			info.platform_data = &si2157_config;
  			request_module(info.type);
  
-@@ -2047,6 +2058,14 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -2046,6 +2057,14 @@ static int em28xx_dvb_init(struct em28xx *dev)
  	if (result < 0)
  		goto out_free;
  
