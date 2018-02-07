@@ -1,0 +1,164 @@
+From 2cf1d5c90988282582a8d1b99fb48e70fe78a221 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Wed, 7 Feb 2018 13:46:24 -0600
+Subject: [PATCH 10/10] cx231xx: Add i2c device analog support
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/cx231xx/cx231xx-avcore.c | 33 ++++++++++++++----
+ drivers/media/usb/cx231xx/cx231xx-video.c  | 54 ++++++++++++++++++++++++------
+ 2 files changed, 71 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-avcore.c b/drivers/media/usb/cx231xx/cx231xx-avcore.c
+index fdd3c22..5bb081e 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-avcore.c
++++ b/drivers/media/usb/cx231xx/cx231xx-avcore.c
+@@ -599,14 +599,26 @@ int cx231xx_set_video_input_mux(struct cx231xx *dev, u8 input)
+ 				return status;
+ 			}
+ 		}
+-		if (dev->tuner_type == TUNER_NXP_TDA18271)
++		switch (dev->model) { /* i2c device tuners */
++		case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx:
++		case CX231XX_BOARD_HAUPPAUGE_935C:
++		case CX231XX_BOARD_HAUPPAUGE_955Q:
++		case CX231XX_BOARD_HAUPPAUGE_975:
+ 			status = cx231xx_set_decoder_video_input(dev,
+ 							CX231XX_VMUX_TELEVISION,
+ 							INPUT(input)->vmux);
+-		else
+-			status = cx231xx_set_decoder_video_input(dev,
++			break;
++		default:
++			if (dev->tuner_type == TUNER_NXP_TDA18271)
++				status = cx231xx_set_decoder_video_input(dev,
++							CX231XX_VMUX_TELEVISION,
++							INPUT(input)->vmux);
++			else
++				status = cx231xx_set_decoder_video_input(dev,
+ 							CX231XX_VMUX_COMPOSITE1,
+ 							INPUT(input)->vmux);
++			break;
++		};
+ 
+ 		break;
+ 	default:
+@@ -1205,12 +1217,21 @@ int cx231xx_set_audio_decoder_input(struct cx231xx *dev,
+ 					cx231xx_set_field(FLD_SIF_EN, 0));
+ 			break;
+ 		default:
++			switch (dev->model) { /* i2c device tuners */
++			case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx:
++			case CX231XX_BOARD_HAUPPAUGE_935C:
++			case CX231XX_BOARD_HAUPPAUGE_955Q:
++			case CX231XX_BOARD_HAUPPAUGE_975:
++			/* TODO: Normal mode: SIF passthrough at 14.32 MHz ??? */
++				break;
++			default:
+ 			/* This is just a casual suggestion to people adding
+ 			   new boards in case they use a tuner type we don't
+ 			   currently know about */
+-			dev_info(dev->dev,
+-				 "Unknown tuner type configuring SIF");
+-			break;
++				dev_info(dev->dev,
++					 "Unknown tuner type configuring SIF");
++				break;
++			}
+ 		}
+ 		break;
+ 
+diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
+index 0b6ac50..b1c3417 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-video.c
++++ b/drivers/media/usb/cx231xx/cx231xx-video.c
+@@ -1293,7 +1293,7 @@ int cx231xx_s_frequency(struct file *file, void *priv,
+ 	struct cx231xx_fh *fh = priv;
+ 	struct cx231xx *dev = fh->dev;
+ 	struct v4l2_frequency new_freq = *f;
+-	int rc;
++	int rc, need_if_freq = 0;
+ 	u32 if_frequency = 5400000;
+ 
+ 	dev_dbg(dev->dev,
+@@ -1310,14 +1310,29 @@ int cx231xx_s_frequency(struct file *file, void *priv,
+ 	/* set pre channel change settings in DIF first */
+ 	rc = cx231xx_tuner_pre_channel_change(dev);
+ 
+-	call_all(dev, tuner, s_frequency, f);
+-	call_all(dev, tuner, g_frequency, &new_freq);
+-	dev->ctl_freq = new_freq.frequency;
++	switch (dev->model) { /* i2c device tuners */
++	case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx:
++	case CX231XX_BOARD_HAUPPAUGE_935C:
++	case CX231XX_BOARD_HAUPPAUGE_955Q:
++	case CX231XX_BOARD_HAUPPAUGE_975:
++		if (dev->cx231xx_set_analog_freq)
++			dev->cx231xx_set_analog_freq(dev, f->frequency);
++		dev->ctl_freq = f->frequency;
++		need_if_freq = 1;
++		break;
++	default:
++		call_all(dev, tuner, s_frequency, f);
++		call_all(dev, tuner, g_frequency, &new_freq);
++		dev->ctl_freq = new_freq.frequency;
++		break;
++	}
++
++	pr_err("%s() %u  :  %u\n", __func__, f->frequency, dev->ctl_freq);
+ 
+ 	/* set post channel change settings in DIF first */
+ 	rc = cx231xx_tuner_post_channel_change(dev);
+ 
+-	if (dev->tuner_type == TUNER_NXP_TDA18271) {
++	if (need_if_freq || dev->tuner_type == TUNER_NXP_TDA18271) {
+ 		if (dev->norm & (V4L2_STD_MN | V4L2_STD_NTSC_443))
+ 			if_frequency = 5400000;  /*5.4MHz	*/
+ 		else if (dev->norm & V4L2_STD_B)
+@@ -1566,8 +1581,18 @@ int cx231xx_querycap(struct file *file, void *priv,
+ 		else
+ 			cap->device_caps |= V4L2_CAP_VIDEO_CAPTURE;
+ 	}
+-	if (dev->tuner_type != TUNER_ABSENT)
++	switch (dev->model) { /* i2c device tuners */
++	caes CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++	case CX231XX_BOARD_HAUPPAUGE_935C:
++	case CX231XX_BOARD_HAUPPAUGE_955Q:
++	case CX231XX_BOARD_HAUPPAUGE_975:
+ 		cap->device_caps |= V4L2_CAP_TUNER;
++		break;
++	default:
++		if (dev->tuner_type != TUNER_ABSENT)
++			cap->device_caps |= V4L2_CAP_TUNER;
++		break;
++	}
+ 	cap->capabilities = cap->device_caps | V4L2_CAP_READWRITE |
+ 		V4L2_CAP_VBI_CAPTURE | V4L2_CAP_VIDEO_CAPTURE |
+ 		V4L2_CAP_STREAMING | V4L2_CAP_DEVICE_CAPS;
+@@ -2172,10 +2197,19 @@ static void cx231xx_vdev_init(struct cx231xx *dev,
+ 
+ 	video_set_drvdata(vfd, dev);
+ 	if (dev->tuner_type == TUNER_ABSENT) {
+-		v4l2_disable_ioctl(vfd, VIDIOC_G_FREQUENCY);
+-		v4l2_disable_ioctl(vfd, VIDIOC_S_FREQUENCY);
+-		v4l2_disable_ioctl(vfd, VIDIOC_G_TUNER);
+-		v4l2_disable_ioctl(vfd, VIDIOC_S_TUNER);
++		switch (dev->model) {
++		caes CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++		case CX231XX_BOARD_HAUPPAUGE_935C:
++		case CX231XX_BOARD_HAUPPAUGE_955Q:
++		case CX231XX_BOARD_HAUPPAUGE_975:
++			break;
++		default:
++			v4l2_disable_ioctl(vfd, VIDIOC_G_FREQUENCY);
++			v4l2_disable_ioctl(vfd, VIDIOC_S_FREQUENCY);
++			v4l2_disable_ioctl(vfd, VIDIOC_G_TUNER);
++			v4l2_disable_ioctl(vfd, VIDIOC_S_TUNER);
++			break;
++		}
+ 	}
+ }
+ 
+-- 
+2.7.4
+

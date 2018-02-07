@@ -1,0 +1,60 @@
+From 81b861e69bda62a63d9e638e20e03a2d66f0ea15 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 6 Feb 2018 18:01:36 -0600
+Subject: [PATCH 09/10] cx23885: Add analog frontend to 1265_K4
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-cards.c | 16 ++++++++++++++++
+ drivers/media/pci/cx23885/cx23885-dvb.c   |  6 ++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index 91d447f..b8050ab 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -812,8 +812,24 @@ struct cx23885_board cx23885_boards[] = {
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
+ 		.name		= "Hauppauge WinTV-HVR-1265(161111)",
++		.porta          = CX23885_ANALOG_VIDEO,
+ 		.portc		= CX23885_MPEG_DVB,
+ 		.force_bff	= 1,
++		.input          = {{
++			.type   = CX23885_VMUX_TELEVISION,
++			.vmux   =	CX25840_VIN7_CH3 |
++					CX25840_VIN5_CH2 |
++					CX25840_VIN2_CH1 |
++					CX25840_DIF_ON,
++			.amux   = CX25840_AUDIO8,
++		}, {
++			.type   = CX23885_VMUX_SVIDEO,
++			.vmux   = CX25840_VIN7_CH3 |
++				  CX25840_VIN4_CH2 |
++				  CX25840_VIN8_CH1 |
++				  CX25840_SVIDEO_ON,
++			.amux   = CX25840_AUDIO7,
++		} },
+ 	},
+ 	[CX23885_BOARD_HAUPPAUGE_STARBURST2] = {
+ 		.name		= "Hauppauge WinTV-Starburst2",
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index e8b152a..8d35824 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -2562,6 +2562,12 @@ static int dvb_register(struct cx23885_tsport *port)
+ 				goto frontend_detach;
+ 			}
+ 			port->i2c_client_tuner = client_tuner;
++
++			dev->ts1.analog_fe.tuner_priv = client_tuner;
++
++			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
++				&fe0->dvb.frontend->ops.tuner_ops,
++				sizeof(struct dvb_tuner_ops));
+ 			break;
+ 		}
+ 		break;
+-- 
+2.7.4
+
