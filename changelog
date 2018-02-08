@@ -1,3 +1,7 @@
+0.16.9
+  * Fix si2157 disconnect issue
+  * fix em28xx bulk multiplier
+
 0.16.8
   * Fix DualHD bulk models
   * Fix 1265K4 oops
