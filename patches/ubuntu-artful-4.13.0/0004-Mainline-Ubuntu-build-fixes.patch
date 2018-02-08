@@ -1,4 +1,4 @@
-From 895f489650b4f1eb749ab2794a8fdb423080969e Mon Sep 17 00:00:00 2001
+From 5b61cc1d27ed769c222697ea727367808802493f Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 26 Oct 2017 11:03:01 +0000
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -7,8 +7,7 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/hid/hid-picolcd_cir.c   |  4 ++--
  drivers/staging/greybus/light.c | 12 ++++++------
  fs/compat_ioctl.c               |  2 --
- include/linux/pci_ids.h         |  1 +
- 4 files changed, 9 insertions(+), 10 deletions(-)
+ 3 files changed, 8 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 8ffbb6f65a65..32747b7f917e 100644
