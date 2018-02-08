@@ -121,7 +121,7 @@ index 0b6ac50..b1c3417 100644
  	}
 -	if (dev->tuner_type != TUNER_ABSENT)
 +	switch (dev->model) { /* i2c device tuners */
-+	caes CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++	case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
 +	case CX231XX_BOARD_HAUPPAUGE_935C:
 +	case CX231XX_BOARD_HAUPPAUGE_955Q:
 +	case CX231XX_BOARD_HAUPPAUGE_975:
@@ -144,7 +144,7 @@ index 0b6ac50..b1c3417 100644
 -		v4l2_disable_ioctl(vfd, VIDIOC_G_TUNER);
 -		v4l2_disable_ioctl(vfd, VIDIOC_S_TUNER);
 +		switch (dev->model) {
-+		caes CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++		case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
 +		case CX231XX_BOARD_HAUPPAUGE_935C:
 +		case CX231XX_BOARD_HAUPPAUGE_955Q:
 +		case CX231XX_BOARD_HAUPPAUGE_975:
