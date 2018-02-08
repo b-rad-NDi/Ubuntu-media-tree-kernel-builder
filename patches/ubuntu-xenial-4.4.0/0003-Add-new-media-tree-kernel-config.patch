@@ -1,17 +1,17 @@
-From 8cff00889af86f7ee40560bcd2234f15d7e5754a Mon Sep 17 00:00:00 2001
+From 4b5a46bd07a7837f578f27d3b3153df7bf3b22e8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 17 Mar 2017 01:36:57 +0000
 Subject: [PATCH 3/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 38 +++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ debian.master/config/config.common.ubuntu | 42 +++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 73dc3a8..51d0312 100644
+index 72734ae..3d41b1d 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9115,3 +9115,41 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9119,3 +9119,45 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -52,6 +52,10 @@ index 73dc3a8..51d0312 100644
 +CONFIG_IR_PWM_TX=m
 +# CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
 +# CONFIG_SDR_PLATFORM_DRIVERS is not set
++CONFIG_LIRC=y
++CONFIG_DVB_MMAP=y
++# CONFIG_DVB_ULE_DEBUG is not set
++CONFIG_VIDEO_IPU3_CIO2=m
 +
 -- 
 2.7.4
