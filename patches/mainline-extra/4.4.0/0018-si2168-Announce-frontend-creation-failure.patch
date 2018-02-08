@@ -1,0 +1,29 @@
+From 816b9fb708823e588e0a02fa13f41f8a9d64c2fb Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 12 Jan 2018 09:23:26 -0600
+Subject: [PATCH 18/41] si2168: Announce frontend creation failure
+
+The driver outputs on success, but is silent on failure. Give
+one message that probe failed.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/dvb-frontends/si2168.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index 983045b..d7df544 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -853,7 +853,7 @@ static int si2168_probe(struct i2c_client *client,
+ err_kfree:
+ 	kfree(dev);
+ err:
+-	dev_dbg(&client->dev, "failed=%d\n", ret);
++	dev_warn(&client->dev, "probe failed = %d\n", ret);
+ 	return ret;
+ }
+ 
+-- 
+2.7.4
+

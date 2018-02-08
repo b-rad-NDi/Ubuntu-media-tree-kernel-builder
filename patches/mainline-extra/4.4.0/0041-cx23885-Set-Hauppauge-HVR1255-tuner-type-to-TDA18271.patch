@@ -1,0 +1,39 @@
+From 247303ddd1415fc52576dc4cef6b570e30f51809 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 26 May 2017 09:43:30 -0500
+Subject: [PATCH 41/41] cx23885: Set Hauppauge HVR1255 tuner type to TDA18271
+
+Update tuner_type from TUNER_ABSENT
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-cards.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index b8050ab..01288ec 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -325,8 +325,7 @@ struct cx23885_board cx23885_boards[] = {
+ 		.name		= "Hauppauge WinTV-HVR1255",
+ 		.porta		= CX23885_ANALOG_VIDEO,
+ 		.portc		= CX23885_MPEG_DVB,
+-		.tuner_type	= TUNER_ABSENT,
+-		.tuner_addr	= 0x42, /* 0x84 >> 1 */
++		.tuner_type	= TUNER_NXP_TDA18271,
+ 		.force_bff	= 1,
+ 		.input          = {{
+ 			.type   = CX23885_VMUX_TELEVISION,
+@@ -354,8 +353,7 @@ struct cx23885_board cx23885_boards[] = {
+ 		.name		= "Hauppauge WinTV-HVR1255",
+ 		.porta		= CX23885_ANALOG_VIDEO,
+ 		.portc		= CX23885_MPEG_DVB,
+-		.tuner_type	= TUNER_ABSENT,
+-		.tuner_addr	= 0x42, /* 0x84 >> 1 */
++		.tuner_type	= TUNER_NXP_TDA18271,
+ 		.force_bff	= 1,
+ 		.input          = {{
+ 			.type   = CX23885_VMUX_TELEVISION,
+-- 
+2.7.4
+

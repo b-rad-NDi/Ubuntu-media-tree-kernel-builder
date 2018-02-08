@@ -1,0 +1,59 @@
+From 0c564559be9c14556afc01c7beb891b4c76c2d4c Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 19 Dec 2017 23:08:16 +0000
+Subject: [PATCH 31/41] si2157: Check error status bit on cmd execute
+
+Check error status bit on command execute, if error bit is
+set return -EAGAIN. Ignore -EAGAIN in probe during device check.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/tuners/si2157.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index e125863..1e50695 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -52,18 +52,25 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
+ 			}
+ 
+ 			/* firmware ready? */
+-			if ((cmd->args[0] >> 7) & 0x01)
++			if (cmd->args[0] & 0x80)
+ 				break;
++			usleep_range(5000, 10000);
+ 		}
+ 
+-		dev_dbg(&client->dev, "cmd execution took %d ms\n",
++		dev_dbg(&client->dev, "cmd execution took %d ms, status=%x\n",
+ 				jiffies_to_msecs(jiffies) -
+-				(jiffies_to_msecs(timeout) - TIMEOUT));
++				(jiffies_to_msecs(timeout) - TIMEOUT),
++				cmd->args[0]);
+ 
+-		if (!((cmd->args[0] >> 7) & 0x01)) {
++		if (!(cmd->args[0] & 0x80)) {
+ 			ret = -ETIMEDOUT;
+ 			goto err_mutex_unlock;
+ 		}
++		/* check error status bit */
++		if (cmd->args[0] & 0x40) {
++			ret = -EAGAIN;
++			goto err_mutex_unlock;
++		}
+ 	}
+ 
+ 	mutex_unlock(&dev->i2c_mutex);
+@@ -477,7 +484,7 @@ static int si2157_probe(struct i2c_client *client,
+ 	cmd.wlen = 0;
+ 	cmd.rlen = 1;
+ 	ret = si2157_cmd_execute(client, &cmd);
+-	if (ret)
++	if (ret && (ret != -EAGAIN))
+ 		goto err_kfree;
+ 
+ 	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
+-- 
+2.7.4
+

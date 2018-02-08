@@ -1,15 +1,15 @@
-From b01dab7fb1cd4969213699afa1a54d0b2a0f1c01 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Wed, 27 Dec 2017 18:42:16 +0000
-Subject: [PATCH 01/29] lgdt3306a: v4.6 i2c mux backport
+From 09793138c600d8ed557fe016a1faee4da7a0d136 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 7 Feb 2018 17:17:35 -0600
+Subject: [PATCH 01/41] lgdt3306a: v4.6 i2c mux backport
 
 ---
- drivers/media/dvb-frontends/lgdt3306a.c | 159 +++++++++++++++++++++++++++-----
+ drivers/media/dvb-frontends/lgdt3306a.c | 157 +++++++++++++++++++++++++++-----
  drivers/media/dvb-frontends/lgdt3306a.h |   2 +
- 2 files changed, 139 insertions(+), 22 deletions(-)
+ 2 files changed, 138 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index e6dece2..e7bcf38 100644
+index 2e1e565..ac9d139 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
 @@ -68,8 +68,6 @@ struct lgdt3306a_state {
@@ -21,15 +21,7 @@ index e6dece2..e7bcf38 100644
  };
  
  /*
-@@ -131,7 +129,6 @@ static int lgdt3306a_write_reg(struct lgdt3306a_state *state, u16 reg, u8 val)
- 	dbg_reg("reg: 0x%04x, val: 0x%02x\n", reg, val);
- 
- 	ret = i2c_transfer(state->i2c_adap, &msg, 1);
--
- 	if (ret != 1) {
- 		pr_err("error (addr %02x %02x <- %02x, err = %i)\n",
- 		       msg.buf[0], msg.buf[1], msg.buf[2], ret);
-@@ -2136,20 +2133,142 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
+@@ -2136,20 +2134,142 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
  	.search               = lgdt3306a_search,
  };
  
@@ -68,8 +60,7 @@ index e6dece2..e7bcf38 100644
 +		.len = 3,
 +		.buf = buf,
 +	};
- 
--	return lgdt3306a_i2c_gate_ctrl(&state->frontend, 1);
++
 +	ret = __i2c_transfer(client->adapter, &read_msg_1, 1);
 +	if (ret != 1)
 +	{
@@ -80,7 +71,8 @@ index e6dece2..e7bcf38 100644
 +		else
 +			return -EREMOTEIO;
 +	}
-+
+ 
+-	return lgdt3306a_i2c_gate_ctrl(&state->frontend, 1);
 +	ret = __i2c_transfer(client->adapter, &read_msg_2, 1);
 +	if (ret != 1)
 +	{
@@ -131,7 +123,8 @@ index e6dece2..e7bcf38 100644
 +		.buf = &val,
 +		.len = 1,
 +	};
-+
+ 
+-	return lgdt3306a_i2c_gate_ctrl(&state->frontend, 0);
 +	struct i2c_msg write_msg = {
 +		.addr = client->addr,
 +		.flags = 0,
@@ -160,8 +153,7 @@ index e6dece2..e7bcf38 100644
 +		else
 +			return -EREMOTEIO;
 +	}
- 
--	return lgdt3306a_i2c_gate_ctrl(&state->frontend, 0);
++
 +	buf[0] = 0x00;
 +	buf[1] = 0x02;
 +	val &= 0x7F;
@@ -180,14 +172,6 @@ index e6dece2..e7bcf38 100644
  }
  
  static int lgdt3306a_probe(struct i2c_client *client,
-@@ -2170,6 +2289,7 @@ static int lgdt3306a_probe(struct i2c_client *client,
- 			sizeof(struct lgdt3306a_config));
- 
- 	config->i2c_addr = client->addr;
-+
- 	fe = lgdt3306a_attach(config, client->adapter);
- 	if (fe == NULL) {
- 		ret = -ENODEV;
 @@ -2180,21 +2300,16 @@ static int lgdt3306a_probe(struct i2c_client *client,
  	state = fe->demodulator_priv;
  
@@ -225,12 +209,12 @@ index e6dece2..e7bcf38 100644
  	state->frontend.ops.release = NULL;
  	state->frontend.demodulator_priv = NULL;
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.h b/drivers/media/dvb-frontends/lgdt3306a.h
-index 6ce337e..528fcb1 100644
+index 8b53044..99b28be 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.h
 +++ b/drivers/media/dvb-frontends/lgdt3306a.h
 @@ -21,6 +21,8 @@
  #include <linux/i2c.h>
- #include "dvb_frontend.h"
+ #include <media/dvb_frontend.h>
  
 +#define LG3306_TUNERI2C_ON  0x00
 +#define LG3306_TUNERI2C_OFF 0x80

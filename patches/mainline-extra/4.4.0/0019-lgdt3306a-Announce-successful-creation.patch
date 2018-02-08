@@ -1,0 +1,37 @@
+From ac167cbcc538594e30068b49ce5c1405e3cc6560 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 7 Feb 2018 17:22:39 -0600
+Subject: [PATCH 19/41] lgdt3306a: Announce successful creation
+
+The driver is near silent, this adds a simple announcement at the
+end of probe after the chip has been detected and upgrades a debug
+message to error if probe has failed.
+---
+ drivers/media/dvb-frontends/lgdt3306a.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
+index 6147559..c12e4c3 100644
+--- a/drivers/media/dvb-frontends/lgdt3306a.c
++++ b/drivers/media/dvb-frontends/lgdt3306a.c
+@@ -2358,6 +2358,8 @@ static int lgdt3306a_probe(struct i2c_client *client,
+ 	*config->i2c_adapter = state->i2c_adap;
+ 	*config->fe = fe;
+ 
++	dev_info(&client->dev, "LG Electronics LGDT3306A successfully identified\n");
++
+ 	return 0;
+ 
+ err_kfree:
+@@ -2365,7 +2367,7 @@ err_kfree:
+ err_fe:
+ 	kfree(config);
+ fail:
+-	dev_dbg(&client->dev, "failed=%d\n", ret);
++	dev_warn(&client->dev, "probe failed = %d\n", ret);
+ 	return ret;
+ }
+ 
+-- 
+2.7.4
+
