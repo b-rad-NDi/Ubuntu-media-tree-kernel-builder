@@ -668,7 +668,7 @@ function generate_ppa_data()
 	[ "${x}" != "YES" ] && return 1
 
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
-	debuild -us -uc -S
+	debuild -d -us -uc -S
 
 	generate_virtual_package image
 	generate_virtual_package headers
