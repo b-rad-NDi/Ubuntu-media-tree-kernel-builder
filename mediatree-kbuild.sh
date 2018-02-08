@@ -638,7 +638,7 @@ function generate_virtual_package()
 	cp linux-${1}-mediatree*.tar.gz ..
 	cp linux-${1}-mediatree*.dsc ..
 	cp linux-${1}-mediatree*_source.changes ..
-	[ -f "linux-${1}-mediatree*_source.buildinfo" ] & cp linux-${1}-mediatree*_source.buildinfo ..
+	cp linux-${1}-mediatree*_source.buildinfo .. 2>/dev/null
 
 	return 0
 }
