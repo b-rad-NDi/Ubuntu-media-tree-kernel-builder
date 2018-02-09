@@ -14,7 +14,7 @@ Changes are backwards compatible with current behaviour.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
-Since v1:
+Changes since v1:
 - fixed checkpatch complaint
 
  drivers/media/dvb-frontends/lgdt3306a.c | 41 +++++++++++++++++++++++++--------
