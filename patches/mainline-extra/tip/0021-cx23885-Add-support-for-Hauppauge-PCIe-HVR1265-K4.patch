@@ -1,4 +1,4 @@
-From adaf8963fa2dc18057e66a986c4a796435ef50c1 Mon Sep 17 00:00:00 2001
+From 4134d621351b86b8ebd49fe8195c63e8be431ca1 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 5 Jan 2018 18:35:13 -0600
 Subject: [PATCH 2/4] cx23885: Add support for Hauppauge PCIe HVR1265 K4
@@ -6,33 +6,55 @@ Subject: [PATCH 2/4] cx23885: Add support for Hauppauge PCIe HVR1265 K4
 Add new PCIe board to driver list and board register/configure functions
 
 cx23885 + lgdt3306a + si2157 digital/analog
+and
+composite/s-video + stereo capture
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/pci/cx23885/cx23885-cards.c | 27 ++++++++++++++++++
+Changes since v1:
+- add tuner_type
+- add missing composite/s-video analog inputs
+
+ drivers/media/pci/cx23885/cx23885-cards.c | 43 +++++++++++++++++++++++++++++
  drivers/media/pci/cx23885/cx23885-dvb.c   | 46 +++++++++++++++++++++++++++++++
  drivers/media/pci/cx23885/cx23885-input.c |  3 ++
  drivers/media/pci/cx23885/cx23885-video.c |  5 +++-
  drivers/media/pci/cx23885/cx23885.h       |  1 +
- 5 files changed, 81 insertions(+), 1 deletion(-)
+ 5 files changed, 97 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index c4b3123..e2c12eb 100644
+index 3622521..2cc6390 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -776,6 +776,11 @@ struct cx23885_board cx23885_boards[] = {
+@@ -776,6 +776,27 @@ struct cx23885_board cx23885_boards[] = {
  		.portb        = CX23885_MPEG_DVB,
  		.portc        = CX23885_MPEG_DVB,
  	},
 +	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
 +		.name		= "Hauppauge WinTV-HVR-1265(161111)",
++		.porta		= CX23885_ANALOG_VIDEO,
 +		.portc		= CX23885_MPEG_DVB,
++		.tuner_type	= TUNER_ABSENT,
 +		.force_bff	= 1,
++		.input          = {{
++			.type   = CX23885_VMUX_COMPOSITE1,
++			.vmux   =	CX25840_VIN7_CH3 |
++					CX25840_VIN4_CH2 |
++					CX25840_VIN6_CH1,
++			.amux   = CX25840_AUDIO7,
++		}, {
++			.type   = CX23885_VMUX_SVIDEO,
++			.vmux   =	CX25840_VIN7_CH3 |
++					CX25840_VIN4_CH2 |
++					CX25840_VIN8_CH1 |
++					CX25840_SVIDEO_ON,
++			.amux   = CX25840_AUDIO7,
++		} },
 +	},
  };
  const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
  
-@@ -1091,6 +1096,10 @@ struct cx23885_subid cx23885_subids[] = {
+@@ -1087,6 +1108,10 @@ struct cx23885_subid cx23885_subids[] = {
  		.subvendor = 0x0070,
  		.subdevice = 0x6b18,
  		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 2 */
@@ -43,7 +65,7 @@ index c4b3123..e2c12eb 100644
  	},
  };
  const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
-@@ -1291,6 +1300,9 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+@@ -1287,6 +1312,9 @@ static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
  	case 150329:
  		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
  		break;
@@ -53,7 +75,7 @@ index c4b3123..e2c12eb 100644
  	case 166100:
  		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
  		   DVB-T/T2/C, DVB-T/T2/C */
-@@ -1813,6 +1825,18 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1809,6 +1837,18 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  		 * card does not have any GPIO's connected to subcomponents.
  		 */
  		break;
@@ -72,7 +94,7 @@ index c4b3123..e2c12eb 100644
  	}
  }
  
-@@ -2058,6 +2082,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2054,6 +2094,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_STARBURST:
  	case CX23885_BOARD_HAUPPAUGE_IMPACTVCBE:
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
@@ -80,7 +102,7 @@ index c4b3123..e2c12eb 100644
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
  		if (dev->i2c_bus[0].i2c_rc == 0)
-@@ -2205,6 +2230,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2201,6 +2242,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  		ts2->ts_clk_en_val = 0x1; /* Enable TS_CLK */
  		ts2->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
  		break;
@@ -88,7 +110,7 @@ index c4b3123..e2c12eb 100644
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
  		ts1->gen_ctrl_val  = 0xc; /* Serial bus + punctured clock */
-@@ -2263,6 +2289,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2259,6 +2301,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
  	case CX23885_BOARD_HAUPPAUGE_HVR1255:
  	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:

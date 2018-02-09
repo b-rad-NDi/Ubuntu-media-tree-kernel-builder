@@ -1,4 +1,4 @@
-From d7d662108580cf3d23b369c918cb0348073e0311 Mon Sep 17 00:00:00 2001
+From adba6962b3803b1461cf35c2d2ad462e0961af60 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 5 Jan 2018 13:35:04 -0600
 Subject: [PATCH 3/4] cx23885: Add support for Hauppauge PCIe Starburst2
@@ -10,18 +10,21 @@ cx23885 + a8293 + m88rs6000t
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
+Changes since v1:
+- regen for dependency
+
  drivers/media/pci/cx23885/cx23885-cards.c | 11 +++++++++++
  drivers/media/pci/cx23885/cx23885-dvb.c   | 18 ++++++++++--------
  drivers/media/pci/cx23885/cx23885.h       |  1 +
  3 files changed, 22 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index e2c12eb..5208d6d 100644
+index 2cc6390..4474d1b 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -781,6 +781,10 @@ struct cx23885_board cx23885_boards[] = {
- 		.portc		= CX23885_MPEG_DVB,
- 		.force_bff	= 1,
+@@ -797,6 +797,10 @@ struct cx23885_board cx23885_boards[] = {
+ 			.amux   = CX25840_AUDIO7,
+ 		} },
  	},
 +	[CX23885_BOARD_HAUPPAUGE_STARBURST2] = {
 +		.name		= "Hauppauge WinTV-Starburst2",
@@ -30,7 +33,7 @@ index e2c12eb..5208d6d 100644
  };
  const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
  
-@@ -1100,6 +1104,10 @@ struct cx23885_subid cx23885_subids[] = {
+@@ -1112,6 +1116,10 @@ struct cx23885_subid cx23885_subids[] = {
  		.subvendor = 0x0070,
  		.subdevice = 0x2a18,
  		.card      = CX23885_BOARD_HAUPPAUGE_HVR1265_K4, /* Hauppauge WinTV HVR-1265 (Model 161xx1, Hybrid ATSC/QAM-B) */
@@ -41,7 +44,7 @@ index e2c12eb..5208d6d 100644
  	},
  };
  const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
-@@ -1796,6 +1804,7 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
+@@ -1808,6 +1816,7 @@ void cx23885_gpio_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
@@ -49,7 +52,7 @@ index e2c12eb..5208d6d 100644
  		/*
  		 * HVR5525 GPIO Details:
  		 *  GPIO-00 IR_WIDE
-@@ -2083,6 +2092,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2095,6 +2104,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_HAUPPAUGE_IMPACTVCBE:
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
@@ -57,7 +60,7 @@ index e2c12eb..5208d6d 100644
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
  	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
  		if (dev->i2c_bus[0].i2c_rc == 0)
-@@ -2223,6 +2233,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2235,6 +2245,7 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  		ts2->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
  		break;
  	case CX23885_BOARD_HAUPPAUGE_HVR5525:
