@@ -1,19 +1,19 @@
-From 2cf1d5c90988282582a8d1b99fb48e70fe78a221 Mon Sep 17 00:00:00 2001
+From 9d595b4fb093d472986e94d7197be291289fc590 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 7 Feb 2018 13:46:24 -0600
 Subject: [PATCH 10/10] cx231xx: Add i2c device analog support
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/usb/cx231xx/cx231xx-avcore.c | 33 ++++++++++++++----
- drivers/media/usb/cx231xx/cx231xx-video.c  | 54 ++++++++++++++++++++++++------
- 2 files changed, 71 insertions(+), 16 deletions(-)
+ drivers/media/usb/cx231xx/cx231xx-avcore.c | 35 ++++++++++++++----
+ drivers/media/usb/cx231xx/cx231xx-video.c  | 57 ++++++++++++++++++++++++------
+ 2 files changed, 76 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/media/usb/cx231xx/cx231xx-avcore.c b/drivers/media/usb/cx231xx/cx231xx-avcore.c
-index fdd3c22..5bb081e 100644
+index fdd3c22..25aa7bb 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-avcore.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-avcore.c
-@@ -599,14 +599,26 @@ int cx231xx_set_video_input_mux(struct cx231xx *dev, u8 input)
+@@ -599,14 +599,27 @@ int cx231xx_set_video_input_mux(struct cx231xx *dev, u8 input)
  				return status;
  			}
  		}
@@ -23,6 +23,7 @@ index fdd3c22..5bb081e 100644
 +		case CX231XX_BOARD_HAUPPAUGE_935C:
 +		case CX231XX_BOARD_HAUPPAUGE_955Q:
 +		case CX231XX_BOARD_HAUPPAUGE_975:
++		case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
  			status = cx231xx_set_decoder_video_input(dev,
  							CX231XX_VMUX_TELEVISION,
  							INPUT(input)->vmux);
@@ -43,7 +44,7 @@ index fdd3c22..5bb081e 100644
  
  		break;
  	default:
-@@ -1205,12 +1217,21 @@ int cx231xx_set_audio_decoder_input(struct cx231xx *dev,
+@@ -1205,12 +1218,22 @@ int cx231xx_set_audio_decoder_input(struct cx231xx *dev,
  					cx231xx_set_field(FLD_SIF_EN, 0));
  			break;
  		default:
@@ -52,6 +53,7 @@ index fdd3c22..5bb081e 100644
 +			case CX231XX_BOARD_HAUPPAUGE_935C:
 +			case CX231XX_BOARD_HAUPPAUGE_955Q:
 +			case CX231XX_BOARD_HAUPPAUGE_975:
++			case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
 +			/* TODO: Normal mode: SIF passthrough at 14.32 MHz ??? */
 +				break;
 +			default:
@@ -69,7 +71,7 @@ index fdd3c22..5bb081e 100644
  		break;
  
 diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
-index 0b6ac50..b1c3417 100644
+index 0b6ac50..a0e548f 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-video.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-video.c
 @@ -1293,7 +1293,7 @@ int cx231xx_s_frequency(struct file *file, void *priv,
@@ -81,7 +83,7 @@ index 0b6ac50..b1c3417 100644
  	u32 if_frequency = 5400000;
  
  	dev_dbg(dev->dev,
-@@ -1310,14 +1310,29 @@ int cx231xx_s_frequency(struct file *file, void *priv,
+@@ -1310,14 +1310,30 @@ int cx231xx_s_frequency(struct file *file, void *priv,
  	/* set pre channel change settings in DIF first */
  	rc = cx231xx_tuner_pre_channel_change(dev);
  
@@ -93,6 +95,7 @@ index 0b6ac50..b1c3417 100644
 +	case CX231XX_BOARD_HAUPPAUGE_935C:
 +	case CX231XX_BOARD_HAUPPAUGE_955Q:
 +	case CX231XX_BOARD_HAUPPAUGE_975:
++	case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
 +		if (dev->cx231xx_set_analog_freq)
 +			dev->cx231xx_set_analog_freq(dev, f->frequency);
 +		dev->ctl_freq = f->frequency;
@@ -115,7 +118,7 @@ index 0b6ac50..b1c3417 100644
  		if (dev->norm & (V4L2_STD_MN | V4L2_STD_NTSC_443))
  			if_frequency = 5400000;  /*5.4MHz	*/
  		else if (dev->norm & V4L2_STD_B)
-@@ -1566,8 +1581,18 @@ int cx231xx_querycap(struct file *file, void *priv,
+@@ -1566,8 +1582,19 @@ int cx231xx_querycap(struct file *file, void *priv,
  		else
  			cap->device_caps |= V4L2_CAP_VIDEO_CAPTURE;
  	}
@@ -125,6 +128,7 @@ index 0b6ac50..b1c3417 100644
 +	case CX231XX_BOARD_HAUPPAUGE_935C:
 +	case CX231XX_BOARD_HAUPPAUGE_955Q:
 +	case CX231XX_BOARD_HAUPPAUGE_975:
++	case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
  		cap->device_caps |= V4L2_CAP_TUNER;
 +		break;
 +	default:
@@ -135,7 +139,7 @@ index 0b6ac50..b1c3417 100644
  	cap->capabilities = cap->device_caps | V4L2_CAP_READWRITE |
  		V4L2_CAP_VBI_CAPTURE | V4L2_CAP_VIDEO_CAPTURE |
  		V4L2_CAP_STREAMING | V4L2_CAP_DEVICE_CAPS;
-@@ -2172,10 +2197,19 @@ static void cx231xx_vdev_init(struct cx231xx *dev,
+@@ -2172,10 +2199,20 @@ static void cx231xx_vdev_init(struct cx231xx *dev,
  
  	video_set_drvdata(vfd, dev);
  	if (dev->tuner_type == TUNER_ABSENT) {
@@ -148,6 +152,7 @@ index 0b6ac50..b1c3417 100644
 +		case CX231XX_BOARD_HAUPPAUGE_935C:
 +		case CX231XX_BOARD_HAUPPAUGE_955Q:
 +		case CX231XX_BOARD_HAUPPAUGE_975:
++		case CX231XX_BOARD_EVROMEDIA_FULL_HYBRID_FULLHD:
 +			break;
 +		default:
 +			v4l2_disable_ioctl(vfd, VIDIOC_G_FREQUENCY);
