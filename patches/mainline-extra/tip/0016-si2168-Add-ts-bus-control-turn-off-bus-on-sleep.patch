@@ -14,13 +14,14 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
 Changes since v1:
 - fix spelling error in subject line
 - re-add comment
+- remove ts_bus_ctrl callback (incompatible w/cx23885)
 
- drivers/media/dvb-frontends/si2168.c | 37 +++++++++++++++++++++++++++++-------
+ drivers/media/dvb-frontends/si2168.c | 35 ++++++++++++++++++++++++++++-------
  drivers/media/dvb-frontends/si2168.h |  1 +
- 2 files changed, 31 insertions(+), 7 deletions(-)
+ 2 files changed, 29 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 25984d3..9847b9d 100644
+index 25984d3..ac6d651 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -411,6 +411,30 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
@@ -79,15 +80,6 @@ index 25984d3..9847b9d 100644
  	/* Firmware B 4.0-11 or later loses warm state during sleep */
  	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
  		dev->warm = false;
-@@ -683,6 +704,8 @@ static const struct dvb_frontend_ops si2168_ops = {
- 	.init = si2168_init,
- 	.sleep = si2168_sleep,
- 
-+	.ts_bus_ctrl = si2168_ts_bus_ctrl,
-+
- 	.set_frontend = si2168_set_frontend,
- 
- 	.read_status = si2168_read_status,
 diff --git a/drivers/media/dvb-frontends/si2168.h b/drivers/media/dvb-frontends/si2168.h
 index 5104d9f..d519edd 100644
 --- a/drivers/media/dvb-frontends/si2168.h
