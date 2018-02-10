@@ -1,4 +1,4 @@
-From ff935343609ec333b5d91c6cccdb9ab4874fa8a0 Mon Sep 17 00:00:00 2001
+From a1c8a69410f09ffde9c1d2db1dd76727994e8649 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:57:08 -0600
 Subject: [PATCH 28/41] cx23885: Set subdev host data to clk_freq pointer
@@ -15,10 +15,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index bd28f9c..45fd2e7 100644
+index b54301f..4c0d766 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -2346,6 +2346,10 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+@@ -2362,6 +2362,10 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  				&dev->i2c_bus[2].i2c_adap,
  				"cx25840", 0x88 >> 1, NULL);
  		if (dev->sd_cx25840) {

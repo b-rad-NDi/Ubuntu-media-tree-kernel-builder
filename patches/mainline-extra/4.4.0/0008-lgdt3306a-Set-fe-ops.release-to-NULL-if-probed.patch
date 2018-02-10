@@ -1,4 +1,4 @@
-From bed29663ca57bf12cad74f6209bfa710f0d3d5d7 Mon Sep 17 00:00:00 2001
+From 806fcaa50e0fb8d574b33beef4f9019df23514fe Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 7 Feb 2018 17:21:21 -0600
 Subject: [PATCH 08/41] lgdt3306a: Set fe ops.release to NULL if probed

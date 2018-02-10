@@ -1,4 +1,4 @@
-From 0cd9a0b3eb6c99022489d9f07cbf019cf44eaa1e Mon Sep 17 00:00:00 2001
+From dc454407b56e1dafb4d9ac52e99efa89a69fd843 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 17 Jan 2018 16:14:15 -0600
 Subject: [PATCH 11/41] si2168: Add spectrum inversion property

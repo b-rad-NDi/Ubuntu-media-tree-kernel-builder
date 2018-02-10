@@ -1,4 +1,4 @@
-From e727eeaafdd7842a0c2b91c89e64d6ee1d267b93 Mon Sep 17 00:00:00 2001
+From 736321baa05d9009cb282eb1f7f5fee71ca315f8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 20:14:10 +0000
 Subject: [PATCH 40/41] si2168: Change from DVB-T to DVB-T/T2 autodetect
@@ -13,7 +13,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 31 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index d7df544..f43d346 100644
+index 5d27a93..591d2cc 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -127,7 +127,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)

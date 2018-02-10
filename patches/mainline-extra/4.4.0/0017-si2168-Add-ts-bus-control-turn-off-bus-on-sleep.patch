@@ -1,4 +1,4 @@
-From 6398a6e07c94448c00413bdefd80fee6e7914007 Mon Sep 17 00:00:00 2001
+From cfca1509db9405f058be6a3a63c764397a419c35 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 1 Feb 2018 16:18:50 -0600
 Subject: [PATCH 17/41] si2168: Add ts bus control, turn off bus on sleep
@@ -11,12 +11,12 @@ compatible with multiple frontend usage.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/dvb-frontends/si2168.c | 37 +++++++++++++++++++++++++++++-------
+ drivers/media/dvb-frontends/si2168.c | 35 ++++++++++++++++++++++++++++-------
  drivers/media/dvb-frontends/si2168.h |  1 +
- 2 files changed, 31 insertions(+), 7 deletions(-)
+ 2 files changed, 29 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 1444939..983045b 100644
+index 1444939..a23096c 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -451,6 +451,30 @@ err:
@@ -75,15 +75,6 @@ index 1444939..983045b 100644
  	/* Firmware B 4.0-11 or later loses warm state during sleep */
  	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
  		dev->warm = false;
-@@ -728,6 +749,8 @@ static const struct dvb_frontend_ops si2168_ops = {
- 	.init = si2168_init,
- 	.sleep = si2168_sleep,
- 
-+	.ts_bus_ctrl = si2168_ts_bus_ctrl,
-+
- 	.set_frontend = si2168_set_frontend,
- 
- 	.read_status = si2168_read_status,
 diff --git a/drivers/media/dvb-frontends/si2168.h b/drivers/media/dvb-frontends/si2168.h
 index 5104d9f..d519edd 100644
 --- a/drivers/media/dvb-frontends/si2168.h

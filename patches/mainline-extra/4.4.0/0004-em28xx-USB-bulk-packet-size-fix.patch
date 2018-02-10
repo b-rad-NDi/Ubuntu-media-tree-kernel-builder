@@ -1,4 +1,4 @@
-From d34a970ec0e83059f8e9620f8be73d6f72121326 Mon Sep 17 00:00:00 2001
+From abcdbcfc16b8374035d212e80ed3f1ead10f47c3 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 16 Mar 2017 23:13:05 +0000
 Subject: [PATCH 04/41] em28xx: USB bulk packet size fix

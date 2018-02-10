@@ -1,4 +1,4 @@
-From 6cf12c017de58599101648504bc4e74c27b8e827 Mon Sep 17 00:00:00 2001
+From 7b562107b19ae485e09ca0781b2f256872b6976c Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 1 Dec 2017 17:48:14 +0000
 Subject: [PATCH 03/41] em28xx: Bulk transfer implementation fix

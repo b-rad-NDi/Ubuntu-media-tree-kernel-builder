@@ -1,4 +1,4 @@
-From 9711ee8b795703de59dfd91b8a47d7080609a26d Mon Sep 17 00:00:00 2001
+From 7607eabc5069ac106b6cd6f905038851d2716a75 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
 Subject: [PATCH 37/41] cx23885: Add analog tuner support to Hauppauge QuadHD
@@ -13,7 +13,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  3 files changed, 55 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 45fd2e7..91d447f 100644
+index 4c0d766..02f1f72 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -767,24 +767,48 @@ struct cx23885_board cx23885_boards[] = {

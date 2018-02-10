@@ -1,4 +1,4 @@
-From f2fd27e669f1994a0d1df7ef4df2b8609401748b Mon Sep 17 00:00:00 2001
+From 62647077dcdf9b600e8381b84a84e8dc29852853 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 6 Feb 2018 17:24:34 -0600
 Subject: [PATCH 27/41] cx23885: change 887/888 default to 888

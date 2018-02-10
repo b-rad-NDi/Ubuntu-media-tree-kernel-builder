@@ -1,4 +1,4 @@
-From e63624d8ca3caf5eab923112ae6b20facc2b4197 Mon Sep 17 00:00:00 2001
+From 06c3675aafdcb473dc672411aee176d54b1d69e2 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 15 Aug 2017 20:50:13 -0500
 Subject: [PATCH 05/41] em28xx: Increase max em28xx boards to max dvb adapters

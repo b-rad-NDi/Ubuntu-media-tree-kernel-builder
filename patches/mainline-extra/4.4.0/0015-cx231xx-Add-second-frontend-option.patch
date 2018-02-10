@@ -1,4 +1,4 @@
-From a0c47ab3ba6123def29680b0c21ac3a3fd9a2b05 Mon Sep 17 00:00:00 2001
+From e9294d51571816a08fcbe0e6fd3859371df54143 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Sun, 7 Jan 2018 15:15:08 -0600
 Subject: [PATCH 15/41] cx231xx: Add second frontend option

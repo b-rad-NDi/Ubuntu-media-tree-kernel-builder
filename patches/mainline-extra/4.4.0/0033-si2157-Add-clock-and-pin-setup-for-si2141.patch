@@ -1,4 +1,4 @@
-From b03e1bbd2dfbd87bd82474971c3154f02324df42 Mon Sep 17 00:00:00 2001
+From 019ebfee0d332cfee1b312d0c25e1fe9a5ad010d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 6 Feb 2018 18:41:06 -0600
 Subject: [PATCH 33/41] si2157: Add clock and pin setup for si2141

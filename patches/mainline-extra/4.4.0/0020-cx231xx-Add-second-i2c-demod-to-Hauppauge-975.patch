@@ -1,4 +1,4 @@
-From bb07ab63aea96c9cf2d46bac8b0a1f714a6daf43 Mon Sep 17 00:00:00 2001
+From e865a44559b7809d67ba292a2760d38f549653a3 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:30:19 -0600
 Subject: [PATCH 20/41] cx231xx: Add second i2c demod to Hauppauge 975

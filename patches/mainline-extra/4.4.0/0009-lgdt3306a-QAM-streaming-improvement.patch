@@ -1,4 +1,4 @@
-From 033ecbd766a1a6bd8de6bcfa0586aa08ea457fb0 Mon Sep 17 00:00:00 2001
+From 03f70c4c117104ec8ec33a80e28a1235cb7edf6e Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 27 Jun 2017 09:37:15 -0500
 Subject: [PATCH 09/41] lgdt3306a: QAM streaming improvement

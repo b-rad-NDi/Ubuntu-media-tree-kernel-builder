@@ -1,4 +1,4 @@
-From 09793138c600d8ed557fe016a1faee4da7a0d136 Mon Sep 17 00:00:00 2001
+From a19ab4999d028f146a6fc775bd79a863f656e4c6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 7 Feb 2018 17:17:35 -0600
 Subject: [PATCH 01/41] lgdt3306a: v4.6 i2c mux backport

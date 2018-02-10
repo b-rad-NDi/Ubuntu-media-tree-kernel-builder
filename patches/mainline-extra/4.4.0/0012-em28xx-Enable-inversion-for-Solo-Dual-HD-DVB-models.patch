@@ -1,4 +1,4 @@
-From db9516c3de41d352866420f0750f3bfa43415eef Mon Sep 17 00:00:00 2001
+From 1b9af37988e4736634c273a2f8dd159bb0a22f14 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 17 Jan 2018 13:24:08 -0600
 Subject: [PATCH 12/41] em28xx: Enable inversion for Solo/Dual HD DVB models

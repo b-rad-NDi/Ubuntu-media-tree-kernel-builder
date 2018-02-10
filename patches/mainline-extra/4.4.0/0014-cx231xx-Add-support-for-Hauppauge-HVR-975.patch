@@ -1,4 +1,4 @@
-From 4f5511b04c7fca83ab909838405c7acc88d6fd9a Mon Sep 17 00:00:00 2001
+From ee8d902001a6d8e784de5bc55a46fbf86dacd9c5 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:17:14 -0600
 Subject: [PATCH 14/41] cx231xx: Add support for Hauppauge HVR-975

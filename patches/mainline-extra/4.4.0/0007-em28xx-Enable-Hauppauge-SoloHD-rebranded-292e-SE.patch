@@ -1,4 +1,4 @@
-From 4b5f22bc8a47385a16cae8a58dda9396d4df575f Mon Sep 17 00:00:00 2001
+From 55ad0100fdc116f69a6ab2e30f7d42732e8496a8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Mon, 7 Aug 2017 13:11:52 -0500
 Subject: [PATCH 07/41] em28xx: Enable Hauppauge SoloHD rebranded 292e SE

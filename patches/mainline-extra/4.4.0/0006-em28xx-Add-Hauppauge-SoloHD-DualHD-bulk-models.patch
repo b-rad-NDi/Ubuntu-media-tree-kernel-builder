@@ -1,4 +1,4 @@
-From 3e0d2ee8746e034376dea5c2d4e78747b7ee272f Mon Sep 17 00:00:00 2001
+From 3ba0303160a1ef47c8834abd0de6267d5c8d8a8e Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Mon, 7 Aug 2017 13:00:42 -0500
 Subject: [PATCH 06/41] em28xx: Add Hauppauge SoloHD/DualHD bulk models

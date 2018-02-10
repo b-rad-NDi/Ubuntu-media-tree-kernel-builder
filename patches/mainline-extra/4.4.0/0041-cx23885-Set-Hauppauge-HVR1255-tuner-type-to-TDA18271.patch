@@ -1,4 +1,4 @@
-From 247303ddd1415fc52576dc4cef6b570e30f51809 Mon Sep 17 00:00:00 2001
+From 6771a104fb0fc5c808c013fc2b3b131d6af52949 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 26 May 2017 09:43:30 -0500
 Subject: [PATCH 41/41] cx23885: Set Hauppauge HVR1255 tuner type to TDA18271
@@ -11,7 +11,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index b8050ab..01288ec 100644
+index ffcc5a3..e4d9069 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -325,8 +325,7 @@ struct cx23885_board cx23885_boards[] = {

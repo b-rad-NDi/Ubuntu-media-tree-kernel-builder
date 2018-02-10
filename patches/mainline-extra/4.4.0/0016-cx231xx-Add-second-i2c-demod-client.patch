@@ -1,4 +1,4 @@
-From 7b96f3cc28be70f38c1d9532ccc81f12e165f7ea Mon Sep 17 00:00:00 2001
+From d105a5e543e4141934cd150894a3a56664d55a26 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:25:26 -0600
 Subject: [PATCH 16/41] cx231xx: Add second i2c demod client

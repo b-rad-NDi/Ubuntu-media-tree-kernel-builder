@@ -1,4 +1,4 @@
-From 76c9df6990c23386832b5391983141c07989931f Mon Sep 17 00:00:00 2001
+From d4311d558edd22bc01bb01c553619090e3bf5afd Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:14:19 -0600
 Subject: [PATCH 13/41] cx231xx: Add support for Hauppauge HVR-935C

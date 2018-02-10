@@ -1,4 +1,4 @@
-From a20a82a5ecd3bfd56ea02f873b51be49b449e093 Mon Sep 17 00:00:00 2001
+From fa9faa4856beb8e6fc62912bae30b3df22b22cba Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 12 Dec 2017 19:46:59 +0000
 Subject: [PATCH 02/41] em28xx: Hauppauge DualHD second tuner functionality
