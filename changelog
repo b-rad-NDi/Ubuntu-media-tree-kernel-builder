@@ -1,3 +1,16 @@
+0.17.2
+  * Fix si2168, enable ts bus when needed
+
+0.17.1
+  * Remove ts bus ctrl from si2168
+  * reorganize 1265k4 patches
+
+0.17.0
+  * Lots of fixes
+  * Patch sets converted to upstream submissions
+  * Spectre/Meltdown rebuilds
+  * Other stuffs
+
 0.16.9
   * Fix si2157 disconnect issue
   * fix em28xx bulk multiplier
