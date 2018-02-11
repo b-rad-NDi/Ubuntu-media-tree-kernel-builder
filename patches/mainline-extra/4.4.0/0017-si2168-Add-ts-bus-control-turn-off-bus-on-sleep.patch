@@ -6,20 +6,21 @@ Subject: [PATCH 17/41] si2168: Add ts bus control, turn off bus on sleep
 Includes a function to set TS MODE property os si2168. The function
 either disables the TS output bus, or sets mode to config option.
 
-When going to sleep the TS bus is turned off, this makes the driver
+After setting up the frontend the TS bus is turned on. When going
+to sleep the TS bus is turned off, this makes the driver
 compatible with multiple frontend usage.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/dvb-frontends/si2168.c | 35 ++++++++++++++++++++++++++++-------
+ drivers/media/dvb-frontends/si2168.c | 38 +++++++++++++++++++++++++++++-------
  drivers/media/dvb-frontends/si2168.h |  1 +
- 2 files changed, 29 insertions(+), 7 deletions(-)
+ 2 files changed, 32 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 1444939..a23096c 100644
+index 25984d301bf2..5bfc4ab99f19 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -451,6 +451,30 @@ err:
+@@ -208,6 +208,30 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  	return ret;
  }
  
@@ -47,10 +48,20 @@ index 1444939..a23096c 100644
 +	return ret;
 +}
 +
- static int si2168_init(struct dvb_frontend *fe)
+ static int si2168_set_frontend(struct dvb_frontend *fe)
  {
  	struct i2c_client *client = fe->demodulator_priv;
-@@ -583,13 +607,7 @@ static int si2168_init(struct dvb_frontend *fe)
+@@ -405,6 +429,9 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 
+ 	dev->delivery_system = c->delivery_system;
+ 
++	/* enable ts bus */
++	ret = si2168_ts_bus_ctrl(fe, 1);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
+@@ -543,13 +570,7 @@ static int si2168_init(struct dvb_frontend *fe)
  		 dev->version >> 8 & 0xff, dev->version >> 0 & 0xff);
  
  	/* set ts mode */
@@ -65,7 +76,7 @@ index 1444939..a23096c 100644
  	if (ret)
  		goto err;
  
-@@ -626,6 +644,9 @@ static int si2168_sleep(struct dvb_frontend *fe)
+@@ -586,6 +607,9 @@ static int si2168_sleep(struct dvb_frontend *fe)
  
  	dev->active = false;
  
@@ -76,7 +87,7 @@ index 1444939..a23096c 100644
  	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
  		dev->warm = false;
 diff --git a/drivers/media/dvb-frontends/si2168.h b/drivers/media/dvb-frontends/si2168.h
-index 5104d9f..d519edd 100644
+index 5104d9fc5c53..d519edd26c21 100644
 --- a/drivers/media/dvb-frontends/si2168.h
 +++ b/drivers/media/dvb-frontends/si2168.h
 @@ -38,6 +38,7 @@ struct si2168_config {
@@ -88,5 +99,5 @@ index 5104d9f..d519edd 100644
  
  	/* TS clock inverted */
 -- 
-2.7.4
+2.14.1
 
