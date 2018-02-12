@@ -1,26 +1,26 @@
-From cfca1509db9405f058be6a3a63c764397a419c35 Mon Sep 17 00:00:00 2001
+From b147968da2cfd7126d947971cb33feb971023d43 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Thu, 1 Feb 2018 16:18:50 -0600
+Date: Mon, 12 Feb 2018 04:20:42 -0600
 Subject: [PATCH 17/41] si2168: Add ts bus control, turn off bus on sleep
 
 Includes a function to set TS MODE property os si2168. The function
 either disables the TS output bus, or sets mode to config option.
 
-After setting up the frontend the TS bus is turned on. When going
-to sleep the TS bus is turned off, this makes the driver
+After setting up the frontend the TS bus is enabled. When going
+to sleep the TS bus is tri-stated, this makes the driver
 compatible with multiple frontend usage.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/dvb-frontends/si2168.c | 38 +++++++++++++++++++++++++++++-------
+ drivers/media/dvb-frontends/si2168.c | 42 ++++++++++++++++++++++++++++++------
  drivers/media/dvb-frontends/si2168.h |  1 +
- 2 files changed, 32 insertions(+), 7 deletions(-)
+ 2 files changed, 36 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 25984d301bf2..5bfc4ab99f19 100644
+index 1444939..88baa2a 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -208,6 +208,30 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -122,6 +122,30 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
  	return ret;
  }
  
@@ -48,20 +48,22 @@ index 25984d301bf2..5bfc4ab99f19 100644
 +	return ret;
 +}
 +
- static int si2168_set_frontend(struct dvb_frontend *fe)
+ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  {
  	struct i2c_client *client = fe->demodulator_priv;
-@@ -405,6 +429,9 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -445,6 +469,11 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	dev->delivery_system = c->delivery_system;
  
 +	/* enable ts bus */
 +	ret = si2168_ts_bus_ctrl(fe, 1);
++	if (ret)
++		goto err;
 +
  	return 0;
  err:
  	dev_dbg(&client->dev, "failed=%d\n", ret);
-@@ -543,13 +570,7 @@ static int si2168_init(struct dvb_frontend *fe)
+@@ -583,13 +612,7 @@ static int si2168_init(struct dvb_frontend *fe)
  		 dev->version >> 8 & 0xff, dev->version >> 0 & 0xff);
  
  	/* set ts mode */
@@ -76,18 +78,20 @@ index 25984d301bf2..5bfc4ab99f19 100644
  	if (ret)
  		goto err;
  
-@@ -586,6 +607,9 @@ static int si2168_sleep(struct dvb_frontend *fe)
+@@ -626,6 +649,11 @@ static int si2168_sleep(struct dvb_frontend *fe)
  
  	dev->active = false;
  
 +	/* tri-state data bus */
-+	si2168_ts_bus_ctrl(fe, 0);
++	ret = si2168_ts_bus_ctrl(fe, 0);
++	if (ret)
++		goto err;
 +
  	/* Firmware B 4.0-11 or later loses warm state during sleep */
  	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
  		dev->warm = false;
 diff --git a/drivers/media/dvb-frontends/si2168.h b/drivers/media/dvb-frontends/si2168.h
-index 5104d9fc5c53..d519edd26c21 100644
+index 5104d9f..d519edd 100644
 --- a/drivers/media/dvb-frontends/si2168.h
 +++ b/drivers/media/dvb-frontends/si2168.h
 @@ -38,6 +38,7 @@ struct si2168_config {
@@ -99,5 +103,5 @@ index 5104d9fc5c53..d519edd26c21 100644
  
  	/* TS clock inverted */
 -- 
-2.14.1
+2.7.4
 
