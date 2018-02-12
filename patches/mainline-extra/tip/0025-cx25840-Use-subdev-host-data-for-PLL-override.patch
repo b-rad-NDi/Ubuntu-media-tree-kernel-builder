@@ -1,17 +1,15 @@
 From 7c0865f73fa92bcd8c8a43d2d7a4f0b76175b97f Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:53:12 -0600
-Subject: [PATCH 2/5] cx25840: Use subdev host data for PLL override
+Subject: [PATCH 1/4] cx25840: Use subdev host data for PLL override
 
 The cx25840 driver currently configures 885, 887, and 888 using
-default divisors for each chip. Hauppauge produced a version of
-ImpactVCBe where the only change was using 888 instead of 885.
-This requires the cx25840 driver to check a boards xtal frequency
-to determine if other divisors should be used.
+default divisors for each chip. This check to see if the cx23885
+driver has passed the cx25840 a non-default clock rate for a
+specific chip. If a cx23885 board has left clk_freq at 0, the
+clock default values will be used to configure the PLLs.
 
-If a cx23885 board has left clk_freq at 0, the original default
-values will be used to configure the PLLs. This patch only has
-effect on 888 boards who explicitly set clk_freq to 25M.
+This patch only has effect on 888 boards who set clk_freq to 25M.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

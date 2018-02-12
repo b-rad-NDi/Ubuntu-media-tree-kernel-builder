@@ -1,7 +1,15 @@
 From a17fd76102a1ed171e9be40624c3a2d9ce46dc28 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 6 Feb 2018 17:24:34 -0600
-Subject: [PATCH 3/5] cx23885: change 887/888 default to 888
+Subject: [PATCH 2/4] cx23885: change 887/888 default to 888
+
+Proper cx2388x chip type is detected in cx25840 probe, the clock
+rate is untouched however in probe. The cx25840 only checks for
+non default clock values for 888 and provides custom settings for
+25MHz 888. This change ensures that cx23888 chips with default 50MHz
+crystals will not get configured as if they have 25MHz crystals. A
+cx23887 board will continue to be configured for 25Hz crystal as
+there is no custom clock support included for it.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

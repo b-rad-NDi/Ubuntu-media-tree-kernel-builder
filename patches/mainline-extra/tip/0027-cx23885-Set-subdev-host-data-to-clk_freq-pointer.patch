@@ -1,12 +1,12 @@
 From ae52446ecf69ac1b194b1410d79862bdeab591e6 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:57:08 -0600
-Subject: [PATCH 4/5] cx23885: Set subdev host data to clk_freq pointer
+Subject: [PATCH 3/4] cx23885: Set subdev host data to clk_freq pointer
 
 Currently clk_freq is ignored entirely, because the cx235840 driver
 configures the xtal at the chip defaults. This is an issue if a
 board is produced with a non-default frequency crystal. If clk_freq
-is not zero the cx235840 will attempt to use the setting provided,
+is not zero the cx25840 will attempt to use the setting provided,
 or fall back to defaults otherwise.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
