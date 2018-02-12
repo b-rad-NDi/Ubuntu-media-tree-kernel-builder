@@ -1,14 +1,19 @@
 From fc0bb3f8b3bd4079b5533b0b52d0bc35ae2fb54a Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:14:19 -0600
-Subject: [PATCH 1/2] cx231xx: Add support for Hauppauge HVR-935C
+Subject: [PATCH v2 1/2] cx231xx: Add support for Hauppauge HVR-935C
 
 HVR-935C is hybrid PAL, DVB-C/T/T2 usb device.
 
 CX23102 + Si2168 + Si2157
+and
+composite/s-video + stereo audio capture via breakout cable
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
+Changes since v1:
+- add capture properties to message
+
  drivers/media/usb/cx231xx/cx231xx-cards.c | 42 +++++++++++++++++
  drivers/media/usb/cx231xx/cx231xx-dvb.c   | 75 +++++++++++++++++++++++++++++++
  drivers/media/usb/cx231xx/cx231xx.h       |  1 +

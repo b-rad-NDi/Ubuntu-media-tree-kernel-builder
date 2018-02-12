@@ -1,14 +1,10 @@
 From 2c29414d6637d045d0b3b66682a8a4ba7d7113ce Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 9 Feb 2018 15:45:19 -0600
-Subject: [PATCH v2 37/40] cx23885: Add analog frontend to 1265_K4
+Subject: [PATCH 09/10] cx23885: Add analog frontend to 1265_K4
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
-Changes since v1:
-- removed other analog inputs
-- whitespace deletion
-
  drivers/media/pci/cx23885/cx23885-cards.c | 7 +++++++
  drivers/media/pci/cx23885/cx23885-dvb.c   | 5 +++++
  2 files changed, 12 insertions(+)

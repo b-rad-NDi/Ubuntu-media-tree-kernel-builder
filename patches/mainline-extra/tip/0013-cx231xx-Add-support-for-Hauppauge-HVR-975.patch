@@ -9,12 +9,15 @@ Only ATSC/QAM front end is initially active. Second frontend support is
 work in progress.
 
 CX23102 + LG3306A/Si2168(WiP) + Si2157
+and
+composite/s-video + stereo audio capture via breakout cable
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
 Changes since v2:
-- neglected to use i2c adapter returned by demod
+- use i2c adapter from demod
 - moved failure messages to proper block
+- add capture properties to message
 
 Changes since v1:
 - removed double semicolon

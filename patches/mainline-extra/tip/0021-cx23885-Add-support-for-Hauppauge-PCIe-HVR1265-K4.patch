@@ -7,7 +7,7 @@ Add new PCIe board to driver list and board register/configure functions
 
 cx23885 + lgdt3306a + si2157 digital/analog
 and
-composite/s-video + stereo capture
+composite/s-video + stereo audio capture
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

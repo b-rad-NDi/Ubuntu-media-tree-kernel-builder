@@ -3,10 +3,10 @@ From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:30:19 -0600
 Subject: [PATCH v2 7/7] cx231xx: Add second i2c demod to Hauppauge 975
 
-Hauppauge HVR-975 is a dual frontend, single tuner USB device. It contains
-lgdt3306a and si2168 frontends and one si2157 tuner. The lgdt3306a frontend
-is currently enabled. This creates the second demodulator and attaches it
-to the tuner.
+Hauppauge HVR-975 is a hybrid, dual frontend, single tuner USB device.
+It contains lgdt3306a and si2168 frontends and one si2157 tuner. The
+lgdt3306a frontend is currently enabled. This creates the second
+demodulator and attaches it to the tuner.
 
 Enables lgdt3306a|si2168 + si2157
 

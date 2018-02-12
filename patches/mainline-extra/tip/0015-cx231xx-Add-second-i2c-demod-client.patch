@@ -1,6 +1,6 @@
-From 8c882e33e7014dc3a8aa10106e5b2de3be5f6892 Mon Sep 17 00:00:00 2001
+From 82efdf11f16b64d2f508ed39bbe1ef90fe2d808d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 31 Jan 2018 14:25:26 -0600
+Date: Mon, 12 Feb 2018 15:14:01 -0600
 Subject: [PATCH v2 2/7] cx231xx: Add second i2c demod client
 
 Include ability to add a i2c device style frontend to cx231xx USB
@@ -10,26 +10,27 @@ backwards compatible with current behaviour.
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
 Changes since v1:
-- patch regen
+- replace hard coded value with a constant
+- regen for dependency
 
- drivers/media/usb/cx231xx/cx231xx-dvb.c | 45 ++++++++++++++++++---------------
+  drivers/media/usb/cx231xx/cx231xx-dvb.c | 45 ++++++++++++++++++---------------
  drivers/media/usb/cx231xx/cx231xx.h     |  1 +
  2 files changed, 26 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
-index 66415e5..ac3ad77 100644
+index a68b5c0..a70db61 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
-@@ -68,7 +68,7 @@ struct cx231xx_dvb {
+@@ -69,7 +69,7 @@ struct cx231xx_dvb {
  	struct dmx_frontend fe_hw;
  	struct dmx_frontend fe_mem;
  	struct dvb_net net;
 -	struct i2c_client *i2c_client_demod;
-+	struct i2c_client *i2c_client_demod[2];
++	struct i2c_client *i2c_client_demod[CX231XX_DVB_MAX_FRONTENDS];
  	struct i2c_client *i2c_client_tuner;
  };
  
-@@ -616,7 +616,12 @@ static void unregister_dvb(struct cx231xx_dvb *dvb)
+@@ -617,7 +617,12 @@ static void unregister_dvb(struct cx231xx_dvb *dvb)
  		i2c_unregister_device(client);
  	}
  	/* remove I2C demod */
@@ -43,7 +44,7 @@ index 66415e5..ac3ad77 100644
  	if (client) {
  		module_put(client->dev.driver->owner);
  		i2c_unregister_device(client);
-@@ -805,7 +810,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -806,7 +811,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -52,7 +53,7 @@ index 66415e5..ac3ad77 100644
  
  		dev->dvb->frontend[0]->ops.i2c_gate_ctrl = NULL;
  
-@@ -852,7 +857,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -853,7 +858,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -61,7 +62,7 @@ index 66415e5..ac3ad77 100644
  
  		memset(&info, 0, sizeof(struct i2c_board_info));
  
-@@ -1012,7 +1017,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1013,7 +1018,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -70,7 +71,7 @@ index 66415e5..ac3ad77 100644
  
  		/* attach tuner chip */
  		si2157_config.fe = dev->dvb->frontend[0];
-@@ -1031,16 +1036,16 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1032,16 +1037,16 @@ static int dvb_init(struct cx231xx *dev)
  		client = i2c_new_device(tuner_i2c, &info);
  
  		if (client == NULL || client->dev.driver == NULL) {
@@ -91,7 +92,7 @@ index 66415e5..ac3ad77 100644
  			result = -ENODEV;
  			goto out_free;
  		}
-@@ -1078,7 +1083,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1079,7 +1084,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -100,7 +101,7 @@ index 66415e5..ac3ad77 100644
  
  		/* define general-purpose callback pointer */
  		dvb->frontend[0]->callback = cx231xx_tuner_callback;
-@@ -1122,7 +1127,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1123,7 +1128,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -109,7 +110,7 @@ index 66415e5..ac3ad77 100644
  		dev->dvb->frontend[0]->ops.i2c_gate_ctrl = NULL;
  
  		/* define general-purpose callback pointer */
-@@ -1146,16 +1151,16 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1147,16 +1152,16 @@ static int dvb_init(struct cx231xx *dev)
  		if (client == NULL || client->dev.driver == NULL) {
  			dev_err(dev->dev,
  				"Failed to obtain %s tuner.\n",	info.type);
@@ -130,7 +131,7 @@ index 66415e5..ac3ad77 100644
  			result = -ENODEV;
  			goto out_free;
  		}
-@@ -1196,7 +1201,7 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1197,7 +1202,7 @@ static int dvb_init(struct cx231xx *dev)
  			goto out_free;
  		}
  
@@ -139,7 +140,7 @@ index 66415e5..ac3ad77 100644
  		dev->dvb->frontend[0]->ops.i2c_gate_ctrl = NULL;
  
  		/* define general-purpose callback pointer */
-@@ -1220,16 +1225,16 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1221,16 +1226,16 @@ static int dvb_init(struct cx231xx *dev)
  		if (client == NULL || client->dev.driver == NULL) {
  			dev_err(dev->dev,
  				"Failed to obtain %s tuner.\n",	info.type);
