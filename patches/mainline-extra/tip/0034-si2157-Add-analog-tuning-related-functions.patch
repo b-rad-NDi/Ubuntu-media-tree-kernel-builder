@@ -1,30 +1,21 @@
-From fbb1424beb6f9921f77e60050db04147743ea1ce Mon Sep 17 00:00:00 2001
+From 3d2fe09e122747c24935799e82c681afc4c9a9f9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 6 Feb 2018 18:43:49 -0600
-Subject: [PATCH 06/10] si2157: Add analog tuning related functions
+Date: Wed, 14 Feb 2018 13:21:43 -0600
+Subject: [PATCH 06/11] si2157: Add analog tuning related functions
 
-Include set_analog_params, get_frequency, get_bandwidth
+Include set_analog_params, get_frequency, and get_bandwidth.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c      | 247 ++++++++++++++++++++++++++++++++++++-
+ drivers/media/tuners/si2157.c      | 245 ++++++++++++++++++++++++++++++++++++-
  drivers/media/tuners/si2157_priv.h |   2 +
- 2 files changed, 244 insertions(+), 5 deletions(-)
+ 2 files changed, 244 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 356ced5..c61f423 100644
+index 0970df4..a1ae2e3 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -297,7 +297,7 @@ static int si2157_sleep(struct dvb_frontend *fe)
- {
- 	struct i2c_client *client = fe->tuner_priv;
- 	struct si2157_dev *dev = i2c_get_clientdata(client);
--	int ret;
-+	int ret = 0;
- 	struct si2157_cmd cmd;
- 
- 	dev_dbg(&client->dev, "\n");
-@@ -391,7 +391,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -388,7 +388,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -33,7 +24,7 @@ index 356ced5..c61f423 100644
  	if (if_frequency != dev->if_frequency) {
  		memcpy(cmd.args, "\x14\x00\x06\x07", 4);
  		cmd.args[4] = (if_frequency / 1000) & 0xff;
-@@ -405,7 +405,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -402,7 +402,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  		dev->if_frequency = if_frequency;
  	}
  
@@ -42,22 +33,22 @@ index 356ced5..c61f423 100644
  	memcpy(cmd.args, "\x41\x00\x00\x00\x00\x00\x00\x00", 8);
  	cmd.args[4] = (c->frequency >>  0) & 0xff;
  	cmd.args[5] = (c->frequency >>  8) & 0xff;
-@@ -417,18 +417,252 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -414,18 +414,254 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
 +	dev->bandwidth = bandwidth;
 +	dev->frequency = c->frequency;
 +
- 	return 0;
- err:
++	return 0;
++err:
 +	dev->bandwidth = 0;
 +	dev->frequency = 0;
 +	dev->if_frequency = 0;
- 	dev_dbg(&client->dev, "failed=%d\n", ret);
- 	return ret;
- }
- 
++	dev_dbg(&client->dev, "failed=%d\n", ret);
++	return ret;
++}
++
 +static int si2157_set_analog_params(struct dvb_frontend *fe,
 +				      struct analog_parameters *params)
 +{
@@ -108,11 +99,12 @@ index 356ced5..c61f423 100644
 +		freq = freq * 1000;
 +	dev->frequency = freq;
 +
++	/* if_frequency values based on tda187271C2 */
 +	if (params->std & (V4L2_STD_B|V4L2_STD_GH)) {
 +		if (freq >= 470000000) {
 +			std = "palGH";
 +			bandwidth = 8000000;
-+			if_frequency = 6000000; /* matches tda18271C2, works w/cx23885 */
++			if_frequency = 6000000;
 +			system = 1;
 +			if (params->std & (V4L2_STD_SECAM_G|V4L2_STD_SECAM_H)) {
 +				std = "secamGH";
@@ -121,7 +113,7 @@ index 356ced5..c61f423 100644
 +		} else {
 +			std = "palB";
 +			bandwidth = 7000000;
-+			if_frequency = 6000000; /* matches tda18271C2, works w/cx23885 */;
++			if_frequency = 6000000;
 +			system = 0;
 +			if (params->std & V4L2_STD_SECAM_B) {
 +				std = "secamB";
@@ -131,17 +123,17 @@ index 356ced5..c61f423 100644
 +	} else if (params->std & V4L2_STD_MN) {
 +		std = "MN";
 +		bandwidth = 6000000;
-+		if_frequency = 5400000; /* matches tda18271C2, works w/cx23885 */
++		if_frequency = 5400000;
 +		system = 2;
 +	} else if (params->std & V4L2_STD_PAL_I) {
 +		std = "palI";
 +		bandwidth = 8000000;
-+		if_frequency = 7250000; /* matches tda18271C2, does not work yet w/cx23885 */
++		if_frequency = 7250000; /* TODO: does not work yet */
 +		system = 4;
 +	} else if (params->std & V4L2_STD_DK) {
 +		std = "palDK";
 +		bandwidth = 8000000;
-+		if_frequency = 6900000; /* matches tda18271C2, does not work yet w/cx23885 */
++		if_frequency = 6900000; /* TODO: does not work yet */
 +		system = 5;
 +		if (params->std & V4L2_STD_SECAM_DK) {
 +			std = "secamDK";
@@ -150,13 +142,15 @@ index 356ced5..c61f423 100644
 +	} else if (params->std & V4L2_STD_SECAM_L) {
 +		std = "secamL";
 +		bandwidth = 8000000;
-+		if_frequency = 6750000; /* not tested yet w/cx23885 */
-+		system = 6;  color = 0x10;
++		if_frequency = 6750000; /* TODO: untested */
++		system = 6;
++		color = 0x10;
 +	} else if (params->std & V4L2_STD_SECAM_LC) {
 +		std = "secamL'";
 +		bandwidth = 7000000;
-+		if_frequency = 1250000; /* not tested yet w/cx23885 */
-+		system = 7;  color = 0x10;
++		if_frequency = 1250000; /* TODO: untested */
++		system = 7;
++		color = 0x10;
 +	} else {
 +		std = "unknown";
 +	}
@@ -253,18 +247,17 @@ index 356ced5..c61f423 100644
 +		(cmd.args[7]<<24 | cmd.args[6]<<16 |
 +		cmd.args[5]<<8 | cmd.args[4]));
 +#endif
-+
 +	dev->bandwidth = bandwidth;
 +
-+	return 0;
-+err:
+ 	return 0;
+ err:
 +	dev->bandwidth = 0;
 +	dev->frequency = 0;
 +	dev->if_frequency = 0;
-+	dev_dbg(&client->dev, "failed=%d\n", ret);
-+	return ret;
-+}
-+
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
+ 	return ret;
+ }
+ 
 +static int si2157_get_frequency(struct dvb_frontend *fe, u32 *frequency)
 +{
 +	struct i2c_client *client = fe->tuner_priv;
@@ -296,7 +289,7 @@ index 356ced5..c61f423 100644
  	return 0;
  }
  
-@@ -442,6 +676,9 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -439,6 +675,9 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -306,15 +299,6 @@ index 356ced5..c61f423 100644
  	.get_if_frequency = si2157_get_if_frequency,
  };
  
-@@ -464,7 +701,7 @@ static void si2157_stat_work(struct work_struct *work)
- 		goto err;
- 
- 	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
--	c->strength.stat[0].svalue = (s8) cmd.args[3] * 1000;
-+	c->strength.stat[0].svalue = ((s8) cmd.args[3]) * 1000;
- 
- 	schedule_delayed_work(&dev->stat_work, msecs_to_jiffies(2000));
- 	return;
 diff --git a/drivers/media/tuners/si2157_priv.h b/drivers/media/tuners/si2157_priv.h
 index e6436f7..2a67c1b 100644
 --- a/drivers/media/tuners/si2157_priv.h

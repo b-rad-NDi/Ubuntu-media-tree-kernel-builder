@@ -1,21 +1,23 @@
-From 6d67b97cc822035af686cd29e445e015c6ad355a Mon Sep 17 00:00:00 2001
+From f00c5f4071ef436a285f5ab58047b361716f66a9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 21 Nov 2017 21:04:48 +0000
-Subject: [PATCH 03/10] si2157: Better check for running tuner in init
+Date: Wed, 14 Feb 2018 12:07:07 -0600
+Subject: [PATCH 03/11] si2157: Better check for running tuner in init
 
-Getting the Xtal trim property to check if running is less error prone
-Reset if_frequency if state unknown
+Getting the Xtal trim property to check if running is less error prone.
+Reset if_frequency if state is unknown.
+
+Replaces the previous "garbagge check".
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/media/tuners/si2157.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 1e50695..536c152 100644
+index 7571bbf..4a469e5 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -91,24 +91,25 @@ static int si2157_init(struct dvb_frontend *fe)
+@@ -90,24 +90,23 @@ static int si2157_init(struct dvb_frontend *fe)
  	struct si2157_cmd cmd;
  	const struct firmware *fw;
  	const char *fw_name;
@@ -26,9 +28,7 @@ index 1e50695..536c152 100644
  
 -	/* Returned IF frequency is garbage when firmware is not running */
 -	memcpy(cmd.args, "\x15\x00\x06\x07", 4);
-+	/* Try to get Xtal trim property setting, to verify tuner still running;
-+	 * replaces previous test of IF freq
-+	 */
++	/* Try to get Xtal trim property, to verify tuner still running */
 +	memcpy(cmd.args, "\x15\x00\x04\x02", 4);
  	cmd.wlen = 4;
  	cmd.rlen = 4;

@@ -1,11 +1,11 @@
-From c940bd2c599243ebaaf802f823da77d80ed966bf Mon Sep 17 00:00:00 2001
+From fe834e392b94fd3aba2efa1303e9c8d1ecb45c2c Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 17 Jan 2018 17:00:18 -0600
-Subject: [PATCH 05/10] cx25840: Remove offset from chip specific registers
-
-Add labels to some undocumented registers.
+Subject: [PATCH 05/11] cx25840: Remove offset from chip specific registers
 
 Remove vbi_regs_offset from a group of registers that are 888 specific.
+
+Add labels to some undocumented registers.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -13,7 +13,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 22 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/i2c/cx25840/cx25840-core.c b/drivers/media/i2c/cx25840/cx25840-core.c
-index 841c6bb..962017b 100644
+index b168bf3..1f06119 100644
 --- a/drivers/media/i2c/cx25840/cx25840-core.c
 +++ b/drivers/media/i2c/cx25840/cx25840-core.c
 @@ -684,14 +684,14 @@ static void cx23885_initialize(struct i2c_client *client)

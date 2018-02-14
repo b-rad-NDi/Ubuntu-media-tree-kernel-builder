@@ -1,7 +1,7 @@
-From 9d595b4fb093d472986e94d7197be291289fc590 Mon Sep 17 00:00:00 2001
+From 052fa26bdc0bee5fc8a14741c52773084f40b048 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 7 Feb 2018 13:46:24 -0600
-Subject: [PATCH 10/10] cx231xx: Add i2c device analog support
+Subject: [PATCH 10/11] cx231xx: Add i2c device analog tuner support
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -71,7 +71,7 @@ index fdd3c22..25aa7bb 100644
  		break;
  
 diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
-index 0b6ac50..a0e548f 100644
+index 0b6ac50..3c28411 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-video.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-video.c
 @@ -1293,7 +1293,7 @@ int cx231xx_s_frequency(struct file *file, void *priv,
@@ -124,7 +124,7 @@ index 0b6ac50..a0e548f 100644
  	}
 -	if (dev->tuner_type != TUNER_ABSENT)
 +	switch (dev->model) { /* i2c device tuners */
-+	case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++	case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx:
 +	case CX231XX_BOARD_HAUPPAUGE_935C:
 +	case CX231XX_BOARD_HAUPPAUGE_955Q:
 +	case CX231XX_BOARD_HAUPPAUGE_975:
@@ -148,7 +148,7 @@ index 0b6ac50..a0e548f 100644
 -		v4l2_disable_ioctl(vfd, VIDIOC_G_TUNER);
 -		v4l2_disable_ioctl(vfd, VIDIOC_S_TUNER);
 +		switch (dev->model) {
-+		case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx :
++		case CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx:
 +		case CX231XX_BOARD_HAUPPAUGE_935C:
 +		case CX231XX_BOARD_HAUPPAUGE_955Q:
 +		case CX231XX_BOARD_HAUPPAUGE_975:
