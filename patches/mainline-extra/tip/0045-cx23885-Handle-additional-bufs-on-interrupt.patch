@@ -1,0 +1,73 @@
+From 7e29ff5f7bf39cbbf724600d706b267260bdf15b Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Thu, 15 Feb 2018 13:46:44 -0600
+Subject: [PATCH] cx23885: Handle additional bufs on interrupt
+
+On Ryzen systems interrupts are occasionally missed:
+
+cx23885: cx23885_wakeup: [ffff99b384b83c00/28] wakeup reg=5406 buf=5405
+cx23885: cx23885_wakeup: [ffff99b40bf79400/31] wakeup reg=9537 buf=9536
+
+This patch loops up to five times on wakeup, marking any buffers
+found done.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-core.c | 40 +++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index ff369e9..4f468ed 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -421,20 +421,34 @@ static int cx23885_risc_decode(u32 risc)
+ static void cx23885_wakeup(struct cx23885_tsport *port,
+ 			   struct cx23885_dmaqueue *q, u32 count)
+ {
++	struct cx23885_dev *dev = port->dev;
+ 	struct cx23885_buffer *buf;
+-
+-	if (list_empty(&q->active))
+-		return;
+-	buf = list_entry(q->active.next,
+-			 struct cx23885_buffer, queue);
+-
+-	buf->vb.vb2_buf.timestamp = ktime_get_ns();
+-	buf->vb.sequence = q->count++;
+-	dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+-		buf->vb.vb2_buf.index,
+-		count, q->count);
+-	list_del(&buf->queue);
+-	vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
++	int16_t count_delta;
++	int max_buf_done = 5;
++	do {
++		if (list_empty(&q->active))
++			return;
++		buf = list_entry(q->active.next,
++				 struct cx23885_buffer, queue);
++
++		buf->vb.vb2_buf.timestamp = ktime_get_ns();
++		buf->vb.sequence = q->count++;
++		if (count != q->count) {
++			dprintk(0, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
++				buf->vb.vb2_buf.index,
++				count, q->count);
++		} else {
++			dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
++				buf->vb.vb2_buf.index,
++				count, q->count);
++		}
++		list_del(&buf->queue);
++		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
++		max_buf_done--;
++		/* count register is only 16 bits so truncate things
++		   appropriately */
++		count_delta = (int16_t)(count - q->count);
++	} while ((count_delta > 0) && (max_buf_done > 0));
+ }
+ 
+ int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+-- 
+2.7.4
+
