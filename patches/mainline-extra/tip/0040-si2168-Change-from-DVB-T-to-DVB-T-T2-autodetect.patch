@@ -70,7 +70,7 @@ index a919477..1d36f48 100644
  	}
  
  	ret = si2168_cmd_execute(client, &cmd);
-+	if (dvbt_auto_plp && (ret == -REMOTEIO)) {
++	if (dvbt_auto_plp && (ret == -EREMOTEIO)) {
 +		/* In auto-PLP mode it is possible to read 0x8701 while
 +		 * the frontend is in switchover transition. This causes
 +		 * a status read failure, due to incorrect system. Check
