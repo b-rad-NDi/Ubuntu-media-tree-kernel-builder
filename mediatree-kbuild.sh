@@ -584,7 +584,7 @@ function generate_new_kernel_version()
 	regen_changelog "`date +%Y%m%d%H%M`"
 	update_identity
 
-	fakeroot debian/rules clean
+	clean_kernel
 
 	return 0
 }
