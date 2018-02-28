@@ -1,13 +1,13 @@
-From 82cdf6c1d30a672782eb5f933c424fa5a05e9539 Mon Sep 17 00:00:00 2001
+From 0b68bd547b9dde08010b771c2ccf1ed5da178bcf Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 5 Jan 2018 18:35:13 -0600
-Subject: [PATCH 22/41] cx23885: Add support for Hauppauge PCIe HVR1265 K4
+Subject: [PATCH 22/50] cx23885: Add support for Hauppauge PCIe HVR1265 K4
 
 Add new PCIe board to driver list and board register/configure functions
 
 cx23885 + lgdt3306a + si2157 digital/analog
 and
-composite/s-video + stereo capture
+composite/s-video + stereo audio capture
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

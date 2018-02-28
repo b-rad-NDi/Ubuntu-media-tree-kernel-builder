@@ -1,7 +1,7 @@
-From 686ee4cf86a218bb74eaa2ea4f9ae0960b21014e Mon Sep 17 00:00:00 2001
+From ad63993c37f59a3c7fc74485861236e23b0d21f3 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:38:33 -0600
-Subject: [PATCH 24/41] cx23885: Add support for new Hauppauge QuadHD (885)
+Subject: [PATCH 24/50] cx23885: Add support for new Hauppauge QuadHD (885)
 
 Add new QuadHD digital only PCIe boards to driver list.
 Differentiate them from 888 digital/analog QuadHD models.

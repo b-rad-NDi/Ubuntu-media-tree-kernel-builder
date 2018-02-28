@@ -1,7 +1,7 @@
-From 6771a104fb0fc5c808c013fc2b3b131d6af52949 Mon Sep 17 00:00:00 2001
+From ebaa5d71717807ce9c79c98b758084993a3ba6ce Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 26 May 2017 09:43:30 -0500
-Subject: [PATCH 41/41] cx23885: Set Hauppauge HVR1255 tuner type to TDA18271
+Subject: [PATCH 42/50] cx23885: Set Hauppauge HVR1255 tuner type to TDA18271
 
 Update tuner_type from TUNER_ABSENT
 

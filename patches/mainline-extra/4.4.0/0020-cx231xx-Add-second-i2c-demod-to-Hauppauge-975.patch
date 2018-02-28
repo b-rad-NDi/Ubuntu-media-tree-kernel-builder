@@ -1,12 +1,12 @@
-From e865a44559b7809d67ba292a2760d38f549653a3 Mon Sep 17 00:00:00 2001
+From 37f3f65344fd2f31a0f890e763494d2c63ecf925 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:30:19 -0600
-Subject: [PATCH 20/41] cx231xx: Add second i2c demod to Hauppauge 975
+Subject: [PATCH 20/50] cx231xx: Add second i2c demod to Hauppauge 975
 
-Hauppauge HVR-975 is a dual frontend, single tuner USB device. It contains
-lgdt3306a and si2168 frontends and one si2157 tuner. The lgdt3306a frontend
-is currently enabled. This creates the second demodulator and attaches it
-to the tuner.
+Hauppauge HVR-975 is a hybrid, dual frontend, single tuner USB device.
+It contains lgdt3306a and si2168 frontends and one si2157 tuner. The
+lgdt3306a frontend is currently enabled. This creates the second
+demodulator and attaches it to the tuner.
 
 Enables lgdt3306a|si2168 + si2157
 
@@ -29,10 +29,10 @@ index 8582568..00e88a8 100644
  
  		.input = {{
 diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
-index ac3ad77..f1ffb57 100644
+index a70db61..3c6bbd2 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
-@@ -1173,14 +1173,17 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1174,14 +1174,17 @@ static int dvb_init(struct cx231xx *dev)
  	{
  		struct i2c_client *client;
  		struct i2c_adapter *adapter;
@@ -51,7 +51,7 @@ index ac3ad77..f1ffb57 100644
  
  		strlcpy(info.type, "lgdt3306a", sizeof(info.type));
  		info.addr = dev->board.demod_addr;
-@@ -1202,10 +1205,43 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1203,10 +1206,43 @@ static int dvb_init(struct cx231xx *dev)
  		}
  
  		dvb->i2c_client_demod[0] = client;
@@ -96,7 +96,7 @@ index ac3ad77..f1ffb57 100644
  
  		/* attach tuner */
  		si2157_config.fe = dev->dvb->frontend[0];
-@@ -1225,6 +1261,8 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1226,6 +1262,8 @@ static int dvb_init(struct cx231xx *dev)
  		if (client == NULL || client->dev.driver == NULL) {
  			dev_err(dev->dev,
  				"Failed to obtain %s tuner.\n",	info.type);
@@ -105,7 +105,7 @@ index ac3ad77..f1ffb57 100644
  			module_put(dvb->i2c_client_demod[0]->dev.driver->owner);
  			i2c_unregister_device(dvb->i2c_client_demod[0]);
  			result = -ENODEV;
-@@ -1233,6 +1271,8 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1234,6 +1272,8 @@ static int dvb_init(struct cx231xx *dev)
  
  		if (!try_module_get(client->dev.driver->owner)) {
  			i2c_unregister_device(client);
@@ -114,7 +114,7 @@ index ac3ad77..f1ffb57 100644
  			module_put(dvb->i2c_client_demod[0]->dev.driver->owner);
  			i2c_unregister_device(dvb->i2c_client_demod[0]);
  			result = -ENODEV;
-@@ -1240,7 +1280,13 @@ static int dvb_init(struct cx231xx *dev)
+@@ -1241,7 +1281,13 @@ static int dvb_init(struct cx231xx *dev)
  		}
  
  		dev->cx231xx_reset_analog_tuner = NULL;

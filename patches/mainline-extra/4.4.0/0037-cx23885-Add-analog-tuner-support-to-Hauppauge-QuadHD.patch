@@ -1,7 +1,7 @@
-From 7607eabc5069ac106b6cd6f905038851d2716a75 Mon Sep 17 00:00:00 2001
+From 641edb7a7ee21f45b6df90c3fd482f82e6f75c3d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
-Subject: [PATCH 37/41] cx23885: Add analog tuner support to Hauppauge QuadHD
+Subject: [PATCH 37/50] cx23885: Add analog tuner support to Hauppauge QuadHD
 
 Add si2157 analog frontend to 888 Hauppauge QuadHD boards
 

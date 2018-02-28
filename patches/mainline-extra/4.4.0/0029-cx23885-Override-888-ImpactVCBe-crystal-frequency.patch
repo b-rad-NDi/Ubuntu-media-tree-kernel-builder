@@ -1,7 +1,7 @@
-From 51daaf4ff1464aa926bdc0ed75ec42a2025e112e Mon Sep 17 00:00:00 2001
+From 96b99a8d887a5f5786d3252f3769aa6dd4953ae0 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 31 Jan 2018 14:59:20 -0600
-Subject: [PATCH 29/41] cx23885: Override 888 ImpactVCBe crystal frequency
+Subject: [PATCH 29/50] cx23885: Override 888 ImpactVCBe crystal frequency
 
 Hauppauge produced a revision of ImpactVCBe using an 888,
 with a 25MHz crystal, instead of using the default third

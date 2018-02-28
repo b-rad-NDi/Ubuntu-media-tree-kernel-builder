@@ -1,7 +1,7 @@
-From 2e3c04cad4a2f8bef3f753a5949ef6145b9338c9 Mon Sep 17 00:00:00 2001
+From 5e9334d7b25968b6178ac1cda822b61a1859e891 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Thu, 25 May 2017 15:36:30 -0500
-Subject: [PATCH 21/41] cx23885: Enable new Hauppauge PCIe ImpactVCBe variant
+Subject: [PATCH 21/50] cx23885: Enable new Hauppauge PCIe ImpactVCBe variant
 
 Add ID of new card revision to driver list
 

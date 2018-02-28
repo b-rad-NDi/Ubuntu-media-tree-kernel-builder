@@ -1,28 +1,22 @@
-From 30a3b8863814b3a0e418d1c1b0800211c7cbb170 Mon Sep 17 00:00:00 2001
+From e878b3f54622085a2969c0ef498caa7f1f7c1c6a Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 19 Dec 2017 23:08:16 +0000
-Subject: [PATCH 31/41] si2157: Check error status bit on cmd execute
+Date: Wed, 14 Feb 2018 11:59:28 -0600
+Subject: [PATCH 31/50] si2157: Check error status bit on cmd execute
 
 Check error status bit on command execute, if error bit is
 set return -EAGAIN. Ignore -EAGAIN in probe during device check.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/media/tuners/si2157.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e125863..1e50695 100644
+index e125863..7571bbf 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -52,18 +52,25 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
- 			}
- 
- 			/* firmware ready? */
--			if ((cmd->args[0] >> 7) & 0x01)
-+			if (cmd->args[0] & 0x80)
+@@ -56,14 +56,20 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
  				break;
-+			usleep_range(5000, 10000);
  		}
  
 -		dev_dbg(&client->dev, "cmd execution took %d ms\n",
@@ -32,8 +26,7 @@ index e125863..1e50695 100644
 +				(jiffies_to_msecs(timeout) - TIMEOUT),
 +				cmd->args[0]);
  
--		if (!((cmd->args[0] >> 7) & 0x01)) {
-+		if (!(cmd->args[0] & 0x80)) {
+ 		if (!((cmd->args[0] >> 7) & 0x01)) {
  			ret = -ETIMEDOUT;
  			goto err_mutex_unlock;
  		}
@@ -45,7 +38,7 @@ index e125863..1e50695 100644
  	}
  
  	mutex_unlock(&dev->i2c_mutex);
-@@ -477,7 +484,7 @@ static int si2157_probe(struct i2c_client *client,
+@@ -477,7 +483,7 @@ static int si2157_probe(struct i2c_client *client,
  	cmd.wlen = 0;
  	cmd.rlen = 1;
  	ret = si2157_cmd_execute(client, &cmd);

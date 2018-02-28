@@ -1,11 +1,11 @@
-From ee3e1d6deef9ee2875792414f8056a796eac673c Mon Sep 17 00:00:00 2001
+From 6807b37ba92370626a0403704bda9cd17fdfe233 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 17 Jan 2018 17:00:18 -0600
-Subject: [PATCH 34/41] cx25840: Remove offset from chip specific registers
-
-Add labels to some undocumented registers.
+Subject: [PATCH 34/50] cx25840: Remove offset from chip specific registers
 
 Remove vbi_regs_offset from a group of registers that are 888 specific.
+
+Add labels to some undocumented registers.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

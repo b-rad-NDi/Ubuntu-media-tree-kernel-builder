@@ -1,0 +1,113 @@
+From f1c927c9caf9a442fbbf7dcf3a76353f2a0d9590 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Wed, 14 Feb 2018 14:32:03 -0600
+Subject: [PATCH 40/50] cx23885: Add i2c device analog tuner support
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-video.c | 60 +++++++++++++++++++++++++------
+ 1 file changed, 50 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
+index 22ab6af..594bdcf 100644
+--- a/drivers/media/pci/cx23885/cx23885-video.c
++++ b/drivers/media/pci/cx23885/cx23885-video.c
+@@ -646,8 +646,17 @@ static int vidioc_querycap(struct file *file, void  *priv,
+ 		sizeof(cap->card));
+ 	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+ 	cap->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING | V4L2_CAP_AUDIO;
+-	if (dev->tuner_type != TUNER_ABSENT)
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 		cap->device_caps |= V4L2_CAP_TUNER;
++		break;
++	default:
++		if (dev->tuner_type != TUNER_ABSENT)
++			cap->device_caps |= V4L2_CAP_TUNER;
++		break;
++	}
+ 	if (vdev->vfl_type == VFL_TYPE_VBI)
+ 		cap->device_caps |= V4L2_CAP_VBI_CAPTURE;
+ 	else
+@@ -884,8 +893,16 @@ static int vidioc_g_tuner(struct file *file, void *priv,
+ {
+ 	struct cx23885_dev *dev = video_drvdata(file);
+ 
+-	if (dev->tuner_type == TUNER_ABSENT)
+-		return -EINVAL;
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
++		break;
++	default:
++		if (dev->tuner_type == TUNER_ABSENT)
++			return -EINVAL;
++		break;
++	}
+ 	if (0 != t->index)
+ 		return -EINVAL;
+ 
+@@ -900,8 +917,16 @@ static int vidioc_s_tuner(struct file *file, void *priv,
+ {
+ 	struct cx23885_dev *dev = video_drvdata(file);
+ 
+-	if (dev->tuner_type == TUNER_ABSENT)
+-		return -EINVAL;
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
++		break;
++	default:
++		if (dev->tuner_type == TUNER_ABSENT)
++			return -EINVAL;
++		break;
++	}
+ 	if (0 != t->index)
+ 		return -EINVAL;
+ 	/* Update the A/V core */
+@@ -915,9 +940,16 @@ static int vidioc_g_frequency(struct file *file, void *priv,
+ {
+ 	struct cx23885_dev *dev = video_drvdata(file);
+ 
+-	if (dev->tuner_type == TUNER_ABSENT)
+-		return -EINVAL;
+-
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
++		break;
++	default:
++		if (dev->tuner_type == TUNER_ABSENT)
++			return -EINVAL;
++		break;
++	}
+ 	f->type = V4L2_TUNER_ANALOG_TV;
+ 	f->frequency = dev->freq;
+ 
+@@ -931,8 +963,16 @@ static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency
+ 	struct v4l2_ctrl *mute;
+ 	int old_mute_val = 1;
+ 
+-	if (dev->tuner_type == TUNER_ABSENT)
+-		return -EINVAL;
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
++		break;
++	default:
++		if (dev->tuner_type == TUNER_ABSENT)
++			return -EINVAL;
++		break;
++	}
+ 	if (unlikely(f->tuner != 0))
+ 		return -EINVAL;
+ 
+-- 
+2.7.4
+

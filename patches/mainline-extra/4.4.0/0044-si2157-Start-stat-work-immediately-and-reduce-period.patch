@@ -1,0 +1,35 @@
+From 7862ea1cefd9cbb0bb6593117ef3b3057a2fba3d Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Wed, 14 Feb 2018 15:54:38 -0600
+Subject: [PATCH 44/50] si2157: Start stat work immediately and reduce period
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/tuners/si2157.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index 79c7f1d..a5ce14e 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -279,7 +279,7 @@ warm:
+ 	c->strength.len = 1;
+ 	c->strength.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
+ 	/* start statistics polling */
+-	schedule_delayed_work(&dev->stat_work, msecs_to_jiffies(1000));
++	schedule_delayed_work(&dev->stat_work, 0);
+ 
+ 	dev->active = true;
+ 	return 0;
+@@ -784,7 +784,7 @@ static void si2157_stat_work(struct work_struct *work)
+ 	c->strength.stat[0].scale = FE_SCALE_DECIBEL;
+ 	c->strength.stat[0].svalue = (s8) cmd.args[3] * 1000;
+ 
+-	schedule_delayed_work(&dev->stat_work, msecs_to_jiffies(2000));
++	schedule_delayed_work(&dev->stat_work, HZ / 2);
+ 	return;
+ err:
+ 	c->strength.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
+-- 
+2.7.4
+

@@ -1,7 +1,7 @@
-From f6959905f9490e1de28c20b79ceefe33128eaf11 Mon Sep 17 00:00:00 2001
+From 9c79bc67c59e37d9a1ab60128631eb84ec1e069d Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Tue, 6 Feb 2018 18:32:28 -0600
-Subject: [PATCH 30/41] si2157: Enable tuner status flags
+Date: Wed, 14 Feb 2018 11:45:49 -0600
+Subject: [PATCH 30/50] si2157: Enable tuner status flags
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

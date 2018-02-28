@@ -1,7 +1,7 @@
-From d4a46376b473ebbaf2eb4df483bf7e5899014eac Mon Sep 17 00:00:00 2001
+From f80209d78dc794eae2171e4bc910ab6e4bf8df4b Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 5 Jan 2018 13:35:04 -0600
-Subject: [PATCH 23/41] cx23885: Add support for Hauppauge PCIe Starburst2
+Subject: [PATCH 23/50] cx23885: Add support for Hauppauge PCIe Starburst2
 
 Add new PCIe DVB-S/S2.
 A single port Hauppauge HVR-5525
