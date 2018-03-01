@@ -1,4 +1,4 @@
-From 097f35a7290479984eb14487061e5ae9b34ef609 Mon Sep 17 00:00:00 2001
+From ed40efefdccd2cdd93d57d5f40f31f3f5c0268e7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 7 Feb 2018 20:42:04 -0600
 Subject: [PATCH 2/6] Apply build fixes to media tree
@@ -59,9 +59,8 @@ Subject: [PATCH 2/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-ioctl.c                  | 2 ++
  drivers/media/v4l2-core/videobuf2-dma-sg.c            | 2 ++
  include/media/compat.h                                | 4 ++--
- include/media/config-compat.h                         | 1 +
  include/media/media-entity.h                          | 2 ++
- 57 files changed, 124 insertions(+), 12 deletions(-)
+ 56 files changed, 123 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index 93fac43..9b7e960 100644
@@ -614,7 +613,7 @@ index 1850487..993f600 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index 6bcb711..6fde511 100644
+index 1307a38..120c9f1 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -839,10 +838,10 @@ index 9985c89..a99983b 100644
  module_param(debug, int, 0644);
  
 diff --git a/include/media/compat.h b/include/media/compat.h
-index 7d50ceb..cd8828a 100644
+index fc7085e..c9eaf34 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
-@@ -2074,11 +2074,11 @@ static inline int fwnode_graph_parse_endpoint(struct fwnode_handle *fwnode,
+@@ -2091,11 +2091,11 @@ static inline int fwnode_graph_parse_endpoint(struct fwnode_handle *fwnode,
  static inline void fwnode_handle_get(struct fwnode_handle *fwnode)
  {
  }
@@ -856,16 +855,6 @@ index 7d50ceb..cd8828a 100644
  #endif
  
  #ifdef NEED_TO_OF_NODE
-diff --git a/include/media/config-compat.h b/include/media/config-compat.h
-index 40fc27e..a5c5b29 100644
---- a/include/media/config-compat.h
-+++ b/include/media/config-compat.h
-@@ -62,4 +62,5 @@
- 
- #define NEED_PCI_EXP_DEVCTL2_COMP_TIMEOUT 1
- 
-+#define NEED_IS_ENABLED 1
- #endif
 diff --git a/include/media/media-entity.h b/include/media/media-entity.h
 index a732af1..2f5b677 100644
 --- a/include/media/media-entity.h
