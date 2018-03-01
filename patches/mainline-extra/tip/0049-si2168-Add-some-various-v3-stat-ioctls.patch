@@ -1,15 +1,15 @@
-From 81f72708a2283f0efaba206b15ba619479d6ddce Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Mon, 26 Feb 2018 15:44:49 -0600
+From fa36a6cc2d6cae79883995fdfc91640d082b9608 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 1 Mar 2018 14:28:09 -0600
 Subject: [PATCH 49/49] si2168: Add some various v3 stat ioctls
 
-Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Brad Love <hidden@email.co>
 ---
- drivers/media/dvb-frontends/si2168.c | 197 +++++++++++++++++++++++++++++++++--
- 1 file changed, 190 insertions(+), 7 deletions(-)
+ drivers/media/dvb-frontends/si2168.c | 208 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 201 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 63242e386cc1..bcd376891eeb 100644
+index 63242e386cc1..2a9097836168 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -110,13 +110,12 @@ static int si2168_ts_bus_ctrl(struct dvb_frontend *fe, int acquire)
@@ -37,7 +37,7 @@ index 63242e386cc1..bcd376891eeb 100644
  	if (*status & FE_HAS_LOCK) {
  		c->cnr.len = 1;
  		c->cnr.stat[0].scale = FE_SCALE_DECIBEL;
-@@ -211,8 +208,113 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -211,8 +208,120 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  	dev_dbg(&client->dev, "status=%02x args=%*ph\n",
  			*status, cmd.rlen, cmd.args);
  
@@ -55,6 +55,7 @@ index 63242e386cc1..bcd376891eeb 100644
 +	struct si2168_dev *dev = i2c_get_clientdata(client);
 +	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	enum fe_status status = 0;
++	u64 stat_snr;
 +	int ret;
 +
 +	*snr = 0;
@@ -68,8 +69,11 @@ index 63242e386cc1..bcd376891eeb 100644
 +	if (ret)
 +		goto err;
 +
-+	if (status & FE_HAS_LOCK)
-+		*snr = (u16)(c->cnr.stat[0].svalue / 100);
++	if (status & FE_HAS_LOCK) {
++		stat_snr = c->cnr.stat[0].svalue;
++		do_div(stat_snr, 100);
++		*snr = (u16)stat_snr;
++	}
 +
 +	dev_dbg(&client->dev, "snr=%02x\n", *snr);
 +
@@ -86,6 +90,7 @@ index 63242e386cc1..bcd376891eeb 100644
 +	struct si2168_dev *dev = i2c_get_clientdata(client);
 +	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	enum fe_status status = 0;
++	u64 stat_strength;
 +
 +	*rssi = 0;
 +
@@ -105,7 +110,9 @@ index 63242e386cc1..bcd376891eeb 100644
 +			if (c->strength.stat[0].svalue < -80000)
 +				*rssi = 0;
 +			else {
-+				*rssi = (u16)(c->strength.stat[0].svalue / 1000 + 100);
++				stat_strength = c->strength.stat[0].svalue;
++				do_div(stat_strength, 1000);
++				*rssi = (u16)(stat_strength + 100);
 +				*rssi = (*rssi > 100) ? 0xffff :
 +					(u16)(((u32)*rssi) * 0xffff / 100);
 +			}
@@ -152,7 +159,7 @@ index 63242e386cc1..bcd376891eeb 100644
  		memcpy(cmd.args, "\x82\x00", 2);
  		cmd.wlen = 2;
  		cmd.rlen = 3;
-@@ -231,6 +333,9 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -231,6 +340,9 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  		utmp1 = cmd.args[2] * utmp1;
  		utmp2 = 100000000; /* 10^8 */
  
@@ -162,7 +169,7 @@ index 63242e386cc1..bcd376891eeb 100644
  		dev_dbg(&client->dev,
  			"post_bit_error=%u post_bit_count=%u ber=%u*10^-%u\n",
  			utmp1, utmp2, cmd.args[2], cmd.args[1]);
-@@ -244,8 +349,35 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -244,8 +356,35 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  		c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
  	}
  
@@ -199,7 +206,7 @@ index 63242e386cc1..bcd376891eeb 100644
  		memcpy(cmd.args, "\x84\x01", 2);
  		cmd.wlen = 2;
  		cmd.rlen = 3;
-@@ -260,11 +392,57 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -260,11 +399,61 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  		if (utmp1 == 0xffff)
  			utmp1 = 0;
  
@@ -221,8 +228,9 @@ index 63242e386cc1..bcd376891eeb 100644
 +{
 +	struct i2c_client *client = fe->demodulator_priv;
 +	struct si2168_dev *dev = i2c_get_clientdata(client);
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	int ret;
-+	u16 snr, rssi;
++	u16 rssi;
 +	u32 ber, ucb;
 +
 +	*status = 0;
@@ -236,12 +244,15 @@ index 63242e386cc1..bcd376891eeb 100644
 +	if (ret)
 +		goto err;
 +
-+	if ((*status & FE_HAS_LOCK) == 0)
++	if ((*status & FE_HAS_LOCK) == 0) {
++		/* No lock, reset all statistics */
++		c->strength.len = 1;
++		c->strength.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->block_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->post_bit_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
 +		return 0;
-+
-+	ret = si2168_read_snr(fe, &snr);
-+	if (ret)
-+		goto err;
++	}
 +
 +	ret = si2168_read_signal_strength(fe, &rssi);
 +	if (ret)
@@ -257,7 +268,7 @@ index 63242e386cc1..bcd376891eeb 100644
  
  	return 0;
  err:
-@@ -771,6 +949,11 @@ static const struct dvb_frontend_ops si2168_ops = {
+@@ -771,6 +960,11 @@ static const struct dvb_frontend_ops si2168_ops = {
  	.set_frontend = si2168_set_frontend,
  
  	.read_status = si2168_read_status,
