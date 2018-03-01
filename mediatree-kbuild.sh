@@ -568,12 +568,6 @@ function clean_kernel()
 
 	fakeroot debian/rules clean
 
-	mkdir -p debian.master/abi/${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B}
-	if [ ! -e debian.master/abi/${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG} ] ; then
-		ln -s ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} \
-			debian.master/abi/${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}
-	fi
-
 	return 0
 }
 
