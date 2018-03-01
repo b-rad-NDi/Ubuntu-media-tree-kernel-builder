@@ -1,6 +1,6 @@
-From ef0080bfc8bd7f23d9787461d3cf678e98358d50 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 25 Oct 2017 12:39:53 +0000
+From ceaae38be633b361124268eaaa6ce81ae2499c3a Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 28 Feb 2018 17:48:18 -0600
 Subject: [PATCH 5/6] Packaging updates
 
 ---
@@ -14,9 +14,9 @@ Subject: [PATCH 5/6] Packaging updates
  debian.master/rules.d/ppc64el.mk             |  6 ++---
  debian.master/rules.d/s390x.mk               |  6 ++---
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 14 +++++++---
+ debian/rules.d/0-common-vars.mk              | 15 ++++++++---
  debian/rules.d/2-binary-arch.mk              |  4 +++
- 12 files changed, 74 insertions(+), 61 deletions(-)
+ 12 files changed, 75 insertions(+), 61 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 62060719581c..ac1698fe118c 100644
@@ -289,7 +289,7 @@ index 5b468acdfe44..dfc7a152ee2a 100644
  
  do_zfs		= true
 diff --git a/debian/rules b/debian/rules
-index 6c8855f2b3a9..aa41417d756d 100755
+index 76486bc17a70..42aad79d83e7 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -302,15 +302,16 @@ index 6c8855f2b3a9..aa41417d756d 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index d7a099bd4e1b..429a25cee941 100644
+index 652afc91efc4..da8fb10261e1 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
-@@ -33,6 +33,14 @@ family=ubuntu
+@@ -33,6 +33,15 @@ family=ubuntu
  # or configs.
  AUTOBUILD=
  
 +skipabi         ?= true
 +skipmodule      ?= true
++skipretpoline   ?= true
 +skipdbg         ?= true
 +do_binary_udebs ?= false
 +do_tools_common ?= false
@@ -320,7 +321,7 @@ index d7a099bd4e1b..429a25cee941 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -140,8 +148,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+@@ -141,8 +150,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  # cycle, so its OK to leave 'do_doc_package_content=false' until those build
  # failures get sorted out. Finally, the doc package doesn't really need to be built
  # for developer testing (its kind of slow), so only do it if on a buildd.
@@ -331,7 +332,7 @@ index d7a099bd4e1b..429a25cee941 100644
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
-@@ -158,7 +166,7 @@ do_source_package_content=false
+@@ -159,7 +168,7 @@ do_source_package_content=false
  endif
  
  # linux-libc-dev may not be needed, default to building it.
@@ -341,10 +342,10 @@ index d7a099bd4e1b..429a25cee941 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 21fadc98cef4..a19a29afae3e 100644
+index 6987a62595bd..50751cb8042d 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -727,10 +727,14 @@ build-arch: $(build-arch-deps-true)
+@@ -729,10 +729,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
