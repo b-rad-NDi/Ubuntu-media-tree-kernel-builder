@@ -1,21 +1,21 @@
-From faa870ebc2433c586c46f46ab8744ba58c13f23b Mon Sep 17 00:00:00 2001
+From dc9f6ed2011e4e6116ebb6e6d53d49f5122a2432 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sun, 11 Feb 2018 04:20:00 -0600
+Date: Thu, 01 Mar 2018 16:20:00 -0600
 Subject: [PATCH 6/6] Changelog
 
 ---
- debian.master/changelog | 62 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ debian.master/changelog | 71 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index fea7d8f..a0068fe 100644
+index aeeec81..5fb0325 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,65 @@
-+linux (4.4.0-112201802110420.0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,74 @@
++linux (4.4.0-116201803011620.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.4.0-112.135 rev a5066c0d1e355d9304ca5a8cc115f6ebdc76ee73
++    - 4.4.0-116.140 rev 855cff54a07acfc22b81576787ad62b7ef0530aa
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2018-02-08-04-20.patch
@@ -68,15 +68,24 @@ index fea7d8f..a0068fe 100644
 +    - 0036-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
 +    - 0037-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
 +    - 0038-cx23885-Add-analog-frontend-to-1265_K4.patch
-+    - 0039-cx231xx-Add-i2c-device-analog-support.patch
-+    - 0040-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
-+    - 0041-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    - 0039-cx231xx-Add-i2c-device-analog-tuner-support.patch
++    - 0040-cx23885-Add-i2c-device-analog-tuner-support.patch
++    - 0041-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    - 0042-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    - 0043-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
++    - 0044-si2157-Start-stat-work-immediately-and-reduce-period.patch
++    - 0045-si2168-different-default-that-windows-driver.patch
++    - 0046-cx23885-Handle-additional-bufs-on-interrupt.patch
++    - 0047-cx23885-DMA-stall-reset-required-on-Ryzen.patch
++    - 0048-si2157-add-on-demand-rf-strength-func.patch
++    - 0049-lgdt3306a-Add-CNR-v5-stat.patch
++    - 0050-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Sun, 11 Feb 2018 04:20:00 -0600
++ -- Fake User <hidden@email.co>  Thu, 01 Mar 2018 16:20:00 -0600
 +
- linux (4.4.0-112.135) xenial; urgency=low
+ linux (4.4.0-116.140) xenial; urgency=medium
  
-   * linux: 4.4.0-112.135 -proposed tracker (LP: #1744244)
+   * linux: 4.4.0-116.140 -proposed tracker (LP: #1748990)
 -- 
 2.7.4
 
