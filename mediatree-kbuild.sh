@@ -598,7 +598,7 @@ function generate_virtual_package()
 	cd .vpackage_tmp
 	rm -rf linux-*-mediatree-*/
 	rm -f *
-        VP_BUILD_TIME=`date -R`
+	VP_BUILD_TIME=`date -R`
 
 	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
 		cp ../linux-${1}-mediatree.control ./ns_control
