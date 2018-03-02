@@ -22,4 +22,6 @@
 
 /linux-headers-mediatree_*
 #_source.changes
+*_source.build
+*_source.buildinfo
 /linux-image-mediatree_*
