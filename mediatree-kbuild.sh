@@ -369,15 +369,19 @@ function apply_patch()
 function apply_patch_git_am()
 {
 	if [ -z "${1}" ] ; then
-		echo "Error..."
+		echo "Error 1..."
 		return 1
 	fi
-	if [ -z "${2}" -o ! -f "${2}" ] ; then
-		echo "Error..."
+	if [ -z "${2}" ] ; then
+		echo "Error 2..."
 		return 1
 	fi
 
-	git am --reject ${2}
+	if [ -d "${2}" ] ; then
+		git am --reject ${2}/*patch
+	else
+		git am --reject ${2}
+	fi
 	if [ $? != 0 ] ; then
 		if [ "$1" == "1" ] ; then
 			echo "Patch failure: ${2}"
@@ -461,7 +465,10 @@ function apply_extra_patches()
 {
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
-	for i in `ls ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/*.patch | sort` ; do
+	for i in `ls -d ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/* | sort` ; do
+		echo "#############################################################"
+		echo "#############################################################"
+		echo "### `basename $i` ###"
 		echo "#############################################################"
 		apply_patch_git_am 1 $i
 		[ $? != 0 ] && echo "patch [${i}] failure, exiting" && return 1
