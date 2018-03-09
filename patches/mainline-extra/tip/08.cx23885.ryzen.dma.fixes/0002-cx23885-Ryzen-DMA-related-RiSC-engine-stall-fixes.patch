@@ -3,7 +3,78 @@ From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 9 Mar 2018 13:01:27 -0600
 Subject: [PATCH 2/3] cx23885: Ryzen DMA related RiSC engine stall fixes
 
-This bug affects all of Hauppauge QuadHD boards
+This bug affects all of Hauppauge QuadHD boards when used on all Ryzen
+platforms and some XEON platforms. On these platforms it is possible to
+error out the RiSC engine and cause it to stall, whereafter the only
+way to reset the board to a working state is to reboot.
+
+This is the fatal condition with current driver:
+
+[  255.663598] cx23885: cx23885[0]: mpeg risc op code error
+[  255.663607] cx23885: cx23885[0]: TS1 B - dma channel status dump
+[  255.663612] cx23885: cx23885[0]:   cmds: init risc lo   : 0xffe54000
+[  255.663615] cx23885: cx23885[0]:   cmds: init risc hi   : 0x00000000
+[  255.663619] cx23885: cx23885[0]:   cmds: cdt base       : 0x00010870
+[  255.663622] cx23885: cx23885[0]:   cmds: cdt size       : 0x0000000a
+[  255.663625] cx23885: cx23885[0]:   cmds: iq base        : 0x00010630
+[  255.663629] cx23885: cx23885[0]:   cmds: iq size        : 0x00000010
+[  255.663632] cx23885: cx23885[0]:   cmds: risc pc lo     : 0xffe54018
+[  255.663636] cx23885: cx23885[0]:   cmds: risc pc hi     : 0x00000000
+[  255.663639] cx23885: cx23885[0]:   cmds: iq wr ptr      : 0x00004192
+[  255.663642] cx23885: cx23885[0]:   cmds: iq rd ptr      : 0x0000418c
+[  255.663645] cx23885: cx23885[0]:   cmds: cdt current    : 0x00010898
+[  255.663649] cx23885: cx23885[0]:   cmds: pci target lo  : 0xf85ca340
+[  255.663652] cx23885: cx23885[0]:   cmds: pci target hi  : 0x00000000
+[  255.663655] cx23885: cx23885[0]:   cmds: line / byte    : 0x000c0000
+[  255.663659] cx23885: cx23885[0]:   risc0:
+[  255.663661] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663666] cx23885: cx23885[0]:   risc1:
+[  255.663667] 0xf85ca050 [ INVALID sol 22 20 19 18 resync 13 count=80 ]
+[  255.663674] cx23885: cx23885[0]:   risc2:
+[  255.663674] 0x00000000 [ INVALID count=0 ]
+[  255.663678] cx23885: cx23885[0]:   risc3:
+[  255.663679] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663684] cx23885: cx23885[0]:   (0x00010630) iq 0:
+[  255.663685] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663690] cx23885: cx23885[0]:   iq 1: 0xf85ca630 [ arg #1 ]
+[  255.663693] cx23885: cx23885[0]:   iq 2: 0x00000000 [ arg #2 ]
+[  255.663696] cx23885: cx23885[0]:   (0x0001063c) iq 3:
+[  255.663697] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663702] cx23885: cx23885[0]:   iq 4: 0xf85ca920 [ arg #1 ]
+[  255.663705] cx23885: cx23885[0]:   iq 5: 0x00000000 [ arg #2 ]
+[  255.663709] cx23885: cx23885[0]:   (0x00010648) iq 6:
+[  255.663709] 0xf85ca340 [ INVALID sol 22 20 19 18 resync 13 count=832 ]
+[  255.663716] cx23885: cx23885[0]:   (0x0001064c) iq 7:
+[  255.663717] 0x00000000 [ INVALID count=0 ]
+[  255.663721] cx23885: cx23885[0]:   (0x00010650) iq 8:
+[  255.663721] 0x00000000 [ INVALID count=0 ]
+[  255.663725] cx23885: cx23885[0]:   (0x00010654) iq 9:
+[  255.663726] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663731] cx23885: cx23885[0]:   iq a: 0xf85c9780 [ arg #1 ]
+[  255.663734] cx23885: cx23885[0]:   iq b: 0x00000000 [ arg #2 ]
+[  255.663737] cx23885: cx23885[0]:   (0x00010660) iq c:
+[  255.663738] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663743] cx23885: cx23885[0]:   iq d: 0xf85c9a70 [ arg #1 ]
+[  255.663746] cx23885: cx23885[0]:   iq e: 0x00000000 [ arg #2 ]
+[  255.663749] cx23885: cx23885[0]:   (0x0001066c) iq f:
+[  255.663750] 0x1c0002f0 [ write sol eol count=752 ]
+[  255.663755] cx23885: cx23885[0]:   iq 10: 0xf4fa2920 [ arg #1 ]
+[  255.663758] cx23885: cx23885[0]:   iq 11: 0x00000000 [ arg #2 ]
+[  255.663759] cx23885: cx23885[0]: fifo: 0x00005000 -> 0x6000
+[  255.663760] cx23885: cx23885[0]: ctrl: 0x00010630 -> 0x10690
+[  255.663764] cx23885: cx23885[0]:   ptr1_reg: 0x00005980
+[  255.663767] cx23885: cx23885[0]:   ptr2_reg: 0x000108a8
+[  255.663770] cx23885: cx23885[0]:   cnt1_reg: 0x0000000b
+[  255.663773] cx23885: cx23885[0]:   cnt2_reg: 0x00000003
+
+Included is checks of the TC_REQ and TC_REQ_SET registers during states of board
+initialization, reset, DMA start, and DMA stop. If both registers are set, this
+indicates a stall in the RiSC engine, at which point the bridge error is cleared.
+
+After application all models work on Ryzen, occasionally yielding:
+
+cx23885: cx23885_clear_bridge_error: dma in progress detected 0x00000001 0x00000001, clearing
+
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -32,8 +103,8 @@ index 805a9fd..6ad0700 100644
 +		cx_read(VBI_C_DMA);
 +
 +		dev_warn(&dev->pci->dev,
-+			"%s() dma in progress detected 0x%08x 0x%08x, clearing\n",
-+			__func__, reg1_val, reg2_val);
++			"dma in progress detected 0x%08x 0x%08x, clearing\n",
++			reg1_val, reg2_val);
 +	}
 +}
 +
@@ -114,7 +185,7 @@ index 805a9fd..6ad0700 100644
  	/* Stop interrupts and DMA */
  	cx_clear(port->reg_ts_int_msk, port->ts_int_msk_val);
  	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
-+	// just in case wait for any dma to complete before allowing dealloc
++	/* just in case wait for any dma to complete before allowing dealloc */
 +	mdelay(20);
 +	for(delay=0; delay < 100; delay++) {
 +		reg1_val = cx_read(TC_REQ);
