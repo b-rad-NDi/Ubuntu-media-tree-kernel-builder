@@ -1,7 +1,7 @@
-From 8ebb72925d95ae4e7015238409ab74d477e3d12d Mon Sep 17 00:00:00 2001
+From 9369639cd639a4f2c8c8d010ef45e5221ea2557f Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
-Date: Wed, 14 Feb 2018 15:48:49 -0600
-Subject: [PATCH] si2168: Include b 4.0-11 when checking firmware version
+Date: Fri, 9 Mar 2018 13:54:24 -0600
+Subject: [PATCH 3/5] si2168: Include b 4.0-11 when checking firmware version
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -9,13 +9,13 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 5e70db6..530819a 100644
+index f889e35..03fbe75 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -661,7 +661,7 @@ static int si2168_sleep(struct dvb_frontend *fe)
+@@ -670,7 +670,7 @@ static int si2168_sleep(struct dvb_frontend *fe)
  		goto err;
  
- 	/* Firmware B 4.0-11 or later loses warm state during sleep */
+ 	/* Firmware later than B 4.0-11 loses warm state during sleep */
 -	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
 +	if (dev->version >= ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
  		dev->warm = false;

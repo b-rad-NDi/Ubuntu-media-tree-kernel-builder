@@ -1,4 +1,4 @@
-From 7c9433747ac9e35961d847b22057db65c7b97516 Mon Sep 17 00:00:00 2001
+From b842978c2e60d55ff26776436521c10060d3af30 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
 Subject: [PATCH 08/11] cx23885: Add analog tuner support to Hauppauge QuadHD
@@ -13,7 +13,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  3 files changed, 55 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 4c0d766..02f1f72 100644
+index 3a1c551..854bcf2 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
 @@ -767,24 +767,48 @@ struct cx23885_board cx23885_boards[] = {
@@ -70,7 +70,7 @@ index 4c0d766..02f1f72 100644
  	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
  		.name		= "Hauppauge WinTV-HVR-1265(161111)",
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 2bd45ad..e8b152a 100644
+index 7bb1feb..f31e615 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -2382,6 +2382,16 @@ static int dvb_register(struct cx23885_tsport *port)

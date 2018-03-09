@@ -1,4 +1,4 @@
-From 587eb16925c5d28313eda7a9552aafd0236302ac Mon Sep 17 00:00:00 2001
+From 06dab3a182cd229fbca6dd891df5a030a7232e59 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 11:59:28 -0600
 Subject: [PATCH 02/11] si2157: Check error status bit on cmd execute

@@ -1,7 +1,7 @@
-From 63ead77f345bcd1c5bfaa032dd5d70691ff76ce0 Mon Sep 17 00:00:00 2001
+From 4ebf72a7f4e7184286c158a9380380c04b893d33 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Mon, 26 Feb 2018 15:09:52 -0600
-Subject: [PATCH 48/49] lgdt3306a: Add CNR v5 stat
+Subject: [PATCH 2/3] lgdt3306a: Add CNR v5 stat
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index 84edefebe869..bf7e80f86c55 100644
+index 7eb4e14..4955f72 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
 @@ -855,6 +855,7 @@ static int lgdt3306a_fe_sleep(struct dvb_frontend *fe)
@@ -55,5 +55,5 @@ index 84edefebe869..bf7e80f86c55 100644
  	return ret;
  }
 -- 
-2.14.1
+2.7.4
 

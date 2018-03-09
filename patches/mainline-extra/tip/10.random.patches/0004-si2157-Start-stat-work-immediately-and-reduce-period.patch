@@ -1,7 +1,7 @@
-From 0dca2edb0ea40f0babc6080fa5346a5a72315135 Mon Sep 17 00:00:00 2001
+From fa9df567739bf6f417b903ad2a0d49b112f2dbd9 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 15:54:38 -0600
-Subject: [PATCH] si2157: Start stat work immediately and reduce period
+Subject: [PATCH 4/5] si2157: Start stat work immediately and reduce period
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---

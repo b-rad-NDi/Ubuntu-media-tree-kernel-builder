@@ -1,4 +1,4 @@
-From f00c5f4071ef436a285f5ab58047b361716f66a9 Mon Sep 17 00:00:00 2001
+From 0a3437b1e6e0412343da69d947d469e489d909c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 12:07:07 -0600
 Subject: [PATCH 03/11] si2157: Better check for running tuner in init

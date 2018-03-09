@@ -1,7 +1,7 @@
-From fa36a6cc2d6cae79883995fdfc91640d082b9608 Mon Sep 17 00:00:00 2001
+From 1180a8a2fd5a92e9197cf35d66a24a29fb961ef5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 1 Mar 2018 14:28:09 -0600
-Subject: [PATCH 49/49] si2168: Add some various v3 stat ioctls
+Subject: [PATCH 3/3] si2168: Add some various v3 stat ioctls
 
 Signed-off-by: Brad Love <hidden@email.co>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Brad Love <hidden@email.co>
  1 file changed, 201 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 63242e386cc1..2a9097836168 100644
+index b232132..98ede67 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -110,13 +110,12 @@ static int si2168_ts_bus_ctrl(struct dvb_frontend *fe, int acquire)
@@ -281,5 +281,5 @@ index 63242e386cc1..2a9097836168 100644
  
  static int si2168_probe(struct i2c_client *client,
 -- 
-2.14.1
+2.7.4
 

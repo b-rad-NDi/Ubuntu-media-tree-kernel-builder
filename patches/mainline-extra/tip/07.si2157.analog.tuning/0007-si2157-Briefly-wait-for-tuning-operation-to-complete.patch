@@ -1,4 +1,4 @@
-From 6e519ee10bdb302f94befdec41ff363a881aee01 Mon Sep 17 00:00:00 2001
+From 77620f37d7ab6fe70019601b50e4b5d3db3e3e55 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 6 Feb 2018 18:51:17 -0600
 Subject: [PATCH 07/11] si2157: Briefly wait for tuning operation to complete

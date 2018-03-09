@@ -1,4 +1,4 @@
-From 0ff2c03cdc352e3bb27893bff994f0f722a1e65f Mon Sep 17 00:00:00 2001
+From 839859c8982d20676aa34b92a7391d8c361c8456 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 14:32:03 -0600
 Subject: [PATCH 11/11] cx23885: Add i2c device analog tuner support

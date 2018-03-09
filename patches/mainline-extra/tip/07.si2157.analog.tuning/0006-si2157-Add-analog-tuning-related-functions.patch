@@ -1,4 +1,4 @@
-From 3d2fe09e122747c24935799e82c681afc4c9a9f9 Mon Sep 17 00:00:00 2001
+From 62e30c929cdc7542190b9c7d79a889847481af4b Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 13:21:43 -0600
 Subject: [PATCH 06/11] si2157: Add analog tuning related functions

@@ -1,4 +1,4 @@
-From 052fa26bdc0bee5fc8a14741c52773084f40b048 Mon Sep 17 00:00:00 2001
+From 24d6fb99b96737ce7acce07379786bb9e9420ab0 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 7 Feb 2018 13:46:24 -0600
 Subject: [PATCH 10/11] cx231xx: Add i2c device analog tuner support
@@ -71,7 +71,7 @@ index fdd3c22..25aa7bb 100644
  		break;
  
 diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
-index 0b6ac50..3c28411 100644
+index 5b321b8..1fa929c 100644
 --- a/drivers/media/usb/cx231xx/cx231xx-video.c
 +++ b/drivers/media/usb/cx231xx/cx231xx-video.c
 @@ -1293,7 +1293,7 @@ int cx231xx_s_frequency(struct file *file, void *priv,
