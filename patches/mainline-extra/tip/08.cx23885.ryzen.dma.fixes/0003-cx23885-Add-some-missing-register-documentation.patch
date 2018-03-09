@@ -1,0 +1,34 @@
+From 69d7ec950df0139d73b0142fdf6494879d1d7914 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 9 Mar 2018 13:02:01 -0600
+Subject: [PATCH 3/3] cx23885: Add some missing register documentation
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index 6ad0700..8364ecb 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -1452,8 +1452,15 @@ int cx23885_start_dma(struct cx23885_tsport *port,
+ 		reg = reg | 0xa;
+ 		cx_write(PAD_CTRL, reg);
+ 
+-		/* FIXME and these two registers should be documented. */
++		/* Sets MOE_CLK_DIS to disable MoE clock */
++		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+ 		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
++
++		/* ALT_GPIO_ALT_SET: GPIO[0]
++		 * IR_ALT_TX_SEL: GPIO[1]
++		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
++		 * GPIO0_ALT_SEL: VIP_656_CLK
++		 */
+ 		cx_write(ALT_PIN_OUT_SEL, 0x10100045);
+ 	}
+ 
+-- 
+2.7.4
+

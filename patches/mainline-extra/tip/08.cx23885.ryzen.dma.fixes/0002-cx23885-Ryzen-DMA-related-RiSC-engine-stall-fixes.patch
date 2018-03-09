@@ -1,0 +1,210 @@
+From 31bab907e08c01bfb68842bdb38ce337d59c346c Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 9 Mar 2018 13:01:27 -0600
+Subject: [PATCH 2/3] cx23885: Ryzen DMA related RiSC engine stall fixes
+
+This bug affects all of Hauppauge QuadHD boards
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/pci/cx23885/cx23885-core.c | 66 ++++++++++++++++++++++++++++++--
+ drivers/media/pci/cx23885/cx23885-reg.h  | 14 +++++++
+ 2 files changed, 76 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index 805a9fd..6ad0700 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -602,6 +602,24 @@ static void cx23885_risc_disasm(struct cx23885_tsport *port,
+ 	}
+ }
+ 
++static void cx23885_clear_bridge_error(struct cx23885_dev *dev)
++{
++	uint32_t reg1_val = cx_read(TC_REQ); /* read-only */
++	uint32_t reg2_val = cx_read(TC_REQ_SET);
++
++	if (reg1_val && reg2_val) {
++		cx_write(TC_REQ_SET, reg1_val);
++		cx_read(VID_B_DMA);
++		cx_read(VBI_B_DMA);
++		cx_read(VID_C_DMA);
++		cx_read(VBI_C_DMA);
++
++		dev_warn(&dev->pci->dev,
++			"%s() dma in progress detected 0x%08x 0x%08x, clearing\n",
++			__func__, reg1_val, reg2_val);
++	}
++}
++
+ static void cx23885_shutdown(struct cx23885_dev *dev)
+ {
+ 	/* disable RISC controller */
+@@ -647,6 +665,8 @@ static void cx23885_reset(struct cx23885_dev *dev)
+ 	cx_write(CLK_DELAY, cx_read(CLK_DELAY) & 0x80000000);
+ 	cx_write(PAD_CTRL, 0x00500300);
+ 
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
+ 	mdelay(100);
+ 
+ 	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+@@ -663,6 +683,11 @@ static void cx23885_reset(struct cx23885_dev *dev)
+ 	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+ 
+ 	cx23885_gpio_setup(dev);
++
++	cx23885_irq_get_mask(dev);
++
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
+ }
+ 
+ 
+@@ -677,6 +702,8 @@ static int cx23885_pci_quirks(struct cx23885_dev *dev)
+ 	if (dev->bridge == CX23885_BRIDGE_885)
+ 		cx_clear(RDR_TLCTL0, 1 << 4);
+ 
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
+ 	return 0;
+ }
+ 
+@@ -1353,6 +1380,9 @@ int cx23885_start_dma(struct cx23885_tsport *port,
+ 	dprintk(1, "%s() w: %d, h: %d, f: %d\n", __func__,
+ 		dev->width, dev->height, dev->field);
+ 
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
++
+ 	/* Stop the fifo and risc engine for this port */
+ 	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+ 
+@@ -1443,6 +1473,8 @@ int cx23885_start_dma(struct cx23885_tsport *port,
+ 	}
+ 
+ 	cx_set(DEV_CNTRL2, (1<<5)); /* Enable RISC controller */
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
+ 
+ 	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+ 		cx23885_av_clk(dev, 1);
+@@ -1450,6 +1482,11 @@ int cx23885_start_dma(struct cx23885_tsport *port,
+ 	if (debug > 4)
+ 		cx23885_tsport_reg_dump(port);
+ 
++	cx23885_irq_get_mask(dev);
++
++	/* clear dma in progress */
++	cx23885_clear_bridge_error(dev);
++
+ 	return 0;
+ }
+ 
+@@ -1457,15 +1494,29 @@ static int cx23885_stop_dma(struct cx23885_tsport *port)
+ {
+ 	struct cx23885_dev *dev = port->dev;
+ 	u32 reg;
++	int delay = 0;
++	uint32_t reg1_val;
++	uint32_t reg2_val;
+ 
+ 	dprintk(1, "%s()\n", __func__);
+ 
+ 	/* Stop interrupts and DMA */
+ 	cx_clear(port->reg_ts_int_msk, port->ts_int_msk_val);
+ 	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
++	// just in case wait for any dma to complete before allowing dealloc
++	mdelay(20);
++	for(delay=0; delay < 100; delay++) {
++		reg1_val = cx_read(TC_REQ);
++		reg2_val = cx_read(TC_REQ_SET);
++		if (reg1_val == 0 || reg2_val == 0) {
++			break;
++		}
++		mdelay(1);
++	}
++	dev_dbg(&dev->pci->dev, "delay=%d reg1=0x%08x reg2=0x%08x\n",
++		delay, reg1_val, reg2_val);
+ 
+ 	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+-
+ 		reg = cx_read(PAD_CTRL);
+ 
+ 		/* Set TS1_OE */
+@@ -1476,7 +1527,6 @@ static int cx23885_stop_dma(struct cx23885_tsport *port)
+ 		cx_write(PAD_CTRL, reg);
+ 		cx_write(port->reg_src_sel, 0);
+ 		cx_write(port->reg_gen_ctrl, 8);
+-
+ 	}
+ 
+ 	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+@@ -1705,6 +1755,12 @@ static irqreturn_t cx23885_irq(int irq, void *dev_id)
+ 
+ 	pci_status = cx_read(PCI_INT_STAT);
+ 	pci_mask = cx23885_irq_get_mask(dev);
++	if ((pci_status & pci_mask) == 0) {
++		dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
++			pci_status, pci_mask);
++		goto out;
++	}
++
+ 	vida_status = cx_read(VID_A_INT_STAT);
+ 	vida_mask = cx_read(VID_A_INT_MSK);
+ 	audint_status = cx_read(AUDIO_INT_INT_STAT);
+@@ -1714,7 +1770,9 @@ static irqreturn_t cx23885_irq(int irq, void *dev_id)
+ 	ts2_status = cx_read(VID_C_INT_STAT);
+ 	ts2_mask = cx_read(VID_C_INT_MSK);
+ 
+-	if ((pci_status == 0) && (ts2_status == 0) && (ts1_status == 0))
++	if (((pci_status & pci_mask) == 0) &&
++		((ts2_status & ts2_mask) == 0) &&
++		((ts1_status & ts1_mask) == 0))
+ 		goto out;
+ 
+ 	vida_count = cx_read(VID_A_GPCNT);
+@@ -1841,7 +1899,7 @@ static irqreturn_t cx23885_irq(int irq, void *dev_id)
+ 	}
+ 
+ 	if (handled)
+-		cx_write(PCI_INT_STAT, pci_status);
++		cx_write(PCI_INT_STAT, pci_status & pci_mask);
+ out:
+ 	return IRQ_RETVAL(handled);
+ }
+diff --git a/drivers/media/pci/cx23885/cx23885-reg.h b/drivers/media/pci/cx23885/cx23885-reg.h
+index 2d3cbaf..08cec8d 100644
+--- a/drivers/media/pci/cx23885/cx23885-reg.h
++++ b/drivers/media/pci/cx23885/cx23885-reg.h
+@@ -288,6 +288,18 @@ Channel manager Data Structure entry = 20 DWORD
+ #define AUDIO_EXT_INT_MSTAT	0x00040068
+ #define AUDIO_EXT_INT_SSTAT	0x0004006C
+ 
++/* Bits [7:0] set in both TC_REQ and TC_REQ_SET
++ * indicate a stall in the RISC engine for a
++ * particular rider traffic class. This causes
++ * the 885 and 888 bridges (unknown about 887)
++ * to become inoperable. Setting bits in
++ * TC_REQ_SET resets the corresponding bits
++ * in TC_REQ (and TC_REQ_SET) allowing
++ * operation to continue.
++ */
++#define TC_REQ		0x00040090
++#define TC_REQ_SET	0x00040094
++
+ #define RDR_CFG0	0x00050000
+ #define RDR_CFG1	0x00050004
+ #define RDR_CFG2	0x00050008
+@@ -386,6 +398,8 @@ Channel manager Data Structure entry = 20 DWORD
+ #define VID_B_PIXEL_FRMT	0x00130184
+ 
+ /* Video C Interface */
++#define VID_C_DMA		0x00130200
++#define VBI_C_DMA		0x00130208
+ #define VID_C_GPCNT		0x00130220
+ #define VID_C_GPCNT_CTL		0x00130230
+ #define VBI_C_GPCNT_CTL		0x00130234
+-- 
+2.7.4
+
