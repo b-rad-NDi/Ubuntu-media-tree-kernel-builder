@@ -1,18 +1,19 @@
-From a19ab4999d028f146a6fc775bd79a863f656e4c6 Mon Sep 17 00:00:00 2001
+From 6120d9947287f6075f220b718b58d9c295d3b386 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Feb 2018 17:17:35 -0600
-Subject: [PATCH 01/41] lgdt3306a: v4.6 i2c mux backport
+Date: Fri, 9 Mar 2018 14:42:13 -0600
+Subject: [PATCH] lgdt3306a: v4.6 i2c mux backport
 
+Signed-off-by: Brad Love <hidden@email.co>
 ---
  drivers/media/dvb-frontends/lgdt3306a.c | 157 +++++++++++++++++++++++++++-----
  drivers/media/dvb-frontends/lgdt3306a.h |   2 +
  2 files changed, 138 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index 2e1e565..ac9d139 100644
+index ab16d3a..2988262 100644
 --- a/drivers/media/dvb-frontends/lgdt3306a.c
 +++ b/drivers/media/dvb-frontends/lgdt3306a.c
-@@ -68,8 +68,6 @@ struct lgdt3306a_state {
+@@ -79,8 +79,6 @@ struct lgdt3306a_state {
  	enum fe_modulation current_modulation;
  	u32 current_frequency;
  	u32 snr;
@@ -21,7 +22,7 @@ index 2e1e565..ac9d139 100644
  };
  
  /*
-@@ -2136,20 +2134,142 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
+@@ -2182,20 +2180,142 @@ static const struct dvb_frontend_ops lgdt3306a_ops = {
  	.search               = lgdt3306a_search,
  };
  
@@ -172,8 +173,8 @@ index 2e1e565..ac9d139 100644
  }
  
  static int lgdt3306a_probe(struct i2c_client *client,
-@@ -2180,21 +2300,16 @@ static int lgdt3306a_probe(struct i2c_client *client,
- 	state = fe->demodulator_priv;
+@@ -2227,21 +2347,16 @@ static int lgdt3306a_probe(struct i2c_client *client,
+ 	state->frontend.ops.release = NULL;
  
  	/* create mux i2c adapter for tuner */
 -	state->muxc = i2c_mux_alloc(client->adapter, &client->dev,
@@ -198,8 +199,8 @@ index 2e1e565..ac9d139 100644
 +	*config->i2c_adapter = state->i2c_adap;
  	*config->fe = fe;
  
- 	return 0;
-@@ -2212,7 +2327,7 @@ static int lgdt3306a_remove(struct i2c_client *client)
+ 	dev_info(&client->dev, "LG Electronics LGDT3306A successfully identified\n");
+@@ -2261,7 +2376,7 @@ static int lgdt3306a_remove(struct i2c_client *client)
  {
  	struct lgdt3306a_state *state = i2c_get_clientdata(client);
  
