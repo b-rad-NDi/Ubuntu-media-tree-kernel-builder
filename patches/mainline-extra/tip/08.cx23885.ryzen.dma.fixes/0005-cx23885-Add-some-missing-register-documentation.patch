@@ -1,7 +1,7 @@
-From 69d7ec950df0139d73b0142fdf6494879d1d7914 Mon Sep 17 00:00:00 2001
+From 56098c5a4b1ec7ad74aeb417bd4a2ecb9967eb91 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 9 Mar 2018 13:02:01 -0600
-Subject: [PATCH 3/3] cx23885: Add some missing register documentation
+Subject: [PATCH 5/5] cx23885: Add some missing register documentation
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 6ad0700..8364ecb 100644
+index 25b38d11cf80..8713b04d9f28 100644
 --- a/drivers/media/pci/cx23885/cx23885-core.c
 +++ b/drivers/media/pci/cx23885/cx23885-core.c
-@@ -1452,8 +1452,15 @@ int cx23885_start_dma(struct cx23885_tsport *port,
+@@ -1470,8 +1470,15 @@ int cx23885_start_dma(struct cx23885_tsport *port,
  		reg = reg | 0xa;
  		cx_write(PAD_CTRL, reg);
  
@@ -30,5 +30,5 @@ index 6ad0700..8364ecb 100644
  	}
  
 -- 
-2.7.4
+2.15.1
 
