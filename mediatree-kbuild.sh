@@ -448,9 +448,6 @@ function apply_extra_patches()
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
 	for i in `ls -d ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/* | sort` ; do
-		if [ "`basename $i`" == "0000-cover-letter.patch" ]; then
-			continue
-		fi
 		echo "#############################################################"
 		echo "#############################################################"
 		echo "### `basename $i` ###"
