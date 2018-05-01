@@ -91,7 +91,7 @@ index ca1637e..b84ca8b 100644
  	if (ret)
  		goto err;
  
-+	c->delivery_system = sys; /* update delivery system in case auto-PLP */
++	//c->delivery_system = sys; /* update delivery system in case auto-PLP */
 +
  	switch ((cmd.args[2] >> 1) & 0x03) {
  	case 0x01:
