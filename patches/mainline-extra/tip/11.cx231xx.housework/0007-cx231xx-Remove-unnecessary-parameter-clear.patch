@@ -1,0 +1,30 @@
+From 020c7d16e1a6c1962b3187b6df5f783dc9cefc5d Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 16 Apr 2018 18:17:06 -0500
+Subject: [PATCH v2 7/9] cx231xx: Remove unnecessary parameter clear
+
+The default is now 0, no need to override
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+Changes since v1:
+- regen
+
+ drivers/media/usb/cx231xx/cx231xx-dvb.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-dvb.c b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+index 51314c3..5c058c6 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-dvb.c
++++ b/drivers/media/usb/cx231xx/cx231xx-dvb.c
+@@ -1049,7 +1049,6 @@ static int dvb_init(struct cx231xx *dev)
+ 		lgdt3306a_config = hauppauge_955q_lgdt3306a_config;
+ 		lgdt3306a_config.fe = &dev->dvb->frontend[0];
+ 		lgdt3306a_config.i2c_adapter = &adapter;
+-		lgdt3306a_config.deny_i2c_rptr = 0;
+ 
+ 		/* perform tuner probe/init/attach */
+ 		client = dvb_module_probe("lgdt3306a", NULL, demod_i2c,
+-- 
+2.7.4
+

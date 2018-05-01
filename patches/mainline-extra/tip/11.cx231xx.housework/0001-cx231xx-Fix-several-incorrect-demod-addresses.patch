@@ -1,0 +1,47 @@
+From 08fa68b04d2d1660c4a89d9b19a6889063ccc32f Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 16 Apr 2018 16:43:03 -0500
+Subject: [PATCH v2 1/9] cx231xx: Fix several incorrect demod addresses
+
+Now the board values match the hard coded
+constants used in the dvb initialization.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/cx231xx/cx231xx-cards.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-cards.c b/drivers/media/usb/cx231xx/cx231xx-cards.c
+index c76b210..5b54e73 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-cards.c
++++ b/drivers/media/usb/cx231xx/cx231xx-cards.c
+@@ -715,7 +715,7 @@ struct cx231xx_board cx231xx_boards[] = {
+ 		.tuner_i2c_master = I2C_1_MUX_3,
+ 		.demod_i2c_master = I2C_1_MUX_3,
+ 		.has_dvb = 1,
+-		.demod_addr = 0x0e,
++		.demod_addr = 0x64, /* 0xc8 >> 1 */
+ 		.norm = V4L2_STD_PAL,
+ 
+ 		.input = {{
+@@ -754,7 +754,7 @@ struct cx231xx_board cx231xx_boards[] = {
+ 		.tuner_i2c_master = I2C_1_MUX_3,
+ 		.demod_i2c_master = I2C_1_MUX_3,
+ 		.has_dvb = 1,
+-		.demod_addr = 0x0e,
++		.demod_addr = 0x64, /* 0xc8 >> 1 */
+ 		.norm = V4L2_STD_PAL,
+ 
+ 		.input = {{
+@@ -793,7 +793,7 @@ struct cx231xx_board cx231xx_boards[] = {
+ 		.tuner_i2c_master = I2C_1_MUX_3,
+ 		.demod_i2c_master = I2C_1_MUX_3,
+ 		.has_dvb = 1,
+-		.demod_addr = 0x0e,
++		.demod_addr = 0x59, /* 0xb2 >> 1 */
+ 		.norm = V4L2_STD_NTSC,
+ 
+ 		.input = {{
+-- 
+2.7.4
+

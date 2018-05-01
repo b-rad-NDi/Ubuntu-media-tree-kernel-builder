@@ -1,0 +1,27 @@
+From babd40ce88cb69fd1e5e3d5ed5643b88eb2e642b Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Tue, 17 Apr 2018 11:30:55 -0500
+Subject: [PATCH v2 9/9] cx231xx: Add I2C_MUX dependency
+
+cx231xx requires i2c mux adapter capability.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/cx231xx/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
+index 8a6acc2..98890a3 100644
+--- a/drivers/media/usb/cx231xx/Kconfig
++++ b/drivers/media/usb/cx231xx/Kconfig
+@@ -1,6 +1,6 @@
+ config VIDEO_CX231XX
+ 	tristate "Conexant cx231xx USB video capture support"
+-	depends on VIDEO_DEV && I2C
++	depends on VIDEO_DEV && I2C && I2C_MUX
+ 	select VIDEO_TUNER
+ 	select VIDEO_TVEEPROM
+ 	select VIDEOBUF_VMALLOC
+-- 
+2.7.4
+
