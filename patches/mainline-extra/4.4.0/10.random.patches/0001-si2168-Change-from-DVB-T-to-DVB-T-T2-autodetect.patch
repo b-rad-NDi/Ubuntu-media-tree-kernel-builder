@@ -48,7 +48,7 @@ index ca1637e..b84ca8b 100644
 -	switch (c->delivery_system) {
 +	sys = c->delivery_system;
 +
-+	/* check if we found DVBT2 during DVBT tuning */
++	/* check if we found DVB-T2 during DVB-T tuning */
 +	if (dvbt_auto_plp && sys == SYS_DVBT) {
 +		memcpy(cmd.args, "\x87\x01", 2);
 +		cmd.wlen = 2;
