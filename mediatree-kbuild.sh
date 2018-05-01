@@ -416,30 +416,6 @@ function apply_patches()
 	[ $? != 0 ] && echo "patch failure, exiting" && return 1
 
 	###################################################
-	############# media tree build fixes ##############
-	echo "#############################################################"
-	apply_patch_git_am 1 ${KB_PATCH_DIR}/0002-Apply-build-fixes-to-media-tree.patch
-	[ $? != 0 ] && echo "patch failure, exiting" && return 1
-
-	###################################################
-	######### 'New' LinuxTV kernel options ############
-	echo "#############################################################"
-	apply_patch_git_am 1 ${KB_PATCH_DIR}/0003-Add-new-media-tree-kernel-config.patch
-	[ $? != 0 ] && echo "patch failure, exiting" && return 1
-
-	###################################################
-	########## Ubuntu mainline build fixes ############
-	echo "#############################################################"
-	apply_patch_git_am 1 ${KB_PATCH_DIR}/0004-Mainline-Ubuntu-build-fixes.patch
-	[ $? != 0 ] && echo "patch failure, exiting" && return 1
-
-	###################################################
-	########### Ubuntu packaging patches ##############
-	echo "#############################################################"
-	apply_patch_git_am 1 ${KB_PATCH_DIR}/0005-Packaging-updates.patch
-	[ $? != 0 ] && echo "patch failure, exiting" && return 1
-
-	###################################################
 	########## Add build system changelog #############
 	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
@@ -448,7 +424,7 @@ function apply_patches()
 		git commit -m 'Changelog'
 		unset UPDATE_MT_KBUILD_VER
 	else
-		apply_patch_git_am 1 ${KB_PATCH_DIR}/0006-Changelog.patch
+		apply_patch_git_am 1 ${KB_PATCH_DIR}/0002-Changelog.patch
 		if [ $? != 0 ] ; then
 			echo "Changelog patch failure, regenerating..."
 			regen_changelog "`date +%Y%m%d%H%M`"
@@ -457,6 +433,12 @@ function apply_patches()
 		fi
 	fi
 	update_identity
+
+	for i in ${KB_PATCH_DIR}/000[3456789]*patch ; do
+		echo "#############################################################"
+		apply_patch_git_am 1 "$i"
+		[ $? != 0 ] && echo "patch failure, exiting" && return 1
+	done
 
 	return 0
 }
