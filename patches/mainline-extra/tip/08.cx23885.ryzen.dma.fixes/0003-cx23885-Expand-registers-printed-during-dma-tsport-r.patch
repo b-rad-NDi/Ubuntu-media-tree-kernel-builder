@@ -39,9 +39,9 @@ index ca2601e9f5a8..8793602252f7 100644
 -	if (debug > 4)
 +	if (debug > 4) {
  		cx23885_tsport_reg_dump(port);
-+		cx23885_reg_dump(port, DEV_CNTRL2, 0x100);
-+		cx23885_reg_dump(port, VID_B_GPCNT, 0xe0);
-+		cx23885_reg_dump(port, VID_C_GPCNT, 0xe0);
++		//cx23885_reg_dump(port, DEV_CNTRL2, 0x100);
++		//cx23885_reg_dump(port, VID_B_GPCNT, 0xe0);
++		//cx23885_reg_dump(port, VID_C_GPCNT, 0xe0);
 +	}
  
  	return 0;

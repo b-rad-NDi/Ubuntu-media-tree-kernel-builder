@@ -50,7 +50,7 @@ index 019fac49db5b..3454e68e44d7 100644
 +			dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
 +				buf->vb.vb2_buf.index, count, q->count);
 +		} else {
-+			dprintk(7, "[%p/%d] wakeup reg=%d buf=%d\n", buf
++			dprintk(7, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
 +				buf->vb.vb2_buf.index, count, q->count);
 +		}
 +		list_del(&buf->queue);
