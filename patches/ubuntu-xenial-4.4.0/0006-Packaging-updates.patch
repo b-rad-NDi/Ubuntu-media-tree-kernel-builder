@@ -1,7 +1,7 @@
-From 79b03e73a0177a61aedd0b9c41b930aab43f4d6a Mon Sep 17 00:00:00 2001
+From a37727a42c9a3d17b79a177907901f812234e59b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Feb 2018 17:45:35 -0600
-Subject: [PATCH 5/6] Packaging updates
+Date: Wed, 2 May 2018 14:16:20 -0500
+Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
@@ -20,7 +20,7 @@ Subject: [PATCH 5/6] Packaging updates
  13 files changed, 80 insertions(+), 83 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index 5b7315a..0408915 100644
+index b57e52d..b9ea9b1 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
 @@ -52,7 +52,7 @@ Architecture: ARCH
@@ -34,7 +34,7 @@ index 5b7315a..0408915 100644
   .
 @@ -75,7 +75,7 @@ Section: devel
  Priority: optional
- Depends: ${misc:Depends}, linux-headers-PKGVER-ABINUM, ${shlibs:Depends}
+ Depends: ${misc:Depends}, SRCPKGNAME-headers-PKGVER-ABINUM, ${shlibs:Depends}
  Provides: linux-headers, linux-headers-3.0
 -Description: Linux kernel headers for version PKGVER on DESC
 +Description: Linux kernel headers with slipstreamed mediatree drivers for version PKGVER on DESC
@@ -329,7 +329,7 @@ index 5b468ac..dfc7a15 100644
  
  do_zfs		= true
 diff --git a/debian/rules b/debian/rules
-index 4b2cabd..595a5e3 100755
+index 3b4b5c0..0a6a17d 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,6 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -341,7 +341,7 @@ index 4b2cabd..595a5e3 100755
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 6f40012..66c28bd 100644
+index c58dc6f..4a592b0 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -27,6 +27,15 @@ family=ubuntu
@@ -386,10 +386,10 @@ index 6f40012..66c28bd 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 0dc692f..be64323 100644
+index eab72d2..ed1f29b 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -723,10 +723,14 @@ build-arch: $(build-arch-deps-true)
+@@ -727,10 +727,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
