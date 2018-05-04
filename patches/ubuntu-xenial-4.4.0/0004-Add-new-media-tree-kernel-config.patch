@@ -1,17 +1,44 @@
-From 4b5a46bd07a7837f578f27d3b3153df7bf3b22e8 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 17 Mar 2017 01:36:57 +0000
-Subject: [PATCH 3/6] Add 'new' media tree kernel config
+From 51979538a0da4a55131d8a693fbf5dfa0b8b5a4c Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 2 May 2018 14:13:54 -0500
+Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 42 +++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ debian.master/config/config.common.ubuntu | 51 +++++++++++++++++++++++++++++--
+ 1 file changed, 48 insertions(+), 3 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 72734ae..3d41b1d 100644
+index 151cd37..23008a3 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -9119,3 +9119,45 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -2052,7 +2052,7 @@ CONFIG_DUMMY_CONSOLE=y
+ CONFIG_DUMMY_CONSOLE_COLUMNS=80
+ CONFIG_DUMMY_CONSOLE_ROWS=25
+ CONFIG_DVB_A8293=m
+-CONFIG_DVB_AF9013=m
++# CONFIG_DVB_AF9013 is not set
+ CONFIG_DVB_AF9033=m
+ CONFIG_DVB_AS102=m
+ CONFIG_DVB_AS102_FE=m
+@@ -2190,7 +2190,7 @@ CONFIG_DVB_USB=m
+ CONFIG_DVB_USB_A800=m
+ CONFIG_DVB_USB_AF9005=m
+ CONFIG_DVB_USB_AF9005_REMOTE=m
+-CONFIG_DVB_USB_AF9015=m
++# CONFIG_DVB_USB_AF9015 is not set
+ CONFIG_DVB_USB_AF9035=m
+ CONFIG_DVB_USB_ANYSEE=m
+ CONFIG_DVB_USB_AU6610=m
+@@ -7058,7 +7058,7 @@ CONFIG_SKGE=m
+ CONFIG_SKGE_GENESIS=y
+ CONFIG_SKY2=m
+ # CONFIG_SKY2_DEBUG is not set
+-# CONFIG_SLAB is not set
++CONFIG_SLAB=y
+ CONFIG_SLABINFO=y
+ CONFIG_SLHC=y
+ CONFIG_SLICOSS=m
+@@ -9122,3 +9122,48 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -56,6 +83,9 @@ index 72734ae..3d41b1d 100644
 +CONFIG_DVB_MMAP=y
 +# CONFIG_DVB_ULE_DEBUG is not set
 +CONFIG_VIDEO_IPU3_CIO2=m
++CONFIG_IR_IMON_DECODER=m
++CONFIG_IR_IMON_RAW=m
++CONFIG_CXD2880_SPI_DRV=m
 +
 -- 
 2.7.4
