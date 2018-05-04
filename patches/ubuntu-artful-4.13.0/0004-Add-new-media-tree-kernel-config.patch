@@ -1,17 +1,17 @@
-From 3cabf1213057a3e8de7df1a0a36806d166e25fbb Mon Sep 17 00:00:00 2001
+From de349c3bed13d79bbafff5e4e405fa6b099649c5 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 25 Oct 2017 12:32:28 +0000
-Subject: [PATCH 3/6] Add 'new' media tree kernel config
+Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ debian.master/config/config.common.ubuntu | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 226891720bd8..3f10601fd358 100644
+index f0c81a697573..5dd2b7570946 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -10266,3 +10266,13 @@ CONFIG_ZSMALLOC=y
+@@ -10271,3 +10271,16 @@ CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -24,6 +24,9 @@ index 226891720bd8..3f10601fd358 100644
 +CONFIG_DVB_MMAP=y
 +# CONFIG_DVB_ULE_DEBUG is not set
 +CONFIG_VIDEO_IPU3_CIO2=m
++CONFIG_IR_IMON_DECODER=m
++CONFIG_IR_IMON_RAW=m
++CONFIG_CXD2880_SPI_DRV=m
 +
 -- 
 2.14.1

@@ -1,24 +1,24 @@
-From f383cf5460f9422206142ec7d4ddc788cd316030 Mon Sep 17 00:00:00 2001
+From e1feb3f1d187f51fe95ad00223546f5324765148 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 01 Mar 2018 16:20:00 -0600
-Subject: [PATCH 6/6] Changelog
+Date: Tue, 1 May 2018 21:09:10 -0500
+Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 70 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ debian.master/changelog | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 53f6c9e3189a..03e9d0c1d1ce 100644
+index 8202211e55d0..9194fbf7f830 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,73 @@
-+linux (4.13.0-36201803011620.0+mediatree+hauppauge) artful; urgency=low
+@@ -1,3 +1,24 @@
++linux (4.13.0-39201805012109.0+mediatree+hauppauge) artful; urgency=low
 +
 +  * Ubuntu kernel git clone
-+    - 4.13.0-36.40 rev 1271826cfa70926f9322df430058071442993091
++    - 4.13.0-39.44 rev 097ff12866439027cae08b9a6a2f73bc2731750f
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2018-02-08-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2018-04-30-04-20.patch
 +    - 0002-Apply-build-fixes-to-media-tree.patch
 +    - 0003-Add-new-media-tree-kernel-config.patch
 +
@@ -30,61 +30,12 @@ index 53f6c9e3189a..03e9d0c1d1ce 100644
 +    - 0006-Changelog.patch
 +
 +  * Additional patches
-+    - 0001-em28xx-Hauppauge-DualHD-second-tuner-functionality.patch
-+    - 0002-em28xx-Bulk-transfer-implementation-fix.patch
-+    - 0003-em28xx-USB-bulk-packet-size-fix.patch
-+    - 0004-em28xx-Increase-max-em28xx-boards-to-max-dvb-adapter.patch
-+    - 0005-em28xx-Add-Hauppauge-SoloHD-DualHD-bulk-models.patch
-+    - 0006-em28xx-Enable-Hauppauge-SoloHD-rebranded-292e-SE.patch
-+    - 0007-lgdt3306a-Set-fe-ops.release-to-NULL-if-probed.patch
-+    - 0008-lgdt3306a-QAM-streaming-improvement.patch
-+    - 0009-lgdt3306a-Add-QAM-AUTO-support.patch
-+    - 0010-si2168-Add-spectrum-inversion-property.patch
-+    - 0011-em28xx-Enable-inversion-for-Solo-Dual-HD-DVB-models.patch
-+    - 0012-cx231xx-Add-support-for-Hauppauge-HVR-935C.patch
-+    - 0013-cx231xx-Add-support-for-Hauppauge-HVR-975.patch
-+    - 0014-cx231xx-Add-second-frontend-option.patch
-+    - 0015-cx231xx-Add-second-i2c-demod-client.patch
-+    - 0016-si2168-Add-ts-bus-control-turn-off-bus-on-sleep.patch
-+    - 0017-si2168-Announce-frontend-creation-failure.patch
-+    - 0018-lgdt3306a-Announce-successful-creation.patch
-+    - 0019-cx231xx-Add-second-i2c-demod-to-Hauppauge-975.patch
-+    - 0020-cx23885-Enable-new-Hauppauge-PCIe-ImpactVCBe-variant.patch
-+    - 0021-cx23885-Add-support-for-Hauppauge-PCIe-HVR1265-K4.patch
-+    - 0022-cx23885-Add-support-for-Hauppauge-PCIe-Starburst2.patch
-+    - 0023-cx23885-Add-support-for-new-Hauppauge-QuadHD-885.patch
-+    - 0024-cx23885-Fix-gpio-on-Hauppauge-QuadHD-PCIe-cards.patch
-+    - 0025-cx25840-Use-subdev-host-data-for-PLL-override.patch
-+    - 0026-cx23885-change-887-888-default-to-888.patch
-+    - 0027-cx23885-Set-subdev-host-data-to-clk_freq-pointer.patch
-+    - 0028-cx23885-Override-888-ImpactVCBe-crystal-frequency.patch
-+    - 0029-si2157-Enable-tuner-status-flags.patch
-+    - 0030-si2157-Check-error-status-bit-on-cmd-execute.patch
-+    - 0031-si2157-Better-check-for-running-tuner-in-init.patch
-+    - 0032-si2157-Add-clock-and-pin-setup-for-si2141.patch
-+    - 0033-cx25840-Remove-offset-from-chip-specific-registers.patch
-+    - 0034-si2157-Add-analog-tuning-related-functions.patch
-+    - 0035-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
-+    - 0036-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
-+    - 0037-cx23885-Add-analog-frontend-to-1265_K4.patch
-+    - 0038-cx231xx-Add-i2c-device-analog-support.patch
-+    - 0039-cx23885-Add-i2c-device-analog-tuner-support.patch
-+    - 0040-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
-+    - 0041-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
-+    - 0042-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
-+    - 0043-si2157-Start-stat-work-immediately-and-reduce-period.patch
-+    - 0044-si2168-different-default-that-windows-driver.patch
-+    - 0045-cx23885-Handle-additional-bufs-on-interrupt.patch
-+    - 0046-cx23885-DMA-stall-reset-required-on-Ryzen.patch
-+    - 0047-si2157-add-on-demand-rf-strength-func.patch
-+    - 0048-lgdt3306a-Add-CNR-v5-stat.patch
-+    - 0049-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 01 Mar 2018 16:20:00 -0600
++ -- Fake User <hidden@email.co>  Tue, 01 May 2018 21:09:10 -0500
 +
- linux (4.13.0-36.40) artful; urgency=medium
+ linux (4.13.0-39.44) artful; urgency=medium
  
-   * linux: 4.13.0-36.40 -proposed tracker (LP: #1750010)
+   * linux: 4.13.0-39.44 -proposed tracker (LP: #1761456)
 -- 
 2.14.1
 

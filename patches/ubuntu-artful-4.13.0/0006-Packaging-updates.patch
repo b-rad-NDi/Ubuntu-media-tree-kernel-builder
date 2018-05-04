@@ -1,7 +1,7 @@
-From ceaae38be633b361124268eaaa6ce81ae2499c3a Mon Sep 17 00:00:00 2001
+From 84b933d5bab7aaf1bd93c06e2f8820179b440527 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Feb 2018 17:48:18 -0600
-Subject: [PATCH 5/6] Packaging updates
+Date: Tue, 1 May 2018 21:10:47 -0500
+Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +--
@@ -19,7 +19,7 @@ Subject: [PATCH 5/6] Packaging updates
  12 files changed, 75 insertions(+), 61 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index 62060719581c..ac1698fe118c 100644
+index cb14fea2c630..68e314bf5ca4 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
 @@ -53,7 +53,7 @@ Architecture: ARCH
@@ -31,15 +31,15 @@ index 62060719581c..ac1698fe118c 100644
   This package contains the Linux kernel extra modules for version PKGVER on
   DESC.
   .
-@@ -76,7 +76,7 @@ Section: devel
- Priority: optional
- Depends: ${misc:Depends}, linux-headers-PKGVER-ABINUM, ${shlibs:Depends}
+@@ -77,7 +77,7 @@ Priority: optional
+ Depends: ${misc:Depends}, SRCPKGNAME-headers-PKGVER-ABINUM, ${shlibs:Depends}
  Provides: linux-headers, linux-headers-3.0
--Description: Linux kernel headers for version PKGVER on DESC
-+Description: Linux kernel headers with slipstreamed mediatree drivers for version PKGVER on DESC
-  This package provides kernel header files for version PKGVER on
+ Description: Linux kernel headers for version PKGVER on DESC
+- This package provides kernel header files for version PKGVER on
++ This package provides kernel header files with slipstreamed mediatree drivers for version PKGVER on
   DESC.
   .
+  This is for sites that want the latest kernel headers.  Please read
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
 index 33b2d8635edd..b75c1e81bdb2 100644
 --- a/debian.master/control.stub.in
@@ -289,20 +289,20 @@ index 5b468acdfe44..dfc7a152ee2a 100644
  
  do_zfs		= true
 diff --git a/debian/rules b/debian/rules
-index 76486bc17a70..42aad79d83e7 100755
+index 7519bc4a9d32..168357dd5eaf 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
  
  do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
  do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
--do_tools_common=true
+-do_tools_common?=true
 +do_tools_common?=false
  
  # Don't build tools or udebs in a cross compile environment.
  ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 652afc91efc4..da8fb10261e1 100644
+index cf4d890f2c37..14489106accb 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -342,10 +342,10 @@ index 652afc91efc4..da8fb10261e1 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 6987a62595bd..50751cb8042d 100644
+index 9920df16f4d4..ecdefbf1f792 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -729,10 +729,14 @@ build-arch: $(build-arch-deps-true)
+@@ -745,10 +745,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
