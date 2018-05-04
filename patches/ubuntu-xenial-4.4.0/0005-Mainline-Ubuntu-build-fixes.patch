@@ -1,7 +1,7 @@
-From 434c73e18201b45a6972a987d0bf74f18ffea9d9 Mon Sep 17 00:00:00 2001
-From: root <hidden@email.co>
-Date: Wed, 13 Dec 2017 19:54:51 +0000
-Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+From a6b690278f9ad52c5f19f984082a89e6072ecbf5 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 2 May 2018 14:15:00 -0500
+Subject: [PATCH 5/6] Mainline Ubuntu build fixes
 
 ---
  drivers/hid/hid-picolcd_cir.c           |  7 +++--
@@ -11,8 +11,8 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  fs/compat_ioctl.c                       |  2 --
  include/linux/compiler-gcc.h            |  3 +++
  include/linux/kconfig.h                 |  7 +++++
- security/apparmor/include/lib.h         |  2 +-
- 8 files changed, 42 insertions(+), 40 deletions(-)
+ mm/slub.c                               |  2 ++
+ 8 files changed, 43 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..32747b7 100644
@@ -245,7 +245,7 @@ index dcf2653..521330f 100644
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
 diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 744334e..e354b3f 100644
+index f0add64..a6fccd8 100644
 --- a/include/linux/compiler-gcc.h
 +++ b/include/linux/compiler-gcc.h
 @@ -3,6 +3,9 @@
@@ -259,10 +259,10 @@ index 744334e..e354b3f 100644
   * Common definitions for all gcc versions go here.
   */
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index fec5076..7cf4b8d 100644
+index cc8fa10..7291175 100644
 --- a/include/linux/kconfig.h
 +++ b/include/linux/kconfig.h
-@@ -36,6 +36,13 @@
+@@ -42,6 +42,13 @@
  #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
  #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
  
@@ -276,19 +276,19 @@ index fec5076..7cf4b8d 100644
  /*
   * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
   * otherwise. For boolean options, this is equivalent to
-diff --git a/security/apparmor/include/lib.h b/security/apparmor/include/lib.h
-index 954e22a..3f3b8d0 100644
---- a/security/apparmor/include/lib.h
-+++ b/security/apparmor/include/lib.h
-@@ -56,7 +56,7 @@
- 	} while (0)
+diff --git a/mm/slub.c b/mm/slub.c
+index 4cf3a9c..1acfe1a 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4041,6 +4041,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
+ 	return ret;
+ }
  
- /* Flag indicating whether initialization completed */
--extern int apparmor_initialized __initdata;
-+extern int apparmor_initialized;
- 
- /* fn's in lib */
- char *aa_split_fqname(char *args, char **ns_name);
++EXPORT_SYMBOL(__kmalloc_track_caller);
++
+ #ifdef CONFIG_NUMA
+ void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
+ 					int node, unsigned long caller)
 -- 
 2.7.4
 
