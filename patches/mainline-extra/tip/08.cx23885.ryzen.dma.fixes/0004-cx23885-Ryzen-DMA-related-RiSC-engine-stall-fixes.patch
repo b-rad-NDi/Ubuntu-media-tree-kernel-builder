@@ -190,7 +190,7 @@ index 8793602252f7..25b38d11cf80 100644
  	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
  		cx23885_av_clk(dev, 1);
 @@ -1465,6 +1512,11 @@ int cx23885_start_dma(struct cx23885_tsport *port,
- 		cx23885_reg_dump(port, VID_C_GPCNT, 0xe0);
+ 		//cx23885_reg_dump(port, VID_C_GPCNT, 0xe0);
  	}
  
 +	cx23885_irq_get_mask(dev);
