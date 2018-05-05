@@ -524,22 +524,20 @@ function regen_changelog()
 		LinuxTV_MT_PATCH="${KB_PATCH_DIR}/0001-Linuxtv.org-media-tree-sync-${V4L_SYNC_DATE}.patch"
 	fi
 	echo "    - `basename ${LinuxTV_MT_PATCH}`" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0002-Apply-build-fixes-to-media-tree.patch" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0003-Add-new-media-tree-kernel-config.patch" >>  /tmp/tmpkrn_changelog.mod
-	echo "" >>  /tmp/tmpkrn_changelog.mod
+	echo "    - 0002-Changelog.patch" >>  /tmp/tmpkrn_changelog.mod
 
-	echo "  * Ubuntu mainline build fixes" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0004-Mainline-Ubuntu-build-fixes.patch" >>  /tmp/tmpkrn_changelog.mod
-	echo "" >>  /tmp/tmpkrn_changelog.mod
-
-	echo "  * Packaging patches" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0005-Packaging-updates.patch" >>  /tmp/tmpkrn_changelog.mod
-	echo "    - 0006-Changelog.patch" >>  /tmp/tmpkrn_changelog.mod
+	for i in `ls ${KB_PATCH_DIR}/000[3456789]*.patch | sort` ; do
+		echo "    - `basename $i`" >>  /tmp/tmpkrn_changelog.mod
+	done
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
 	echo "  * Additional patches" >>  /tmp/tmpkrn_changelog.mod
-	for i in `ls ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/*.patch | sort` ; do
+
+	for i in `ls -d ${KB_PATCH_DIR}/../mainline-extra/${KVER}.${KMAJ}.0/*/ | sort` ; do
 		echo "    - `basename $i`" >>  /tmp/tmpkrn_changelog.mod
+		for j in `ls $i/*.patch | sort` ; do
+			echo "    --- `basename $j`" >>  /tmp/tmpkrn_changelog.mod
+		done
 	done
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
