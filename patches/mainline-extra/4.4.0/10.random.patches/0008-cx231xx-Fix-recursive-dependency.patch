@@ -1,0 +1,29 @@
+From 3bd4ef8d4d78b32121367a4a3b257c56f27efff7 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Sat, 5 May 2018 10:04:04 -0500
+Subject: [PATCH] [bug] cx231xx: Fix recursive dependency
+
+0day build bot reported an unnoticed recursive dependency, fix it
+by removing the select statement.
+
+fixes: c66d4d99a8fb ("cx231xx: Add I2C_MUX dependency")
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/cx231xx/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
+index 98890a3..1b11ae1 100644
+--- a/drivers/media/usb/cx231xx/Kconfig
++++ b/drivers/media/usb/cx231xx/Kconfig
+@@ -6,7 +6,6 @@ config VIDEO_CX231XX
+ 	select VIDEOBUF_VMALLOC
+ 	select VIDEO_CX25840
+ 	select VIDEO_CX2341X
+-	select I2C_MUX
+ 
+ 	---help---
+ 	  This is a video4linux driver for Conexant 231xx USB based TV cards.
+-- 
+2.7.4
+
