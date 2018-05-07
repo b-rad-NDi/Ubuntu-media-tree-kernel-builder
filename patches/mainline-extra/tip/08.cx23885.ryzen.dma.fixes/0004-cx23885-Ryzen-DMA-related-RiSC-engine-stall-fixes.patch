@@ -133,10 +133,10 @@ index 8793602252f7..25b38d11cf80 100644
 +
 +	cx23885_irq_get_mask(dev);
 +
-+	cx_write(VID_B_SRC_SEL, 0);
-+	reg = cx_read(PAD_CTRL);
-+	reg |= 0x7; /* set TS1_OE & TS1_SOP_OE & TS2_SOP_OE */
-+	cx_write(PAD_CTRL, reg);
++//	cx_write(VID_B_SRC_SEL, 0);
++//	reg = cx_read(PAD_CTRL);
++//	reg |= 0x7; /* set TS1_OE & TS1_SOP_OE & TS2_SOP_OE */
++//	cx_write(PAD_CTRL, reg);
 +
 +	/* clear dma in progress */
 +	cx23885_clear_bridge_error(dev);
@@ -216,7 +216,7 @@ index 8793602252f7..25b38d11cf80 100644
  	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
 +	/* just in case wait for any dma to complete before allowing dealloc */
 +	mdelay(20);
-+	for(delay=0; delay < 100; delay++) {
++	for (delay = 0; delay < 100; delay++) {
 +		reg1_val = cx_read(TC_REQ);
 +		reg2_val = cx_read(TC_REQ_SET);
 +		if (reg1_val == 0 || reg2_val == 0) {
