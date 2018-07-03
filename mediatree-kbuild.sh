@@ -235,7 +235,8 @@ function gen_media_tree_tarball_patched()
 	for i in `./patches_for_kernel.pl ${KVER}.${KMAJ}.0` ; do patch -p1 < ../backports/$i; done;
 
 	# copy includes where we need them for integration
-	sed -ie 's/NEED_USB_SPEED_WIRELESS/xxx_disabled_NEED_USB_SPEED_WIRELESS/' config-compat.h
+	echo -e '/* STUB CONFIG-MYCOMPAT.H */\n\n' > include/media/config-mycompat.h
+	echo '#undef NEED_USB_SPEED_WIRELESS' >> include/media/config-mycompat.h
 	cp -av config-compat.h include/media
 	cp -v ../v4l/compat.h include/media
 
