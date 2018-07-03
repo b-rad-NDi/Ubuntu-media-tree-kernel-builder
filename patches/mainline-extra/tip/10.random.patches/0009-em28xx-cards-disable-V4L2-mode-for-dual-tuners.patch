@@ -1,0 +1,37 @@
+From patchwork Thu Jun 28 18:43:21 2018
+Subject: [PATCH] em28xx-cards: disable V4L2 mode for dual tuners
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+X-Patchwork-Id: 50653
+Date: Thu, 28 Jun 2018 15:43:21 -0300
+
+Right now, the code that calculates alternate modes is not ready
+for devices with dual tuners. That's ok, as we currently don't
+have any such devices, but better to add a warning for such
+case, as, if anyone adds such device, the logic will need to
+be reviewed.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Acked-by: Brad Love <brad@nextdimension.cc>
+
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 6c8438311d3b..5178ab4f1a68 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -3861,6 +3861,17 @@ static int em28xx_usb_probe(struct usb_interface *intf,
+ 		dev->has_video = false;
+ 	}
+ 
++	if (dev->board.has_dual_ts &&
++	    (dev->tuner_type != TUNER_ABSENT || INPUT(0)->type)) {
++		/*
++		 * The logic which sets alternate is not ready for dual-tuners
++		 * with analog modes.
++		 */
++		dev_err(&intf->dev,
++			"We currently don't support analog TV or stream capture on dual tuners.\n");
++		has_video = false;
++	}
++
+ 	/* Select USB transfer types to use */
+ 	if (has_video) {
+ 		if (!dev->analog_ep_isoc || (try_bulk && dev->analog_ep_bulk))
