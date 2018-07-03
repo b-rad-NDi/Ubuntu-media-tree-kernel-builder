@@ -1,17 +1,17 @@
-From 51979538a0da4a55131d8a693fbf5dfa0b8b5a4c Mon Sep 17 00:00:00 2001
+From d9fd32f4ac32d5c713aa814f778ad78b4c696884 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 2 May 2018 14:13:54 -0500
 Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 51 +++++++++++++++++++++++++++++--
- 1 file changed, 48 insertions(+), 3 deletions(-)
+ debian.master/config/config.common.ubuntu | 53 ++++++++++++++++++++++++++++---
+ 1 file changed, 49 insertions(+), 4 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 151cd37..23008a3 100644
+index 3536d25..018d05f 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2052,7 +2052,7 @@ CONFIG_DUMMY_CONSOLE=y
+@@ -2055,7 +2055,7 @@ CONFIG_DUMMY_CONSOLE=y
  CONFIG_DUMMY_CONSOLE_COLUMNS=80
  CONFIG_DUMMY_CONSOLE_ROWS=25
  CONFIG_DVB_A8293=m
@@ -20,7 +20,16 @@ index 151cd37..23008a3 100644
  CONFIG_DVB_AF9033=m
  CONFIG_DVB_AS102=m
  CONFIG_DVB_AS102_FE=m
-@@ -2190,7 +2190,7 @@ CONFIG_DVB_USB=m
+@@ -2125,7 +2125,7 @@ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+ CONFIG_DVB_MANTIS=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ CONFIG_DVB_MN88472=m
+@@ -2193,7 +2193,7 @@ CONFIG_DVB_USB=m
  CONFIG_DVB_USB_A800=m
  CONFIG_DVB_USB_AF9005=m
  CONFIG_DVB_USB_AF9005_REMOTE=m

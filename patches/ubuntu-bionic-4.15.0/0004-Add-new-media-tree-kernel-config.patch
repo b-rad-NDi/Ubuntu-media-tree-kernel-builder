@@ -1,17 +1,26 @@
-From d450c0f1274b30cfec4db31490a9691774863788 Mon Sep 17 00:00:00 2001
+From 6de0172a3aab85342a424bbef6864f8fe0e6de35 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 1 May 2018 11:12:30 -0500
-Subject: [PATCH 3/5] Add new media tree kernel config
+Subject: [PATCH 4/5] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ debian.master/config/config.common.ubuntu | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 5ff32cb997e9..b17cf23f1b66 100644
+index 89cec7ee6ff4..89ec4be6ff56 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -10534,3 +10534,16 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -2477,7 +2477,7 @@ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+ CONFIG_DVB_MANTIS=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ CONFIG_DVB_MN88472=m
+@@ -10534,3 +10534,19 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
