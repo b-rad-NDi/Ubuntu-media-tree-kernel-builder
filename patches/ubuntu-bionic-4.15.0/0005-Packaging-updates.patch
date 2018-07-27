@@ -1,25 +1,25 @@
-From ad2190887620161520b4d0cd64aed2f25c62ff08 Mon Sep 17 00:00:00 2001
+From 55f9a6fcfe34a9ca443cb38c2788e613a148c017 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 1 May 2018 11:13:54 -0500
-Subject: [PATCH 4/5] Packaging updates
+Subject: [PATCH 5/5] Packaging updates
 
 ---
- debian.master/control.d/flavour-control.stub |  4 +--
- debian.master/control.stub.in                | 39 +++++++---------------------
- debian.master/copyright                      | 22 ++++++++++++++++
- debian.master/rules.d/amd64.mk               | 18 ++++++-------
- debian.master/rules.d/arm64.mk               |  6 ++---
- debian.master/rules.d/armhf.mk               |  6 ++---
- debian.master/rules.d/i386.mk                | 12 ++++-----
- debian.master/rules.d/ppc64el.mk             |  6 ++---
- debian.master/rules.d/s390x.mk               |  6 ++---
+ debian.master/control.d/flavour-control.stub |  4 +-
+ debian.master/control.stub.in                | 39 +++++---------------
+ debian.master/copyright                      | 22 +++++++++++
+ debian.master/rules.d/amd64.mk               | 18 ++++-----
+ debian.master/rules.d/arm64.mk               |  6 +--
+ debian.master/rules.d/armhf.mk               |  6 +--
+ debian.master/rules.d/i386.mk                | 12 +++---
+ debian.master/rules.d/ppc64el.mk             |  6 +--
+ debian.master/rules.d/s390x.mk               |  6 +--
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 15 ++++++++---
- debian/rules.d/2-binary-arch.mk              |  4 +++
+ debian/rules.d/0-common-vars.mk              | 15 ++++++--
+ debian/rules.d/2-binary-arch.mk              |  4 ++
  12 files changed, 77 insertions(+), 63 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index 9e2affd4dfde..6aa95f3fe50e 100644
+index 918b41abcef0..03b695bed0cf 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
 @@ -69,7 +69,7 @@ Architecture: ARCH
@@ -41,7 +41,7 @@ index 9e2affd4dfde..6aa95f3fe50e 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 889b63e36c90..9265bfb0213b 100644
+index 2821ca85668c..98a55d54c4cf 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -58,7 +58,7 @@ index 889b63e36c90..9265bfb0213b 100644
   asciidoc <!stage1>,
   python-sphinx <!stage1>,
   python-sphinx-rtd-theme <!stage1>,
--Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/zesty
+-Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/bionic
 +Vcs-Git: git://github.com/~b-rad-NDi/Ubuntu-media-tree-kernel-builder.git
 +Vcs-Browser: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
  XS-Testsuite: autopkgtest
@@ -346,10 +346,10 @@ index d45d5d89ccaf..ed54adf38c74 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 561c5b3eac9b..b133102eb3a3 100644
+index aaf3d43379ed..a607c4e153a7 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -756,10 +756,14 @@ build-arch: $(build-arch-deps-true)
+@@ -757,10 +757,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
@@ -365,5 +365,5 @@ index 561c5b3eac9b..b133102eb3a3 100644
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
 -- 
-2.15.1
+2.17.1
 

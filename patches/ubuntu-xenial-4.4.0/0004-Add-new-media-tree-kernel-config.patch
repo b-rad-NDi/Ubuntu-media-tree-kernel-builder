@@ -1,14 +1,14 @@
-From d9fd32f4ac32d5c713aa814f778ad78b4c696884 Mon Sep 17 00:00:00 2001
+From 58e655257609c717f0aad6c8b8c4d51e44987615 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 2 May 2018 14:13:54 -0500
 Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 53 ++++++++++++++++++++++++++++---
- 1 file changed, 49 insertions(+), 4 deletions(-)
+ debian.master/config/config.common.ubuntu | 56 ++++++++++++++++++++++++++++---
+ 1 file changed, 52 insertions(+), 4 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 3536d25..018d05f 100644
+index 3536d25..00c40c1c 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2055,7 +2055,7 @@ CONFIG_DUMMY_CONSOLE=y
