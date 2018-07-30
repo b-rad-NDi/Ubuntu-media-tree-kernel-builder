@@ -14,6 +14,10 @@
 /linux_*.diff.gz
 /linux_*.dsc
 /linux_*.changes
+/linux-hwe_*.orig.tar.gz
+/linux-hwe_*.diff.gz
+/linux-hwe_*.dsc
+/linux-hwe_*.changes
 /linux-*/
 
 /linux_4.*.0-*mediatree+hauppauge_*.tar.gz
@@ -21,7 +25,9 @@
 /.vpackage_tmp/*
 
 /linux-headers-mediatree_*
+/linux-hwe-headers-mediatree_*
 #_source.changes
 *_source.build
 *_source.buildinfo
 /linux-image-mediatree_*
+/linux-hwe-image-mediatree_*
