@@ -433,13 +433,14 @@ function apply_patches()
 			git commit -m 'Changelog'
 		fi
 	fi
-	update_identity
 
 	for i in ${KB_PATCH_DIR}/000[3456789]*patch ; do
 		echo "#############################################################"
 		apply_patch_git_am 1 "$i"
 		[ $? != 0 ] && echo "patch failure, exiting" && return 1
 	done
+
+	update_identity
 
 	return 0
 }
