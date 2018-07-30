@@ -1,10 +1,10 @@
-Source: linux-image-mediatree
+Source: __LINUX_KBUILD_PKG_SRC_NAME__
 Section: devel
 Priority: optional
 Homepage: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 Standards-Version: 3.9.8
 
-Package: linux-image-mediatree
+Package: __LINUX_KBUILD_PKG_SRC_NAME__
 Version: 0.1
 Maintainer: __MAINTAINER_INFO__
 Depends: __LINUX_IMAGE_PACKAGES__

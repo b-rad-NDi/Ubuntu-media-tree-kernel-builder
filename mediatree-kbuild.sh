@@ -70,7 +70,11 @@ export TOP_DEVDIR=`pwd`
 
 if [ -f ".state_env_file" ] ; then
 	. .state_env_file
-	export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
+	else
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH}-${KVER}.${KMAJ}.0"
+	fi
 fi
 
 ## Set env var V4L_SYNC_DATE to a specific date to override latest tarball
@@ -115,7 +119,11 @@ function get_ubuntu()
 		cd -
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
 	elif [ ! -d "${TARGET_DIR}" ] ; then
-		git clone git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+		if [ -z "${DISTRO_BRANCH}" ] ; then
+			git clone git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+		else
+			git clone --single-branch -b ${DISTRO_BRANCH} git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+		fi
 	fi
 
 	if [ -n "${DISTRO_GIT_REVISION}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
@@ -131,7 +139,11 @@ function get_ubuntu()
 	else
 		cd ${TARGET_DIR}
 		git pull
-		CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
+		if [ -z "${DISTRO_BRANCH}" ] ; then
+			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
+		else
+			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/${DISTRO_BRANCH}`
+		fi
 		if [ -n "${DISTRO_GIT_REVISION}" -a "${CUR_DISTRO_GIT_REVISION}" != "${DISTRO_GIT_REVISION}" ] ; then
 			echo -e "${RED}###############################################"
 			echo -e "${RED}###############################################"
@@ -418,10 +430,15 @@ function apply_patches()
 
 	###################################################
 	########## Add build system changelog #############
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=master
+	else
+		deb_branch=${DISTRO_BRANCH}
+	fi
 	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
 		regen_changelog "`date +%Y%m%d%H%M`"
-		git add debian.master/changelog
+		git add debian.${deb_branch}/changelog
 		git commit -m 'Changelog'
 		unset UPDATE_MT_KBUILD_VER
 	else
@@ -429,7 +446,7 @@ function apply_patches()
 		if [ $? != 0 ] ; then
 			echo "Changelog patch failure, regenerating..."
 			regen_changelog "`date +%Y%m%d%H%M`"
-			git add debian.master/changelog
+			git add debian.${deb_branch}/changelog
 			git commit -m 'Changelog'
 		fi
 	fi
@@ -479,8 +496,14 @@ function update_identity()
 {
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
-	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/control.stub.in
-	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.master/changelog
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=master
+	else
+		deb_branch=${DISTRO_BRANCH}
+	fi
+
+	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.${deb_branch}/control.stub.in
+	sed -i "s/Fake User <hidden@email.co>/${U_FULLNAME} <${U_EMAIL}>/" debian.${deb_branch}/changelog
 }
 
 function regen_changelog()
@@ -494,10 +517,18 @@ function regen_changelog()
 
 	[ -z "${1}" ] && echo "error..." && return 1
 
-	git checkout ${DISTRO_GIT_REVISION} debian.master/changelog
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=master
+		deb_package=linux
+	else
+		deb_branch=${DISTRO_BRANCH}
+		deb_package=linux-${deb_branch}
+	fi
+
+	git checkout ${DISTRO_GIT_REVISION} debian.${deb_branch}/changelog
 	get_ubuntu_kver
 
-	cp debian.master/changelog /tmp/tmpkrn_changelog.orig
+	cp debian.${deb_branch}/changelog /tmp/tmpkrn_changelog.orig
 
 	# old version check
 	if [ "${1}" == "${K_BUILD_VER}" ]; then
@@ -509,9 +540,9 @@ function regen_changelog()
 
 	K_BUILD_TIME=`date -R`
 
-	echo "linux (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) ${DISTRO_CODENAME}; urgency=low" > /tmp/tmpkrn_changelog.mod
+	echo "${deb_package} (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) ${DISTRO_CODENAME}; urgency=low" > /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
-	echo "  * Ubuntu kernel git clone">>  /tmp/tmpkrn_changelog.mod
+	echo "  * Ubuntu-${deb_branch} kernel git clone">>  /tmp/tmpkrn_changelog.mod
 	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} rev ${DISTRO_GIT_REVISION}">>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
@@ -546,7 +577,7 @@ function regen_changelog()
 	echo " -- Fake User <hidden@email.co>  ${K_BUILD_TIME}" >>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
-	cat /tmp/tmpkrn_changelog.mod /tmp/tmpkrn_changelog.orig > debian.master/changelog
+	cat /tmp/tmpkrn_changelog.mod /tmp/tmpkrn_changelog.orig > debian.${deb_branch}/changelog
 
 	write_state_env
 }
@@ -581,6 +612,12 @@ function generate_virtual_package()
 		return 1
 	fi
 
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=""
+	else
+		deb_branch="-${DISTRO_BRANCH}"
+	fi
+
 	LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
 
 	VPACKAGE_VER=`head -n 1 changelog`
@@ -591,7 +628,7 @@ function generate_virtual_package()
 
 	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
 		cp ../linux-${1}-mediatree.control ./ns_control
-		echo "linux-${1}-mediatree (${VPACKAGE_VER}+${DISTRO_CODENAME}) ${DISTRO_CODENAME}; urgency=low" > changelog
+		echo "linux${deb_branch}-${1}-mediatree (${VPACKAGE_VER}+${DISTRO_CODENAME}) ${DISTRO_CODENAME}; urgency=low" > changelog
 		git log --pretty=format:"  * %h %s" -n 13 >> changelog
 		echo "" >> changelog
 		echo "" >> changelog
@@ -602,6 +639,7 @@ function generate_virtual_package()
 		return 1
 	fi
 
+	sed -i "s/__LINUX_KBUILD_PKG_SRC_NAME__/linux${deb_branch}-${1}-mediatree/g" ns_control
 	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
 	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
 	if [ ${KVER} -gt 4 -o ${KVER} -eq 4 -a ${KMAJ} -lt 15 ] ; then
@@ -627,19 +665,19 @@ function generate_virtual_package()
 	echo "#########################################"
 	echo "#########################################"
 	equivs-build --full ns_control
-	if [ ! -f "linux-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc" ] ; then
-		echo "Missing linux-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc"
+	if [ ! -f "linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc" ] ; then
+		echo "Missing linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc"
 		return 1
 	fi
-	dpkg-source -x linux-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc
+	dpkg-source -x linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc
 	[ $? -ne 0 ] && return 1
-	cd linux-${1}-mediatree-${VPACKAGE_VER}+${DISTRO_CODENAME}
+	cd linux${deb_branch}-${1}-mediatree-${VPACKAGE_VER}+${DISTRO_CODENAME}
 	debuild -us -uc -S
 	cd ..
-	cp linux-${1}-mediatree*.tar.gz ..
-	cp linux-${1}-mediatree*.dsc ..
-	cp linux-${1}-mediatree*_source.changes ..
-	cp linux-${1}-mediatree*_source.buildinfo .. 2>/dev/null
+	cp linux${deb_branch}-${1}-mediatree*.tar.gz ..
+	cp linux${deb_branch}-${1}-mediatree*.dsc ..
+	cp linux${deb_branch}-${1}-mediatree*_source.changes ..
+	cp linux${deb_branch}-${1}-mediatree*_source.buildinfo .. 2>/dev/null
 
 	return 0
 }
