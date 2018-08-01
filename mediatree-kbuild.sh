@@ -37,7 +37,13 @@ fi
 
 [ -z "${U_EMAIL}" ] && U_EMAIL="`git config --global user.email`"
 
-[ -z "${KERNEL_ABI_TAG}" ] && KERNEL_ABI_TAG="+mediatree+hauppauge"
+if [ -z "${KERNEL_ABI_TAG}" ] ; then
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		KERNEL_ABI_TAG="+mediatree+hauppauge"
+	else
+		KERNEL_ABI_TAG="+mediatree+hauppauge~${DISTRO_BRANCH}"
+	fi
+fi
 
 if [ -z "${DISTRO_NAME}" ] ; then
 	if [ ! -f /etc/os-release ] ; then
