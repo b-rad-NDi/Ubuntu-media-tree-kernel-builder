@@ -1,4 +1,4 @@
-From 2abc66a962c1b0bfe517a6c0f9730a449625be54 Mon Sep 17 00:00:00 2001
+From ba87fe5ed483979fcafcf4c3509943131d0a27d3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 1 May 2018 11:11:15 -0500
 Subject: [PATCH 3/5] Apply build fixes to media tree
@@ -994,7 +994,7 @@ index 000000000000..8712ff70995f
 +
 +#endif /* __LINUX_OVERFLOW_H */
 diff --git a/include/media/compat.h b/include/media/compat.h
-index f9a5f437edc2..6623b670651e 100644
+index 9e751eae60a4..28994b3f6e34 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
 @@ -42,6 +42,8 @@

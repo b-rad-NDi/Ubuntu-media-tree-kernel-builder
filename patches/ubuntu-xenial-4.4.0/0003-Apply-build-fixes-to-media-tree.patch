@@ -1,4 +1,4 @@
-From b970d03729707c3d1545becf60a15b262ba69712 Mon Sep 17 00:00:00 2001
+From 145ba5e20c790d9842633f9fc48cee4a0dbaf08c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 2 May 2018 14:12:42 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -1176,7 +1176,7 @@ index 0000000..8712ff7
 +
 +#endif /* __LINUX_OVERFLOW_H */
 diff --git a/include/media/compat.h b/include/media/compat.h
-index f9a5f43..f8a6067 100644
+index 9e751ea..c0427bc 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
 @@ -2120,11 +2120,11 @@ static inline int fwnode_graph_parse_endpoint(struct fwnode_handle *fwnode,
