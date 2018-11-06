@@ -1,6 +1,6 @@
-From a6b690278f9ad52c5f19f984082a89e6072ecbf5 Mon Sep 17 00:00:00 2001
+From 51e2b863e0e3cbfa0a9b4cdc8f625a391201c4aa Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 May 2018 14:15:00 -0500
+Date: Mon, 5 Nov 2018 10:03:56 -0600
 Subject: [PATCH 5/6] Mainline Ubuntu build fixes
 
 ---
@@ -9,10 +9,10 @@ Subject: [PATCH 5/6] Mainline Ubuntu build fixes
  drivers/net/ethernet/via/via-velocity.c | 10 +++----
  drivers/usb/gadget/function/uvc_queue.c |  3 ++-
  fs/compat_ioctl.c                       |  2 --
- include/linux/compiler-gcc.h            |  3 +++
+ include/linux/compiler-gcc.h            | 32 +++++++++++++++++-----
  include/linux/kconfig.h                 |  7 +++++
  mm/slub.c                               |  2 ++
- 8 files changed, 43 insertions(+), 39 deletions(-)
+ 8 files changed, 65 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..32747b7 100644
@@ -232,7 +232,7 @@ index 51d4a17..e6897b1 100644
  	vb2_set_plane_payload(&buf->buf.vb2_buf, 0, buf->bytesused);
  	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index dcf2653..521330f 100644
+index a52ca5c..b756fde 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -1339,8 +1339,6 @@ COMPATIBLE_IOCTL(DMX_SET_FILTER)
@@ -245,7 +245,7 @@ index dcf2653..521330f 100644
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
 diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index f0add64..a6fccd8 100644
+index 4d54cd4..9acbf17 100644
 --- a/include/linux/compiler-gcc.h
 +++ b/include/linux/compiler-gcc.h
 @@ -3,6 +3,9 @@
@@ -258,6 +258,54 @@ index f0add64..a6fccd8 100644
  /*
   * Common definitions for all gcc versions go here.
   */
+@@ -66,25 +69,40 @@
+ #endif
+ 
+ /*
++ * Feature detection for gnu_inline (gnu89 extern inline semantics). Either
++ * __GNUC_STDC_INLINE__ is defined (not using gnu89 extern inline semantics,
++ * and we opt in to the gnu89 semantics), or __GNUC_STDC_INLINE__ is not
++ * defined so the gnu89 semantics are the default.
++ */
++#ifdef __GNUC_STDC_INLINE__
++# define __gnu_inline  __attribute__((gnu_inline))
++#else
++# define __gnu_inline
++#endif
++
++/*
+  * Force always-inline if the user requests it so via the .config,
+  * or if gcc is too old.
+  * GCC does not warn about unused static inline functions for
+  * -Wunused-function.  This turns out to avoid the need for complex #ifdef
+  * directives.  Suppress the warning in clang as well by using "unused"
+  * function attribute, which is redundant but not harmful for gcc.
++ * Prefer gnu_inline, so that extern inline functions do not emit an
++ * externally visible function. This makes extern inline behave as per gnu89
++ * semantics rather than c99. This prevents multiple symbol definition errors
++ * of extern inline functions at link time.
++ * A lot of inline functions can cause havoc with function tracing.
+  */
+ #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) ||		\
+     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
+-#define inline inline		__attribute__((always_inline,unused)) notrace
+-#define __inline__ __inline__	__attribute__((always_inline,unused)) notrace
+-#define __inline __inline	__attribute__((always_inline,unused)) notrace
++#define inline \
++   inline __attribute__((always_inline, unused)) notrace __gnu_inline
+ #else
+-/* A lot of inline functions can cause havoc with function tracing */
+-#define inline inline		__attribute__((unused)) notrace
+-#define __inline__ __inline__	__attribute__((unused)) notrace
+-#define __inline __inline	__attribute__((unused)) notrace
++#define inline inline      __attribute__((unused)) notrace __gnu_inline
+ #endif
+ 
++#define __inline__ inline
++#define __inline inline
+ #define __always_inline	inline __attribute__((always_inline))
+ #define  noinline	__attribute__((noinline))
+ 
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
 index cc8fa10..7291175 100644
 --- a/include/linux/kconfig.h
@@ -277,7 +325,7 @@ index cc8fa10..7291175 100644
   * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
   * otherwise. For boolean options, this is equivalent to
 diff --git a/mm/slub.c b/mm/slub.c
-index 4cf3a9c..1acfe1a 100644
+index 2284c43..1e010b5 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -4041,6 +4041,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
