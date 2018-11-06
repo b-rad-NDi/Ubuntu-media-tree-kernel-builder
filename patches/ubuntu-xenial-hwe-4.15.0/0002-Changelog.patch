@@ -1,0 +1,62 @@
+From 730be55165c290e3ff3892a48bb64d5f602edd73 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 06 Nov 2018 17:23:40 -0600
+Subject: [PATCH 2/5] Changelog
+
+---
+ debian.hwe/changelog | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/debian.hwe/changelog b/debian.hwe/changelog
+index fe35052..c12ae4e 100644
+--- a/debian.hwe/changelog
++++ b/debian.hwe/changelog
+@@ -1,3 +1,45 @@
++linux-hwe (4.15.0-39201811061723.0+mediatree+hauppauge~hwe) xenial; urgency=low
++
++  * Ubuntu-hwe kernel git clone
++    - 4.15.0-39.42 rev daff1866bf76a8e36cb5c9f84fa0611e1f7c3a1f
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2018-07-03-16-20.patch
++    - 0002-Changelog.patch
++    - 0003-Apply-build-fixes-to-media-tree.patch
++    - 0004-Add-new-media-tree-kernel-config.patch
++    - 0005-Packaging-updates.patch
++
++  * Additional patches
++    - 07.si2157.analog.tuning
++    --- 0001-si2157-Enable-tuner-status-flags.patch
++    --- 0002-si2157-Check-error-status-bit-on-cmd-execute.patch
++    --- 0003-si2157-Better-check-for-running-tuner-in-init.patch
++    --- 0004-si2157-Add-clock-and-pin-setup-for-si2141.patch
++    --- 0005-cx25840-Remove-offset-from-chip-specific-registers.patch
++    --- 0006-si2157-Add-analog-tuning-related-functions.patch
++    --- 0007-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
++    --- 0008-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++    --- 0009-cx23885-Add-analog-frontend-to-1265_K4.patch
++    --- 0010-cx231xx-Add-i2c-device-analog-tuner-support.patch
++    --- 0011-cx23885-Add-i2c-device-analog-tuner-support.patch
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0005-si2168-different-default-that-windows-driver.patch
++    --- 0006-em28xx-Remove-duplicate-PID.patch
++    --- 0007-em28xx-Fix-DualHD-disconnect-oops.patch
++    --- 0008-em28xx-Fix-dual-transport-stream-operation.patch
++    --- 0009-em28xx-cards-disable-V4L2-mode-for-dual-tuners.patch
++    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
++    --- 0011-au0828-cannot-kfree-dev-before-usb-disconnect.patch
++    - 20.missing.stat.bits
++    --- 0001-si2157-add-on-demand-rf-strength-func.patch
++    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++
++ -- Fake User <hidden@email.co>  Tue, 06 Nov 2018 17:23:40 -0600
++
+ linux-hwe (4.15.0-39.42~16.04.1) xenial; urgency=medium
+ 
+   * linux-hwe: 4.15.0-39.42~16.04.1 -proposed tracker (LP: #1799425)
+-- 
+2.7.4
+
