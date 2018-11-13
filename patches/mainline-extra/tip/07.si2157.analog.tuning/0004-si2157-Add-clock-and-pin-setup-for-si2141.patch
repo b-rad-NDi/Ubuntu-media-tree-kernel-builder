@@ -47,10 +47,10 @@ index 4a469e5..0970df4 100644
  
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
--		.name           = "Silicon Labs Si2141/Si2146/2147/2148/2157/2158",
-+		.name           = "Silicon Labs Si2141/2146/2147/2148/2157/2158",
- 		.frequency_min  = 42000000,
- 		.frequency_max  = 870000000,
+-		.name             = "Silicon Labs Si2141/Si2146/2147/2148/2157/2158",
++		.name             = "Silicon Labs Si2141/2146/2147/2148/2157/2158",
+ 		.frequency_min_hz =  42 * MHz,
+ 		.frequency_max_hz = 870 * MHz,
  	},
 -- 
 2.7.4

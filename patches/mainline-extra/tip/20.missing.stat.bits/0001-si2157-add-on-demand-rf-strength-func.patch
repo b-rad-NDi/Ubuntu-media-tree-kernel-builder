@@ -52,7 +52,7 @@ index a5ce14e..415a995 100644
 +
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
- 		.name           = "Silicon Labs Si2141/2146/2147/2148/2157/2158",
+ 		.name             = "Silicon Labs Si2141/2146/2147/2148/2157/2158",
 @@ -760,7 +794,9 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.set_analog_params = si2157_set_analog_params,
  	.get_frequency     = si2157_get_frequency,
