@@ -1,7 +1,7 @@
-From d0ff2aecd0d5804f033d314e30130fb01ecbca14 Mon Sep 17 00:00:00 2001
+From 819ff71816c3203dd130fd0b1bdbb6a515f0492c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 5 Nov 2018 09:52:49 -0600
-Subject: [PATCH 5/5] Packaging updates
+Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-

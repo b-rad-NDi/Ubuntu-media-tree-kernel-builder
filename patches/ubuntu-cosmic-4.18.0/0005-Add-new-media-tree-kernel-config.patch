@@ -1,0 +1,23 @@
+From 45c2d4de4e9d3ba1139f5428bb0703674a950daf Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 12 Nov 2018 15:17:05 -0600
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index dfe44babc..631e180f0 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -10772,3 +10772,6 @@ CONFIG_ZSTD_COMPRESS=m
+ CONFIG_ZSTD_DECOMPRESS=y
+ CONFIG_ZSWAP=y
+ CONFIG_ZX_TDM=m
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_VIDEO_VICODEC=m
++CONFIG_VIDEO_CROS_EC_CEC=m
+-- 
+2.19.1
+
