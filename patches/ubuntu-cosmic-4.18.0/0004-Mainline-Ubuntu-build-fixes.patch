@@ -1,64 +1,1349 @@
-From 223137ba0f27bfa19d76d69f4b36c8cbb37a75ec Mon Sep 17 00:00:00 2001
+From b4c0a5ece3eeb6c0306735eb8ecedfef1364e28f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 5 Nov 2018 13:38:14 -0600
-Subject: [PATCH 4/5] Mainline Ubuntu build fixes
+Date: Mon, 12 Nov 2018 15:12:40 -0600
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- include/linux/compiler-gcc.h | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+ drivers/hid/hid-picolcd_cir.c           |   3 +-
+ drivers/usb/gadget/function/uvc_queue.c |   2 +-
+ drivers/video/hdmi.c                    |   4 +-
+ fs/compat_ioctl.c                       |  42 +-
+ include/linux/dma-buf.h                 |   4 +-
+ include/linux/mfd/cros_ec.h             | 216 +++++-----
+ include/linux/mfd/cros_ec_commands.h    | 535 +++++++++++++++++++-----
+ 7 files changed, 549 insertions(+), 257 deletions(-)
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index f1a7492a5..6d24b7728 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -65,6 +65,18 @@
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 32747b7f9..bf6f29ca3 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -45,7 +45,7 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ {
+ 	unsigned long flags;
+ 	int i, w, sz;
+-	DEFINE_IR_RAW_EVENT(rawir);
++	struct ir_raw_event rawir = {};
+ 
+ 	/* ignore if rc_dev is NULL or status is shunned */
+ 	spin_lock_irqsave(&data->lock, flags);
+@@ -67,7 +67,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ 	 */
+ 	sz = size > 0 ? min((int)raw_data[0], size-1) : 0;
+ 	for (i = 0; i+1 < sz; i += 2) {
+-		init_ir_raw_event(&rawir);
+ 		w = (raw_data[i] << 8) | (raw_data[i+1]);
+ 		rawir.pulse = !!(w & 0x8000);
+ 		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
+diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
+index 9e33d5206..f2497cb96 100644
+--- a/drivers/usb/gadget/function/uvc_queue.c
++++ b/drivers/usb/gadget/function/uvc_queue.c
+@@ -166,7 +166,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	ret = vb2_qbuf(&queue->queue, buf);
++	ret = vb2_qbuf(&queue->queue, NULL, buf);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index 38716eb50..34c973e4f 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -592,9 +592,9 @@ hdmi_extended_colorimetry_get_name(enum hdmi_extended_colorimetry ext_col)
+ 		return "xvYCC 709";
+ 	case HDMI_EXTENDED_COLORIMETRY_S_YCC_601:
+ 		return "sYCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_YCC_601:
++	case HDMI_EXTENDED_COLORIMETRY_OPYCC_601:
+ 		return "Adobe YCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_RGB:
++	case HDMI_EXTENDED_COLORIMETRY_OPRGB:
+ 		return "Adobe RGB";
+ 	case HDMI_EXTENDED_COLORIMETRY_BT2020_CONST_LUM:
+ 		return "BT.2020 Constant Luminance";
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 9907475b4..133253c50 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -115,6 +115,8 @@
+ #include <asm/fbio.h>
  #endif
  
-+/*
-+ * Feature detection for gnu_inline (gnu89 extern inline semantics). Either
-+ * __GNUC_STDC_INLINE__ is defined (not using gnu89 extern inline semantics,
-+ * and we opt in to the gnu89 semantics), or __GNUC_STDC_INLINE__ is not
-+ * defined so the gnu89 semantics are the default.
-+ */
-+#ifdef __GNUC_STDC_INLINE__
-+# define __gnu_inline  __attribute__((gnu_inline))
-+#else
-+# define __gnu_inline
-+#endif
++#include <media/compat.h>
 +
- /*
-  * Force always-inline if the user requests it so via the .config,
-  * or if gcc is too old.
-@@ -72,19 +84,22 @@
-  * -Wunused-function.  This turns out to avoid the need for complex #ifdef
-  * directives.  Suppress the warning in clang as well by using "unused"
-  * function attribute, which is redundant but not harmful for gcc.
-+ * Prefer gnu_inline, so that extern inline functions do not emit an
-+ * externally visible function. This makes extern inline behave as per gnu89
-+ * semantics rather than c99. This prevents multiple symbol definition errors
-+ * of extern inline functions at link time.
-+ * A lot of inline functions can cause havoc with function tracing.
-  */
- #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) ||		\
-     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
--#define inline inline		__attribute__((always_inline,unused)) notrace
--#define __inline__ __inline__	__attribute__((always_inline,unused)) notrace
--#define __inline __inline	__attribute__((always_inline,unused)) notrace
-+#define inline \
-+   inline __attribute__((always_inline, unused)) notrace __gnu_inline
- #else
--/* A lot of inline functions can cause havoc with function tracing */
--#define inline inline		__attribute__((unused)) notrace
--#define __inline__ __inline__	__attribute__((unused)) notrace
--#define __inline __inline	__attribute__((unused)) notrace
-+#define inline inline      __attribute__((unused)) notrace __gnu_inline
- #endif
+ #define convert_in_user(srcptr, dstptr)			\
+ ({							\
+ 	typeof(*srcptr) val;				\
+@@ -198,34 +200,6 @@ static int do_video_stillpicture(struct file *file,
+ 	return err;
+ }
  
-+#define __inline__ inline
-+#define __inline inline
- #define __always_inline	inline __attribute__((always_inline))
- #define  noinline	__attribute__((noinline))
+-struct compat_video_spu_palette {
+-	int length;
+-	compat_uptr_t palette;
+-};
+-
+-static int do_video_set_spu_palette(struct file *file,
+-		unsigned int cmd, struct compat_video_spu_palette __user *up)
+-{
+-	struct video_spu_palette __user *up_native;
+-	compat_uptr_t palp;
+-	int length, err;
+-
+-	err  = get_user(palp, &up->palette);
+-	err |= get_user(length, &up->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	up_native = compat_alloc_user_space(sizeof(struct video_spu_palette));
+-	err  = put_user(compat_ptr(palp), &up_native->palette);
+-	err |= put_user(length, &up_native->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	err = do_ioctl(file, cmd, (unsigned long) up_native);
+-
+-	return err;
+-}
+-
+ #ifdef CONFIG_BLOCK
+ typedef struct sg_io_hdr32 {
+ 	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
+@@ -1206,9 +1180,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+ COMPATIBLE_IOCTL(AUDIO_SET_ID)
+ COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
+ COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
+-COMPATIBLE_IOCTL(AUDIO_SET_EXT_ID)
+-COMPATIBLE_IOCTL(AUDIO_SET_ATTRIBUTES)
+-COMPATIBLE_IOCTL(AUDIO_SET_KARAOKE)
+ COMPATIBLE_IOCTL(DMX_START)
+ COMPATIBLE_IOCTL(DMX_STOP)
+ COMPATIBLE_IOCTL(DMX_SET_FILTER)
+@@ -1233,16 +1204,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+ COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
+ COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
+ COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
+-COMPATIBLE_IOCTL(VIDEO_SET_ID)
+ COMPATIBLE_IOCTL(VIDEO_SET_STREAMTYPE)
+ COMPATIBLE_IOCTL(VIDEO_SET_FORMAT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SYSTEM)
+-COMPATIBLE_IOCTL(VIDEO_SET_HIGHLIGHT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SPU)
+-COMPATIBLE_IOCTL(VIDEO_GET_NAVI)
+-COMPATIBLE_IOCTL(VIDEO_SET_ATTRIBUTES)
+ COMPATIBLE_IOCTL(VIDEO_GET_SIZE)
+-COMPATIBLE_IOCTL(VIDEO_GET_FRAME_RATE)
+ /* cec */
+ COMPATIBLE_IOCTL(CEC_ADAP_G_CAPS)
+ COMPATIBLE_IOCTL(CEC_ADAP_G_LOG_ADDRS)
+@@ -1347,8 +1311,6 @@ static long do_ioctl_trans(unsigned int cmd,
+ 		return do_video_get_event(file, cmd, argp);
+ 	case VIDEO_STILLPICTURE:
+ 		return do_video_stillpicture(file, cmd, argp);
+-	case VIDEO_SET_SPU_PALETTE:
+-		return do_video_set_spu_palette(file, cmd, argp);
+ 	}
+ 
+ 	/*
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 58725f890..ca304d9bb 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -77,7 +77,7 @@ struct dma_buf_ops {
+ 	 * to signal that backing storage is already allocated and incompatible
+ 	 * with the requirements of requesting device.
+ 	 */
+-	int (*attach)(struct dma_buf *, struct dma_buf_attachment *);
++	int (*attach)(struct dma_buf *, struct device *, struct dma_buf_attachment *);
+ 
+ 	/**
+ 	 * @detach:
+@@ -205,6 +205,8 @@ struct dma_buf_ops {
+ 	 * to be restarted.
+ 	 */
+ 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
++	void *(*map_atomic)(struct dma_buf *, unsigned long);
++	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
+ 	void *(*map)(struct dma_buf *, unsigned long);
+ 	void (*unmap)(struct dma_buf *, unsigned long, void *);
+ 
+diff --git a/include/linux/mfd/cros_ec.h b/include/linux/mfd/cros_ec.h
+index 32421dfeb..e44e3ec8a 100644
+--- a/include/linux/mfd/cros_ec.h
++++ b/include/linux/mfd/cros_ec.h
+@@ -36,7 +36,7 @@
+  * I2C requires 1 additional byte for requests.
+  * I2C requires 2 additional bytes for responses.
+  * SPI requires up to 32 additional bytes for responses.
+- * */
++ */
+ #define EC_PROTO_VERSION_UNKNOWN	0
+ #define EC_MAX_REQUEST_OVERHEAD		1
+ #define EC_MAX_RESPONSE_OVERHEAD	32
+@@ -58,13 +58,14 @@ enum {
+ 	EC_MAX_MSG_BYTES		= 64 * 1024,
+ };
+ 
+-/*
+- * @version: Command version number (often 0)
+- * @command: Command to send (EC_CMD_...)
+- * @outsize: Outgoing length in bytes
+- * @insize: Max number of bytes to accept from EC
+- * @result: EC's response to the command (separate from communication failure)
+- * @data: Where to put the incoming data from EC and outgoing data to EC
++/**
++ * struct cros_ec_command - Information about a ChromeOS EC command.
++ * @version: Command version number (often 0).
++ * @command: Command to send (EC_CMD_...).
++ * @outsize: Outgoing length in bytes.
++ * @insize: Max number of bytes to accept from the EC.
++ * @result: EC's response to the command (separate from communication failure).
++ * @data: Where to put the incoming data from EC and outgoing data to EC.
+  */
+ struct cros_ec_command {
+ 	uint32_t version;
+@@ -76,48 +77,55 @@ struct cros_ec_command {
+ };
+ 
+ /**
+- * struct cros_ec_device - Information about a ChromeOS EC device
+- *
+- * @phys_name: name of physical comms layer (e.g. 'i2c-4')
++ * struct cros_ec_device - Information about a ChromeOS EC device.
++ * @phys_name: Name of physical comms layer (e.g. 'i2c-4').
+  * @dev: Device pointer for physical comms device
+- * @was_wake_device: true if this device was set to wake the system from
+- * sleep at the last suspend
+- * @cmd_readmem: direct read of the EC memory-mapped region, if supported
+- *     @offset is within EC_LPC_ADDR_MEMMAP region.
+- *     @bytes: number of bytes to read. zero means "read a string" (including
+- *     the trailing '\0'). At most only EC_MEMMAP_SIZE bytes can be read.
+- *     Caller must ensure that the buffer is large enough for the result when
+- *     reading a string.
+- *
+- * @priv: Private data
+- * @irq: Interrupt to use
+- * @id: Device id
+- * @din: input buffer (for data from EC)
+- * @dout: output buffer (for data to EC)
+- * \note
+- * These two buffers will always be dword-aligned and include enough
+- * space for up to 7 word-alignment bytes also, so we can ensure that
+- * the body of the message is always dword-aligned (64-bit).
+- * We use this alignment to keep ARM and x86 happy. Probably word
+- * alignment would be OK, there might be a small performance advantage
+- * to using dword.
+- * @din_size: size of din buffer to allocate (zero to use static din)
+- * @dout_size: size of dout buffer to allocate (zero to use static dout)
+- * @wake_enabled: true if this device can wake the system from sleep
+- * @suspended: true if this device had been suspended
+- * @cmd_xfer: send command to EC and get response
+- *     Returns the number of bytes received if the communication succeeded, but
+- *     that doesn't mean the EC was happy with the command. The caller
+- *     should check msg.result for the EC's result code.
+- * @pkt_xfer: send packet to EC and get response
+- * @lock: one transaction at a time
+- * @mkbp_event_supported: true if this EC supports the MKBP event protocol.
+- * @event_notifier: interrupt event notifier for transport devices.
+- * @event_data: raw payload transferred with the MKBP event.
+- * @event_size: size in bytes of the event data.
++ * @was_wake_device: True if this device was set to wake the system from
++ *                   sleep at the last suspend.
++ * @cros_class: The class structure for this device.
++ * @cmd_readmem: Direct read of the EC memory-mapped region, if supported.
++ *     @offset: Is within EC_LPC_ADDR_MEMMAP region.
++ *     @bytes: Number of bytes to read. zero means "read a string" (including
++ *             the trailing '\0'). At most only EC_MEMMAP_SIZE bytes can be
++ *             read. Caller must ensure that the buffer is large enough for the
++ *             result when reading a string.
++ * @max_request: Max size of message requested.
++ * @max_response: Max size of message response.
++ * @max_passthru: Max sice of passthru message.
++ * @proto_version: The protocol version used for this device.
++ * @priv: Private data.
++ * @irq: Interrupt to use.
++ * @id: Device id.
++ * @din: Input buffer (for data from EC). This buffer will always be
++ *       dword-aligned and include enough space for up to 7 word-alignment
++ *       bytes also, so we can ensure that the body of the message is always
++ *       dword-aligned (64-bit). We use this alignment to keep ARM and x86
++ *       happy. Probably word alignment would be OK, there might be a small
++ *       performance advantage to using dword.
++ * @dout: Output buffer (for data to EC). This buffer will always be
++ *        dword-aligned and include enough space for up to 7 word-alignment
++ *        bytes also, so we can ensure that the body of the message is always
++ *        dword-aligned (64-bit). We use this alignment to keep ARM and x86
++ *        happy. Probably word alignment would be OK, there might be a small
++ *        performance advantage to using dword.
++ * @din_size: Size of din buffer to allocate (zero to use static din).
++ * @dout_size: Size of dout buffer to allocate (zero to use static dout).
++ * @wake_enabled: True if this device can wake the system from sleep.
++ * @suspended: True if this device had been suspended.
++ * @cmd_xfer: Send command to EC and get response.
++ *            Returns the number of bytes received if the communication
++ *            succeeded, but that doesn't mean the EC was happy with the
++ *            command. The caller should check msg.result for the EC's result
++ *            code.
++ * @pkt_xfer: Send packet to EC and get response.
++ * @lock: One transaction at a time.
++ * @mkbp_event_supported: True if this EC supports the MKBP event protocol.
++ * @event_notifier: Interrupt event notifier for transport devices.
++ * @event_data: Raw payload transferred with the MKBP event.
++ * @event_size: Size in bytes of the event data.
++ * @host_event_wake_mask: Mask of host events that cause wake from suspend.
+  */
+ struct cros_ec_device {
+-
+ 	/* These are used by other drivers that want to talk to the EC */
+ 	const char *phys_name;
+ 	struct device *dev;
+@@ -147,26 +155,25 @@ struct cros_ec_device {
+ 	bool mkbp_event_supported;
+ 	struct blocking_notifier_head event_notifier;
+ 
+-	struct ec_response_get_next_event event_data;
++	struct ec_response_get_next_event_v1 event_data;
+ 	int event_size;
+ 	u32 host_event_wake_mask;
+ };
+ 
+ /**
+- * struct cros_ec_sensor_platform - ChromeOS EC sensor platform information
+- *
++ * struct cros_ec_sensor_platform - ChromeOS EC sensor platform information.
+  * @sensor_num: Id of the sensor, as reported by the EC.
+  */
+ struct cros_ec_sensor_platform {
+ 	u8 sensor_num;
+ };
+ 
+-/* struct cros_ec_platform - ChromeOS EC platform information
+- *
+- * @ec_name: name of EC device (e.g. 'cros-ec', 'cros-pd', ...)
+- * used in /dev/ and sysfs.
+- * @cmd_offset: offset to apply for each command. Set when
+- * registering a devicde behind another one.
++/**
++ * struct cros_ec_platform - ChromeOS EC platform information.
++ * @ec_name: Name of EC device (e.g. 'cros-ec', 'cros-pd', ...)
++ *           used in /dev/ and sysfs.
++ * @cmd_offset: Offset to apply for each command. Set when
++ *              registering a device behind another one.
+  */
+ struct cros_ec_platform {
+ 	const char *ec_name;
+@@ -175,16 +182,16 @@ struct cros_ec_platform {
+ 
+ struct cros_ec_debugfs;
+ 
+-/*
+- * struct cros_ec_dev - ChromeOS EC device entry point
+- *
+- * @class_dev: Device structure used in sysfs
+- * @cdev: Character device structure in /dev
+- * @ec_dev: cros_ec_device structure to talk to the physical device
+- * @dev: pointer to the platform device
+- * @debug_info: cros_ec_debugfs structure for debugging information
+- * @has_kb_wake_angle: true if at least 2 accelerometer are connected to the EC.
+- * @cmd_offset: offset to apply for each command.
++/**
++ * struct cros_ec_dev - ChromeOS EC device entry point.
++ * @class_dev: Device structure used in sysfs.
++ * @cdev: Character device structure in /dev.
++ * @ec_dev: cros_ec_device structure to talk to the physical device.
++ * @dev: Pointer to the platform device.
++ * @debug_info: cros_ec_debugfs structure for debugging information.
++ * @has_kb_wake_angle: True if at least 2 accelerometer are connected to the EC.
++ * @cmd_offset: Offset to apply for each command.
++ * @features: Features supported by the EC.
+  */
+ struct cros_ec_dev {
+ 	struct device class_dev;
+@@ -200,124 +207,129 @@ struct cros_ec_dev {
+ #define to_cros_ec_dev(dev)  container_of(dev, struct cros_ec_dev, class_dev)
+ 
+ /**
+- * cros_ec_suspend - Handle a suspend operation for the ChromeOS EC device
++ * cros_ec_suspend() - Handle a suspend operation for the ChromeOS EC device.
++ * @ec_dev: Device to suspend.
+  *
+  * This can be called by drivers to handle a suspend event.
+  *
+- * ec_dev: Device to suspend
+- * @return 0 if ok, -ve on error
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_suspend(struct cros_ec_device *ec_dev);
+ 
+ /**
+- * cros_ec_resume - Handle a resume operation for the ChromeOS EC device
++ * cros_ec_resume() - Handle a resume operation for the ChromeOS EC device.
++ * @ec_dev: Device to resume.
+  *
+  * This can be called by drivers to handle a resume event.
+  *
+- * @ec_dev: Device to resume
+- * @return 0 if ok, -ve on error
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_resume(struct cros_ec_device *ec_dev);
+ 
+ /**
+- * cros_ec_prepare_tx - Prepare an outgoing message in the output buffer
++ * cros_ec_prepare_tx() - Prepare an outgoing message in the output buffer.
++ * @ec_dev: Device to register.
++ * @msg: Message to write.
+  *
+  * This is intended to be used by all ChromeOS EC drivers, but at present
+  * only SPI uses it. Once LPC uses the same protocol it can start using it.
+  * I2C could use it now, with a refactor of the existing code.
+  *
+- * @ec_dev: Device to register
+- * @msg: Message to write
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_prepare_tx(struct cros_ec_device *ec_dev,
+ 		       struct cros_ec_command *msg);
+ 
+ /**
+- * cros_ec_check_result - Check ec_msg->result
++ * cros_ec_check_result() - Check ec_msg->result.
++ * @ec_dev: EC device.
++ * @msg: Message to check.
+  *
+  * This is used by ChromeOS EC drivers to check the ec_msg->result for
+  * errors and to warn about them.
+  *
+- * @ec_dev: EC device
+- * @msg: Message to check
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_check_result(struct cros_ec_device *ec_dev,
+ 			 struct cros_ec_command *msg);
+ 
+ /**
+- * cros_ec_cmd_xfer - Send a command to the ChromeOS EC
++ * cros_ec_cmd_xfer() - Send a command to the ChromeOS EC.
++ * @ec_dev: EC device.
++ * @msg: Message to write.
+  *
+  * Call this to send a command to the ChromeOS EC.  This should be used
+  * instead of calling the EC's cmd_xfer() callback directly.
+  *
+- * @ec_dev: EC device
+- * @msg: Message to write
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_cmd_xfer(struct cros_ec_device *ec_dev,
+ 		     struct cros_ec_command *msg);
+ 
+ /**
+- * cros_ec_cmd_xfer_status - Send a command to the ChromeOS EC
++ * cros_ec_cmd_xfer_status() - Send a command to the ChromeOS EC.
++ * @ec_dev: EC device.
++ * @msg: Message to write.
+  *
+  * This function is identical to cros_ec_cmd_xfer, except it returns success
+  * status only if both the command was transmitted successfully and the EC
+  * replied with success status. It's not necessary to check msg->result when
+  * using this function.
+  *
+- * @ec_dev: EC device
+- * @msg: Message to write
+- * @return: Num. of bytes transferred on success, <0 on failure
++ * Return: The number of bytes transferred on success or negative error code.
+  */
+ int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
+ 			    struct cros_ec_command *msg);
+ 
+ /**
+- * cros_ec_remove - Remove a ChromeOS EC
++ * cros_ec_remove() - Remove a ChromeOS EC.
++ * @ec_dev: Device to register.
+  *
+  * Call this to deregister a ChromeOS EC, then clean up any private data.
+  *
+- * @ec_dev: Device to register
+- * @return 0 if ok, -ve on error
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_remove(struct cros_ec_device *ec_dev);
+ 
+ /**
+- * cros_ec_register - Register a new ChromeOS EC, using the provided info
++ * cros_ec_register() - Register a new ChromeOS EC, using the provided info.
++ * @ec_dev: Device to register.
+  *
+  * Before calling this, allocate a pointer to a new device and then fill
+  * in all the fields up to the --private-- marker.
+  *
+- * @ec_dev: Device to register
+- * @return 0 if ok, -ve on error
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_register(struct cros_ec_device *ec_dev);
+ 
+ /**
+- * cros_ec_query_all -  Query the protocol version supported by the ChromeOS EC
++ * cros_ec_query_all() -  Query the protocol version supported by the
++ *         ChromeOS EC.
++ * @ec_dev: Device to register.
+  *
+- * @ec_dev: Device to register
+- * @return 0 if ok, -ve on error
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_query_all(struct cros_ec_device *ec_dev);
+ 
+ /**
+- * cros_ec_get_next_event -  Fetch next event from the ChromeOS EC
+- *
+- * @ec_dev: Device to fetch event from
++ * cros_ec_get_next_event() - Fetch next event from the ChromeOS EC.
++ * @ec_dev: Device to fetch event from.
+  * @wake_event: Pointer to a bool set to true upon return if the event might be
+  *              treated as a wake event. Ignored if null.
+  *
+- * Returns: 0 on success, Linux error number on failure
++ * Return: 0 on success or negative error code.
+  */
+ int cros_ec_get_next_event(struct cros_ec_device *ec_dev, bool *wake_event);
+ 
+ /**
+- * cros_ec_get_host_event - Return a mask of event set by the EC.
++ * cros_ec_get_host_event() - Return a mask of event set by the ChromeOS EC.
++ * @ec_dev: Device to fetch event from.
+  *
+- * When MKBP is supported, when the EC raises an interrupt,
+- * We collect the events raised and call the functions in the ec notifier.
++ * When MKBP is supported, when the EC raises an interrupt, we collect the
++ * events raised and call the functions in the ec notifier. This function
++ * is a helper to know which events are raised.
+  *
+- * This function is a helper to know which events are raised.
++ * Return: 0 on success or negative error code.
+  */
+ u32 cros_ec_get_host_event(struct cros_ec_device *ec_dev);
+ 
+diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
+index f2edd9969..9a9631f05 100644
+--- a/include/linux/mfd/cros_ec_commands.h
++++ b/include/linux/mfd/cros_ec_commands.h
+@@ -306,15 +306,18 @@ enum host_event_code {
+ /* Host event mask */
+ #define EC_HOST_EVENT_MASK(event_code) (1UL << ((event_code) - 1))
+ 
+-/* Arguments at EC_LPC_ADDR_HOST_ARGS */
++/**
++ * struct ec_lpc_host_args - Arguments at EC_LPC_ADDR_HOST_ARGS
++ * @flags: The host argument flags.
++ * @command_version: Command version.
++ * @data_size: The length of data.
++ * @checksum: Checksum; sum of command + flags + command_version + data_size +
++ *            all params/response data bytes.
++ */
+ struct ec_lpc_host_args {
+ 	uint8_t flags;
+ 	uint8_t command_version;
+ 	uint8_t data_size;
+-	/*
+-	 * Checksum; sum of command + flags + command_version + data_size +
+-	 * all params/response data bytes.
+-	 */
+ 	uint8_t checksum;
+ } __packed;
+ 
+@@ -468,54 +471,43 @@ struct ec_lpc_host_args {
+ 
+ #define EC_HOST_REQUEST_VERSION 3
+ 
+-/* Version 3 request from host */
++/**
++ * struct ec_host_request - Version 3 request from host.
++ * @struct_version: Should be 3. The EC will return EC_RES_INVALID_HEADER if it
++ *                  receives a header with a version it doesn't know how to
++ *                  parse.
++ * @checksum: Checksum of request and data; sum of all bytes including checksum
++ *            should total to 0.
++ * @command: Command to send (EC_CMD_...)
++ * @command_version: Command version.
++ * @reserved: Unused byte in current protocol version; set to 0.
++ * @data_len: Length of data which follows this header.
++ */
+ struct ec_host_request {
+-	/* Struct version (=3)
+-	 *
+-	 * EC will return EC_RES_INVALID_HEADER if it receives a header with a
+-	 * version it doesn't know how to parse.
+-	 */
+ 	uint8_t struct_version;
+-
+-	/*
+-	 * Checksum of request and data; sum of all bytes including checksum
+-	 * should total to 0.
+-	 */
+ 	uint8_t checksum;
+-
+-	/* Command code */
+ 	uint16_t command;
+-
+-	/* Command version */
+ 	uint8_t command_version;
+-
+-	/* Unused byte in current protocol version; set to 0 */
+ 	uint8_t reserved;
+-
+-	/* Length of data which follows this header */
+ 	uint16_t data_len;
+ } __packed;
+ 
+ #define EC_HOST_RESPONSE_VERSION 3
+ 
+-/* Version 3 response from EC */
++/**
++ * struct ec_host_response - Version 3 response from EC.
++ * @struct_version: Struct version (=3).
++ * @checksum: Checksum of response and data; sum of all bytes including
++ *            checksum should total to 0.
++ * @result: EC's response to the command (separate from communication failure)
++ * @data_len: Length of data which follows this header.
++ * @reserved: Unused bytes in current protocol version; set to 0.
++ */
+ struct ec_host_response {
+-	/* Struct version (=3) */
+ 	uint8_t struct_version;
+-
+-	/*
+-	 * Checksum of response and data; sum of all bytes including checksum
+-	 * should total to 0.
+-	 */
+ 	uint8_t checksum;
+-
+-	/* Result code (EC_RES_*) */
+ 	uint16_t result;
+-
+-	/* Length of data which follows this header */
+ 	uint16_t data_len;
+-
+-	/* Unused bytes in current protocol version; set to 0 */
+ 	uint16_t reserved;
+ } __packed;
+ 
+@@ -540,6 +532,10 @@ struct ec_host_response {
+  */
+ #define EC_CMD_PROTO_VERSION 0x00
+ 
++/**
++ * struct ec_response_proto_version - Response to the proto version command.
++ * @version: The protocol version.
++ */
+ struct ec_response_proto_version {
+ 	uint32_t version;
+ } __packed;
+@@ -550,12 +546,20 @@ struct ec_response_proto_version {
+  */
+ #define EC_CMD_HELLO 0x01
+ 
++/**
++ * struct ec_params_hello - Parameters to the hello command.
++ * @in_data: Pass anything here.
++ */
+ struct ec_params_hello {
+-	uint32_t in_data;  /* Pass anything here */
++	uint32_t in_data;
+ } __packed;
+ 
++/**
++ * struct ec_response_hello - Response to the hello command.
++ * @out_data: Output will be in_data + 0x01020304.
++ */
+ struct ec_response_hello {
+-	uint32_t out_data;  /* Output will be in_data + 0x01020304 */
++	uint32_t out_data;
+ } __packed;
+ 
+ /* Get version number */
+@@ -567,22 +571,37 @@ enum ec_current_image {
+ 	EC_IMAGE_RW
+ };
+ 
++/**
++ * struct ec_response_get_version - Response to the get version command.
++ * @version_string_ro: Null-terminated RO firmware version string.
++ * @version_string_rw: Null-terminated RW firmware version string.
++ * @reserved: Unused bytes; was previously RW-B firmware version string.
++ * @current_image: One of ec_current_image.
++ */
+ struct ec_response_get_version {
+-	/* Null-terminated version strings for RO, RW */
+ 	char version_string_ro[32];
+ 	char version_string_rw[32];
+-	char reserved[32];       /* Was previously RW-B string */
+-	uint32_t current_image;  /* One of ec_current_image */
++	char reserved[32];
++	uint32_t current_image;
+ } __packed;
+ 
+ /* Read test */
+ #define EC_CMD_READ_TEST 0x03
+ 
++/**
++ * struct ec_params_read_test - Parameters for the read test command.
++ * @offset: Starting value for read buffer.
++ * @size: Size to read in bytes.
++ */
+ struct ec_params_read_test {
+-	uint32_t offset;   /* Starting value for read buffer */
+-	uint32_t size;     /* Size to read in bytes */
++	uint32_t offset;
++	uint32_t size;
+ } __packed;
+ 
++/**
++ * struct ec_response_read_test - Response to the read test command.
++ * @data: Data returned by the read test command.
++ */
+ struct ec_response_read_test {
+ 	uint32_t data[32];
+ } __packed;
+@@ -597,18 +616,27 @@ struct ec_response_read_test {
+ /* Get chip info */
+ #define EC_CMD_GET_CHIP_INFO 0x05
+ 
++/**
++ * struct ec_response_get_chip_info - Response to the get chip info command.
++ * @vendor: Null-terminated string for chip vendor.
++ * @name: Null-terminated string for chip name.
++ * @revision: Null-terminated string for chip mask version.
++ */
+ struct ec_response_get_chip_info {
+-	/* Null-terminated strings */
+ 	char vendor[32];
+ 	char name[32];
+-	char revision[32];  /* Mask version */
++	char revision[32];
+ } __packed;
+ 
+ /* Get board HW version */
+ #define EC_CMD_GET_BOARD_VERSION 0x06
+ 
++/**
++ * struct ec_response_board_version - Response to the board version command.
++ * @board_version: A monotonously incrementing number.
++ */
+ struct ec_response_board_version {
+-	uint16_t board_version;  /* A monotonously incrementing number. */
++	uint16_t board_version;
+ } __packed;
+ 
+ /*
+@@ -621,27 +649,42 @@ struct ec_response_board_version {
+  */
+ #define EC_CMD_READ_MEMMAP 0x07
+ 
++/**
++ * struct ec_params_read_memmap - Parameters for the read memory map command.
++ * @offset: Offset in memmap (EC_MEMMAP_*).
++ * @size: Size to read in bytes.
++ */
+ struct ec_params_read_memmap {
+-	uint8_t offset;   /* Offset in memmap (EC_MEMMAP_*) */
+-	uint8_t size;     /* Size to read in bytes */
++	uint8_t offset;
++	uint8_t size;
+ } __packed;
+ 
+ /* Read versions supported for a command */
+ #define EC_CMD_GET_CMD_VERSIONS 0x08
+ 
++/**
++ * struct ec_params_get_cmd_versions - Parameters for the get command versions.
++ * @cmd: Command to check.
++ */
+ struct ec_params_get_cmd_versions {
+-	uint8_t cmd;      /* Command to check */
++	uint8_t cmd;
+ } __packed;
+ 
++/**
++ * struct ec_params_get_cmd_versions_v1 - Parameters for the get command
++ *         versions (v1)
++ * @cmd: Command to check.
++ */
+ struct ec_params_get_cmd_versions_v1 {
+-	uint16_t cmd;     /* Command to check */
++	uint16_t cmd;
+ } __packed;
+ 
++/**
++ * struct ec_response_get_cmd_version - Response to the get command versions.
++ * @version_mask: Mask of supported versions; use EC_VER_MASK() to compare with
++ *                a desired version.
++ */
+ struct ec_response_get_cmd_versions {
+-	/*
+-	 * Mask of supported versions; use EC_VER_MASK() to compare with a
+-	 * desired version.
+-	 */
+ 	uint32_t version_mask;
+ } __packed;
+ 
+@@ -659,6 +702,11 @@ enum ec_comms_status {
+ 	EC_COMMS_STATUS_PROCESSING	= 1 << 0,	/* Processing cmd */
+ };
+ 
++/**
++ * struct ec_response_get_comms_status - Response to the get comms status
++ *         command.
++ * @flags: Mask of enum ec_comms_status.
++ */
+ struct ec_response_get_comms_status {
+ 	uint32_t flags;		/* Mask of enum ec_comms_status */
+ } __packed;
+@@ -685,19 +733,19 @@ struct ec_response_test_protocol {
+ /* EC_RES_IN_PROGRESS may be returned if a command is slow */
+ #define EC_PROTOCOL_INFO_IN_PROGRESS_SUPPORTED (1 << 0)
+ 
++/**
++ * struct ec_response_get_protocol_info - Response to the get protocol info.
++ * @protocol_versions: Bitmask of protocol versions supported (1 << n means
++ *                     version n).
++ * @max_request_packet_size: Maximum request packet size in bytes.
++ * @max_response_packet_size: Maximum response packet size in bytes.
++ * @flags: see EC_PROTOCOL_INFO_*
++ */
+ struct ec_response_get_protocol_info {
+ 	/* Fields which exist if at least protocol version 3 supported */
+-
+-	/* Bitmask of protocol versions supported (1 << n means version n)*/
+ 	uint32_t protocol_versions;
+-
+-	/* Maximum request packet size, in bytes */
+ 	uint16_t max_request_packet_size;
+-
+-	/* Maximum response packet size, in bytes */
+ 	uint16_t max_response_packet_size;
+-
+-	/* Flags; see EC_PROTOCOL_INFO_* */
+ 	uint32_t flags;
+ } __packed;
+ 
+@@ -708,8 +756,10 @@ struct ec_response_get_protocol_info {
+ /* The upper byte of .flags tells what to do (nothing means "get") */
+ #define EC_GSV_SET        0x80000000
+ 
+-/* The lower three bytes of .flags identifies the parameter, if that has
+-   meaning for an individual command. */
++/*
++ * The lower three bytes of .flags identifies the parameter, if that has
++ * meaning for an individual command.
++ */
+ #define EC_GSV_PARAM_MASK 0x00ffffff
+ 
+ struct ec_params_get_set_value {
+@@ -804,10 +854,13 @@ enum ec_feature_code {
+ 	EC_FEATURE_MOTION_SENSE_FIFO = 24,
+ 	/* EC has RTC feature that can be controlled by host commands */
+ 	EC_FEATURE_RTC = 27,
++	/* EC supports CEC commands */
++	EC_FEATURE_CEC = 35,
+ };
+ 
+ #define EC_FEATURE_MASK_0(event_code) (1UL << (event_code % 32))
+ #define EC_FEATURE_MASK_1(event_code) (1UL << (event_code - 32))
++
+ struct ec_response_get_features {
+ 	uint32_t flags[2];
+ } __packed;
+@@ -818,24 +871,22 @@ struct ec_response_get_features {
+ /* Get flash info */
+ #define EC_CMD_FLASH_INFO 0x10
+ 
+-/* Version 0 returns these fields */
++/**
++ * struct ec_response_flash_info - Response to the flash info command.
++ * @flash_size: Usable flash size in bytes.
++ * @write_block_size: Write block size. Write offset and size must be a
++ *                    multiple of this.
++ * @erase_block_size: Erase block size. Erase offset and size must be a
++ *                    multiple of this.
++ * @protect_block_size: Protection block size. Protection offset and size
++ *                      must be a multiple of this.
++ *
++ * Version 0 returns these fields.
++ */
+ struct ec_response_flash_info {
+-	/* Usable flash size, in bytes */
+ 	uint32_t flash_size;
+-	/*
+-	 * Write block size.  Write offset and size must be a multiple
+-	 * of this.
+-	 */
+ 	uint32_t write_block_size;
+-	/*
+-	 * Erase block size.  Erase offset and size must be a multiple
+-	 * of this.
+-	 */
+ 	uint32_t erase_block_size;
+-	/*
+-	 * Protection block size.  Protection offset and size must be a
+-	 * multiple of this.
+-	 */
+ 	uint32_t protect_block_size;
+ } __packed;
+ 
+@@ -843,7 +894,22 @@ struct ec_response_flash_info {
+ /* EC flash erases bits to 0 instead of 1 */
+ #define EC_FLASH_INFO_ERASE_TO_0 (1 << 0)
+ 
+-/*
++/**
++ * struct ec_response_flash_info_1 - Response to the flash info v1 command.
++ * @flash_size: Usable flash size in bytes.
++ * @write_block_size: Write block size. Write offset and size must be a
++ *                    multiple of this.
++ * @erase_block_size: Erase block size. Erase offset and size must be a
++ *                    multiple of this.
++ * @protect_block_size: Protection block size. Protection offset and size
++ *                      must be a multiple of this.
++ * @write_ideal_size: Ideal write size in bytes.  Writes will be fastest if
++ *                    size is exactly this and offset is a multiple of this.
++ *                    For example, an EC may have a write buffer which can do
++ *                    half-page operations if data is aligned, and a slower
++ *                    word-at-a-time write mode.
++ * @flags: Flags; see EC_FLASH_INFO_*
++ *
+  * Version 1 returns the same initial fields as version 0, with additional
+  * fields following.
+  *
+@@ -858,15 +924,7 @@ struct ec_response_flash_info_1 {
+ 	uint32_t protect_block_size;
+ 
+ 	/* Version 1 adds these fields: */
+-	/*
+-	 * Ideal write size in bytes.  Writes will be fastest if size is
+-	 * exactly this and offset is a multiple of this.  For example, an EC
+-	 * may have a write buffer which can do half-page operations if data is
+-	 * aligned, and a slower word-at-a-time write mode.
+-	 */
+ 	uint32_t write_ideal_size;
+-
+-	/* Flags; see EC_FLASH_INFO_* */
+ 	uint32_t flags;
+ } __packed;
+ 
+@@ -877,9 +935,14 @@ struct ec_response_flash_info_1 {
+  */
+ #define EC_CMD_FLASH_READ 0x11
+ 
++/**
++ * struct ec_params_flash_read - Parameters for the flash read command.
++ * @offset: Byte offset to read.
++ * @size: Size to read in bytes.
++ */
+ struct ec_params_flash_read {
+-	uint32_t offset;   /* Byte offset to read */
+-	uint32_t size;     /* Size to read in bytes */
++	uint32_t offset;
++	uint32_t size;
+ } __packed;
+ 
+ /* Write flash */
+@@ -889,18 +952,28 @@ struct ec_params_flash_read {
+ /* Version 0 of the flash command supported only 64 bytes of data */
+ #define EC_FLASH_WRITE_VER0_SIZE 64
+ 
++/**
++ * struct ec_params_flash_write - Parameters for the flash write command.
++ * @offset: Byte offset to write.
++ * @size: Size to write in bytes.
++ */
+ struct ec_params_flash_write {
+-	uint32_t offset;   /* Byte offset to write */
+-	uint32_t size;     /* Size to write in bytes */
++	uint32_t offset;
++	uint32_t size;
+ 	/* Followed by data to write */
+ } __packed;
+ 
+ /* Erase flash */
+ #define EC_CMD_FLASH_ERASE 0x13
+ 
++/**
++ * struct ec_params_flash_erase - Parameters for the flash erase command.
++ * @offset: Byte offset to erase.
++ * @size: Size to erase in bytes.
++ */
+ struct ec_params_flash_erase {
+-	uint32_t offset;   /* Byte offset to erase */
+-	uint32_t size;     /* Size to erase in bytes */
++	uint32_t offset;
++	uint32_t size;
+ } __packed;
+ 
+ /*
+@@ -939,21 +1012,28 @@ struct ec_params_flash_erase {
+ /* Entile flash code protected when the EC boots */
+ #define EC_FLASH_PROTECT_ALL_AT_BOOT        (1 << 6)
+ 
++/**
++ * struct ec_params_flash_protect - Parameters for the flash protect command.
++ * @mask: Bits in flags to apply.
++ * @flags: New flags to apply.
++ */
+ struct ec_params_flash_protect {
+-	uint32_t mask;   /* Bits in flags to apply */
+-	uint32_t flags;  /* New flags to apply */
++	uint32_t mask;
++	uint32_t flags;
+ } __packed;
+ 
++/**
++ * struct ec_response_flash_protect - Response to the flash protect command.
++ * @flags: Current value of flash protect flags.
++ * @valid_flags: Flags which are valid on this platform. This allows the
++ *               caller to distinguish between flags which aren't set vs. flags
++ *               which can't be set on this platform.
++ * @writable_flags: Flags which can be changed given the current protection
++ *                  state.
++ */
+ struct ec_response_flash_protect {
+-	/* Current value of flash protect flags */
+ 	uint32_t flags;
+-	/*
+-	 * Flags which are valid on this platform.  This allows the caller
+-	 * to distinguish between flags which aren't set vs. flags which can't
+-	 * be set on this platform.
+-	 */
+ 	uint32_t valid_flags;
+-	/* Flags which can be changed given the current protection state */
+ 	uint32_t writable_flags;
+ } __packed;
+ 
+@@ -980,8 +1060,13 @@ enum ec_flash_region {
+ 	EC_FLASH_REGION_COUNT,
+ };
+ 
++/**
++ * struct ec_params_flash_region_info - Parameters for the flash region info
++ *         command.
++ * @region: Flash region; see EC_FLASH_REGION_*
++ */
+ struct ec_params_flash_region_info {
+-	uint32_t region;  /* enum ec_flash_region */
++	uint32_t region;
+ } __packed;
+ 
+ struct ec_response_flash_region_info {
+@@ -1092,7 +1177,9 @@ struct rgb_s {
+ };
+ 
+ #define LB_BATTERY_LEVELS 4
+-/* List of tweakable parameters. NOTE: It's __packed so it can be sent in a
++
++/*
++ * List of tweakable parameters. NOTE: It's __packed so it can be sent in a
+  * host command, but the alignment is the same regardless. Keep it that way.
+  */
+ struct lightbar_params_v0 {
+@@ -2078,6 +2165,12 @@ enum ec_mkbp_event {
+ 	/* EC sent a sysrq command */
+ 	EC_MKBP_EVENT_SYSRQ = 6,
+ 
++	/* Notify the AP that something happened on CEC */
++	EC_MKBP_EVENT_CEC_EVENT = 8,
++
++	/* Send an incoming CEC message to the AP */
++	EC_MKBP_EVENT_CEC_MESSAGE = 9,
++
+ 	/* Number of MKBP events */
+ 	EC_MKBP_EVENT_COUNT,
+ };
+@@ -2093,12 +2186,28 @@ union ec_response_get_next_data {
+ 	uint32_t   sysrq;
+ } __packed;
+ 
++union ec_response_get_next_data_v1 {
++	uint8_t key_matrix[16];
++	uint32_t host_event;
++	uint32_t buttons;
++	uint32_t switches;
++	uint32_t sysrq;
++	uint32_t cec_events;
++	uint8_t cec_message[16];
++} __packed;
++
+ struct ec_response_get_next_event {
+ 	uint8_t event_type;
+ 	/* Followed by event data if any */
+ 	union ec_response_get_next_data data;
+ } __packed;
+ 
++struct ec_response_get_next_event_v1 {
++	uint8_t event_type;
++	/* Followed by event data if any */
++	union ec_response_get_next_data_v1 data;
++} __packed;
++
+ /* Bit indices for buttons and switches.*/
+ /* Buttons */
+ #define EC_MKBP_POWER_BUTTON	0
+@@ -2108,6 +2217,7 @@ struct ec_response_get_next_event {
+ /* Switches */
+ #define EC_MKBP_LID_OPEN	0
+ #define EC_MKBP_TABLET_MODE	1
++#define EC_MKBP_BASE_ATTACHED	2
+ 
+ /*****************************************************************************/
+ /* Temperature sensor commands */
+@@ -2593,14 +2703,18 @@ struct ec_params_current_limit {
+ } __packed;
+ 
+ /*
+- * Set maximum external power current.
++ * Set maximum external voltage / current.
+  */
+-#define EC_CMD_EXT_POWER_CURRENT_LIMIT 0xa2
++#define EC_CMD_EXTERNAL_POWER_LIMIT 0x00A2
+ 
+-struct ec_params_ext_power_current_limit {
+-	uint32_t limit; /* in mA */
++/* Command v0 is used only on Spring and is obsolete + unsupported */
++struct ec_params_external_power_limit_v1 {
++	uint16_t current_lim; /* in mA, or EC_POWER_LIMIT_NONE to clear limit */
++	uint16_t voltage_lim; /* in mV, or EC_POWER_LIMIT_NONE to clear limit */
+ } __packed;
+ 
++#define EC_POWER_LIMIT_NONE 0xffff
++
+ /* Inform the EC when entering a sleep state */
+ #define EC_CMD_HOST_SLEEP_EVENT 0xa9
+ 
+@@ -2829,6 +2943,79 @@ struct ec_params_reboot_ec {
+ #define EC_ACPI_MEM_VERSION_CURRENT 1
+ 
+ 
++/*****************************************************************************/
++/*
++ * HDMI CEC commands
++ *
++ * These commands are for sending and receiving message via HDMI CEC
++ */
++#define EC_MAX_CEC_MSG_LEN 16
++
++/* CEC message from the AP to be written on the CEC bus */
++#define EC_CMD_CEC_WRITE_MSG 0x00B8
++
++/**
++ * struct ec_params_cec_write - Message to write to the CEC bus
++ * @msg: message content to write to the CEC bus
++ */
++struct ec_params_cec_write {
++	uint8_t msg[EC_MAX_CEC_MSG_LEN];
++} __packed;
++
++/* Set various CEC parameters */
++#define EC_CMD_CEC_SET 0x00BA
++
++/**
++ * struct ec_params_cec_set - CEC parameters set
++ * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
++ * @val: in case cmd is CEC_CMD_ENABLE, this field can be 0 to disable CEC
++ *	or 1 to enable CEC functionality, in case cmd is CEC_CMD_LOGICAL_ADDRESS,
++ *	this field encodes the requested logical address between 0 and 15
++ *	or 0xff to unregister
++ */
++struct ec_params_cec_set {
++	uint8_t cmd; /* enum cec_command */
++	uint8_t val;
++} __packed;
++
++/* Read various CEC parameters */
++#define EC_CMD_CEC_GET 0x00BB
++
++/**
++ * struct ec_params_cec_get - CEC parameters get
++ * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
++ */
++struct ec_params_cec_get {
++	uint8_t cmd; /* enum cec_command */
++} __packed;
++
++/**
++ * struct ec_response_cec_get - CEC parameters get response
++ * @val: in case cmd was CEC_CMD_ENABLE, this field will 0 if CEC is
++ *	disabled or 1 if CEC functionality is enabled,
++ *	in case cmd was CEC_CMD_LOGICAL_ADDRESS, this will encode the
++ *	configured logical address between 0 and 15 or 0xff if unregistered
++ */
++struct ec_response_cec_get {
++	uint8_t val;
++} __packed;
++
++/* CEC parameters command */
++enum ec_cec_command {
++	/* CEC reading, writing and events enable */
++	CEC_CMD_ENABLE,
++	/* CEC logical address  */
++	CEC_CMD_LOGICAL_ADDRESS,
++};
++
++/* Events from CEC to AP */
++enum mkbp_cec_event {
++	/* Outgoing message was acknowledged by a follower */
++	EC_MKBP_CEC_SEND_OK			= BIT(0),
++	/* Outgoing message was not acknowledged */
++	EC_MKBP_CEC_SEND_FAILED			= BIT(1),
++};
++
+ /*****************************************************************************/
+ /*
+  * Special commands
+@@ -2974,6 +3161,12 @@ enum usb_chg_type {
+ 	USB_CHG_TYPE_VBUS,
+ 	USB_CHG_TYPE_UNKNOWN,
+ };
++enum usb_power_roles {
++	USB_PD_PORT_POWER_DISCONNECTED,
++	USB_PD_PORT_POWER_SOURCE,
++	USB_PD_PORT_POWER_SINK,
++	USB_PD_PORT_POWER_SINK_NOT_CHARGING,
++};
+ 
+ struct usb_chg_measures {
+ 	uint16_t voltage_max;
+@@ -2991,6 +3184,130 @@ struct ec_response_usb_pd_power_info {
+ 	uint32_t max_power;
+ } __packed;
+ 
++struct ec_params_usb_pd_info_request {
++	uint8_t port;
++} __packed;
++
++/*
++ * This command will return the number of USB PD charge port + the number
++ * of dedicated port present.
++ * EC_CMD_USB_PD_PORTS does NOT include the dedicated ports
++ */
++#define EC_CMD_CHARGE_PORT_COUNT 0x0105
++struct ec_response_charge_port_count {
++	uint8_t port_count;
++} __packed;
++
++/* Read USB-PD Device discovery info */
++#define EC_CMD_USB_PD_DISCOVERY 0x0113
++struct ec_params_usb_pd_discovery_entry {
++	uint16_t vid;  /* USB-IF VID */
++	uint16_t pid;  /* USB-IF PID */
++	uint8_t ptype; /* product type (hub,periph,cable,ama) */
++} __packed;
++
++/* Override default charge behavior */
++#define EC_CMD_PD_CHARGE_PORT_OVERRIDE 0x0114
++
++/* Negative port parameters have special meaning */
++enum usb_pd_override_ports {
++	OVERRIDE_DONT_CHARGE = -2,
++	OVERRIDE_OFF = -1,
++	/* [0, CONFIG_USB_PD_PORT_COUNT): Port# */
++};
++
++struct ec_params_charge_port_override {
++	int16_t override_port; /* Override port# */
++} __packed;
++
++/* Read (and delete) one entry of PD event log */
++#define EC_CMD_PD_GET_LOG_ENTRY 0x0115
++
++struct ec_response_pd_log {
++	uint32_t timestamp; /* relative timestamp in milliseconds */
++	uint8_t type;       /* event type : see PD_EVENT_xx below */
++	uint8_t size_port;  /* [7:5] port number [4:0] payload size in bytes */
++	uint16_t data;      /* type-defined data payload */
++	uint8_t payload[0]; /* optional additional data payload: 0..16 bytes */
++} __packed;
++
++/* The timestamp is the microsecond counter shifted to get about a ms. */
++#define PD_LOG_TIMESTAMP_SHIFT 10 /* 1 LSB = 1024us */
++
++#define PD_LOG_SIZE_MASK  0x1f
++#define PD_LOG_PORT_MASK  0xe0
++#define PD_LOG_PORT_SHIFT    5
++#define PD_LOG_PORT_SIZE(port, size) (((port) << PD_LOG_PORT_SHIFT) | \
++				      ((size) & PD_LOG_SIZE_MASK))
++#define PD_LOG_PORT(size_port) ((size_port) >> PD_LOG_PORT_SHIFT)
++#define PD_LOG_SIZE(size_port) ((size_port) & PD_LOG_SIZE_MASK)
++
++/* PD event log : entry types */
++/* PD MCU events */
++#define PD_EVENT_MCU_BASE       0x00
++#define PD_EVENT_MCU_CHARGE             (PD_EVENT_MCU_BASE+0)
++#define PD_EVENT_MCU_CONNECT            (PD_EVENT_MCU_BASE+1)
++/* Reserved for custom board event */
++#define PD_EVENT_MCU_BOARD_CUSTOM       (PD_EVENT_MCU_BASE+2)
++/* PD generic accessory events */
++#define PD_EVENT_ACC_BASE       0x20
++#define PD_EVENT_ACC_RW_FAIL   (PD_EVENT_ACC_BASE+0)
++#define PD_EVENT_ACC_RW_ERASE  (PD_EVENT_ACC_BASE+1)
++/* PD power supply events */
++#define PD_EVENT_PS_BASE        0x40
++#define PD_EVENT_PS_FAULT      (PD_EVENT_PS_BASE+0)
++/* PD video dongles events */
++#define PD_EVENT_VIDEO_BASE     0x60
++#define PD_EVENT_VIDEO_DP_MODE (PD_EVENT_VIDEO_BASE+0)
++#define PD_EVENT_VIDEO_CODEC   (PD_EVENT_VIDEO_BASE+1)
++/* Returned in the "type" field, when there is no entry available */
++#define PD_EVENT_NO_ENTRY       0xff
++
++/*
++ * PD_EVENT_MCU_CHARGE event definition :
++ * the payload is "struct usb_chg_measures"
++ * the data field contains the port state flags as defined below :
++ */
++/* Port partner is a dual role device */
++#define CHARGE_FLAGS_DUAL_ROLE         BIT(15)
++/* Port is the pending override port */
++#define CHARGE_FLAGS_DELAYED_OVERRIDE  BIT(14)
++/* Port is the override port */
++#define CHARGE_FLAGS_OVERRIDE          BIT(13)
++/* Charger type */
++#define CHARGE_FLAGS_TYPE_SHIFT               3
++#define CHARGE_FLAGS_TYPE_MASK       (0xf << CHARGE_FLAGS_TYPE_SHIFT)
++/* Power delivery role */
++#define CHARGE_FLAGS_ROLE_MASK         (7 <<  0)
++
++/*
++ * PD_EVENT_PS_FAULT data field flags definition :
++ */
++#define PS_FAULT_OCP                          1
++#define PS_FAULT_FAST_OCP                     2
++#define PS_FAULT_OVP                          3
++#define PS_FAULT_DISCH                        4
++
++/*
++ * PD_EVENT_VIDEO_CODEC payload is "struct mcdp_info".
++ */
++struct mcdp_version {
++	uint8_t major;
++	uint8_t minor;
++	uint16_t build;
++} __packed;
++
++struct mcdp_info {
++	uint8_t family[2];
++	uint8_t chipid[2];
++	struct mcdp_version irom;
++	struct mcdp_version fw;
++} __packed;
++
++/* struct mcdp_info field decoding */
++#define MCDP_CHIPID(chipid) ((chipid[0] << 8) | chipid[1])
++#define MCDP_FAMILY(family) ((family[0] << 8) | family[1])
++
+ /* Get info about USB-C SS muxes */
+ #define EC_CMD_USB_PD_MUX_INFO 0x11a
  
 -- 
 2.19.1
