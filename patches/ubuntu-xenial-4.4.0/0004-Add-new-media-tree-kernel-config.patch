@@ -1,14 +1,14 @@
-From 21cce30aa1641fd7574fce700c2f263f7204f223 Mon Sep 17 00:00:00 2001
+From 5e781cad1311922e1652f00956098265258c3762 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 May 2018 14:13:54 -0500
+Date: Tue, 13 Nov 2018 17:11:03 -0600
 Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 56 ++++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 4 deletions(-)
+ debian.master/config/config.common.ubuntu | 57 ++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index ee87783..631af17e 100644
+index ee87783..7818a03 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2056,7 +2056,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -47,7 +47,7 @@ index ee87783..631af17e 100644
  CONFIG_SLABINFO=y
  CONFIG_SLHC=y
  CONFIG_SLICOSS=m
-@@ -9132,3 +9132,51 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9132,3 +9132,52 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -98,7 +98,8 @@ index ee87783..631af17e 100644
 +CONFIG_VIDEO_CADENCE=y
 +CONFIG_VIDEO_CADENCE_CSI2RX=m
 +CONFIG_VIDEO_CADENCE_CSI2TX=m
-+
++CONFIG_VIDEO_VICODEC=m
++# CONFIG_VIDEO_CROS_EC_CEC is not set
 -- 
 2.7.4
 

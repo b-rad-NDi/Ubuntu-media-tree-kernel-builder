@@ -1,24 +1,45 @@
-From 51e2b863e0e3cbfa0a9b4cdc8f625a391201c4aa Mon Sep 17 00:00:00 2001
+From b0b6bb46b9ad09d4c4bde14cafea110f65c718d2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 5 Nov 2018 10:03:56 -0600
+Date: Tue, 13 Nov 2018 17:12:14 -0600
 Subject: [PATCH 5/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |  7 +++--
- drivers/input/touchscreen/sur40.c       | 48 +++++++++++++++------------------
- drivers/net/ethernet/via/via-velocity.c | 10 +++----
- drivers/usb/gadget/function/uvc_queue.c |  3 ++-
- fs/compat_ioctl.c                       |  2 --
- include/linux/compiler-gcc.h            | 32 +++++++++++++++++-----
- include/linux/kconfig.h                 |  7 +++++
- mm/slub.c                               |  2 ++
- 8 files changed, 65 insertions(+), 46 deletions(-)
+ drivers/hid/hid-picolcd_cir.c           |  10 ++-
+ drivers/input/touchscreen/sur40.c       |  48 +++++++--------
+ drivers/net/ethernet/via/via-velocity.c |  10 +--
+ drivers/usb/gadget/function/uvc_queue.c |   5 +-
+ drivers/video/hdmi.c                    |   4 +-
+ fs/compat_ioctl.c                       |  42 -------------
+ include/linux/compiler-gcc.h            |   3 +
+ include/linux/dma-buf.h                 |   2 +
+ include/linux/kconfig.h                 |   7 +++
+ include/linux/refcount.h                | 104 ++++++++++++++++++++++++++++++++
+ mm/slub.c                               |   2 +
+ 11 files changed, 153 insertions(+), 84 deletions(-)
+ create mode 100644 include/linux/refcount.h
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 9628651..32747b7 100644
+index 9628651..bf6f29c 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
-@@ -108,16 +108,15 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
+@@ -45,7 +45,7 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ {
+ 	unsigned long flags;
+ 	int i, w, sz;
+-	DEFINE_IR_RAW_EVENT(rawir);
++	struct ir_raw_event rawir = {};
+ 
+ 	/* ignore if rc_dev is NULL or status is shunned */
+ 	spin_lock_irqsave(&data->lock, flags);
+@@ -67,7 +67,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ 	 */
+ 	sz = size > 0 ? min((int)raw_data[0], size-1) : 0;
+ 	for (i = 0; i+1 < sz; i += 2) {
+-		init_ir_raw_event(&rawir);
+ 		w = (raw_data[i] << 8) | (raw_data[i+1]);
+ 		rawir.pulse = !!(w & 0x8000);
+ 		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
+@@ -108,16 +107,15 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
  	struct rc_dev *rdev;
  	int ret = 0;
  
@@ -218,9 +239,18 @@ index f38696c..c841bba 100644
  
  static int velocity_platform_remove(struct platform_device *pdev)
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
-index 51d4a17..e6897b1 100644
+index 51d4a17..4089ae4 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
 +++ b/drivers/usb/gadget/function/uvc_queue.c
+@@ -170,7 +170,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	ret = vb2_qbuf(&queue->queue, buf);
++	ret = vb2_qbuf(&queue->queue, NULL, buf);
+ 	if (ret < 0)
+ 		return ret;
+ 
 @@ -329,7 +329,8 @@ struct uvc_buffer *uvcg_queue_next_buffer(struct uvc_video_queue *queue,
  
  	buf->buf.field = V4L2_FIELD_NONE;
@@ -231,11 +261,71 @@ index 51d4a17..e6897b1 100644
  
  	vb2_set_plane_payload(&buf->buf.vb2_buf, 0, buf->bytesused);
  	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index b73520a..f1ce621 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -585,9 +585,9 @@ hdmi_extended_colorimetry_get_name(enum hdmi_extended_colorimetry ext_col)
+ 		return "xvYCC 709";
+ 	case HDMI_EXTENDED_COLORIMETRY_S_YCC_601:
+ 		return "sYCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_YCC_601:
++	case HDMI_EXTENDED_COLORIMETRY_OPYCC_601:
+ 		return "Adobe YCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_RGB:
++	case HDMI_EXTENDED_COLORIMETRY_OPRGB:
+ 		return "Adobe RGB";
+ 	case HDMI_EXTENDED_COLORIMETRY_BT2020_CONST_LUM:
+ 		return "BT.2020 Constant Luminance";
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index a52ca5c..b756fde 100644
+index a52ca5c..29ba8fe 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
-@@ -1339,8 +1339,6 @@ COMPATIBLE_IOCTL(DMX_SET_FILTER)
+@@ -195,34 +195,6 @@ static int do_video_stillpicture(unsigned int fd, unsigned int cmd,
+ 	return err;
+ }
+ 
+-struct compat_video_spu_palette {
+-	int length;
+-	compat_uptr_t palette;
+-};
+-
+-static int do_video_set_spu_palette(unsigned int fd, unsigned int cmd,
+-		struct compat_video_spu_palette __user *up)
+-{
+-	struct video_spu_palette __user *up_native;
+-	compat_uptr_t palp;
+-	int length, err;
+-
+-	err  = get_user(palp, &up->palette);
+-	err |= get_user(length, &up->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	up_native = compat_alloc_user_space(sizeof(struct video_spu_palette));
+-	err  = put_user(compat_ptr(palp), &up_native->palette);
+-	err |= put_user(length, &up_native->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	err = sys_ioctl(fd, cmd, (unsigned long) up_native);
+-
+-	return err;
+-}
+-
+ #ifdef CONFIG_BLOCK
+ typedef struct sg_io_hdr32 {
+ 	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
+@@ -1330,17 +1302,12 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+ COMPATIBLE_IOCTL(AUDIO_SET_ID)
+ COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
+ COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
+-COMPATIBLE_IOCTL(AUDIO_SET_EXT_ID)
+-COMPATIBLE_IOCTL(AUDIO_SET_ATTRIBUTES)
+-COMPATIBLE_IOCTL(AUDIO_SET_KARAOKE)
+ COMPATIBLE_IOCTL(DMX_START)
+ COMPATIBLE_IOCTL(DMX_STOP)
+ COMPATIBLE_IOCTL(DMX_SET_FILTER)
  COMPATIBLE_IOCTL(DMX_SET_PES_FILTER)
  COMPATIBLE_IOCTL(DMX_SET_BUFFER_SIZE)
  COMPATIBLE_IOCTL(DMX_GET_PES_PIDS)
@@ -244,11 +334,37 @@ index a52ca5c..b756fde 100644
  COMPATIBLE_IOCTL(DMX_GET_STC)
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
+@@ -1371,16 +1338,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+ COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
+ COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
+ COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
+-COMPATIBLE_IOCTL(VIDEO_SET_ID)
+ COMPATIBLE_IOCTL(VIDEO_SET_STREAMTYPE)
+ COMPATIBLE_IOCTL(VIDEO_SET_FORMAT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SYSTEM)
+-COMPATIBLE_IOCTL(VIDEO_SET_HIGHLIGHT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SPU)
+-COMPATIBLE_IOCTL(VIDEO_GET_NAVI)
+-COMPATIBLE_IOCTL(VIDEO_SET_ATTRIBUTES)
+ COMPATIBLE_IOCTL(VIDEO_GET_SIZE)
+-COMPATIBLE_IOCTL(VIDEO_GET_FRAME_RATE)
+ 
+ /* joystick */
+ COMPATIBLE_IOCTL(JSIOCGVERSION)
+@@ -1481,8 +1441,6 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
+ 		return do_video_get_event(fd, cmd, argp);
+ 	case VIDEO_STILLPICTURE:
+ 		return do_video_stillpicture(fd, cmd, argp);
+-	case VIDEO_SET_SPU_PALETTE:
+-		return do_video_set_spu_palette(fd, cmd, argp);
+ 	}
+ 
+ 	/*
 diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 4d54cd4..9acbf17 100644
+index 143d40e..a647bcc 100644
 --- a/include/linux/compiler-gcc.h
 +++ b/include/linux/compiler-gcc.h
-@@ -3,6 +3,9 @@
+@@ -2,6 +2,9 @@
  #error "Please don't include <linux/compiler-gcc.h> directly, include <linux/compiler.h> instead."
  #endif
  
@@ -258,54 +374,19 @@ index 4d54cd4..9acbf17 100644
  /*
   * Common definitions for all gcc versions go here.
   */
-@@ -66,25 +69,40 @@
- #endif
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index f98bd70..f8f0884 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -33,6 +33,8 @@
+ #include <linux/fence.h>
+ #include <linux/wait.h>
  
- /*
-+ * Feature detection for gnu_inline (gnu89 extern inline semantics). Either
-+ * __GNUC_STDC_INLINE__ is defined (not using gnu89 extern inline semantics,
-+ * and we opt in to the gnu89 semantics), or __GNUC_STDC_INLINE__ is not
-+ * defined so the gnu89 semantics are the default.
-+ */
-+#ifdef __GNUC_STDC_INLINE__
-+# define __gnu_inline  __attribute__((gnu_inline))
-+#else
-+# define __gnu_inline
-+#endif
++#include <media/compat.h>
 +
-+/*
-  * Force always-inline if the user requests it so via the .config,
-  * or if gcc is too old.
-  * GCC does not warn about unused static inline functions for
-  * -Wunused-function.  This turns out to avoid the need for complex #ifdef
-  * directives.  Suppress the warning in clang as well by using "unused"
-  * function attribute, which is redundant but not harmful for gcc.
-+ * Prefer gnu_inline, so that extern inline functions do not emit an
-+ * externally visible function. This makes extern inline behave as per gnu89
-+ * semantics rather than c99. This prevents multiple symbol definition errors
-+ * of extern inline functions at link time.
-+ * A lot of inline functions can cause havoc with function tracing.
-  */
- #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) ||		\
-     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
--#define inline inline		__attribute__((always_inline,unused)) notrace
--#define __inline__ __inline__	__attribute__((always_inline,unused)) notrace
--#define __inline __inline	__attribute__((always_inline,unused)) notrace
-+#define inline \
-+   inline __attribute__((always_inline, unused)) notrace __gnu_inline
- #else
--/* A lot of inline functions can cause havoc with function tracing */
--#define inline inline		__attribute__((unused)) notrace
--#define __inline__ __inline__	__attribute__((unused)) notrace
--#define __inline __inline	__attribute__((unused)) notrace
-+#define inline inline      __attribute__((unused)) notrace __gnu_inline
- #endif
- 
-+#define __inline__ inline
-+#define __inline inline
- #define __always_inline	inline __attribute__((always_inline))
- #define  noinline	__attribute__((noinline))
- 
+ struct device;
+ struct dma_buf;
+ struct dma_buf_attachment;
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
 index cc8fa10..7291175 100644
 --- a/include/linux/kconfig.h
@@ -324,6 +405,116 @@ index cc8fa10..7291175 100644
  /*
   * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
   * otherwise. For boolean options, this is equivalent to
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+new file mode 100644
+index 0000000..a685da2
+--- /dev/null
++++ b/include/linux/refcount.h
+@@ -0,0 +1,104 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_REFCOUNT_H
++#define _LINUX_REFCOUNT_H
++
++#include <linux/atomic.h>
++#include <linux/mutex.h>
++#include <linux/spinlock.h>
++#include <linux/kernel.h>
++
++/**
++ * struct refcount_t - variant of atomic_t specialized for reference counts
++ * @refs: atomic_t counter field
++ *
++ * The counter saturates at UINT_MAX and will not move once
++ * there. This avoids wrapping the counter and causing 'spurious'
++ * use-after-free bugs.
++ */
++typedef struct refcount_struct {
++	atomic_t refs;
++} refcount_t;
++
++#define REFCOUNT_INIT(n)	{ .refs = ATOMIC_INIT(n), }
++
++/**
++ * refcount_set - set a refcount's value
++ * @r: the refcount
++ * @n: value to which the refcount will be set
++ */
++static inline void refcount_set(refcount_t *r, unsigned int n)
++{
++	atomic_set(&r->refs, n);
++}
++
++/**
++ * refcount_read - get a refcount's value
++ * @r: the refcount
++ *
++ * Return: the refcount's value
++ */
++static inline unsigned int refcount_read(const refcount_t *r)
++{
++	return atomic_read(&r->refs);
++}
++
++#ifdef CONFIG_REFCOUNT_FULL
++extern __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r);
++extern void refcount_add(unsigned int i, refcount_t *r);
++
++extern __must_check bool refcount_inc_not_zero(refcount_t *r);
++extern void refcount_inc(refcount_t *r);
++
++extern __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r);
++
++extern __must_check bool refcount_dec_and_test(refcount_t *r);
++extern void refcount_dec(refcount_t *r);
++#else
++# ifdef CONFIG_ARCH_HAS_REFCOUNT
++#  include <asm/refcount.h>
++# else
++static inline __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r)
++{
++	return atomic_add_unless(&r->refs, i, 0);
++}
++
++static inline void refcount_add(unsigned int i, refcount_t *r)
++{
++	atomic_add(i, &r->refs);
++}
++
++static inline __must_check bool refcount_inc_not_zero(refcount_t *r)
++{
++	return atomic_add_unless(&r->refs, 1, 0);
++}
++
++static inline void refcount_inc(refcount_t *r)
++{
++	atomic_inc(&r->refs);
++}
++
++static inline __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r)
++{
++	return atomic_sub_and_test(i, &r->refs);
++}
++
++static inline __must_check bool refcount_dec_and_test(refcount_t *r)
++{
++	return atomic_dec_and_test(&r->refs);
++}
++
++static inline void refcount_dec(refcount_t *r)
++{
++	atomic_dec(&r->refs);
++}
++# endif /* !CONFIG_ARCH_HAS_REFCOUNT */
++#endif /* CONFIG_REFCOUNT_FULL */
++
++extern __must_check bool refcount_dec_if_one(refcount_t *r);
++extern __must_check bool refcount_dec_not_one(refcount_t *r);
++extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock);
++extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock);
++extern __must_check bool refcount_dec_and_lock_irqsave(refcount_t *r,
++						       spinlock_t *lock,
++						       unsigned long *flags);
++#endif /* _LINUX_REFCOUNT_H */
 diff --git a/mm/slub.c b/mm/slub.c
 index 2284c43..1e010b5 100644
 --- a/mm/slub.c
