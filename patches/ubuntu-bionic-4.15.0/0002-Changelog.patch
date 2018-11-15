@@ -1,14 +1,14 @@
-From 9928d0ae662b643710e4f64b57508a9a9252a252 Mon Sep 17 00:00:00 2001
+From fc732f238ef34304c862384a146b02806c28f9b6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 06 Nov 2018 17:23:40 -0600
-Subject: [PATCH 2/5] Changelog
+Date: Tue, 6 Nov 2018 17:23:40 -0600
+Subject: [PATCH 2/6] Changelog
 
 ---
  debian.master/changelog | 42 +++++++++++++++++++++++++++++++++++++++++
  1 file changed, 42 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 62da603a696a..d8f012a45d58 100644
+index 62da603a696a..c3cc65740099 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,45 @@
