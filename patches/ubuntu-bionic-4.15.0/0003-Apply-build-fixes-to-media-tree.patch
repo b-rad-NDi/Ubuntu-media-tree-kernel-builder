@@ -1,68 +1,67 @@
-From ba87fe5ed483979fcafcf4c3509943131d0a27d3 Mon Sep 17 00:00:00 2001
+From 1d0bba689576e8c859d5d5ff9ea7abb8e8f3f8bf Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 1 May 2018 11:11:15 -0500
-Subject: [PATCH 3/5] Apply build fixes to media tree
+Date: Thu, 15 Nov 2018 12:42:43 -0600
+Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-api.c                   |   2 +
- drivers/media/common/saa7146/saa7146_fops.c   |   2 +
- drivers/media/common/saa7146/saa7146_vbi.c    |   3 +
- drivers/media/common/saa7146/saa7146_video.c  |   2 +
- drivers/media/common/v4l2-tpg/v4l2-tpg-core.c |   2 +
- drivers/media/dvb-core/dmxdev.c               |   2 +
- drivers/media/dvb-core/dvb_demux.c            |   2 +
- drivers/media/dvb-core/dvb_net.c              |   2 +
- drivers/media/i2c/tvaudio.c                   |   2 +
- drivers/media/media-device.c                  |   2 +
- drivers/media/pci/bt8xx/bttv-driver.c         |   2 +
- drivers/media/pci/bt8xx/bttv-input.c          |   1 +
- drivers/media/pci/cx18/cx18-fileops.c         |   2 +
- drivers/media/pci/cx18/cx18-streams.c         |   2 +
- drivers/media/pci/ddbridge/ddbridge-core.c    |   2 +
- drivers/media/pci/ivtv/ivtv-driver.c          |   2 +
- drivers/media/pci/ivtv/ivtv-irq.c             |   2 +
- .../pci/netup_unidvb/netup_unidvb_core.c      |   2 +
- drivers/media/pci/saa7134/saa7134-core.c      |   2 +
- drivers/media/pci/saa7134/saa7134-input.c     |   2 +
- drivers/media/pci/saa7134/saa7134-ts.c        |   2 +
- drivers/media/pci/saa7134/saa7134-vbi.c       |   2 +
- drivers/media/pci/saa7134/saa7134-video.c     |   2 +
- drivers/media/pci/ttpci/av7110_ir.c           |   1 +
- drivers/media/pci/tw686x/tw686x-core.c        |   2 +
- drivers/media/platform/vim2m.c                |   2 +
- drivers/media/radio/radio-cadet.c             |   2 +
- drivers/media/radio/wl128x/fmdrv_common.c     |   5 +-
- drivers/media/rc/ene_ir.c                     |   2 +
- drivers/media/rc/igorplugusb.c                |   2 +
- drivers/media/rc/imon.c                       |   2 +
- drivers/media/rc/ir-mce_kbd-decoder.c         |   2 +
- drivers/media/rc/lirc_dev.c                   |   2 +
- drivers/media/rc/rc-ir-raw.c                  |   2 +
- drivers/media/rc/rc-main.c                    |   2 +
- drivers/media/rc/serial_ir.c                  |   2 +
- drivers/media/rc/sir_ir.c                     |   2 +
- drivers/media/usb/au0828/au0828-dvb.c         |   2 +
- drivers/media/usb/au0828/au0828-video.c       |   2 +
- drivers/media/usb/em28xx/em28xx-dvb.c         |   2 +-
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c       |   6 +
- drivers/media/usb/s2255/s2255drv.c            |   2 +
- drivers/media/usb/uvc/uvc_driver.c            |   2 +
- drivers/media/v4l2-core/v4l2-fwnode.c         |   2 +
- drivers/media/v4l2-core/v4l2-ioctl.c          |   2 +
- drivers/media/v4l2-core/videobuf-dma-sg.c     |   2 +
- include/linux/dma-buf.h                       |   2 +
- include/linux/overflow.h                      | 278 ++++++++++++++++++
- include/media/compat.h                        |   2 +
- include/media/i2c/saa6588.h                   |   2 +
- include/media/media-devnode.h                 |   2 +
- include/media/v4l2-ctrls.h                    |   2 +
- include/media/v4l2-dev.h                      |   2 +
- include/media/videobuf-core.h                 |   2 +
- 54 files changed, 388 insertions(+), 2 deletions(-)
- create mode 100644 include/linux/overflow.h
+ drivers/media/cec/cec-api.c                           | 2 ++
+ drivers/media/common/saa7146/saa7146_fops.c           | 2 ++
+ drivers/media/common/saa7146/saa7146_vbi.c            | 3 +++
+ drivers/media/common/saa7146/saa7146_video.c          | 2 ++
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c         | 2 ++
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 1 +
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 1 +
+ drivers/media/common/videobuf2/videobuf2-vmalloc.c    | 1 +
+ drivers/media/dvb-core/dmxdev.c                       | 2 ++
+ drivers/media/dvb-core/dvb_demux.c                    | 2 ++
+ drivers/media/dvb-core/dvb_net.c                      | 2 ++
+ drivers/media/i2c/tvaudio.c                           | 2 ++
+ drivers/media/media-device.c                          | 2 ++
+ drivers/media/pci/bt8xx/bttv-driver.c                 | 2 ++
+ drivers/media/pci/bt8xx/bttv-input.c                  | 1 +
+ drivers/media/pci/cx18/cx18-fileops.c                 | 2 ++
+ drivers/media/pci/cx18/cx18-streams.c                 | 2 ++
+ drivers/media/pci/ddbridge/ddbridge-core.c            | 2 ++
+ drivers/media/pci/ivtv/ivtv-driver.c                  | 2 ++
+ drivers/media/pci/ivtv/ivtv-irq.c                     | 2 ++
+ drivers/media/pci/netup_unidvb/netup_unidvb_core.c    | 2 ++
+ drivers/media/pci/saa7134/saa7134-core.c              | 2 ++
+ drivers/media/pci/saa7134/saa7134-input.c             | 2 ++
+ drivers/media/pci/saa7134/saa7134-ts.c                | 2 ++
+ drivers/media/pci/saa7134/saa7134-vbi.c               | 2 ++
+ drivers/media/pci/saa7134/saa7134-video.c             | 2 ++
+ drivers/media/pci/ttpci/av7110_ir.c                   | 1 +
+ drivers/media/pci/tw686x/tw686x-core.c                | 2 ++
+ drivers/media/platform/vim2m.c                        | 2 ++
+ drivers/media/radio/radio-cadet.c                     | 2 ++
+ drivers/media/radio/wl128x/fmdrv_common.c             | 5 ++++-
+ drivers/media/rc/ene_ir.c                             | 2 ++
+ drivers/media/rc/igorplugusb.c                        | 2 ++
+ drivers/media/rc/imon.c                               | 2 ++
+ drivers/media/rc/ir-mce_kbd-decoder.c                 | 2 ++
+ drivers/media/rc/lirc_dev.c                           | 2 ++
+ drivers/media/rc/rc-ir-raw.c                          | 2 ++
+ drivers/media/rc/rc-main.c                            | 2 ++
+ drivers/media/rc/serial_ir.c                          | 2 ++
+ drivers/media/rc/sir_ir.c                             | 2 ++
+ drivers/media/usb/au0828/au0828-dvb.c                 | 2 ++
+ drivers/media/usb/au0828/au0828-video.c               | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c                 | 2 +-
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c               | 6 ++++++
+ drivers/media/usb/s2255/s2255drv.c                    | 2 ++
+ drivers/media/usb/uvc/uvc_driver.c                    | 2 ++
+ drivers/media/v4l2-core/v4l2-fwnode.c                 | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c                  | 2 ++
+ drivers/media/v4l2-core/videobuf-dma-sg.c             | 2 ++
+ include/media/i2c/saa6588.h                           | 2 ++
+ include/media/media-devnode.h                         | 2 ++
+ include/media/v4l2-ctrls.h                            | 2 ++
+ include/media/v4l2-dev.h                              | 2 ++
+ include/media/videobuf-core.h                         | 2 ++
+ 54 files changed, 109 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
-index 64b02507f275..7adf87b5921c 100644
+index a6ebe82a300d..28211a834ff1 100644
 --- a/drivers/media/cec/cec-api.c
 +++ b/drivers/media/cec/cec-api.c
 @@ -18,6 +18,8 @@
@@ -75,7 +74,7 @@ index 64b02507f275..7adf87b5921c 100644
  #include "cec-priv.h"
  #include "cec-pin-priv.h"
 diff --git a/drivers/media/common/saa7146/saa7146_fops.c b/drivers/media/common/saa7146/saa7146_fops.c
-index d139750acea9..098c348f3e1b 100644
+index 12243d656d4b..0974ea6002b7 100644
 --- a/drivers/media/common/saa7146/saa7146_fops.c
 +++ b/drivers/media/common/saa7146/saa7146_fops.c
 @@ -1,6 +1,8 @@
@@ -100,7 +99,7 @@ index e1d369b976ed..c2a675beaf7a 100644
  
  static int vbi_pixel_to_capture = 720 * 2;
 diff --git a/drivers/media/common/saa7146/saa7146_video.c b/drivers/media/common/saa7146/saa7146_video.c
-index 76a0f55c84a4..5da4f92a38ea 100644
+index 1f624fbf2982..049e0e167eb5 100644
 --- a/drivers/media/common/saa7146/saa7146_video.c
 +++ b/drivers/media/common/saa7146/saa7146_video.c
 @@ -7,6 +7,8 @@
@@ -113,7 +112,7 @@ index 76a0f55c84a4..5da4f92a38ea 100644
  
  module_param(max_memory, int, 0644);
 diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-index abd4c788dffd..c0201bc26dd4 100644
+index fa483b95bc5a..27dc060748a9 100644
 --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 @@ -11,6 +11,8 @@
@@ -125,8 +124,44 @@ index abd4c788dffd..c0201bc26dd4 100644
  /* Must remain in sync with enum tpg_pattern */
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index aff0ab7bf83d..bf50a111fb32 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -223,6 +223,7 @@ struct vb2_dc_attachment {
+ };
+ 
+ static int vb2_dc_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_dc_attachment *attach;
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+index 015e737095cd..5beda307fc25 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+@@ -372,6 +372,7 @@ struct vb2_dma_sg_attachment {
+ };
+ 
+ static int vb2_dma_sg_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_dma_sg_attachment *attach;
+diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+index 6dfbd5b05907..9687f1d7f03d 100644
+--- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
++++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+@@ -210,6 +210,7 @@ struct vb2_vmalloc_attachment {
+ };
+ 
+ static int vb2_vmalloc_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_vmalloc_attachment *attach;
 diff --git a/drivers/media/dvb-core/dmxdev.c b/drivers/media/dvb-core/dmxdev.c
-index 5ed65b823845..18b741f501c1 100644
+index a6450d22c318..b0650b6eb9ca 100644
 --- a/drivers/media/dvb-core/dmxdev.c
 +++ b/drivers/media/dvb-core/dmxdev.c
 @@ -31,6 +31,8 @@
@@ -165,7 +200,7 @@ index 149a2f7e4323..b3fb9c337c2b 100644
  {
  	unsigned int j;
 diff --git a/drivers/media/i2c/tvaudio.c b/drivers/media/i2c/tvaudio.c
-index 5919214a56bf..e95afb1a69d4 100644
+index af2da977a685..a00e2b9bfbdb 100644
 --- a/drivers/media/i2c/tvaudio.c
 +++ b/drivers/media/i2c/tvaudio.c
 @@ -40,6 +40,8 @@
@@ -178,12 +213,12 @@ index 5919214a56bf..e95afb1a69d4 100644
  /* insmod args                                                            */
  
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 36e234bfe68d..56deb8bc529a 100644
+index 61acc663b1a8..5af74d6fc95e 100644
 --- a/drivers/media/media-device.c
 +++ b/drivers/media/media-device.c
-@@ -30,6 +30,8 @@
- #include <media/media-devnode.h>
+@@ -32,6 +32,8 @@
  #include <media/media-entity.h>
+ #include <media/media-request.h>
  
 +#include <media/compat.h>
 +
@@ -191,7 +226,7 @@ index 36e234bfe68d..56deb8bc529a 100644
  
  /*
 diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-index 575e3e088194..8bb0424e7fdc 100644
+index 3c81712d15e9..6a3a1da4c989 100644
 --- a/drivers/media/pci/bt8xx/bttv-driver.c
 +++ b/drivers/media/pci/bt8xx/bttv-driver.c
 @@ -61,6 +61,8 @@
@@ -204,7 +239,7 @@ index 575e3e088194..8bb0424e7fdc 100644
  
  unsigned int bttv_num;			/* number of Bt848s in use */
 diff --git a/drivers/media/pci/bt8xx/bttv-input.c b/drivers/media/pci/bt8xx/bttv-input.c
-index 0552001cc38e..8601e12112ac 100644
+index 12e5ec5c6607..1258ccd94dc2 100644
 --- a/drivers/media/pci/bt8xx/bttv-input.c
 +++ b/drivers/media/pci/bt8xx/bttv-input.c
 @@ -27,6 +27,7 @@
@@ -242,10 +277,10 @@ index b36f4ce25d22..ca953ab2fbc2 100644
  
  static const struct v4l2_file_operations cx18_v4l2_enc_fops = {
 diff --git a/drivers/media/pci/ddbridge/ddbridge-core.c b/drivers/media/pci/ddbridge/ddbridge-core.c
-index d5b0d1eaf3ad..80f1a4e15c61 100644
+index 7a2d19682fe3..c5b697f5ca06 100644
 --- a/drivers/media/pci/ddbridge/ddbridge-core.c
 +++ b/drivers/media/pci/ddbridge/ddbridge-core.c
-@@ -34,6 +34,8 @@
+@@ -30,6 +30,8 @@
  #include <linux/swab.h>
  #include <linux/vmalloc.h>
  
@@ -255,7 +290,7 @@ index d5b0d1eaf3ad..80f1a4e15c61 100644
  #include "ddbridge-i2c.h"
  #include "ddbridge-regs.h"
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 6b2ffdc96961..08b1acfaf37d 100644
+index dd727098daf4..8db79cd09f6a 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -61,6 +61,8 @@
@@ -294,7 +329,7 @@ index ead59fabd15f..fc99ec2d5d0d 100644
  module_param(spi_enable, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
  
 diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index 9e76de2411ae..7f390592608c 100644
+index 8984b1bf57a5..a4a74ed75362 100644
 --- a/drivers/media/pci/saa7134/saa7134-core.c
 +++ b/drivers/media/pci/saa7134/saa7134-core.c
 @@ -32,6 +32,8 @@
@@ -307,7 +342,7 @@ index 9e76de2411ae..7f390592608c 100644
  MODULE_AUTHOR("Gerd Knorr <kraxel@bytesex.org> [SuSE Labs]");
  MODULE_LICENSE("GPL");
 diff --git a/drivers/media/pci/saa7134/saa7134-input.c b/drivers/media/pci/saa7134/saa7134-input.c
-index 0e28c5021ac4..e2045b40c34f 100644
+index 999b2774b220..1a78c0b32326 100644
 --- a/drivers/media/pci/saa7134/saa7134-input.c
 +++ b/drivers/media/pci/saa7134/saa7134-input.c
 @@ -23,6 +23,8 @@
@@ -346,7 +381,7 @@ index 57bea543c39b..d62de41bceeb 100644
  
  static unsigned int vbi_debug;
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index 1a50ec9d084f..26f8d06e3153 100644
+index 8f28741ebb35..544e45a7c8d3 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -30,6 +30,8 @@
@@ -384,7 +419,7 @@ index 7fb3f07bf022..a9b224d3f2e9 100644
   * This module parameter allows to control the DMA_TIMER_INTERVAL value.
   * The DMA_TIMER_INTERVAL register controls the minimum DMA interrupt
 diff --git a/drivers/media/platform/vim2m.c b/drivers/media/platform/vim2m.c
-index 1393aa806462..c9c2837cd078 100644
+index af150a0395df..f1811a02605d 100644
 --- a/drivers/media/platform/vim2m.c
 +++ b/drivers/media/platform/vim2m.c
 @@ -31,6 +31,8 @@
@@ -397,7 +432,7 @@ index 1393aa806462..c9c2837cd078 100644
  MODULE_AUTHOR("Pawel Osciak, <pawel@osciak.com>");
  MODULE_LICENSE("GPL");
 diff --git a/drivers/media/radio/radio-cadet.c b/drivers/media/radio/radio-cadet.c
-index 5b82e63885cd..29ac893ac96a 100644
+index d12e07e32546..5689e0f42a3f 100644
 --- a/drivers/media/radio/radio-cadet.c
 +++ b/drivers/media/radio/radio-cadet.c
 @@ -45,6 +45,8 @@
@@ -433,7 +468,7 @@ index 800d69c3f80b..fcd217c1bd02 100644
  
  		/* 3 (fm_opcode,rd_wr,dlen) + payload len) */
 diff --git a/drivers/media/rc/ene_ir.c b/drivers/media/rc/ene_ir.c
-index 1c9e129f5694..bdb8dfd73a1c 100644
+index 56c87d494b53..c450cb750a22 100644
 --- a/drivers/media/rc/ene_ir.c
 +++ b/drivers/media/rc/ene_ir.c
 @@ -38,6 +38,8 @@
@@ -446,7 +481,7 @@ index 1c9e129f5694..bdb8dfd73a1c 100644
  static bool learning_mode_force;
  static int debug;
 diff --git a/drivers/media/rc/igorplugusb.c b/drivers/media/rc/igorplugusb.c
-index f563ddd7f739..028a7fc1f84d 100644
+index ba3f95a97f14..25fc63ce5ac2 100644
 --- a/drivers/media/rc/igorplugusb.c
 +++ b/drivers/media/rc/igorplugusb.c
 @@ -27,6 +27,8 @@
@@ -472,7 +507,7 @@ index 619498366d55..8003b5c19a84 100644
  #define MOD_DESC	"Driver for SoundGraph iMON MultiMedia IR/Display"
  #define MOD_NAME	"imon"
 diff --git a/drivers/media/rc/ir-mce_kbd-decoder.c b/drivers/media/rc/ir-mce_kbd-decoder.c
-index 64ea42927669..7c3139bdf554 100644
+index 67f1c179c713..6321ab5d7de4 100644
 --- a/drivers/media/rc/ir-mce_kbd-decoder.c
 +++ b/drivers/media/rc/ir-mce_kbd-decoder.c
 @@ -18,6 +18,8 @@
@@ -498,7 +533,7 @@ index 5387be0b9bd7..57d74003932b 100644
  
  static dev_t lirc_base_dev;
 diff --git a/drivers/media/rc/rc-ir-raw.c b/drivers/media/rc/rc-ir-raw.c
-index 2e0066b1a31c..6fe105b5c45b 100644
+index e10b4644a442..e7f011e53e92 100644
 --- a/drivers/media/rc/rc-ir-raw.c
 +++ b/drivers/media/rc/rc-ir-raw.c
 @@ -10,6 +10,8 @@
@@ -511,7 +546,7 @@ index 2e0066b1a31c..6fe105b5c45b 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index bfa31ff5e4f7..69d3cb0e4109 100644
+index dff589ef50d2..1edf10cd3684 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -524,7 +559,7 @@ index bfa31ff5e4f7..69d3cb0e4109 100644
  #define IR_TAB_MIN_SIZE	256
  #define IR_TAB_MAX_SIZE	8192
 diff --git a/drivers/media/rc/serial_ir.c b/drivers/media/rc/serial_ir.c
-index 90c7f8e69c5d..f32f1a7dd9cd 100644
+index 9f482b64b225..c05711ea1da7 100644
 --- a/drivers/media/rc/serial_ir.c
 +++ b/drivers/media/rc/serial_ir.c
 @@ -35,6 +35,8 @@
@@ -537,7 +572,7 @@ index 90c7f8e69c5d..f32f1a7dd9cd 100644
  	int signal_pin;
  	int signal_pin_change;
 diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
-index 511e7d874ad0..1e5320ffc7dc 100644
+index ddecb8674d24..ce23a37ff951 100644
 --- a/drivers/media/rc/sir_ir.c
 +++ b/drivers/media/rc/sir_ir.c
 @@ -23,6 +23,8 @@
@@ -563,7 +598,7 @@ index d9093a3c57c5..511c03692508 100644
  module_param_named(preallocate_big_buffers, preallocate_big_buffers, int, 0644);
  MODULE_PARM_DESC(preallocate_big_buffers, "Preallocate the larger transfer buffers at module load time");
 diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index 70e187971590..4c12b8630cf2 100644
+index efbf210147c7..f36eba15199e 100644
 --- a/drivers/media/usb/au0828/au0828-video.c
 +++ b/drivers/media/usb/au0828/au0828-video.c
 @@ -36,6 +36,8 @@
@@ -576,7 +611,7 @@ index 70e187971590..4c12b8630cf2 100644
  
  /* ------------------------------------------------------------------
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a3dcaa96b537..d3e7b1e12e03 100644
+index b3d38d1755c0..a98d4052b1c9 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -589,7 +624,7 @@ index a3dcaa96b537..d3e7b1e12e03 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index a8519da0020b..b696a4ed441d 100644
+index 7702285c1519..c9148165787d 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 @@ -38,6 +38,8 @@
@@ -632,7 +667,7 @@ index a8519da0020b..b696a4ed441d 100644
  		if (status < 0) {
  			pvr2_trace(PVR2_TRACE_ERROR_LEGS,
 diff --git a/drivers/media/usb/s2255/s2255drv.c b/drivers/media/usb/s2255/s2255drv.c
-index 82927eb334c4..329c85cb4fdd 100644
+index 5b3e54b76e9a..3a24d644bd34 100644
 --- a/drivers/media/usb/s2255/s2255drv.c
 +++ b/drivers/media/usb/s2255/s2255drv.c
 @@ -49,6 +49,8 @@
@@ -645,7 +680,7 @@ index 82927eb334c4..329c85cb4fdd 100644
  #define FIRMWARE_FILE_NAME "f2255usb.bin"
  
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 8e138201330f..c56141456228 100644
+index bc369a0934a3..83a5a69c24ab 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -26,6 +26,8 @@
@@ -658,7 +693,7 @@ index 8e138201330f..c56141456228 100644
  
  #define DRIVER_AUTHOR		"Laurent Pinchart " \
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 3f77aa318035..2a4b53046a26 100644
+index d5f8cfe3cb2e..7e66f6a85087 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -31,6 +31,8 @@
@@ -671,10 +706,10 @@ index 3f77aa318035..2a4b53046a26 100644
  	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
  	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 9548daf12142..f0f33b6582bc 100644
+index 222a6a30512c..b93e4be0d178 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -32,6 +32,8 @@
+@@ -33,6 +33,8 @@
  
  #include <trace/events/v4l2.h>
  
@@ -696,316 +731,6 @@ index 08929c087e27..fbd3418dd94e 100644
  #define MAGIC_DMABUF 0x19721112
  #define MAGIC_SG_MEM 0x17890714
  
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 085db2fee2d7..8188f5f318a7 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -33,6 +33,8 @@
- #include <linux/dma-fence.h>
- #include <linux/wait.h>
- 
-+#include <media/compat.h>
-+
- struct device;
- struct dma_buf;
- struct dma_buf_attachment;
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-new file mode 100644
-index 000000000000..8712ff70995f
---- /dev/null
-+++ b/include/linux/overflow.h
-@@ -0,0 +1,278 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR MIT */
-+#ifndef __LINUX_OVERFLOW_H
-+#define __LINUX_OVERFLOW_H
-+
-+#include <linux/compiler.h>
-+
-+/*
-+ * In the fallback code below, we need to compute the minimum and
-+ * maximum values representable in a given type. These macros may also
-+ * be useful elsewhere, so we provide them outside the
-+ * COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW block.
-+ *
-+ * It would seem more obvious to do something like
-+ *
-+ * #define type_min(T) (T)(is_signed_type(T) ? (T)1 << (8*sizeof(T)-1) : 0)
-+ * #define type_max(T) (T)(is_signed_type(T) ? ((T)1 << (8*sizeof(T)-1)) - 1 : ~(T)0)
-+ *
-+ * Unfortunately, the middle expressions, strictly speaking, have
-+ * undefined behaviour, and at least some versions of gcc warn about
-+ * the type_max expression (but not if -fsanitize=undefined is in
-+ * effect; in that case, the warning is deferred to runtime...).
-+ *
-+ * The slightly excessive casting in type_min is to make sure the
-+ * macros also produce sensible values for the exotic type _Bool. [The
-+ * overflow checkers only almost work for _Bool, but that's
-+ * a-feature-not-a-bug, since people shouldn't be doing arithmetic on
-+ * _Bools. Besides, the gcc builtins don't allow _Bool* as third
-+ * argument.]
-+ *
-+ * Idea stolen from
-+ * https://mail-index.netbsd.org/tech-misc/2007/02/05/0000.html -
-+ * credit to Christian Biere.
-+ */
-+#define is_signed_type(type)       (((type)(-1)) < (type)1)
-+#define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
-+#define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
-+#define type_min(T) ((T)((T)-type_max(T)-(T)1))
-+
-+
-+#ifdef COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW
-+/*
-+ * For simplicity and code hygiene, the fallback code below insists on
-+ * a, b and *d having the same type (similar to the min() and max()
-+ * macros), whereas gcc's type-generic overflow checkers accept
-+ * different types. Hence we don't just make check_add_overflow an
-+ * alias for __builtin_add_overflow, but add type checks similar to
-+ * below.
-+ */
-+#define check_add_overflow(a, b, d) ({		\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	__builtin_add_overflow(__a, __b, __d);	\
-+})
-+
-+#define check_sub_overflow(a, b, d) ({		\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	__builtin_sub_overflow(__a, __b, __d);	\
-+})
-+
-+#define check_mul_overflow(a, b, d) ({		\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	__builtin_mul_overflow(__a, __b, __d);	\
-+})
-+
-+#else
-+
-+
-+/* Checking for unsigned overflow is relatively easy without causing UB. */
-+#define __unsigned_add_overflow(a, b, d) ({	\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	*__d = __a + __b;			\
-+	*__d < __a;				\
-+})
-+#define __unsigned_sub_overflow(a, b, d) ({	\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	*__d = __a - __b;			\
-+	__a < __b;				\
-+})
-+/*
-+ * If one of a or b is a compile-time constant, this avoids a division.
-+ */
-+#define __unsigned_mul_overflow(a, b, d) ({		\
-+	typeof(a) __a = (a);				\
-+	typeof(b) __b = (b);				\
-+	typeof(d) __d = (d);				\
-+	(void) (&__a == &__b);				\
-+	(void) (&__a == __d);				\
-+	*__d = __a * __b;				\
-+	__builtin_constant_p(__b) ?			\
-+	  __b > 0 && __a > type_max(typeof(__a)) / __b : \
-+	  __a > 0 && __b > type_max(typeof(__b)) / __a;	 \
-+})
-+
-+/*
-+ * For signed types, detecting overflow is much harder, especially if
-+ * we want to avoid UB. But the interface of these macros is such that
-+ * we must provide a result in *d, and in fact we must produce the
-+ * result promised by gcc's builtins, which is simply the possibly
-+ * wrapped-around value. Fortunately, we can just formally do the
-+ * operations in the widest relevant unsigned type (u64) and then
-+ * truncate the result - gcc is smart enough to generate the same code
-+ * with and without the (u64) casts.
-+ */
-+
-+/*
-+ * Adding two signed integers can overflow only if they have the same
-+ * sign, and overflow has happened iff the result has the opposite
-+ * sign.
-+ */
-+#define __signed_add_overflow(a, b, d) ({	\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	*__d = (u64)__a + (u64)__b;		\
-+	(((~(__a ^ __b)) & (*__d ^ __a))	\
-+		& type_min(typeof(__a))) != 0;	\
-+})
-+
-+/*
-+ * Subtraction is similar, except that overflow can now happen only
-+ * when the signs are opposite. In this case, overflow has happened if
-+ * the result has the opposite sign of a.
-+ */
-+#define __signed_sub_overflow(a, b, d) ({	\
-+	typeof(a) __a = (a);			\
-+	typeof(b) __b = (b);			\
-+	typeof(d) __d = (d);			\
-+	(void) (&__a == &__b);			\
-+	(void) (&__a == __d);			\
-+	*__d = (u64)__a - (u64)__b;		\
-+	((((__a ^ __b)) & (*__d ^ __a))		\
-+		& type_min(typeof(__a))) != 0;	\
-+})
-+
-+/*
-+ * Signed multiplication is rather hard. gcc always follows C99, so
-+ * division is truncated towards 0. This means that we can write the
-+ * overflow check like this:
-+ *
-+ * (a > 0 && (b > MAX/a || b < MIN/a)) ||
-+ * (a < -1 && (b > MIN/a || b < MAX/a) ||
-+ * (a == -1 && b == MIN)
-+ *
-+ * The redundant casts of -1 are to silence an annoying -Wtype-limits
-+ * (included in -Wextra) warning: When the type is u8 or u16, the
-+ * __b_c_e in check_mul_overflow obviously selects
-+ * __unsigned_mul_overflow, but unfortunately gcc still parses this
-+ * code and warns about the limited range of __b.
-+ */
-+
-+#define __signed_mul_overflow(a, b, d) ({				\
-+	typeof(a) __a = (a);						\
-+	typeof(b) __b = (b);						\
-+	typeof(d) __d = (d);						\
-+	typeof(a) __tmax = type_max(typeof(a));				\
-+	typeof(a) __tmin = type_min(typeof(a));				\
-+	(void) (&__a == &__b);						\
-+	(void) (&__a == __d);						\
-+	*__d = (u64)__a * (u64)__b;					\
-+	(__b > 0   && (__a > __tmax/__b || __a < __tmin/__b)) ||	\
-+	(__b < (typeof(__b))-1  && (__a > __tmin/__b || __a < __tmax/__b)) || \
-+	(__b == (typeof(__b))-1 && __a == __tmin);			\
-+})
-+
-+
-+#define check_add_overflow(a, b, d)					\
-+	__builtin_choose_expr(is_signed_type(typeof(a)),		\
-+			__signed_add_overflow(a, b, d),			\
-+			__unsigned_add_overflow(a, b, d))
-+
-+#define check_sub_overflow(a, b, d)					\
-+	__builtin_choose_expr(is_signed_type(typeof(a)),		\
-+			__signed_sub_overflow(a, b, d),			\
-+			__unsigned_sub_overflow(a, b, d))
-+
-+#define check_mul_overflow(a, b, d)					\
-+	__builtin_choose_expr(is_signed_type(typeof(a)),		\
-+			__signed_mul_overflow(a, b, d),			\
-+			__unsigned_mul_overflow(a, b, d))
-+
-+
-+#endif /* COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW */
-+
-+/**
-+ * array_size() - Calculate size of 2-dimensional array.
-+ *
-+ * @a: dimension one
-+ * @b: dimension two
-+ *
-+ * Calculates size of 2-dimensional array: @a * @b.
-+ *
-+ * Returns: number of bytes needed to represent the array or SIZE_MAX on
-+ * overflow.
-+ */
-+static inline __must_check size_t array_size(size_t a, size_t b)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(a, b, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+/**
-+ * array3_size() - Calculate size of 3-dimensional array.
-+ *
-+ * @a: dimension one
-+ * @b: dimension two
-+ * @c: dimension three
-+ *
-+ * Calculates size of 3-dimensional array: @a * @b * @c.
-+ *
-+ * Returns: number of bytes needed to represent the array or SIZE_MAX on
-+ * overflow.
-+ */
-+static inline __must_check size_t array3_size(size_t a, size_t b, size_t c)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(a, b, &bytes))
-+		return SIZE_MAX;
-+	if (check_mul_overflow(bytes, c, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+static inline __must_check size_t __ab_c_size(size_t n, size_t size, size_t c)
-+{
-+	size_t bytes;
-+
-+	if (check_mul_overflow(n, size, &bytes))
-+		return SIZE_MAX;
-+	if (check_add_overflow(bytes, c, &bytes))
-+		return SIZE_MAX;
-+
-+	return bytes;
-+}
-+
-+/**
-+ * struct_size() - Calculate size of structure with trailing array.
-+ * @p: Pointer to the structure.
-+ * @member: Name of the array member.
-+ * @n: Number of elements in the array.
-+ *
-+ * Calculates size of memory needed for structure @p followed by an
-+ * array of @n @member elements.
-+ *
-+ * Return: number of bytes needed or SIZE_MAX on overflow.
-+ */
-+#define struct_size(p, member, n)					\
-+	__ab_c_size(n,							\
-+		    sizeof(*(p)->member) + __must_be_array((p)->member),\
-+		    sizeof(*(p)))
-+
-+#endif /* __LINUX_OVERFLOW_H */
-diff --git a/include/media/compat.h b/include/media/compat.h
-index 9e751eae60a4..28994b3f6e34 100644
---- a/include/media/compat.h
-+++ b/include/media/compat.h
-@@ -42,6 +42,8 @@
- #define SZ_8K				0x00002000
- #endif
- 
-+#undef NEED_ANNOTATE_REACHABLE
-+
- #ifdef NEED_ANNOTATE_REACHABLE
- #define annotate_reachable()
- #define annotate_unreachable()
 diff --git a/include/media/i2c/saa6588.h b/include/media/i2c/saa6588.h
 index a0825f532f71..fbf08a7d52e4 100644
 --- a/include/media/i2c/saa6588.h
@@ -1033,12 +758,12 @@ index dc2f64e1b08f..6c9e9a3ecde6 100644
  
  /*
 diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 5b445b5654f7..79f8c3ff0207 100644
+index 83ce0593b275..67d9b4ecfc5a 100644
 --- a/include/media/v4l2-ctrls.h
 +++ b/include/media/v4l2-ctrls.h
-@@ -21,6 +21,8 @@
- #include <linux/mutex.h>
+@@ -22,6 +22,8 @@
  #include <linux/videodev2.h>
+ #include <media/media-request.h>
  
 +#include <media/compat.h>
 +
