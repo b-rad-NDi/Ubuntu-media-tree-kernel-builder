@@ -1,0 +1,47 @@
+From f47599181953ed14200cf1531355710e66e3bab1 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 15 Nov 2018 12:44:18 -0600
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.hwe/config/config.common.ubuntu | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
+index 7b02fc5..897971a 100644
+--- a/debian.hwe/config/config.common.ubuntu
++++ b/debian.hwe/config/config.common.ubuntu
+@@ -2480,7 +2480,7 @@ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+ CONFIG_DVB_MANTIS=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ CONFIG_DVB_MN88472=m
+@@ -10539,3 +10539,21 @@ CONFIG_ZSTD_COMPRESS=m
+ CONFIG_ZSTD_DECOMPRESS=y
+ CONFIG_ZSWAP=y
+ CONFIG_ZX_TDM=m
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_IR_GPIO_TX=m
++CONFIG_IR_PWM_TX=m
++# CONFIG_DVB_DDBRIDGE_MSIENABLE is not set
++# CONFIG_SDR_PLATFORM_DRIVERS is not set
++CONFIG_LIRC=y
++CONFIG_DVB_MMAP=y
++# CONFIG_DVB_ULE_DEBUG is not set
++CONFIG_VIDEO_IPU3_CIO2=m
++CONFIG_IR_IMON_DECODER=m
++CONFIG_IR_IMON_RAW=m
++CONFIG_CXD2880_SPI_DRV=m
++CONFIG_VIDEO_CADENCE=y
++CONFIG_VIDEO_CADENCE_CSI2RX=m
++CONFIG_VIDEO_CADENCE_CSI2TX=m
++CONFIG_VIDEO_VICODEC=m
++# CONFIG_VIDEO_CROS_EC_CEC is not set
++
+-- 
+2.7.4
+

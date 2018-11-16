@@ -1,0 +1,181 @@
+From 478d648fcd1d2c393bf9fcb6b7eb1d819b5f6199 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 15 Nov 2018 12:43:16 -0600
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ drivers/hid/hid-picolcd_cir.c           |  3 +--
+ drivers/usb/gadget/function/uvc_queue.c |  2 +-
+ drivers/video/hdmi.c                    |  4 ++--
+ fs/compat_ioctl.c                       | 42 ++-------------------------------
+ include/linux/dma-buf.h                 |  6 ++++-
+ 5 files changed, 11 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 32747b7..bf6f29c 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -45,7 +45,7 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ {
+ 	unsigned long flags;
+ 	int i, w, sz;
+-	DEFINE_IR_RAW_EVENT(rawir);
++	struct ir_raw_event rawir = {};
+ 
+ 	/* ignore if rc_dev is NULL or status is shunned */
+ 	spin_lock_irqsave(&data->lock, flags);
+@@ -67,7 +67,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ 	 */
+ 	sz = size > 0 ? min((int)raw_data[0], size-1) : 0;
+ 	for (i = 0; i+1 < sz; i += 2) {
+-		init_ir_raw_event(&rawir);
+ 		w = (raw_data[i] << 8) | (raw_data[i+1]);
+ 		rawir.pulse = !!(w & 0x8000);
+ 		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
+diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
+index 278d50f..ac626fb 100644
+--- a/drivers/usb/gadget/function/uvc_queue.c
++++ b/drivers/usb/gadget/function/uvc_queue.c
+@@ -166,7 +166,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	ret = vb2_qbuf(&queue->queue, buf);
++	ret = vb2_qbuf(&queue->queue, NULL, buf);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index 111a0ab..e7a6189 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -589,9 +589,9 @@ hdmi_extended_colorimetry_get_name(enum hdmi_extended_colorimetry ext_col)
+ 		return "xvYCC 709";
+ 	case HDMI_EXTENDED_COLORIMETRY_S_YCC_601:
+ 		return "sYCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_YCC_601:
++	case HDMI_EXTENDED_COLORIMETRY_OPYCC_601:
+ 		return "Adobe YCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_RGB:
++	case HDMI_EXTENDED_COLORIMETRY_OPRGB:
+ 		return "Adobe RGB";
+ 	case HDMI_EXTENDED_COLORIMETRY_BT2020_CONST_LUM:
+ 		return "BT.2020 Constant Luminance";
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 5fc5dc6..bcd80da 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -117,6 +117,8 @@
+ #include <asm/fbio.h>
+ #endif
+ 
++#include <media/compat.h>
++
+ #define convert_in_user(srcptr, dstptr)			\
+ ({							\
+ 	typeof(*srcptr) val;				\
+@@ -200,34 +202,6 @@ static int do_video_stillpicture(struct file *file,
+ 	return err;
+ }
+ 
+-struct compat_video_spu_palette {
+-	int length;
+-	compat_uptr_t palette;
+-};
+-
+-static int do_video_set_spu_palette(struct file *file,
+-		unsigned int cmd, struct compat_video_spu_palette __user *up)
+-{
+-	struct video_spu_palette __user *up_native;
+-	compat_uptr_t palp;
+-	int length, err;
+-
+-	err  = get_user(palp, &up->palette);
+-	err |= get_user(length, &up->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	up_native = compat_alloc_user_space(sizeof(struct video_spu_palette));
+-	err  = put_user(compat_ptr(palp), &up_native->palette);
+-	err |= put_user(length, &up_native->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	err = do_ioctl(file, cmd, (unsigned long) up_native);
+-
+-	return err;
+-}
+-
+ #ifdef CONFIG_BLOCK
+ typedef struct sg_io_hdr32 {
+ 	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
+@@ -1208,9 +1182,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+ COMPATIBLE_IOCTL(AUDIO_SET_ID)
+ COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
+ COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
+-COMPATIBLE_IOCTL(AUDIO_SET_EXT_ID)
+-COMPATIBLE_IOCTL(AUDIO_SET_ATTRIBUTES)
+-COMPATIBLE_IOCTL(AUDIO_SET_KARAOKE)
+ COMPATIBLE_IOCTL(DMX_START)
+ COMPATIBLE_IOCTL(DMX_STOP)
+ COMPATIBLE_IOCTL(DMX_SET_FILTER)
+@@ -1247,16 +1218,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+ COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
+ COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
+ COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
+-COMPATIBLE_IOCTL(VIDEO_SET_ID)
+ COMPATIBLE_IOCTL(VIDEO_SET_STREAMTYPE)
+ COMPATIBLE_IOCTL(VIDEO_SET_FORMAT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SYSTEM)
+-COMPATIBLE_IOCTL(VIDEO_SET_HIGHLIGHT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SPU)
+-COMPATIBLE_IOCTL(VIDEO_GET_NAVI)
+-COMPATIBLE_IOCTL(VIDEO_SET_ATTRIBUTES)
+ COMPATIBLE_IOCTL(VIDEO_GET_SIZE)
+-COMPATIBLE_IOCTL(VIDEO_GET_FRAME_RATE)
+ /* cec */
+ COMPATIBLE_IOCTL(CEC_ADAP_G_CAPS)
+ COMPATIBLE_IOCTL(CEC_ADAP_G_LOG_ADDRS)
+@@ -1361,8 +1325,6 @@ static long do_ioctl_trans(unsigned int cmd,
+ 		return do_video_get_event(file, cmd, argp);
+ 	case VIDEO_STILLPICTURE:
+ 		return do_video_stillpicture(file, cmd, argp);
+-	case VIDEO_SET_SPU_PALETTE:
+-		return do_video_set_spu_palette(file, cmd, argp);
+ 	}
+ 
+ 	/*
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 58725f8..131ccf7 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -33,6 +33,8 @@
+ #include <linux/dma-fence.h>
+ #include <linux/wait.h>
+ 
++#include <media/compat.h>
++
+ struct device;
+ struct dma_buf;
+ struct dma_buf_attachment;
+@@ -77,7 +79,7 @@ struct dma_buf_ops {
+ 	 * to signal that backing storage is already allocated and incompatible
+ 	 * with the requirements of requesting device.
+ 	 */
+-	int (*attach)(struct dma_buf *, struct dma_buf_attachment *);
++	int (*attach)(struct dma_buf *, struct device *, struct dma_buf_attachment *);
+ 
+ 	/**
+ 	 * @detach:
+@@ -205,6 +207,8 @@ struct dma_buf_ops {
+ 	 * to be restarted.
+ 	 */
+ 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
++	void *(*map_atomic)(struct dma_buf *, unsigned long);
++	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
+ 	void *(*map)(struct dma_buf *, unsigned long);
+ 	void (*unmap)(struct dma_buf *, unsigned long, void *);
+ 
+-- 
+2.7.4
+
