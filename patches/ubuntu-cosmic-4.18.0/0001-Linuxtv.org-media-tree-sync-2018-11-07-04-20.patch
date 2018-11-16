@@ -1,7 +1,7 @@
-From a12fb1d1c2aced93f2b96c5c5e4ccfe9a8356e7f Mon Sep 17 00:00:00 2001
+From f1fdbb63b66f3a2f17c6fbdd388119269dfd9531 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Nov 2018 13:14:21 -0600
-Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-06-20-12
+Date: Fri, 16 Nov 2018 12:58:09 -0600
+Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
 
 ---
  drivers/media/Makefile                        |    3 +-
@@ -231,7 +231,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-06-20-12
  drivers/media/i2c/soc_camera/soc_ov5642.c     | 1087 +++++++
  drivers/media/i2c/soc_camera/soc_ov772x.c     | 1123 +++++++
  drivers/media/i2c/soc_camera/soc_ov9640.c     |  738 +++++
- drivers/media/i2c/soc_camera/soc_ov9740.c     |  996 +++++++
+ drivers/media/i2c/soc_camera/soc_ov9740.c     |  996 ++++++
  drivers/media/i2c/soc_camera/soc_rj54n1cb0c.c | 1415 +++++++++
  drivers/media/i2c/soc_camera/soc_tw9910.c     |  999 +++++++
  drivers/media/i2c/sr030pc30.c                 |    3 +-
@@ -505,7 +505,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-06-20-12
  drivers/media/platform/vicodec/Makefile       |    4 +
  drivers/media/platform/vicodec/codec-fwht.c   |  855 ++++++
  drivers/media/platform/vicodec/codec-fwht.h   |  125 +
- .../media/platform/vicodec/codec-v4l2-fwht.c  |  332 +++
+ .../media/platform/vicodec/codec-v4l2-fwht.c  |  332 ++
  .../media/platform/vicodec/codec-v4l2-fwht.h  |   47 +
  drivers/media/platform/vicodec/vicodec-core.c | 1438 +++++++++
  drivers/media/platform/video-mux.c            |  157 +-
@@ -891,7 +891,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-06-20-12
  include/media/cec-notifier.h                  |   27 +-
  include/media/cec-pin.h                       |    4 +
  include/media/cec.h                           |  166 +-
- include/media/compat.h                        | 2655 +++++++++++++++++
+ include/media/compat.h                        | 2660 +++++++++++++++++
  include/media/config-compat.h                 |   39 +
  include/media/config-mycompat.h               |    4 +
  include/media/dvb_frontend.h                  |   49 +-
@@ -926,7 +926,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-06-20-12
  include/uapi/linux/v4l2-subdev.h              |    4 +
  include/uapi/linux/videodev2.h                |   72 +-
  sound/pci/bt87x.c                             |    4 +-
- 922 files changed, 58369 insertions(+), 7939 deletions(-)
+ 922 files changed, 58374 insertions(+), 7939 deletions(-)
  create mode 100644 drivers/media/dvb-frontends/lnbh29.c
  create mode 100644 drivers/media/dvb-frontends/lnbh29.h
  create mode 100644 drivers/media/dvb-frontends/mn88443x.c
@@ -88915,10 +88915,10 @@ index 580ab1042..3fe5e5d2b 100644
  #endif /* _MEDIA_CEC_H */
 diff --git a/include/media/compat.h b/include/media/compat.h
 new file mode 100644
-index 000000000..59da79f82
+index 000000000..27e4fb24b
 --- /dev/null
 +++ b/include/media/compat.h
-@@ -0,0 +1,2655 @@
+@@ -0,0 +1,2660 @@
 +/*
 + * $Id: compat.h,v 1.44 2006/01/15 09:35:16 mchehab Exp $
 + */
@@ -91449,6 +91449,11 @@ index 000000000..59da79f82
 +#ifdef NEED_LIST_LAST_ENTRY
 +#define list_last_entry(ptr, type, member) \
 +        list_entry((ptr)->prev, type, member)
++#endif
++
++#ifdef NEED_LIST_NEXT_ENTRY
++#define list_next_entry(pos, member) \
++	list_entry((pos)->member.next, typeof(*(pos)), member)
 +#endif
 +
 +#ifdef NEED_XA_LOCK_IRQSAVE
