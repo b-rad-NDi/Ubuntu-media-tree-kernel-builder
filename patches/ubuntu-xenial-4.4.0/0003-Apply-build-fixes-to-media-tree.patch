@@ -990,15 +990,6 @@ index 0ce75c3..ac8f3c4 100644
  /**
   * enum media_request_state - media request state
   *
-@@ -68,7 +70,7 @@ struct media_request {
- 	unsigned int access_count;
- 	struct list_head objects;
- 	unsigned int num_incomplete_objects;
--	struct wait_queue_head poll_wait;
-+	wait_queue_head poll_wait;
- 	spinlock_t lock;
- };
- 
 diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
 index 83ce059..67d9b4e 100644
 --- a/include/media/v4l2-ctrls.h
