@@ -1,0 +1,27 @@
+From 57fae94527165b980e0c8e14dc2c966475fb5038 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 27 Dec 2018 14:59:05 -0600
+Subject: [PATCH 4/4] cx231xx: remove pctv quatro 521e
+
+---
+ drivers/media/usb/cx231xx/cx231xx-cards.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-cards.c b/drivers/media/usb/cx231xx/cx231xx-cards.c
+index a431a998d..4461ec486 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-cards.c
++++ b/drivers/media/usb/cx231xx/cx231xx-cards.c
+@@ -1054,8 +1054,8 @@ struct usb_device_id cx231xx_id_table[] = {
+ 	{USB_DEVICE(0x2040, 0xc200),
+ 	 .driver_info = CX231XX_BOARD_HAUPPAUGE_USBLIVE2},
+ 	/* PCTV QuatroStick 521e */
+-	{USB_DEVICE(0x2013, 0x0259),
+-	 .driver_info = CX231XX_BOARD_HAUPPAUGE_930C_HD_1113xx},
++//	{USB_DEVICE(0x2013, 0x0259),
++//	 .driver_info = CX231XX_BOARD_HAUPPAUGE_930C_HD_1113xx},
+ 	/* PCTV QuatroStick 522e */
+ 	{USB_DEVICE(0x2013, 0x025e),
+ 	 .driver_info = CX231XX_BOARD_HAUPPAUGE_930C_HD_1114xx},
+-- 
+2.17.1
+
