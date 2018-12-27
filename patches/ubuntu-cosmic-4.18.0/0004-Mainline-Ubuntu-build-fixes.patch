@@ -1,6 +1,6 @@
-From b4c0a5ece3eeb6c0306735eb8ecedfef1364e28f Mon Sep 17 00:00:00 2001
+From d4e56b66c9a6bcb030b9afba54d9774327f6e7d5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 12 Nov 2018 15:12:40 -0600
+Date: Thu, 27 Dec 2018 13:05:39 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -11,7 +11,8 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-buf.h                 |   4 +-
  include/linux/mfd/cros_ec.h             | 216 +++++-----
  include/linux/mfd/cros_ec_commands.h    | 535 +++++++++++++++++++-----
- 7 files changed, 549 insertions(+), 257 deletions(-)
+ include/linux/pci_ids.h                 |   2 +
+ 8 files changed, 551 insertions(+), 257 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f9..bf6f29ca3 100644
@@ -1345,6 +1346,17 @@ index f2edd9969..9a9631f05 100644
  /* Get info about USB-C SS muxes */
  #define EC_CMD_USB_PD_MUX_INFO 0x11a
  
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 69f0abe1b..5f5adda07 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -3090,4 +3090,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
 -- 
 2.19.1
 

@@ -1,7 +1,7 @@
 From 7492dfe51067b578399162359f9ac9a5fa5cb9b0 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 12 Nov 2018 15:07:52 -0600
-Subject: [PATCH 3/6] Apply media tree build fixes
+Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
  drivers/media/cec/cec-api.c                           | 2 ++
