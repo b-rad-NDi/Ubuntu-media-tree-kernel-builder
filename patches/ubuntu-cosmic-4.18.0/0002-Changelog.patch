@@ -1,30 +1,37 @@
-From 4fb635a953acbfe6769974b6915c17dd1acd1456 Mon Sep 17 00:00:00 2001
+From dc06c6961cf4f8d34bb0875e8aadd17957c559da Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 6 Nov 2018 17:23:40 -0600
+Date: Wed, 26 Dec 2018 15:35:43 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 42 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ debian.master/changelog | 45 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index d7675df75..17f1d5534 100644
+index 75a8f3d66..ee8bc5509 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,45 @@
-+linux (4.18.0-10201811061723.0+mediatree+hauppauge) cosmic; urgency=low
+@@ -1,3 +1,48 @@
++linux (4.18.0-13201812261535.0+mediatree+hauppauge) cosmic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.18.0-10.11 rev 418669ac6ebdfdddacd4fe4f86d8959cfef27c67
++    - 4.18.0-13.14 rev bfe015d2df84299c03b3189e6a6f5d97a68b213c
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2018-07-03-16-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2018-11-07-04-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
-+    - 0005-Packaging-updates.patch
++    - 0005-Add-new-media-tree-kernel-config.patch
++    - 0006-Packaging-updates.patch
 +
 +  * Additional patches
++    - 01.HVR19xx
++    --- 0000-cover-letter.patch
++    --- 0001-si2157-add-detection-of-si2177-tuner.patch
++    --- 0002-pvrusb2-Add-multiple-dvb-frontend-support.patch
++    --- 0003-pvrusb2-Add-i2c-client-demod-tuner-support.patch
++    --- 0004-pvrusb2-Add-Hauppauge-HVR1955-1975-devices.patch
 +    - 07.si2157.analog.tuning
 +    --- 0001-si2157-Enable-tuner-status-flags.patch
 +    --- 0002-si2157-Check-error-status-bit-on-cmd-execute.patch
@@ -41,22 +48,18 @@ index d7675df75..17f1d5534 100644
 +    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
-+    --- 0006-em28xx-Remove-duplicate-PID.patch
-+    --- 0007-em28xx-Fix-DualHD-disconnect-oops.patch
-+    --- 0008-em28xx-Fix-dual-transport-stream-operation.patch
-+    --- 0009-em28xx-cards-disable-V4L2-mode-for-dual-tuners.patch
 +    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
-+    --- 0011-au0828-cannot-kfree-dev-before-usb-disconnect.patch
++    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 06 Nov 2018 17:23:40 -0600
++ -- Fake User <hidden@email.co>  Wed, 26 Dec 2018 15:35:42 -0600
 +
- linux (4.18.0-10.11) cosmic; urgency=medium
+ linux (4.18.0-13.14) cosmic; urgency=medium
  
-   * linux: 4.18.0-10.11 -proposed tracker (LP: #1797379)
+   * linux: 4.18.0-13.14 -proposed tracker (LP: #1806409)
 -- 
 2.19.1
 

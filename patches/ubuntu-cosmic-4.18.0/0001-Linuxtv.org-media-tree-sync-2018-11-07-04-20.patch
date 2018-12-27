@@ -1,6 +1,6 @@
-From f1fdbb63b66f3a2f17c6fbdd388119269dfd9531 Mon Sep 17 00:00:00 2001
+From e4265b2e0de109efd43ae4941fe793c744166ebe Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 16 Nov 2018 12:58:09 -0600
+Date: Wed, 26 Dec 2018 15:34:23 -0600
 Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
 
 ---
@@ -93,7 +93,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/dvb-frontends/lgdt330x.c        |   14 +-
  drivers/media/dvb-frontends/lgs8gl5.c         |    7 +-
  drivers/media/dvb-frontends/lgs8gxx.c         |    6 +-
- drivers/media/dvb-frontends/lnbh29.c          |  168 ++
+ drivers/media/dvb-frontends/lnbh29.c          |  168 +
  drivers/media/dvb-frontends/lnbh29.h          |   36 +
  drivers/media/dvb-frontends/m88ds3103.c       |    8 +-
  drivers/media/dvb-frontends/m88rs2000.c       |    8 +-
@@ -182,7 +182,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/i2c/dw9807-vcm.c                |  329 ++
  drivers/media/i2c/et8ek8/et8ek8_driver.c      |    1 +
  drivers/media/i2c/imx258.c                    |    8 +
- drivers/media/i2c/imx274.c                    |  889 +++---
+ drivers/media/i2c/imx274.c                    |  889 ++++--
  drivers/media/i2c/imx319.c                    | 2560 ++++++++++++++++
  drivers/media/i2c/imx355.c                    | 1860 ++++++++++++
  drivers/media/i2c/lm3560.c                    |    6 +-
@@ -233,7 +233,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/i2c/soc_camera/soc_ov9640.c     |  738 +++++
  drivers/media/i2c/soc_camera/soc_ov9740.c     |  996 ++++++
  drivers/media/i2c/soc_camera/soc_rj54n1cb0c.c | 1415 +++++++++
- drivers/media/i2c/soc_camera/soc_tw9910.c     |  999 +++++++
+ drivers/media/i2c/soc_camera/soc_tw9910.c     |  999 ++++++
  drivers/media/i2c/sr030pc30.c                 |    3 +-
  drivers/media/i2c/tc358743.c                  |   37 +-
  drivers/media/i2c/tda1997x.c                  |    4 +-
@@ -247,7 +247,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/media-device.c                  |   86 +-
  drivers/media/media-devnode.c                 |    1 +
  drivers/media/media-entity.c                  |   26 +
- drivers/media/media-request.c                 |  501 ++++
+ drivers/media/media-request.c                 |  501 +++
  drivers/media/pci/bt8xx/btcx-risc.c           |    1 +
  drivers/media/pci/bt8xx/bttv-cards.c          |    1 +
  drivers/media/pci/bt8xx/bttv-driver.c         |   16 +-
@@ -404,7 +404,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/platform/exynos4-is/mipi-csis.c |    8 +-
  drivers/media/platform/fsl-viu.c              |    8 +-
  drivers/media/platform/imx-pxp.c              | 1754 +++++++++++
- drivers/media/platform/imx-pxp.h              | 1685 +++++++++++
+ drivers/media/platform/imx-pxp.h              | 1685 ++++++++++
  drivers/media/platform/m2m-deinterlace.c      |   33 +-
  .../media/platform/marvell-ccic/cafe-driver.c |    2 +-
  .../media/platform/marvell-ccic/mcam-core.c   |   16 +-
@@ -438,7 +438,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  .../media/platform/qcom/camss/camss-ispif.h   |   78 +
  .../media/platform/qcom/camss/camss-vfe-4-1.c | 1019 +++++++
  .../media/platform/qcom/camss/camss-vfe-4-7.c | 1141 +++++++
- drivers/media/platform/qcom/camss/camss-vfe.c | 2342 +++++++++++++++
+ drivers/media/platform/qcom/camss/camss-vfe.c | 2342 ++++++++++++++
  drivers/media/platform/qcom/camss/camss-vfe.h |  186 ++
  .../media/platform/qcom/camss/camss-video.c   |  958 ++++++
  .../media/platform/qcom/camss/camss-video.h   |   62 +
@@ -676,7 +676,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/usb/cx231xx/cx231xx-vbi.c       |    7 +-
  drivers/media/usb/cx231xx/cx231xx-video.c     |   33 +-
  drivers/media/usb/dvb-usb-v2/Kconfig          |    5 +-
- drivers/media/usb/dvb-usb-v2/af9035.c         |    8 +-
+ drivers/media/usb/dvb-usb-v2/af9035.c         |    2 +-
  drivers/media/usb/dvb-usb-v2/anysee.c         |    2 +-
  drivers/media/usb/dvb-usb-v2/dvb_usb_core.c   |    2 +-
  drivers/media/usb/dvb-usb-v2/dvbsky.c         |   16 +-
@@ -815,7 +815,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/v4l2-core/v4l2-async.c          |  313 +-
  drivers/media/v4l2-core/v4l2-common.c         |   25 +-
  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |   19 +-
- drivers/media/v4l2-core/v4l2-ctrls.c          |  672 ++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  672 +++-
  drivers/media/v4l2-core/v4l2-dev.c            |   36 +-
  drivers/media/v4l2-core/v4l2-device.c         |    8 +-
  drivers/media/v4l2-core/v4l2-dv-timings.c     |  202 +-
@@ -823,7 +823,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/media/v4l2-core/v4l2-fwnode.c         |  845 ++++--
  drivers/media/v4l2-core/v4l2-ioctl.c          |  188 +-
  drivers/media/v4l2-core/v4l2-mc.c             |  147 +-
- drivers/media/v4l2-core/v4l2-mem2mem.c        |  333 ++-
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |  333 +-
  drivers/media/v4l2-core/v4l2-subdev.c         |   33 +-
  drivers/staging/media/Kconfig                 |    2 +
  drivers/staging/media/Makefile                |    1 +
@@ -871,7 +871,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  drivers/staging/media/sunxi/cedrus/Kconfig    |   14 +
  drivers/staging/media/sunxi/cedrus/Makefile   |    3 +
  drivers/staging/media/sunxi/cedrus/cedrus.c   |  431 +++
- drivers/staging/media/sunxi/cedrus/cedrus.h   |  167 ++
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |  167 +
  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   70 +
  .../staging/media/sunxi/cedrus/cedrus_dec.h   |   27 +
  .../staging/media/sunxi/cedrus/cedrus_hw.c    |  327 ++
@@ -887,12 +887,12 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  include/linux/dma/xilinx_dma.h                |    2 +
  include/linux/hdmi.h                          |    4 +-
  include/linux/kernel_version.h                |    1 +
- include/linux/pci_ids.h                       |   10 +-
+ include/linux/pci_ids.h                       |   12 +-
  include/media/cec-notifier.h                  |   27 +-
  include/media/cec-pin.h                       |    4 +
  include/media/cec.h                           |  166 +-
- include/media/compat.h                        | 2660 +++++++++++++++++
- include/media/config-compat.h                 |   39 +
+ include/media/compat.h                        | 2697 +++++++++++++++++
+ include/media/config-compat.h                 |   41 +
  include/media/config-mycompat.h               |    4 +
  include/media/dvb_frontend.h                  |   49 +-
  include/media/i2c/lm3560.h                    |    1 +
@@ -926,7 +926,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2018-11-07-04-20
  include/uapi/linux/v4l2-subdev.h              |    4 +
  include/uapi/linux/videodev2.h                |   72 +-
  sound/pci/bt87x.c                             |    4 +-
- 922 files changed, 58374 insertions(+), 7939 deletions(-)
+ 922 files changed, 58409 insertions(+), 7939 deletions(-)
  create mode 100644 drivers/media/dvb-frontends/lnbh29.c
  create mode 100644 drivers/media/dvb-frontends/lnbh29.h
  create mode 100644 drivers/media/dvb-frontends/mn88443x.c
@@ -75075,7 +75075,7 @@ index 082b8d672..df4412245 100644
  config DVB_USB_LME2510
  	tristate "LME DM04/QQBOX DVB-S USB2.0 support"
 diff --git a/drivers/media/usb/dvb-usb-v2/af9035.c b/drivers/media/usb/dvb-usb-v2/af9035.c
-index 666d319d3..80d3bd3a0 100644
+index 1f6c1eefe..80d3bd3a0 100644
 --- a/drivers/media/usb/dvb-usb-v2/af9035.c
 +++ b/drivers/media/usb/dvb-usb-v2/af9035.c
 @@ -204,7 +204,7 @@ static int af9035_add_i2c_dev(struct dvb_usb_device *d, const char *type,
@@ -75087,19 +75087,6 @@ index 666d319d3..80d3bd3a0 100644
  
  	/* find first free client */
  	for (num = 0; num < AF9035_I2C_CLIENT_MAX; num++) {
-@@ -402,8 +402,10 @@ static int af9035_i2c_master_xfer(struct i2c_adapter *adap,
- 			if (msg[0].addr == state->af9033_i2c_addr[1])
- 				reg |= 0x100000;
- 
--			ret = af9035_wr_regs(d, reg, &msg[0].buf[3],
--					msg[0].len - 3);
-+			ret = (msg[0].len >= 3) ? af9035_wr_regs(d, reg,
-+							         &msg[0].buf[3],
-+							         msg[0].len - 3)
-+					        : -EOPNOTSUPP;
- 		} else {
- 			/* I2C write */
- 			u8 buf[MAX_XFER_SIZE];
 diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
 index 20ee7eea2..0df7ad69e 100644
 --- a/drivers/media/usb/dvb-usb-v2/anysee.c
@@ -88564,7 +88551,7 @@ index 000000000..f3e6e6ec6
 @@ -0,0 +1 @@
 +#define V4L2_VERSION 267008
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index bf85e152a..69f0abe1b 100644
+index 8cb5dbeb5..69f0abe1b 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -117,6 +117,10 @@
@@ -88606,6 +88593,13 @@ index bf85e152a..69f0abe1b 100644
  #define PCI_VENDOR_ID_TEKRAM		0x1de1
  #define PCI_DEVICE_ID_TEKRAM_DC290	0xdc29
  
+@@ -3084,6 +3090,4 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
+-#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
+-
+ #endif /* _LINUX_PCI_IDS_H */
 diff --git a/include/media/cec-notifier.h b/include/media/cec-notifier.h
 index cf0add70b..814eeef35 100644
 --- a/include/media/cec-notifier.h
@@ -88915,10 +88909,10 @@ index 580ab1042..3fe5e5d2b 100644
  #endif /* _MEDIA_CEC_H */
 diff --git a/include/media/compat.h b/include/media/compat.h
 new file mode 100644
-index 000000000..27e4fb24b
+index 000000000..bb1af1b3f
 --- /dev/null
 +++ b/include/media/compat.h
-@@ -0,0 +1,2660 @@
+@@ -0,0 +1,2697 @@
 +/*
 + * $Id: compat.h,v 1.44 2006/01/15 09:35:16 mchehab Exp $
 + */
@@ -91572,19 +91566,56 @@ index 000000000..27e4fb24b
 +}
 +#endif
 +
++#ifdef NEED_STRCHRNUL
++#include <linux/string.h>
++static inline char *strchrnul(const char *s, int c)
++{
++        while (*s && *s != (char)c)
++                s++;
++        return (char *)s;
++}
++#endif
++
 +#ifdef NEED_FWNODE_GRAPH_FOR_EACH_ENDPOINT
 +#define fwnode_graph_for_each_endpoint(fwnode, child)			\
 +	for (child = NULL;						\
 +	     (child = fwnode_graph_get_next_endpoint(fwnode, child)); )
 +#endif
 +
++#ifdef NEED_LOCKDEP_ASSERT_IRQS
++#define lockdep_assert_irqs_enabled() do { } while (0)
++#define lockdep_assert_irqs_disabled() do { } while (0)
++#endif
++
++
++#ifdef NEED_OF_NODE_NAME_EQ
++#include <linux/of.h>
++#include <linux/string.h>
++static inline
++bool of_node_name_eq(const struct device_node *np, const char *name)
++{
++	const char *node_name;
++	size_t len;
++
++	if (!np)
++		return false;
++
++	node_name = kbasename(np->full_name);
++	len = strchrnul(node_name, '@') - node_name;
++
++	return (strlen(name) == len) && (strncmp(node_name, name, len) == 0);
++}
++#endif
++
++
++
 +#endif /*  _COMPAT_H */
 diff --git a/include/media/config-compat.h b/include/media/config-compat.h
 new file mode 100644
-index 000000000..c94c6220b
+index 000000000..6659d6965
 --- /dev/null
 +++ b/include/media/config-compat.h
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,41 @@
 +#ifndef __CONFIG_COMPAT_H__
 +#define __CONFIG_COMPAT_H__
 +
@@ -91620,6 +91651,8 @@ index 000000000..c94c6220b
 +#define NEED_STRUCT_SIZE 1
 +
 +#define NEED_IDA_ALLOC_MIN 1
++
++#define NEED_OF_NODE_NAME_EQ 1
 +
 +#define NEED_KEY_SCREENSAVER 1
 +
