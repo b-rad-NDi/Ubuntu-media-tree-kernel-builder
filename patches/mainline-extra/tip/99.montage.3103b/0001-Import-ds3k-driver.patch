@@ -4,26 +4,16 @@ Date: Thu, 27 Dec 2018 12:25:10 -0600
 Subject: [PATCH 1/4] Import "ds3k" driver
 
 ---
- debian.master/config/config.common.ubuntu |    1 +
  drivers/media/dvb-frontends/Kconfig       |    7 +
  drivers/media/dvb-frontends/Makefile      |    3 +
  drivers/media/dvb-frontends/ds3k.c        | 2709 +++++++
  drivers/media/dvb-frontends/ds3k.h        |  126 +
  drivers/media/dvb-frontends/ds3k_priv.h   | 8225 +++++++++++++++++++++
- 6 files changed, 11071 insertions(+)
+ 5 files changed, 11070 insertions(+)
  create mode 100644 drivers/media/dvb-frontends/ds3k.c
  create mode 100644 drivers/media/dvb-frontends/ds3k.h
  create mode 100644 drivers/media/dvb-frontends/ds3k_priv.h
 
-diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 3ffb8f8e4..67b4fb598 100644
---- a/debian.master/config/config.common.ubuntu
-+++ b/debian.master/config/config.common.ubuntu
-@@ -10777,3 +10777,4 @@ CONFIG_ZX_TDM=m
- ### LINUX MEDIA TREE EXTRA OPTIONS ###
- CONFIG_VIDEO_VICODEC=m
- CONFIG_VIDEO_CROS_EC_CEC=m
-+CONFIG_DVB_DS3K=m
 diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
 index 847da72d1..e0b3a4f14 100644
 --- a/drivers/media/dvb-frontends/Kconfig
