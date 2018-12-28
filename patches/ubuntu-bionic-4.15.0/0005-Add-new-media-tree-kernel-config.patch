@@ -1,14 +1,14 @@
-From 8ebfcb74929877b92515edbc15dc2a86614c2f0d Mon Sep 17 00:00:00 2001
+From 33dbb334c58a4875af3a5fdf9a606a9eb0e531f5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 15 Nov 2018 12:44:18 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ debian.master/config/config.common.ubuntu | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 49e10e43ebeb..2e642ab1833a 100644
+index 56ba49ff623d..8f0c5652eb01 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2480,7 +2480,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index 49e10e43ebeb..2e642ab1833a 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10532,3 +10532,21 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10541,3 +10541,22 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -41,6 +41,7 @@ index 49e10e43ebeb..2e642ab1833a 100644
 +CONFIG_VIDEO_CADENCE_CSI2TX=m
 +CONFIG_VIDEO_VICODEC=m
 +# CONFIG_VIDEO_CROS_EC_CEC is not set
++CONFIG_DVB_DS3K=m
 +
 -- 
 2.17.1

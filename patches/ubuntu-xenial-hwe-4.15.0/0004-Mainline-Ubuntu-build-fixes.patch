@@ -1,4 +1,4 @@
-From 478d648fcd1d2c393bf9fcb6b7eb1d819b5f6199 Mon Sep 17 00:00:00 2001
+From 5ef13281213e2cf95749a958490d0cf228eeb7fd Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 15 Nov 2018 12:43:16 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -9,7 +9,8 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/video/hdmi.c                    |  4 ++--
  fs/compat_ioctl.c                       | 42 ++-------------------------------
  include/linux/dma-buf.h                 |  6 ++++-
- 5 files changed, 11 insertions(+), 46 deletions(-)
+ include/linux/pci_ids.h                 |  2 ++
+ 6 files changed, 13 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7..bf6f29c 100644
@@ -176,6 +177,19 @@ index 58725f8..131ccf7 100644
  	void *(*map)(struct dma_buf *, unsigned long);
  	void (*unmap)(struct dma_buf *, unsigned long, void *);
  
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 69f0abe..8264523 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -3088,6 +3088,8 @@
+ 
+ #define PCI_VENDOR_ID_OCZ		0x1b85
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
+ #endif /* _LINUX_PCI_IDS_H */
 -- 
 2.7.4
 

@@ -1,17 +1,17 @@
-From 5e781cad1311922e1652f00956098265258c3762 Mon Sep 17 00:00:00 2001
+From 0c749121cc57e57542d77e0ff6536bfbf8cd6ce6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 13 Nov 2018 17:11:03 -0600
 Subject: [PATCH 4/6] Add 'new' media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 57 ++++++++++++++++++++++++++++---
- 1 file changed, 53 insertions(+), 4 deletions(-)
+ debian.master/config/config.common.ubuntu | 59 ++++++++++++++++++++++++++++---
+ 1 file changed, 55 insertions(+), 4 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index ee87783..7818a03 100644
+index d37089b..9f2b91f 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2056,7 +2056,7 @@ CONFIG_DUMMY_CONSOLE=y
+@@ -2057,7 +2057,7 @@ CONFIG_DUMMY_CONSOLE=y
  CONFIG_DUMMY_CONSOLE_COLUMNS=80
  CONFIG_DUMMY_CONSOLE_ROWS=25
  CONFIG_DVB_A8293=m
@@ -20,7 +20,7 @@ index ee87783..7818a03 100644
  CONFIG_DVB_AF9033=m
  CONFIG_DVB_AS102=m
  CONFIG_DVB_AS102_FE=m
-@@ -2126,7 +2126,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2127,7 +2127,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -29,7 +29,7 @@ index ee87783..7818a03 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -2194,7 +2194,7 @@ CONFIG_DVB_USB=m
+@@ -2195,7 +2195,7 @@ CONFIG_DVB_USB=m
  CONFIG_DVB_USB_A800=m
  CONFIG_DVB_USB_AF9005=m
  CONFIG_DVB_USB_AF9005_REMOTE=m
@@ -38,7 +38,7 @@ index ee87783..7818a03 100644
  CONFIG_DVB_USB_AF9035=m
  CONFIG_DVB_USB_ANYSEE=m
  CONFIG_DVB_USB_AU6610=m
-@@ -7067,7 +7067,7 @@ CONFIG_SKGE=m
+@@ -7069,7 +7069,7 @@ CONFIG_SKGE=m
  CONFIG_SKGE_GENESIS=y
  CONFIG_SKY2=m
  # CONFIG_SKY2_DEBUG is not set
@@ -47,7 +47,7 @@ index ee87783..7818a03 100644
  CONFIG_SLABINFO=y
  CONFIG_SLHC=y
  CONFIG_SLICOSS=m
-@@ -9132,3 +9132,52 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9134,3 +9134,54 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -100,6 +100,8 @@ index ee87783..7818a03 100644
 +CONFIG_VIDEO_CADENCE_CSI2TX=m
 +CONFIG_VIDEO_VICODEC=m
 +# CONFIG_VIDEO_CROS_EC_CEC is not set
++CONFIG_DVB_DS3K=m
++
 -- 
 2.7.4
 

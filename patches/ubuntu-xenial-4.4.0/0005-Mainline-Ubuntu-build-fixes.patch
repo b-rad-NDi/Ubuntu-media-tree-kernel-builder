@@ -1,6 +1,6 @@
-From b0b6bb46b9ad09d4c4bde14cafea110f65c718d2 Mon Sep 17 00:00:00 2001
+From f43056888f0dee97bce428ed84a599791e2f9dcf Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 13 Nov 2018 17:12:14 -0600
+Date: Fri, 28 Dec 2018 12:16:43 -0600
 Subject: [PATCH 5/6] Mainline Ubuntu build fixes
 
 ---
@@ -14,8 +14,9 @@ Subject: [PATCH 5/6] Mainline Ubuntu build fixes
  include/linux/dma-buf.h                 |   2 +
  include/linux/kconfig.h                 |   7 +++
  include/linux/refcount.h                | 104 ++++++++++++++++++++++++++++++++
+ include/media/media-request.h           |   2 +-
  mm/slub.c                               |   2 +
- 11 files changed, 153 insertions(+), 84 deletions(-)
+ 12 files changed, 154 insertions(+), 85 deletions(-)
  create mode 100644 include/linux/refcount.h
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
@@ -515,8 +516,21 @@ index 0000000..a685da2
 +						       spinlock_t *lock,
 +						       unsigned long *flags);
 +#endif /* _LINUX_REFCOUNT_H */
+diff --git a/include/media/media-request.h b/include/media/media-request.h
+index 2196397..f993867 100644
+--- a/include/media/media-request.h
++++ b/include/media/media-request.h
+@@ -69,7 +69,7 @@ struct media_request {
+ 	unsigned int access_count;
+ 	struct list_head objects;
+ 	unsigned int num_incomplete_objects;
+-	struct wait_queue_head poll_wait;
++	struct __wait_queue_head poll_wait;
+ 	spinlock_t lock;
+ };
+ 
 diff --git a/mm/slub.c b/mm/slub.c
-index 2284c43..1e010b5 100644
+index c33b0e1..192d562 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -4041,6 +4041,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
