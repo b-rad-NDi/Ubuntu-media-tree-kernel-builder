@@ -1,18 +1,18 @@
-From 17e878c1caf1f916ce2fd5f5d048373ec77edd42 Mon Sep 17 00:00:00 2001
+From c0a6407d75d7f59d6ec2e646811c3214bb108df4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 27 Dec 2018 16:22:19 -0600
+Date: Tue, 8 Jan 2019 04:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 48 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.master/changelog | 49 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index d7c611d88aa0..d7beff1673ee 100644
+index d7c611d88aa0..91d6d63eca49 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,51 @@
-+linux (4.15.0-43201812271622.0+mediatree+hauppauge) bionic; urgency=low
+@@ -1,3 +1,52 @@
++linux (4.15.0-43201901080420.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.15.0-43.46 rev 9f3c41672a4f2488bf85ac6b88394ef861dbc333
@@ -49,6 +49,7 @@ index d7c611d88aa0..d7beff1673ee 100644
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
++    --- 0030-cx23885-only-reset-DMA-on-problematic-CPUs.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
@@ -58,7 +59,7 @@ index d7c611d88aa0..d7beff1673ee 100644
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 27 Dec 2018 16:22:19 -0600
++ -- Fake User <hidden@email.co>  Tue, 08 Jan 2019 04:20:00 -0600
 +
  linux (4.15.0-43.46) bionic; urgency=medium
  

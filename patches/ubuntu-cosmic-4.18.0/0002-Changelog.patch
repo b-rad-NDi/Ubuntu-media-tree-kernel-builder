@@ -1,18 +1,18 @@
-From dc06c6961cf4f8d34bb0875e8aadd17957c559da Mon Sep 17 00:00:00 2001
+From be77650594decebc3c35f0c584d215991ffdebf6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 26 Dec 2018 15:35:43 -0600
+Date: Tue, 8 Jan 2019 04:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 45 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ debian.master/changelog | 49 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 75a8f3d66..ee8bc5509 100644
+index 75a8f3d66..eddaf74c2 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,48 @@
-+linux (4.18.0-13201812261535.0+mediatree+hauppauge) cosmic; urgency=low
+@@ -1,3 +1,52 @@
++linux (4.18.0-13201901080420.0+mediatree+hauppauge) cosmic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.18.0-13.14 rev bfe015d2df84299c03b3189e6a6f5d97a68b213c
@@ -27,7 +27,6 @@ index 75a8f3d66..ee8bc5509 100644
 +
 +  * Additional patches
 +    - 01.HVR19xx
-+    --- 0000-cover-letter.patch
 +    --- 0001-si2157-add-detection-of-si2177-tuner.patch
 +    --- 0002-pvrusb2-Add-multiple-dvb-frontend-support.patch
 +    --- 0003-pvrusb2-Add-i2c-client-demod-tuner-support.patch
@@ -50,12 +49,17 @@ index 75a8f3d66..ee8bc5509 100644
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
++    --- 0030-cx23885-only-reset-DMA-on-problematic-CPUs.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 99.montage.3103b
++    --- 0001-Import-ds3k-driver.patch
++    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
++    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 26 Dec 2018 15:35:42 -0600
++ -- Fake User <hidden@email.co>  Tue, 08 Jan 2019 04:20:00 -0600
 +
  linux (4.18.0-13.14) cosmic; urgency=medium
  

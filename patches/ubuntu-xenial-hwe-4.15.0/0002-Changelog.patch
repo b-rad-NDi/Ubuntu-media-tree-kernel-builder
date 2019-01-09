@@ -1,18 +1,18 @@
-From ad8d4c51d1af8deb20e6b7018aee5b3aba7a37be Mon Sep 17 00:00:00 2001
+From 6c04dbcc20e6b4a5e35f3c5bc789b2c395a8c82d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 27 Dec 2018 16:13:59 -0600
+Date: Tue, 8 Jan 2019 04:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.hwe/changelog | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 734c952..4e70bfd 100644
+index 734c952..ff4ea9f 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
-@@ -1,3 +1,51 @@
-+linux-hwe (4.15.0-43201812271613.0+mediatree+hauppauge~hwe) xenial; urgency=low
+@@ -1,3 +1,52 @@
++linux-hwe (4.15.0-43201901080420.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
 +    - 4.15.0-43.46 rev b5547a75709545fe4a19c00db5fbb551be77aa21
@@ -49,6 +49,7 @@ index 734c952..4e70bfd 100644
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
++    --- 0030-cx23885-only-reset-DMA-on-problematic-CPUs.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
@@ -58,7 +59,7 @@ index 734c952..4e70bfd 100644
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 27 Dec 2018 16:13:59 -0600
++ -- Fake User <hidden@email.co>  Tue, 08 Jan 2019 04:20:00 -0600
 +
  linux-hwe (4.15.0-43.46~16.04.1) xenial; urgency=medium
  
