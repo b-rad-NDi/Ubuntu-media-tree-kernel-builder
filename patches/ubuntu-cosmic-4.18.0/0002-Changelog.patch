@@ -1,4 +1,4 @@
-From be77650594decebc3c35f0c584d215991ffdebf6 Mon Sep 17 00:00:00 2001
+From 681c720f73692e459c21d622a33adc672c1505ec Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 8 Jan 2019 04:20:00 -0600
 Subject: [PATCH 2/6] Changelog
@@ -8,7 +8,7 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 75a8f3d66..eddaf74c2 100644
+index 75a8f3d66..14cbe60c2 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,52 @@
