@@ -1,18 +1,20 @@
-From d4e56b66c9a6bcb030b9afba54d9774327f6e7d5 Mon Sep 17 00:00:00 2001
+From a61095858a73747a27df5ae0fdbab522ee8ea7dc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 27 Dec 2018 13:05:39 -0600
+Date: Thu, 10 Jan 2019 12:06:34 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/hid/hid-picolcd_cir.c           |   3 +-
+ drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
  drivers/usb/gadget/function/uvc_queue.c |   2 +-
  drivers/video/hdmi.c                    |   4 +-
  fs/compat_ioctl.c                       |  42 +-
  include/linux/dma-buf.h                 |   4 +-
+ include/linux/hdmi.h                    |   5 +-
  include/linux/mfd/cros_ec.h             | 216 +++++-----
  include/linux/mfd/cros_ec_commands.h    | 535 +++++++++++++++++++-----
  include/linux/pci_ids.h                 |   2 +
- 8 files changed, 551 insertions(+), 257 deletions(-)
+ 10 files changed, 556 insertions(+), 263 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f9..bf6f29ca3 100644
@@ -35,6 +37,24 @@ index 32747b7f9..bf6f29ca3 100644
  		w = (raw_data[i] << 8) | (raw_data[i+1]);
  		rawir.pulse = !!(w & 0x8000);
  		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
+diff --git a/drivers/isdn/hardware/mISDN/w6692.c b/drivers/isdn/hardware/mISDN/w6692.c
+index 5acf6ab67..5ac4a1825 100644
+--- a/drivers/isdn/hardware/mISDN/w6692.c
++++ b/drivers/isdn/hardware/mISDN/w6692.c
+@@ -52,10 +52,10 @@ static const struct w6692map  w6692_map[] =
+ 	{W6692_USR, "USR W6692"}
+ };
+ 
+-#ifndef PCI_VENDOR_ID_USR
+-#define PCI_VENDOR_ID_USR	0x16ec
++//#ifndef PCI_VENDOR_ID_USR
++//#define PCI_VENDOR_ID_USR	0x16ec
+ #define PCI_DEVICE_ID_USR_6692	0x3409
+-#endif
++//#endif
+ 
+ struct w6692_ch {
+ 	struct bchannel		bch;
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
 index 9e33d5206..f2497cb96 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
@@ -170,6 +190,22 @@ index 58725f890..ca304d9bb 100644
  	void *(*map)(struct dma_buf *, unsigned long);
  	void (*unmap)(struct dma_buf *, unsigned long, void *);
  
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index d2bacf502..d5f71b78b 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -347,9 +347,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+ ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
+ 				 void *buffer, size_t size);
+ int hdmi_infoframe_check(union hdmi_infoframe *frame);
+-int hdmi_infoframe_unpack(union hdmi_infoframe *frame,
+-			  const void *buffer, size_t size);
++int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer);
+ void hdmi_infoframe_log(const char *level, struct device *dev,
+-			const union hdmi_infoframe *frame);
++			union hdmi_infoframe *frame);
+ 
+ #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/mfd/cros_ec.h b/include/linux/mfd/cros_ec.h
 index 32421dfeb..e44e3ec8a 100644
 --- a/include/linux/mfd/cros_ec.h
@@ -1347,10 +1383,10 @@ index f2edd9969..9a9631f05 100644
  #define EC_CMD_USB_PD_MUX_INFO 0x11a
  
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 69f0abe1b..5f5adda07 100644
+index 5eaf39dbc..20f4e40cf 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -3090,4 +3090,6 @@
+@@ -3098,4 +3098,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
