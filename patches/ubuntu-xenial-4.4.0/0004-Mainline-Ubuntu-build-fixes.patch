@@ -1,0 +1,569 @@
+From e36a5d7bc1871cb5c494a7dbc5d58e1762a1800d Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 10 Jan 2019 16:30:21 -0600
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ drivers/hid/hid-picolcd_cir.c           |  10 ++-
+ drivers/input/touchscreen/sur40.c       |  48 +++++++--------
+ drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
+ drivers/net/ethernet/via/via-velocity.c |  10 +--
+ drivers/usb/gadget/function/uvc_queue.c |   5 +-
+ drivers/video/hdmi.c                    |   4 +-
+ fs/compat_ioctl.c                       |  42 -------------
+ include/linux/compiler-gcc.h            |   3 +
+ include/linux/dma-buf.h                 |   2 +
+ include/linux/hdmi.h                    |   5 +-
+ include/linux/kconfig.h                 |   7 +++
+ include/linux/refcount.h                | 104 ++++++++++++++++++++++++++++++++
+ mm/slub.c                               |   2 +
+ 13 files changed, 158 insertions(+), 90 deletions(-)
+ create mode 100644 include/linux/refcount.h
+
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 9628651..bf6f29c 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -45,7 +45,7 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ {
+ 	unsigned long flags;
+ 	int i, w, sz;
+-	DEFINE_IR_RAW_EVENT(rawir);
++	struct ir_raw_event rawir = {};
+ 
+ 	/* ignore if rc_dev is NULL or status is shunned */
+ 	spin_lock_irqsave(&data->lock, flags);
+@@ -67,7 +67,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
+ 	 */
+ 	sz = size > 0 ? min((int)raw_data[0], size-1) : 0;
+ 	for (i = 0; i+1 < sz; i += 2) {
+-		init_ir_raw_event(&rawir);
+ 		w = (raw_data[i] << 8) | (raw_data[i+1]);
+ 		rawir.pulse = !!(w & 0x8000);
+ 		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
+@@ -108,16 +107,15 @@ int picolcd_init_cir(struct picolcd_data *data, struct hid_report *report)
+ 	struct rc_dev *rdev;
+ 	int ret = 0;
+ 
+-	rdev = rc_allocate_device();
++	rdev = rc_allocate_device(RC_DRIVER_IR_RAW);
+ 	if (!rdev)
+ 		return -ENOMEM;
+ 
+ 	rdev->priv             = data;
+-	rdev->driver_type      = RC_DRIVER_IR_RAW;
+-	rdev->allowed_protocols = RC_BIT_ALL;
++	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
+ 	rdev->open             = picolcd_cir_open;
+ 	rdev->close            = picolcd_cir_close;
+-	rdev->input_name       = data->hdev->name;
++	rdev->device_name      = data->hdev->name;
+ 	rdev->input_phys       = data->hdev->phys;
+ 	rdev->input_id.bustype = data->hdev->bus;
+ 	rdev->input_id.vendor  = data->hdev->vendor;
+diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
+index 0146e2c..2aabe73 100644
+--- a/drivers/input/touchscreen/sur40.c
++++ b/drivers/input/touchscreen/sur40.c
+@@ -151,7 +151,6 @@ struct sur40_state {
+ 	struct mutex lock;
+ 
+ 	struct vb2_queue queue;
+-	struct vb2_alloc_ctx *alloc_ctx;
+ 	struct list_head buf_list;
+ 	spinlock_t qlock;
+ 	int sequence;
+@@ -197,28 +196,34 @@ static int sur40_command(struct sur40_state *dev,
+ static int sur40_init(struct sur40_state *dev)
+ {
+ 	int result;
+-	u8 buffer[24];
++	u8 *buffer;
++
++	buffer = kmalloc(24, GFP_KERNEL);
++	if (!buffer) {
++		result = -ENOMEM;
++		goto error;
++	}
+ 
+ 	/* stupidly replay the original MS driver init sequence */
+ 	result = sur40_command(dev, SUR40_GET_VERSION, 0x00, buffer, 12);
+ 	if (result < 0)
+-		return result;
++		goto error;
+ 
+ 	result = sur40_command(dev, SUR40_GET_VERSION, 0x01, buffer, 12);
+ 	if (result < 0)
+-		return result;
++		goto error;
+ 
+ 	result = sur40_command(dev, SUR40_GET_VERSION, 0x02, buffer, 12);
+ 	if (result < 0)
+-		return result;
++		goto error;
+ 
+ 	result = sur40_command(dev, SUR40_UNKNOWN2,    0x00, buffer, 24);
+ 	if (result < 0)
+-		return result;
++		goto error;
+ 
+ 	result = sur40_command(dev, SUR40_UNKNOWN1,    0x00, buffer,  5);
+ 	if (result < 0)
+-		return result;
++		goto error;
+ 
+ 	result = sur40_command(dev, SUR40_GET_VERSION, 0x03, buffer, 12);
+ 
+@@ -226,7 +231,8 @@ static int sur40_init(struct sur40_state *dev)
+ 	 * Discard the result buffer - no known data inside except
+ 	 * some version strings, maybe extract these sometime...
+ 	 */
+-
++error:
++	kfree(buffer);
+ 	return result;
+ }
+ 
+@@ -444,7 +450,7 @@ static void sur40_process_video(struct sur40_state *sur40)
+ 		return;
+ 
+ 	/* mark as finished */
+-	v4l2_get_timestamp(&new_buf->vb.timestamp);
++	new_buf->vb.vb2_buf.timestamp = ktime_get_ns();
+ 	new_buf->vb.sequence = sur40->sequence++;
+ 	new_buf->vb.field = V4L2_FIELD_NONE;
+ 	vb2_buffer_done(&new_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+@@ -576,19 +582,13 @@ static int sur40_probe(struct usb_interface *interface,
+ 	sur40->queue = sur40_queue;
+ 	sur40->queue.drv_priv = sur40;
+ 	sur40->queue.lock = &sur40->lock;
++	sur40->queue.dev = sur40->dev;
+ 
+ 	/* initialize the queue */
+ 	error = vb2_queue_init(&sur40->queue);
+ 	if (error)
+ 		goto err_unreg_v4l2;
+ 
+-	sur40->alloc_ctx = vb2_dma_sg_init_ctx(sur40->dev);
+-	if (IS_ERR(sur40->alloc_ctx)) {
+-		dev_err(sur40->dev, "Can't allocate buffer context");
+-		error = PTR_ERR(sur40->alloc_ctx);
+-		goto err_unreg_v4l2;
+-	}
+-
+ 	sur40->vdev = sur40_video_device;
+ 	sur40->vdev.v4l2_dev = &sur40->v4l2;
+ 	sur40->vdev.lock = &sur40->lock;
+@@ -629,7 +629,6 @@ static void sur40_disconnect(struct usb_interface *interface)
+ 
+ 	video_unregister_device(&sur40->vdev);
+ 	v4l2_device_unregister(&sur40->v4l2);
+-	vb2_dma_sg_cleanup_ctx(sur40->alloc_ctx);
+ 
+ 	input_unregister_polled_device(sur40->input);
+ 	input_free_polled_device(sur40->input);
+@@ -647,22 +646,18 @@ static void sur40_disconnect(struct usb_interface *interface)
+  * minimum number: many DMA engines need a minimum of 2 buffers in the
+  * queue and you need to have another available for userspace processing.
+  */
+-static int sur40_queue_setup(struct vb2_queue *q, const void *parg,
++static int sur40_queue_setup(struct vb2_queue *q,
+ 		       unsigned int *nbuffers, unsigned int *nplanes,
+-		       unsigned int sizes[], void *alloc_ctxs[])
++		       unsigned int sizes[], struct device *alloc_devs[])
+ {
+-	const struct v4l2_format *fmt = parg;
+-	struct sur40_state *sur40 = vb2_get_drv_priv(q);
+-
+ 	if (q->num_buffers + *nbuffers < 3)
+ 		*nbuffers = 3 - q->num_buffers;
+ 
+-	if (fmt && fmt->fmt.pix.sizeimage < sur40_video_format.sizeimage)
+-		return -EINVAL;
++	if (*nplanes)
++		return sizes[0] < sur40_video_format.sizeimage ? -EINVAL : 0;
+ 
+ 	*nplanes = 1;
+-	sizes[0] = fmt ? fmt->fmt.pix.sizeimage : sur40_video_format.sizeimage;
+-	alloc_ctxs[0] = sur40->alloc_ctx;
++	sizes[0] = sur40_video_format.sizeimage;
+ 
+ 	return 0;
+ }
+@@ -791,7 +786,6 @@ static int sur40_vidioc_enum_fmt(struct file *file, void *priv,
+ {
+ 	if (f->index != 0)
+ 		return -EINVAL;
+-	strlcpy(f->description, "8-bit greyscale", sizeof(f->description));
+ 	f->pixelformat = V4L2_PIX_FMT_GREY;
+ 	f->flags = 0;
+ 	return 0;
+diff --git a/drivers/isdn/hardware/mISDN/w6692.c b/drivers/isdn/hardware/mISDN/w6692.c
+index 7416755..6e2b825 100644
+--- a/drivers/isdn/hardware/mISDN/w6692.c
++++ b/drivers/isdn/hardware/mISDN/w6692.c
+@@ -52,10 +52,10 @@ static const struct w6692map  w6692_map[] =
+ 	{W6692_USR, "USR W6692"}
+ };
+ 
+-#ifndef PCI_VENDOR_ID_USR
+-#define PCI_VENDOR_ID_USR	0x16ec
++//#ifndef PCI_VENDOR_ID_USR
++//#define PCI_VENDOR_ID_USR	0x16ec
+ #define PCI_DEVICE_ID_USR_6692	0x3409
+-#endif
++//#endif
+ 
+ struct w6692_ch {
+ 	struct bchannel		bch;
+diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
+index f38696c..c841bba 100644
+--- a/drivers/net/ethernet/via/via-velocity.c
++++ b/drivers/net/ethernet/via/via-velocity.c
+@@ -85,8 +85,8 @@
+ #include "via-velocity.h"
+ 
+ enum velocity_bus_type {
+-	BUS_PCI,
+-	BUS_PLATFORM,
++	bus_pci = 0x01,
++	bus_platform = 0x02,
+ };
+ 
+ static int velocity_nics;
+@@ -2807,7 +2807,7 @@ static int velocity_probe(struct device *dev, int irq,
+ 
+ 	velocity_init_info(vptr, info);
+ 
+-	if (bustype == BUS_PCI) {
++	if (bustype == bus_pci) {
+ 		vptr->pdev = to_pci_dev(dev);
+ 
+ 		ret = velocity_get_pci_info(vptr);
+@@ -2933,7 +2933,7 @@ static int velocity_pci_probe(struct pci_dev *pdev,
+ 		goto fail1;
+ 	}
+ 
+-	ret = velocity_probe(&pdev->dev, pdev->irq, info, BUS_PCI);
++	ret = velocity_probe(&pdev->dev, pdev->irq, info, bus_pci);
+ 	if (ret == 0)
+ 		return 0;
+ 
+@@ -2966,7 +2966,7 @@ static int velocity_platform_probe(struct platform_device *pdev)
+ 	if (!irq)
+ 		return -EINVAL;
+ 
+-	return velocity_probe(&pdev->dev, irq, info, BUS_PLATFORM);
++	return velocity_probe(&pdev->dev, irq, info, 0x2);
+ }
+ 
+ static int velocity_platform_remove(struct platform_device *pdev)
+diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
+index 51d4a17..4089ae4 100644
+--- a/drivers/usb/gadget/function/uvc_queue.c
++++ b/drivers/usb/gadget/function/uvc_queue.c
+@@ -170,7 +170,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	ret = vb2_qbuf(&queue->queue, buf);
++	ret = vb2_qbuf(&queue->queue, NULL, buf);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -329,7 +329,8 @@ struct uvc_buffer *uvcg_queue_next_buffer(struct uvc_video_queue *queue,
+ 
+ 	buf->buf.field = V4L2_FIELD_NONE;
+ 	buf->buf.sequence = queue->sequence++;
+-	v4l2_get_timestamp(&buf->buf.timestamp);
++//	v4l2_get_timestamp(&buf->buf.timestamp);
++	buf->buf.vb2_buf.timestamp = ktime_get_ns();
+ 
+ 	vb2_set_plane_payload(&buf->buf.vb2_buf, 0, buf->bytesused);
+ 	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index b73520a..f1ce621 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -585,9 +585,9 @@ hdmi_extended_colorimetry_get_name(enum hdmi_extended_colorimetry ext_col)
+ 		return "xvYCC 709";
+ 	case HDMI_EXTENDED_COLORIMETRY_S_YCC_601:
+ 		return "sYCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_YCC_601:
++	case HDMI_EXTENDED_COLORIMETRY_OPYCC_601:
+ 		return "Adobe YCC 601";
+-	case HDMI_EXTENDED_COLORIMETRY_ADOBE_RGB:
++	case HDMI_EXTENDED_COLORIMETRY_OPRGB:
+ 		return "Adobe RGB";
+ 	case HDMI_EXTENDED_COLORIMETRY_BT2020_CONST_LUM:
+ 		return "BT.2020 Constant Luminance";
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index a52ca5c..29ba8fe 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -195,34 +195,6 @@ static int do_video_stillpicture(unsigned int fd, unsigned int cmd,
+ 	return err;
+ }
+ 
+-struct compat_video_spu_palette {
+-	int length;
+-	compat_uptr_t palette;
+-};
+-
+-static int do_video_set_spu_palette(unsigned int fd, unsigned int cmd,
+-		struct compat_video_spu_palette __user *up)
+-{
+-	struct video_spu_palette __user *up_native;
+-	compat_uptr_t palp;
+-	int length, err;
+-
+-	err  = get_user(palp, &up->palette);
+-	err |= get_user(length, &up->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	up_native = compat_alloc_user_space(sizeof(struct video_spu_palette));
+-	err  = put_user(compat_ptr(palp), &up_native->palette);
+-	err |= put_user(length, &up_native->length);
+-	if (err)
+-		return -EFAULT;
+-
+-	err = sys_ioctl(fd, cmd, (unsigned long) up_native);
+-
+-	return err;
+-}
+-
+ #ifdef CONFIG_BLOCK
+ typedef struct sg_io_hdr32 {
+ 	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
+@@ -1330,17 +1302,12 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+ COMPATIBLE_IOCTL(AUDIO_SET_ID)
+ COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
+ COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
+-COMPATIBLE_IOCTL(AUDIO_SET_EXT_ID)
+-COMPATIBLE_IOCTL(AUDIO_SET_ATTRIBUTES)
+-COMPATIBLE_IOCTL(AUDIO_SET_KARAOKE)
+ COMPATIBLE_IOCTL(DMX_START)
+ COMPATIBLE_IOCTL(DMX_STOP)
+ COMPATIBLE_IOCTL(DMX_SET_FILTER)
+ COMPATIBLE_IOCTL(DMX_SET_PES_FILTER)
+ COMPATIBLE_IOCTL(DMX_SET_BUFFER_SIZE)
+ COMPATIBLE_IOCTL(DMX_GET_PES_PIDS)
+-COMPATIBLE_IOCTL(DMX_GET_CAPS)
+-COMPATIBLE_IOCTL(DMX_SET_SOURCE)
+ COMPATIBLE_IOCTL(DMX_GET_STC)
+ COMPATIBLE_IOCTL(FE_GET_INFO)
+ COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
+@@ -1371,16 +1338,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+ COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
+ COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
+ COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
+-COMPATIBLE_IOCTL(VIDEO_SET_ID)
+ COMPATIBLE_IOCTL(VIDEO_SET_STREAMTYPE)
+ COMPATIBLE_IOCTL(VIDEO_SET_FORMAT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SYSTEM)
+-COMPATIBLE_IOCTL(VIDEO_SET_HIGHLIGHT)
+-COMPATIBLE_IOCTL(VIDEO_SET_SPU)
+-COMPATIBLE_IOCTL(VIDEO_GET_NAVI)
+-COMPATIBLE_IOCTL(VIDEO_SET_ATTRIBUTES)
+ COMPATIBLE_IOCTL(VIDEO_GET_SIZE)
+-COMPATIBLE_IOCTL(VIDEO_GET_FRAME_RATE)
+ 
+ /* joystick */
+ COMPATIBLE_IOCTL(JSIOCGVERSION)
+@@ -1481,8 +1441,6 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
+ 		return do_video_get_event(fd, cmd, argp);
+ 	case VIDEO_STILLPICTURE:
+ 		return do_video_stillpicture(fd, cmd, argp);
+-	case VIDEO_SET_SPU_PALETTE:
+-		return do_video_set_spu_palette(fd, cmd, argp);
+ 	}
+ 
+ 	/*
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 143d40e..a647bcc 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -2,6 +2,9 @@
+ #error "Please don't include <linux/compiler-gcc.h> directly, include <linux/compiler.h> instead."
+ #endif
+ 
++#define annotate_reachable()
++#define annotate_unreachable()
++
+ /*
+  * Common definitions for all gcc versions go here.
+  */
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index f98bd70..f8f0884 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -33,6 +33,8 @@
+ #include <linux/fence.h>
+ #include <linux/wait.h>
+ 
++#include <media/compat.h>
++
+ struct device;
+ struct dma_buf;
+ struct dma_buf_attachment;
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index d2bacf5..d5f71b7 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -347,9 +347,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+ ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
+ 				 void *buffer, size_t size);
+ int hdmi_infoframe_check(union hdmi_infoframe *frame);
+-int hdmi_infoframe_unpack(union hdmi_infoframe *frame,
+-			  const void *buffer, size_t size);
++int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer);
+ void hdmi_infoframe_log(const char *level, struct device *dev,
+-			const union hdmi_infoframe *frame);
++			union hdmi_infoframe *frame);
+ 
+ #endif /* _DRM_HDMI_H */
+diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
+index cc8fa10..7291175 100644
+--- a/include/linux/kconfig.h
++++ b/include/linux/kconfig.h
+@@ -42,6 +42,13 @@
+ #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
+ #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
+ 
++#define __ARG_PLACEHOLDER_1 0,
++#define config_enabled(cfg) _config_enabled(cfg)
++#define _config_enabled(value) __config_enabled(__ARG_PLACEHOLDER_##value)
++#define __config_enabled(arg1_or_junk) ___config_enabled(arg1_or_junk 1, 0)
++#define ___config_enabled(__ignored, val, ...) val
++
++
+ /*
+  * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
+  * otherwise. For boolean options, this is equivalent to
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+new file mode 100644
+index 0000000..a685da2
+--- /dev/null
++++ b/include/linux/refcount.h
+@@ -0,0 +1,104 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_REFCOUNT_H
++#define _LINUX_REFCOUNT_H
++
++#include <linux/atomic.h>
++#include <linux/mutex.h>
++#include <linux/spinlock.h>
++#include <linux/kernel.h>
++
++/**
++ * struct refcount_t - variant of atomic_t specialized for reference counts
++ * @refs: atomic_t counter field
++ *
++ * The counter saturates at UINT_MAX and will not move once
++ * there. This avoids wrapping the counter and causing 'spurious'
++ * use-after-free bugs.
++ */
++typedef struct refcount_struct {
++	atomic_t refs;
++} refcount_t;
++
++#define REFCOUNT_INIT(n)	{ .refs = ATOMIC_INIT(n), }
++
++/**
++ * refcount_set - set a refcount's value
++ * @r: the refcount
++ * @n: value to which the refcount will be set
++ */
++static inline void refcount_set(refcount_t *r, unsigned int n)
++{
++	atomic_set(&r->refs, n);
++}
++
++/**
++ * refcount_read - get a refcount's value
++ * @r: the refcount
++ *
++ * Return: the refcount's value
++ */
++static inline unsigned int refcount_read(const refcount_t *r)
++{
++	return atomic_read(&r->refs);
++}
++
++#ifdef CONFIG_REFCOUNT_FULL
++extern __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r);
++extern void refcount_add(unsigned int i, refcount_t *r);
++
++extern __must_check bool refcount_inc_not_zero(refcount_t *r);
++extern void refcount_inc(refcount_t *r);
++
++extern __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r);
++
++extern __must_check bool refcount_dec_and_test(refcount_t *r);
++extern void refcount_dec(refcount_t *r);
++#else
++# ifdef CONFIG_ARCH_HAS_REFCOUNT
++#  include <asm/refcount.h>
++# else
++static inline __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r)
++{
++	return atomic_add_unless(&r->refs, i, 0);
++}
++
++static inline void refcount_add(unsigned int i, refcount_t *r)
++{
++	atomic_add(i, &r->refs);
++}
++
++static inline __must_check bool refcount_inc_not_zero(refcount_t *r)
++{
++	return atomic_add_unless(&r->refs, 1, 0);
++}
++
++static inline void refcount_inc(refcount_t *r)
++{
++	atomic_inc(&r->refs);
++}
++
++static inline __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r)
++{
++	return atomic_sub_and_test(i, &r->refs);
++}
++
++static inline __must_check bool refcount_dec_and_test(refcount_t *r)
++{
++	return atomic_dec_and_test(&r->refs);
++}
++
++static inline void refcount_dec(refcount_t *r)
++{
++	atomic_dec(&r->refs);
++}
++# endif /* !CONFIG_ARCH_HAS_REFCOUNT */
++#endif /* CONFIG_REFCOUNT_FULL */
++
++extern __must_check bool refcount_dec_if_one(refcount_t *r);
++extern __must_check bool refcount_dec_not_one(refcount_t *r);
++extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock);
++extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock);
++extern __must_check bool refcount_dec_and_lock_irqsave(refcount_t *r,
++						       spinlock_t *lock,
++						       unsigned long *flags);
++#endif /* _LINUX_REFCOUNT_H */
+diff --git a/mm/slub.c b/mm/slub.c
+index c33b0e1..192d562 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4041,6 +4041,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
+ 	return ret;
+ }
+ 
++EXPORT_SYMBOL(__kmalloc_track_caller);
++
+ #ifdef CONFIG_NUMA
+ void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
+ 					int node, unsigned long caller)
+-- 
+2.7.4
+

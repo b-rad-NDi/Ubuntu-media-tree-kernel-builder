@@ -1,6 +1,6 @@
-From 6c04dbcc20e6b4a5e35f3c5bc789b2c395a8c82d Mon Sep 17 00:00:00 2001
+From f4aa2c75f82145d08db8897dc0a1bd5c65361b61 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 8 Jan 2019 04:20:00 -0600
+Date: Thu, 10 Jan 2019 16:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 49 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 734c952..ff4ea9f 100644
+index 734c952..1a651fa 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,52 @@
-+linux-hwe (4.15.0-43201901080420.0+mediatree+hauppauge~hwe) xenial; urgency=low
++linux-hwe (4.15.0-43201901101620.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
 +    - 4.15.0-43.46 rev b5547a75709545fe4a19c00db5fbb551be77aa21
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2018-11-07-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -59,7 +59,7 @@ index 734c952..ff4ea9f 100644
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 08 Jan 2019 04:20:00 -0600
++ -- Fake User <hidden@email.co>  Thu, 10 Jan 2019 16:20:00 -0600
 +
  linux-hwe (4.15.0-43.46~16.04.1) xenial; urgency=medium
  

@@ -1,6 +1,6 @@
-From f4dee26804756dcd0b47ae2a6777582075d98144 Mon Sep 17 00:00:00 2001
+From 87acc0ee702dcdc509d500c9011599f09335a903 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 15 Nov 2018 12:42:43 -0600
+Date: Thu, 10 Jan 2019 16:10:40 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -15,6 +15,11 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/dvb-core/dmxdev.c                       | 2 ++
  drivers/media/dvb-core/dvb_demux.c                    | 2 ++
  drivers/media/dvb-core/dvb_net.c                      | 2 ++
+ drivers/media/i2c/adv7511.c                           | 2 +-
+ drivers/media/i2c/adv7604.c                           | 2 +-
+ drivers/media/i2c/adv7842.c                           | 2 +-
+ drivers/media/i2c/tc358743.c                          | 2 +-
+ drivers/media/i2c/tda1997x.c                          | 4 ++--
  drivers/media/i2c/tvaudio.c                           | 2 ++
  drivers/media/media-device.c                          | 2 ++
  drivers/media/pci/bt8xx/bttv-driver.c                 | 2 ++
@@ -58,7 +63,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-ctrls.h                            | 2 ++
  include/media/v4l2-dev.h                              | 2 ++
  include/media/videobuf-core.h                         | 2 ++
- 54 files changed, 109 insertions(+), 2 deletions(-)
+ 59 files changed, 115 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index a6ebe82..28211a8 100644
@@ -112,7 +117,7 @@ index 1f624fb..049e0e1 100644
  
  module_param(max_memory, int, 0644);
 diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-index fa483b9..27dc060 100644
+index d9a590a..8e38869 100644
 --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 @@ -11,6 +11,8 @@
@@ -199,6 +204,80 @@ index 149a2f7..b3fb9c3 100644
  static inline __u32 iov_crc32( __u32 c, struct kvec *iov, unsigned int cnt )
  {
  	unsigned int j;
+diff --git a/drivers/media/i2c/adv7511.c b/drivers/media/i2c/adv7511.c
+index cec5ebb..88349b5 100644
+--- a/drivers/media/i2c/adv7511.c
++++ b/drivers/media/i2c/adv7511.c
+@@ -550,7 +550,7 @@ static void log_infoframe(struct v4l2_subdev *sd, const struct adv7511_cfg_read_
+ 	buffer[3] = 0;
+ 	buffer[3] = hdmi_infoframe_checksum(buffer, len + 4);
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__, cri->desc);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
+index 28a84bf..dfb4400 100644
+--- a/drivers/media/i2c/adv7604.c
++++ b/drivers/media/i2c/adv7604.c
+@@ -2444,7 +2444,7 @@ static int adv76xx_read_infoframe(struct v4l2_subdev *sd, int index,
+ 		buffer[i + 3] = infoframe_read(sd,
+ 				       adv76xx_cri[index].payload_addr + i);
+ 
+-	if (hdmi_infoframe_unpack(frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__,
+ 			 adv76xx_cri[index].desc);
+ 		return -ENOENT;
+diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+index 9892594..5305c3a 100644
+--- a/drivers/media/i2c/adv7842.c
++++ b/drivers/media/i2c/adv7842.c
+@@ -2574,7 +2574,7 @@ static void log_infoframe(struct v4l2_subdev *sd, struct adv7842_cfg_read_infofr
+ 	for (i = 0; i < len; i++)
+ 		buffer[i + 3] = infoframe_read(sd, cri->payload_addr + i);
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__, cri->desc);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index bc2e35e..00dc930 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -444,7 +444,7 @@ static void print_avi_infoframe(struct v4l2_subdev *sd)
+ 
+ 	i2c_rd(sd, PK_AVI_0HEAD, buffer, HDMI_INFOFRAME_SIZE(AVI));
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of AVI infoframe failed\n", __func__);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index 9e5f958..eaa987a 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -1253,7 +1253,7 @@ tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+ 
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+@@ -1928,7 +1928,7 @@ static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+ 	v4l2_dbg(1, debug, sd, "infoframe: addr=%d len=%d\n", addr, len);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
 diff --git a/drivers/media/i2c/tvaudio.c b/drivers/media/i2c/tvaudio.c
 index af2da97..a00e2b9 100644
 --- a/drivers/media/i2c/tvaudio.c
@@ -213,7 +292,7 @@ index af2da97..a00e2b9 100644
  /* insmod args                                                            */
  
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 61acc66..5af74d6 100644
+index 860ac17..4abce1d 100644
 --- a/drivers/media/media-device.c
 +++ b/drivers/media/media-device.c
 @@ -32,6 +32,8 @@
@@ -226,7 +305,7 @@ index 61acc66..5af74d6 100644
  
  /*
 diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-index 3c81712..6a3a1da 100644
+index 7b4bb1d..02d5eb5 100644
 --- a/drivers/media/pci/bt8xx/bttv-driver.c
 +++ b/drivers/media/pci/bt8xx/bttv-driver.c
 @@ -61,6 +61,8 @@
@@ -329,7 +408,7 @@ index ead59fa..fc99ec2 100644
  module_param(spi_enable, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
  
 diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index 8984b1b..a4a74ed 100644
+index aa98ea4..fb7228e 100644
 --- a/drivers/media/pci/saa7134/saa7134-core.c
 +++ b/drivers/media/pci/saa7134/saa7134-core.c
 @@ -32,6 +32,8 @@
@@ -342,7 +421,7 @@ index 8984b1b..a4a74ed 100644
  MODULE_AUTHOR("Gerd Knorr <kraxel@bytesex.org> [SuSE Labs]");
  MODULE_LICENSE("GPL");
 diff --git a/drivers/media/pci/saa7134/saa7134-input.c b/drivers/media/pci/saa7134/saa7134-input.c
-index 999b277..1a78c0b 100644
+index 35884d5..31ef9d4 100644
 --- a/drivers/media/pci/saa7134/saa7134-input.c
 +++ b/drivers/media/pci/saa7134/saa7134-input.c
 @@ -23,6 +23,8 @@
@@ -381,7 +460,7 @@ index 57bea54..d62de41 100644
  
  static unsigned int vbi_debug;
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index 8f28741..544e45a 100644
+index 5bc4b8f..a70e269 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -30,6 +30,8 @@
@@ -419,7 +498,7 @@ index 7fb3f07..a9b224d 100644
   * This module parameter allows to control the DMA_TIMER_INTERVAL value.
   * The DMA_TIMER_INTERVAL register controls the minimum DMA interrupt
 diff --git a/drivers/media/platform/vim2m.c b/drivers/media/platform/vim2m.c
-index af150a0..f1811a0 100644
+index 33397d4..6bd6c5e 100644
 --- a/drivers/media/platform/vim2m.c
 +++ b/drivers/media/platform/vim2m.c
 @@ -31,6 +31,8 @@
@@ -494,7 +573,7 @@ index ba3f95a..25fc63c 100644
  #define DRIVER_NAME		"igorplugusb"
  
 diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index 6194983..8003b5c 100644
+index c594b8e..6888c8e 100644
 --- a/drivers/media/rc/imon.c
 +++ b/drivers/media/rc/imon.c
 @@ -41,6 +41,8 @@
@@ -546,7 +625,7 @@ index e10b464..e7f011e 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index dff589e..1edf10c 100644
+index ae40778..a49da46 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -598,7 +677,7 @@ index d9093a3..511c036 100644
  module_param_named(preallocate_big_buffers, preallocate_big_buffers, int, 0644);
  MODULE_PARM_DESC(preallocate_big_buffers, "Preallocate the larger transfer buffers at module load time");
 diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index efbf210..f36eba1 100644
+index 7876c89..27abe9f 100644
 --- a/drivers/media/usb/au0828/au0828-video.c
 +++ b/drivers/media/usb/au0828/au0828-video.c
 @@ -36,6 +36,8 @@
@@ -624,7 +703,7 @@ index b3d38d1..a98d405 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index 7702285..c914816 100644
+index 446a999..8fb7843 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 @@ -38,6 +38,8 @@
@@ -680,7 +759,7 @@ index 5b3e54b..3a24d64 100644
  #define FIRMWARE_FILE_NAME "f2255usb.bin"
  
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index bc369a0..83a5a69 100644
+index b62cbd8..18f7e73 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -26,6 +26,8 @@
@@ -693,7 +772,7 @@ index bc369a0..83a5a69 100644
  
  #define DRIVER_AUTHOR		"Laurent Pinchart " \
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index d5f8cfe..7e66f6a 100644
+index 5bcb64a..8293334 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -31,6 +31,8 @@
@@ -706,7 +785,7 @@ index d5f8cfe..7e66f6a 100644
  	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
  	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 222a6a3..b93e4be 100644
+index 8481db7..ce7c4b0 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -33,6 +33,8 @@
@@ -758,12 +837,12 @@ index dc2f64e..6c9e9a3 100644
  
  /*
 diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 83ce059..67d9b4e 100644
+index d63cf22..72a03af 100644
 --- a/include/media/v4l2-ctrls.h
 +++ b/include/media/v4l2-ctrls.h
-@@ -22,6 +22,8 @@
- #include <linux/videodev2.h>
- #include <media/media-request.h>
+@@ -28,6 +28,8 @@
+  */
+ #include <media/mpeg2-ctrls.h>
  
 +#include <media/compat.h>
 +
@@ -771,7 +850,7 @@ index 83ce059..67d9b4e 100644
  struct file;
  struct v4l2_ctrl_handler;
 diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
-index 456ac13..3440264 100644
+index 48531e5..5d5585b 100644
 --- a/include/media/v4l2-dev.h
 +++ b/include/media/v4l2-dev.h
 @@ -19,6 +19,8 @@
