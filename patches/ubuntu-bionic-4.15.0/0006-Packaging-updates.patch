@@ -1,4 +1,4 @@
-From 76f2b6263aa09039c3604a35dfc04837ed6ac520 Mon Sep 17 00:00:00 2001
+From 6abacb8a180986a78be6c2f015a2e7608dd35e6c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 1 May 2018 11:13:54 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -306,7 +306,7 @@ index fd3397c67996..9300bd9893fd 100755
  
  # Don't build tools or udebs in a cross compile environment.
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index d45d5d89ccaf..ed54adf38c74 100644
+index 44c1ba11908d..64e719e7095c 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -325,7 +325,7 @@ index d45d5d89ccaf..ed54adf38c74 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -143,8 +152,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+@@ -144,8 +153,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  # cycle, so its OK to leave 'do_doc_package_content=false' until those build
  # failures get sorted out. Finally, the doc package doesn't really need to be built
  # for developer testing (its kind of slow), so only do it if on a buildd.
@@ -336,7 +336,7 @@ index d45d5d89ccaf..ed54adf38c74 100644
  ifeq ($(full_build),false)
  do_doc_package_content=false
  endif
-@@ -161,7 +170,7 @@ do_source_package_content=false
+@@ -162,7 +171,7 @@ do_source_package_content=false
  endif
  
  # linux-libc-dev may not be needed, default to building it.
@@ -346,10 +346,10 @@ index d45d5d89ccaf..ed54adf38c74 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index aaf3d43379ed..a607c4e153a7 100644
+index 20f744c012a9..4257da141f12 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -757,10 +757,14 @@ build-arch: $(build-arch-deps-true)
+@@ -740,10 +740,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
