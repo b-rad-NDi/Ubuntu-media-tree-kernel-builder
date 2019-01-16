@@ -1,0 +1,52 @@
+From 438ea25a55cda724aa72c5b524544f3bd1dc399d Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 14 Jan 2019 19:20:39 -0600
+Subject: [PATCH 2/2] cx25840-core: Set media controller taint for pads
+
+Fixes: 9d6d20e652 ("v4l2-mc: switch it to use the new approach to setup pipelines")
+
+Without "taint" set for signal type, devices
+with analog capture fail during probe:
+
+[    5.821715] cx231xx 3-2:1.1: v4l2 driver version 0.0.3
+[    5.955721] cx231xx 3-2:1.1: Registered video device video0 [v4l2]
+[    5.955797] cx231xx 3-2:1.1: Registered VBI device vbi0
+[    5.955802] cx231xx 3-2:1.1: video EndPoint Addr 0x84, Alternate settings: 5
+[    5.955805] cx231xx 3-2:1.1: VBI EndPoint Addr 0x85, Alternate settings: 2
+[    5.955807] cx231xx 3-2:1.1: sliced CC EndPoint Addr 0x86, Alternate settings: 2
+[    5.955834] cx231xx 3-2:1.1: V4L2 device vbi0 deregistered
+[    5.955889] cx231xx 3-2:1.1: V4L2 device video0 deregistered
+[    5.959131] cx231xx: probe of 3-2:1.1 failed with error -22
+[    5.959190] usbcore: registered new interface driver cx231xx
+
+
+This sets the taint as follows:
+- sink pads to PAD_SIGNAL_ANALOG
+- source pads to PAD_SIGNAL_DV
+
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/i2c/cx25840/cx25840-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/i2c/cx25840/cx25840-core.c b/drivers/media/i2c/cx25840/cx25840-core.c
+index b23d8e4..0c94be5 100644
+--- a/drivers/media/i2c/cx25840/cx25840-core.c
++++ b/drivers/media/i2c/cx25840/cx25840-core.c
+@@ -5225,8 +5225,12 @@ static int cx25840_probe(struct i2c_client *client,
+ 	 * those extra inputs. So, let's add it only when needed.
+ 	 */
+ 	state->pads[CX25840_PAD_INPUT].flags = MEDIA_PAD_FL_SINK;
++	state->pads[CX25840_PAD_INPUT].sig_type = PAD_SIGNAL_ANALOG;
+ 	state->pads[CX25840_PAD_VID_OUT].flags = MEDIA_PAD_FL_SOURCE;
++	state->pads[CX25840_PAD_VID_OUT].sig_type = PAD_SIGNAL_DV;
+ 	state->pads[CX25840_PAD_VBI_OUT].flags = MEDIA_PAD_FL_SOURCE;
++	state->pads[CX25840_PAD_VBI_OUT].sig_type = PAD_SIGNAL_DV;
++
+ 	sd->entity.function = MEDIA_ENT_F_ATV_DECODER;
+ 
+ 	ret = media_entity_pads_init(&sd->entity, ARRAY_SIZE(state->pads),
+-- 
+2.7.4
+

@@ -1,0 +1,45 @@
+From d1a607e5d85cc4fc0a04b98a71b3504b67dc3aff Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 14 Jan 2019 16:59:06 -0600
+Subject: [PATCH 1/2] cx231xx-video: Set media controller taint for analog
+
+Fixes: 9d6d20e652 ("v4l2-mc: switch it to use the new approach to setup pipelines")
+
+Without "taint" set for signal type, devices
+with analog capture fail during probe:
+
+[    5.821715] cx231xx 3-2:1.1: v4l2 driver version 0.0.3
+[    5.955721] cx231xx 3-2:1.1: Registered video device video0 [v4l2]
+[    5.955797] cx231xx 3-2:1.1: Registered VBI device vbi0
+[    5.955802] cx231xx 3-2:1.1: video EndPoint Addr 0x84, Alternate settings: 5
+[    5.955805] cx231xx 3-2:1.1: VBI EndPoint Addr 0x85, Alternate settings: 2
+[    5.955807] cx231xx 3-2:1.1: sliced CC EndPoint Addr 0x86, Alternate settings: 2
+[    5.955834] cx231xx 3-2:1.1: V4L2 device vbi0 deregistered
+[    5.955889] cx231xx 3-2:1.1: V4L2 device video0 deregistered
+[    5.959131] cx231xx: probe of 3-2:1.1 failed with error -22
+[    5.959190] usbcore: registered new interface driver cx231xx
+
+
+This sets the taint for the source pad on the bridge to PAD_SIGNAL_ANALOG
+
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/cx231xx/cx231xx-video.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
+index d5e51a5..12f2c00 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-video.c
++++ b/drivers/media/usb/cx231xx/cx231xx-video.c
+@@ -1120,6 +1120,7 @@ void cx231xx_v4l2_create_entities(struct cx231xx *dev)
+ 		ent->name = iname[INPUT(i)->type];
+ 		ent->flags = MEDIA_ENT_FL_CONNECTOR;
+ 		dev->input_pad[i].flags = MEDIA_PAD_FL_SOURCE;
++		dev->input_pad[i].sig_type = PAD_SIGNAL_ANALOG;
+ 
+ 		switch (INPUT(i)->type) {
+ 		case CX231XX_VMUX_COMPOSITE1:
+-- 
+2.7.4
+
