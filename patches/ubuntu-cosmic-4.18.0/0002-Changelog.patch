@@ -1,24 +1,24 @@
-From 681c720f73692e459c21d622a33adc672c1505ec Mon Sep 17 00:00:00 2001
+From 0edf0cf9d5a3dfc1596696cc2907d1016f5a0bfd Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 8 Jan 2019 04:20:00 -0600
+Date: Wed, 16 Jan 2019 16:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 49 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ debian.master/changelog | 50 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 75a8f3d66..14cbe60c2 100644
+index 75a8f3d66..fd88ac535 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,52 @@
-+linux (4.18.0-13201901080420.0+mediatree+hauppauge) cosmic; urgency=low
+@@ -1,3 +1,53 @@
++linux (4.18.0-13201901161620.0+mediatree+hauppauge) cosmic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.18.0-13.14 rev bfe015d2df84299c03b3189e6a6f5d97a68b213c
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2018-11-07-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -47,19 +47,20 @@ index 75a8f3d66..14cbe60c2 100644
 +    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
-+    --- 0010-mceusb-Include-three-Hauppauge-USB-dvb-device-with-I.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
-+    --- 0030-cx23885-only-reset-DMA-on-problematic-CPUs.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 40.cx231xx.media.controller.fix
++    --- 0001-cx231xx-video-Set-media-controller-taint-for-analog-.patch
++    --- 0002-cx25840-core-Set-media-controller-taint-for-pads.patch
 +    - 99.montage.3103b
 +    --- 0001-Import-ds3k-driver.patch
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 08 Jan 2019 04:20:00 -0600
++ -- Fake User <hidden@email.co>  Wed, 16 Jan 2019 16:20:00 -0600
 +
  linux (4.18.0-13.14) cosmic; urgency=medium
  
