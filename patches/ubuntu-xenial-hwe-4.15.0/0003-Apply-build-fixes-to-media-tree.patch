@@ -1,4 +1,4 @@
-From 87acc0ee702dcdc509d500c9011599f09335a903 Mon Sep 17 00:00:00 2001
+From e67f3c1892bdb43462d99d2a257cd790c74434bb Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 16:10:40 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -130,7 +130,7 @@ index d9a590a..8e38869 100644
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index aff0ab7..bf50a11 100644
+index 12d0072..d2df175 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -223,6 +223,7 @@ struct vb2_dc_attachment {
@@ -142,7 +142,7 @@ index aff0ab7..bf50a11 100644
  {
  	struct vb2_dc_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 015e737..5beda30 100644
+index cf94765..c673e36 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -372,6 +372,7 @@ struct vb2_dma_sg_attachment {
@@ -154,7 +154,7 @@ index 015e737..5beda30 100644
  {
  	struct vb2_dma_sg_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 6dfbd5b..9687f1d 100644
+index cdec023a..e4c762e 100644
 --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 @@ -210,6 +210,7 @@ struct vb2_vmalloc_attachment {
@@ -305,7 +305,7 @@ index 860ac17..4abce1d 100644
  
  /*
 diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-index 7b4bb1d..02d5eb5 100644
+index 7b4bb1d..02d5eb57 100644
 --- a/drivers/media/pci/bt8xx/bttv-driver.c
 +++ b/drivers/media/pci/bt8xx/bttv-driver.c
 @@ -61,6 +61,8 @@
@@ -625,7 +625,7 @@ index e10b464..e7f011e 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index ae40778..a49da46 100644
+index ae40778..a49da461 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -772,7 +772,7 @@ index b62cbd8..18f7e73 100644
  
  #define DRIVER_AUTHOR		"Laurent Pinchart " \
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 5bcb64a..8293334 100644
+index 5bcb64a..8293334e 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -31,6 +31,8 @@

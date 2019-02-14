@@ -1,4 +1,4 @@
-From e20259bc4b75fa855d7b2964c51ed659b061d6cb Mon Sep 17 00:00:00 2001
+From 78fcc4e77c34d2b5a82e6a7f9c0596caaff7111e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 16:16:26 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -130,7 +130,7 @@ index d9a590ae7545..8e3886960e1e 100644
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index aff0ab7bf83d..bf50a111fb32 100644
+index 12d0072c52c2..d2df175a1bd7 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -223,6 +223,7 @@ struct vb2_dc_attachment {
@@ -142,7 +142,7 @@ index aff0ab7bf83d..bf50a111fb32 100644
  {
  	struct vb2_dc_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 015e737095cd..5beda307fc25 100644
+index cf94765e593f..c673e36d8179 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -372,6 +372,7 @@ struct vb2_dma_sg_attachment {
@@ -154,7 +154,7 @@ index 015e737095cd..5beda307fc25 100644
  {
  	struct vb2_dma_sg_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 6dfbd5b05907..9687f1d7f03d 100644
+index cdec023a918d..e4c762eefdb6 100644
 --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 @@ -210,6 +210,7 @@ struct vb2_vmalloc_attachment {

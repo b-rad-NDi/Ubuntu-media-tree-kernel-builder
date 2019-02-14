@@ -1,4 +1,4 @@
-From ad123f86a533bfd9d288985fbc4c0c39fb1a3cb8 Mon Sep 17 00:00:00 2001
+From 0cc71ebe60a3fc5eb8bcb6cccc6ea0d1698f11d1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 16:11:15 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -9,10 +9,10 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/usb/gadget/function/uvc_queue.c |  2 +-
  drivers/video/hdmi.c                    |  4 ++--
  fs/compat_ioctl.c                       | 42 ++-------------------------------
- include/linux/dma-buf.h                 |  6 ++++-
+ include/linux/dma-buf.h                 |  4 +++-
  include/linux/hdmi.h                    |  5 ++--
  include/linux/pci_ids.h                 |  2 ++
- 8 files changed, 18 insertions(+), 52 deletions(-)
+ 8 files changed, 16 insertions(+), 52 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7..bf6f29c 100644
@@ -167,7 +167,7 @@ index 5fc5dc6..bcd80da 100644
  
  	/*
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 58725f8..131ccf7 100644
+index 30157b5..131ccf7 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
 @@ -33,6 +33,8 @@
@@ -188,15 +188,6 @@ index 58725f8..131ccf7 100644
  
  	/**
  	 * @detach:
-@@ -205,6 +207,8 @@ struct dma_buf_ops {
- 	 * to be restarted.
- 	 */
- 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
-+	void *(*map_atomic)(struct dma_buf *, unsigned long);
-+	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
- 	void *(*map)(struct dma_buf *, unsigned long);
- 	void (*unmap)(struct dma_buf *, unsigned long, void *);
- 
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
 index d2bacf5..d5f71b7 100644
 --- a/include/linux/hdmi.h

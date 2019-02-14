@@ -1,4 +1,4 @@
-From 41eeff4626faaedbb7a94ef334e8bdf56a0c2558 Mon Sep 17 00:00:00 2001
+From 457d2e6461b9d6c7c9306646b84df4d70045c53d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 16:13:55 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 25 insertions(+), 1 deletion(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 6c6af37..3cd8b82 100644
+index 98ae1aa..d504a81 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2483,7 +2483,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index 6c6af37..3cd8b82 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10537,3 +10537,27 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10539,3 +10539,27 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m

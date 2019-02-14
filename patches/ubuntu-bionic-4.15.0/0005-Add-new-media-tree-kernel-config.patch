@@ -1,4 +1,4 @@
-From 325446a5fb7ebc60a64c6cf3ca029be68eee7b05 Mon Sep 17 00:00:00 2001
+From 49c55efc928fea50a4ab3a73723a59fb1783ec17 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 15 Nov 2018 12:44:18 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
@@ -8,10 +8,10 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 25 insertions(+), 1 deletion(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 56ba49ff623d..79d2192a73fb 100644
+index 2dc1b94582fc..66644494202c 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2480,7 +2480,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2478,7 +2478,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m

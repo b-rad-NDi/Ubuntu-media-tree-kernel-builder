@@ -1,4 +1,4 @@
-From e36a5d7bc1871cb5c494a7dbc5d58e1762a1800d Mon Sep 17 00:00:00 2001
+From fc637e8f494db4489c11af00dbdaa106b9ef8b0b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 16:30:21 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes

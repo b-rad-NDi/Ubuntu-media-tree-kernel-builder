@@ -1,4 +1,4 @@
-From 4d54cba82d1e8c237c3012292e6883185c16bd53 Mon Sep 17 00:00:00 2001
+From e5a90095b86b9f34921c85c7c605934d58c2f069 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 10 Jan 2019 12:05:56 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -33,7 +33,7 @@ index a6ebe82a3..28211a834 100644
  #include "cec-priv.h"
  #include "cec-pin-priv.h"
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index aff0ab7bf..bf50a111f 100644
+index 12d0072c5..d2df175a1 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -223,6 +223,7 @@ struct vb2_dc_attachment {
@@ -45,7 +45,7 @@ index aff0ab7bf..bf50a111f 100644
  {
  	struct vb2_dc_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 015e73709..5beda307f 100644
+index cf94765e5..c673e36d8 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -372,6 +372,7 @@ struct vb2_dma_sg_attachment {
@@ -57,7 +57,7 @@ index 015e73709..5beda307f 100644
  {
  	struct vb2_dma_sg_attachment *attach;
 diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 6dfbd5b05..9687f1d7f 100644
+index cdec023a9..e4c762eef 100644
 --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 @@ -210,6 +210,7 @@ struct vb2_vmalloc_attachment {

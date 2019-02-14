@@ -1,4 +1,4 @@
-From 6e04a0c6452f5d8ee48f9e2c58ad796e03228c6f Mon Sep 17 00:00:00 2001
+From 908786129c4ccdc9ffdde10f14c7338d52965692 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 12 Nov 2018 15:17:05 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 9 insertions(+)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 54c8665e2..859798bb5 100644
+index e8ee19e5e..5aaabe301 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -10774,3 +10774,12 @@ CONFIG_ZSTD_COMPRESS=m

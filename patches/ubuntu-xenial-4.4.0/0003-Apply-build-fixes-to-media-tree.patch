@@ -1,6 +1,6 @@
-From 83a91d903e6f1aaaf9dd3ba83d3fc341589b301a Mon Sep 17 00:00:00 2001
+From f01b3518862fc2155d04797690ce3282cf124b48 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 10 Jan 2019 16:29:28 -0600
+Date: Thu, 14 Feb 2019 12:44:06 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -10,9 +10,9 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/common/saa7146/saa7146_vbi.c            |  3 +++
  drivers/media/common/saa7146/saa7146_video.c          |  2 ++
  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c         |  2 ++
- drivers/media/common/videobuf2/videobuf2-dma-contig.c |  3 ++-
- drivers/media/common/videobuf2/videobuf2-dma-sg.c     |  5 ++++-
- drivers/media/common/videobuf2/videobuf2-vmalloc.c    |  3 ++-
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c |  5 +++--
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     |  7 +++++--
+ drivers/media/common/videobuf2/videobuf2-vmalloc.c    |  5 +++--
  drivers/media/dvb-core/dmxdev.c                       |  2 ++
  drivers/media/dvb-core/dvb_demux.c                    |  2 ++
  drivers/media/dvb-core/dvb_net.c                      |  2 ++
@@ -75,7 +75,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-ctrls.h                            |  2 ++
  include/media/v4l2-dev.h                              |  2 ++
  include/media/videobuf-core.h                         |  2 ++
- 71 files changed, 153 insertions(+), 33 deletions(-)
+ 71 files changed, 156 insertions(+), 36 deletions(-)
  delete mode 100644 drivers/media/platform/sti/bdisp/bdisp-hw.c.rej
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
@@ -156,7 +156,7 @@ index d9a590a..8e38869 100644
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 673464a..eccf1f4 100644
+index b5b48a45..e0900ba 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -222,6 +222,7 @@ struct vb2_dc_attachment {
@@ -167,17 +167,19 @@ index 673464a..eccf1f4 100644
  	struct dma_buf_attachment *dbuf_attach)
  {
  	struct vb2_dc_attachment *attach;
-@@ -356,7 +357,7 @@ static const struct dma_buf_ops vb2_dc_dmabuf_ops = {
+@@ -356,8 +357,8 @@ static const struct dma_buf_ops vb2_dc_dmabuf_ops = {
  	.detach = vb2_dc_dmabuf_ops_detach,
  	.map_dma_buf = vb2_dc_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_dc_dmabuf_ops_unmap,
 -	.map = vb2_dc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dc_dmabuf_ops_kmap,
 +	.kmap = vb2_dc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dc_dmabuf_ops_kmap,
  	.vmap = vb2_dc_dmabuf_ops_vmap,
  	.mmap = vb2_dc_dmabuf_ops_mmap,
  	.release = vb2_dc_dmabuf_ops_release,
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 482f159..5700fed 100644
+index 6d1ff39..19b10b3 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -21,6 +21,8 @@
@@ -197,17 +199,19 @@ index 482f159..5700fed 100644
  	struct dma_buf_attachment *dbuf_attach)
  {
  	struct vb2_dma_sg_attachment *attach;
-@@ -516,7 +519,7 @@ static const struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
+@@ -516,8 +519,8 @@ static const struct dma_buf_ops vb2_dma_sg_dmabuf_ops = {
  	.detach = vb2_dma_sg_dmabuf_ops_detach,
  	.map_dma_buf = vb2_dma_sg_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_dma_sg_dmabuf_ops_unmap,
 -	.map = vb2_dma_sg_dmabuf_ops_kmap,
+-	.map_atomic = vb2_dma_sg_dmabuf_ops_kmap,
 +	.kmap = vb2_dma_sg_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_dma_sg_dmabuf_ops_kmap,
  	.vmap = vb2_dma_sg_dmabuf_ops_vmap,
  	.mmap = vb2_dma_sg_dmabuf_ops_mmap,
  	.release = vb2_dma_sg_dmabuf_ops_release,
 diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 0930e68..b95b8d0 100644
+index 89ea19c..2851acf 100644
 --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 @@ -209,6 +209,7 @@ struct vb2_vmalloc_attachment {
@@ -218,12 +222,14 @@ index 0930e68..b95b8d0 100644
  	struct dma_buf_attachment *dbuf_attach)
  {
  	struct vb2_vmalloc_attachment *attach;
-@@ -344,7 +345,7 @@ static const struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
+@@ -344,8 +345,8 @@ static const struct dma_buf_ops vb2_vmalloc_dmabuf_ops = {
  	.detach = vb2_vmalloc_dmabuf_ops_detach,
  	.map_dma_buf = vb2_vmalloc_dmabuf_ops_map,
  	.unmap_dma_buf = vb2_vmalloc_dmabuf_ops_unmap,
 -	.map = vb2_vmalloc_dmabuf_ops_kmap,
+-	.map_atomic = vb2_vmalloc_dmabuf_ops_kmap,
 +	.kmap = vb2_vmalloc_dmabuf_ops_kmap,
++	.kmap_atomic = vb2_vmalloc_dmabuf_ops_kmap,
  	.vmap = vb2_vmalloc_dmabuf_ops_vmap,
  	.mmap = vb2_vmalloc_dmabuf_ops_mmap,
  	.release = vb2_vmalloc_dmabuf_ops_release,
@@ -1013,7 +1019,7 @@ index 9985c89..a99983b 100644
  module_param(debug, int, 0644);
  
 diff --git a/include/media/compat.h b/include/media/compat.h
-index bb1af1b..22b6468 100644
+index a4efab2..ed688f4 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
 @@ -42,6 +42,11 @@
