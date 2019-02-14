@@ -1,3 +1,7 @@
+0.18.3
+  * New Ubuntu revisions
+  * Initial Bionic HWE kernel
+
 0.18.2
   * New media tree sync
   * Fix USB Live2
