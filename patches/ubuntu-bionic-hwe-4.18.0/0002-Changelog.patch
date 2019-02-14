@@ -1,0 +1,70 @@
+From 1c638b211bd115ac9fb813780069103696d05de4 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 14 Feb 2019 14:02:19 -0600
+Subject: [PATCH 2/6] Changelog
+
+---
+ debian.hwe/changelog | 50 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/debian.hwe/changelog b/debian.hwe/changelog
+index 2b079c5d8..b12306c5a 100644
+--- a/debian.hwe/changelog
++++ b/debian.hwe/changelog
+@@ -1,3 +1,53 @@
++linux-hwe (4.18.0-16201902141402.0+mediatree+hauppauge~hwe) bionic; urgency=low
++
++  * Ubuntu-hwe kernel git clone
++    - 4.18.0-16.17 rev 8eb0ea3de8e96c2c1ede81379821a4bcc922767e
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
++    - 0002-Changelog.patch
++    - 0003-Apply-build-fixes-to-media-tree.patch
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++    - 0005-Add-new-media-tree-kernel-config.patch
++    - 0006-Packaging-updates.patch
++
++  * Additional patches
++    - 01.HVR19xx
++    --- 0001-si2157-add-detection-of-si2177-tuner.patch
++    --- 0002-pvrusb2-Add-multiple-dvb-frontend-support.patch
++    --- 0003-pvrusb2-Add-i2c-client-demod-tuner-support.patch
++    --- 0004-pvrusb2-Add-Hauppauge-HVR1955-1975-devices.patch
++    - 07.si2157.analog.tuning
++    --- 0001-si2157-Enable-tuner-status-flags.patch
++    --- 0002-si2157-Check-error-status-bit-on-cmd-execute.patch
++    --- 0003-si2157-Better-check-for-running-tuner-in-init.patch
++    --- 0004-si2157-Add-clock-and-pin-setup-for-si2141.patch
++    --- 0005-cx25840-Remove-offset-from-chip-specific-registers.patch
++    --- 0006-si2157-Add-analog-tuning-related-functions.patch
++    --- 0007-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
++    --- 0008-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++    --- 0009-cx23885-Add-analog-frontend-to-1265_K4.patch
++    --- 0010-cx231xx-Add-i2c-device-analog-tuner-support.patch
++    --- 0011-cx23885-Add-i2c-device-analog-tuner-support.patch
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0005-si2168-different-default-that-windows-driver.patch
++    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
++    - 20.missing.stat.bits
++    --- 0001-si2157-add-on-demand-rf-strength-func.patch
++    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 40.cx231xx.media.controller.fix
++    --- 0001-cx231xx-video-Set-media-controller-taint-for-analog-.patch
++    --- 0002-cx25840-core-Set-media-controller-taint-for-pads.patch
++    - 99.montage.3103b
++    --- 0001-Import-ds3k-driver.patch
++    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
++    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
++
++ -- Fake User <hidden@email.co>  Thu, 14 Feb 2019 14:02:19 -0600
++
+ linux-hwe (4.18.0-16.17~18.04.1) bionic; urgency=medium
+ 
+   * linux-hwe: 4.18.0-16.17~18.04.1 -proposed tracker (LP: #1814750)
+-- 
+2.17.1
+

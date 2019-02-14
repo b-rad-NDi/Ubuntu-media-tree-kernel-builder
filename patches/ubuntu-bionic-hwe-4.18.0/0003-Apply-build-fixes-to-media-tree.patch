@@ -1,0 +1,199 @@
+From 61e2394b3255ce1046a4a9b7f68c543491ef6b11 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 10 Jan 2019 12:05:56 -0600
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ drivers/media/cec/cec-api.c                           | 2 ++
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 1 +
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 1 +
+ drivers/media/common/videobuf2/videobuf2-vmalloc.c    | 1 +
+ drivers/media/i2c/adv7511.c                           | 2 +-
+ drivers/media/i2c/adv7604.c                           | 2 +-
+ drivers/media/i2c/adv7842.c                           | 2 +-
+ drivers/media/i2c/tc358743.c                          | 2 +-
+ drivers/media/i2c/tda1997x.c                          | 4 ++--
+ drivers/media/media-device.c                          | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c                 | 2 +-
+ drivers/media/v4l2-core/v4l2-fwnode.c                 | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c                  | 2 ++
+ 13 files changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index a6ebe82a3..28211a834 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -18,6 +18,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/version.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec-pin.h>
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index 12d0072c5..d2df175a1 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -223,6 +223,7 @@ struct vb2_dc_attachment {
+ };
+ 
+ static int vb2_dc_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_dc_attachment *attach;
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+index cf94765e5..c673e36d8 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+@@ -372,6 +372,7 @@ struct vb2_dma_sg_attachment {
+ };
+ 
+ static int vb2_dma_sg_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_dma_sg_attachment *attach;
+diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+index cdec023a9..e4c762eef 100644
+--- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
++++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+@@ -210,6 +210,7 @@ struct vb2_vmalloc_attachment {
+ };
+ 
+ static int vb2_vmalloc_dmabuf_ops_attach(struct dma_buf *dbuf,
++	struct device *dev,
+ 	struct dma_buf_attachment *dbuf_attach)
+ {
+ 	struct vb2_vmalloc_attachment *attach;
+diff --git a/drivers/media/i2c/adv7511.c b/drivers/media/i2c/adv7511.c
+index cec5ebb1c..88349b505 100644
+--- a/drivers/media/i2c/adv7511.c
++++ b/drivers/media/i2c/adv7511.c
+@@ -550,7 +550,7 @@ static void log_infoframe(struct v4l2_subdev *sd, const struct adv7511_cfg_read_
+ 	buffer[3] = 0;
+ 	buffer[3] = hdmi_infoframe_checksum(buffer, len + 4);
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__, cri->desc);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
+index 28a84bf9f..dfb4400f0 100644
+--- a/drivers/media/i2c/adv7604.c
++++ b/drivers/media/i2c/adv7604.c
+@@ -2444,7 +2444,7 @@ static int adv76xx_read_infoframe(struct v4l2_subdev *sd, int index,
+ 		buffer[i + 3] = infoframe_read(sd,
+ 				       adv76xx_cri[index].payload_addr + i);
+ 
+-	if (hdmi_infoframe_unpack(frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__,
+ 			 adv76xx_cri[index].desc);
+ 		return -ENOENT;
+diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+index 989259488..5305c3ad8 100644
+--- a/drivers/media/i2c/adv7842.c
++++ b/drivers/media/i2c/adv7842.c
+@@ -2574,7 +2574,7 @@ static void log_infoframe(struct v4l2_subdev *sd, struct adv7842_cfg_read_infofr
+ 	for (i = 0; i < len; i++)
+ 		buffer[i + 3] = infoframe_read(sd, cri->payload_addr + i);
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of %s infoframe failed\n", __func__, cri->desc);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index bc2e35e5c..00dc930e0 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -444,7 +444,7 @@ static void print_avi_infoframe(struct v4l2_subdev *sd)
+ 
+ 	i2c_rd(sd, PK_AVI_0HEAD, buffer, HDMI_INFOFRAME_SIZE(AVI));
+ 
+-	if (hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer)) < 0) {
++	if (hdmi_infoframe_unpack(&frame, buffer) < 0) {
+ 		v4l2_err(sd, "%s: unpack of AVI infoframe failed\n", __func__);
+ 		return;
+ 	}
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index e8613e364..c4c2a6134 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -1253,7 +1253,7 @@ tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+ 
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+@@ -1928,7 +1928,7 @@ static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
+ 	/* read data */
+ 	len = io_readn(sd, addr, sizeof(buffer), buffer);
+ 	v4l2_dbg(1, debug, sd, "infoframe: addr=%d len=%d\n", addr, len);
+-	err = hdmi_infoframe_unpack(&frame, buffer, sizeof(buffer));
++	err = hdmi_infoframe_unpack(&frame, buffer);
+ 	if (err) {
+ 		v4l_err(state->client,
+ 			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 860ac174e..4abce1dde 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -32,6 +32,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index b3d38d175..a98d4052b 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
+index 5bcb64a1c..8293334e8 100644
+--- a/drivers/media/v4l2-core/v4l2-fwnode.c
++++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+@@ -31,6 +31,8 @@
+ #include <media/v4l2-fwnode.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ enum v4l2_fwnode_bus_type {
+ 	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
+ 	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 8481db708..ce7c4b08b 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -33,6 +33,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+-- 
+2.17.1
+
