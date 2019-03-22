@@ -1,6 +1,6 @@
-From 46503dc6626da1d1b55e0f5440aa90f1211edd64 Mon Sep 17 00:00:00 2001
+From 08586c6575810c56365010ec48231912d67c4a19 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 14 Feb 2019 14:02:19 -0600
+Date: Fri, 22 Mar 2019 14:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 50 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 11f687d5e5c8..e054e005bc4d 100644
+index 30c5a6b58bb6..8185173903c1 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,53 @@
-+linux (4.15.0-45201902141402.0+mediatree+hauppauge) bionic; urgency=low
++linux (4.15.0-46201903221420.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-45.48 rev ffdd392b819682b66da292cd0d13569d07a1a7c2
++    - 4.15.0-46.49 rev aa07f7dcb959603e1e6d56db7281b1d36bce9928
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
@@ -60,11 +60,11 @@ index 11f687d5e5c8..e054e005bc4d 100644
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 14 Feb 2019 14:02:19 -0600
++ -- Fake User <hidden@email.co>  Fri, 22 Mar 2019 14:20:00 -0500
 +
- linux (4.15.0-45.48) bionic; urgency=medium
+ linux (4.15.0-46.49) bionic; urgency=medium
  
-   * linux: 4.15.0-45.48 -proposed tracker (LP: #1813779)
+   * linux: 4.15.0-46.49 -proposed tracker (LP: #1814726)
 -- 
 2.17.1
 
