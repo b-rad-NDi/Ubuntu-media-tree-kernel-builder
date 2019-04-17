@@ -1,3 +1,13 @@
+0.18.6
+  * New Ubuntu revisions
+  * Disable UEFI signed builds (not signed anyways)
+
+0.18.5
+  * Ubuntu Xenial package rename fix
+
+0.18.4
+  * New Ubuntu revisions
+
 0.18.3
   * New Ubuntu revisions
   * Initial Bionic HWE kernel

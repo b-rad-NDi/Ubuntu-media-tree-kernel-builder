@@ -1,6 +1,6 @@
-From 82afb8c6e53906783e89484c0dd87744159956e1 Mon Sep 17 00:00:00 2001
+From 65797da5f08b15e297b612232c3f99d4b629a006 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 22 Mar 2019 14:20:00 -0500
+Date: Wed, 17 Apr 2019 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 50 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index bdd90c0bb29a..f1b2e08e91c0 100644
+index 9dd964f1464b..1078ece6b18f 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,53 @@
-+linux-hwe (4.18.0-17201903221420.0+mediatree+hauppauge~hwe) bionic; urgency=low
++linux-hwe (4.18.0-18201904171620.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 4.18.0-17.18 rev a563fd9c62f07e164b481d7d06f1e90ac614a3e0
++    - 4.18.0-18.19 rev 65a92bb2ed218c6a442ae227ff639368b1da6d78
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
@@ -60,11 +60,11 @@ index bdd90c0bb29a..f1b2e08e91c0 100644
 +    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
 +    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
 +
-+ -- Fake User <hidden@email.co>  Fri, 22 Mar 2019 14:20:00 -0500
++ -- Fake User <hidden@email.co>  Wed, 17 Apr 2019 16:20:00 -0500
 +
- linux-hwe (4.18.0-17.18~18.04.1) bionic; urgency=medium
+ linux-hwe (4.18.0-18.19~18.04.1) bionic; urgency=medium
  
-   * linux-hwe: 4.18.0-17.18~18.04.1 -proposed tracker (LP: #1819623)
+   * linux-hwe: 4.18.0-18.19~18.04.1 -proposed tracker (LP: #1822795)
 -- 
 2.17.1
 
