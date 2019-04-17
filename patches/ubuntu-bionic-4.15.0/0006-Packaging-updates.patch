@@ -1,22 +1,23 @@
-From b46e02c5253254095d66465509733248b732414a Mon Sep 17 00:00:00 2001
+From a86cb2aaaff7aca419a1cd0617eb68bd72bf0dee Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 1 May 2018 11:13:54 -0500
+Date: Wed, 17 Apr 2019 16:31:39 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
  debian.master/control.stub.in                | 39 +++++---------------
  debian.master/copyright                      | 22 +++++++++++
- debian.master/rules.d/amd64.mk               | 18 ++++-----
+ debian.master/rules.d/amd64.mk               | 20 +++++-----
  debian.master/rules.d/arm64.mk               |  6 +--
  debian.master/rules.d/armhf.mk               |  6 +--
  debian.master/rules.d/i386.mk                | 12 +++---
  debian.master/rules.d/ppc64el.mk             |  6 +--
  debian.master/rules.d/s390x.mk               |  6 +--
+ debian.master/rules.d/x32.mk                 |  2 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 15 ++++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
- 12 files changed, 77 insertions(+), 63 deletions(-)
+ 13 files changed, 79 insertions(+), 65 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 918b41abcef0..03b695bed0cf 100644
@@ -165,10 +166,10 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index eeb51dea374b..3c74ec19c679 100644
+index eeb51dea374b..4638657ade21 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -2,7 +2,7 @@ human_arch	= 64 bit x86
+@@ -2,21 +2,21 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -177,16 +178,17 @@ index eeb51dea374b..3c74ec19c679 100644
  build_image	= bzImage
  kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
-@@ -10,13 +10,13 @@ loader		= grub
+ loader		= grub
  vdso		= vdso_install
  no_dumpfile	= true
- uefi_signed     = true
+-uefi_signed     = true
 -do_tools_usbip  = true
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_x86	= true
 -do_tools_hyperv	= true
 -do_tools_host = true
++uefi_signed     = false
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf   = false
@@ -292,6 +294,18 @@ index 5b468acdfe44..dfc7a152ee2a 100644
 +do_tools_perf     = false
  
  do_zfs		= true
+diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
+index e0ccff961f02..a2833d96ba17 100644
+--- a/debian.master/rules.d/x32.mk
++++ b/debian.master/rules.d/x32.mk
+@@ -9,6 +9,6 @@ install_file	= vmlinuz
+ loader		= grub
+ vdso		= vdso_install
+ no_dumpfile	= true
+-uefi_signed     = true
++uefi_signed     = false
+ 
+ do_flavour_image_package = false
 diff --git a/debian/rules b/debian/rules
 index fd3397c67996..9300bd9893fd 100755
 --- a/debian/rules
@@ -346,7 +360,7 @@ index 44c1ba11908d..64e719e7095c 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 20f744c012a9..4257da141f12 100644
+index 9267d96fdf7e..67c3f4781e8f 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
 @@ -740,10 +740,14 @@ build-arch: $(build-arch-deps-true)
