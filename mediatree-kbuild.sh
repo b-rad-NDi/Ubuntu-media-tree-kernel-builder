@@ -272,8 +272,13 @@ function reset_repo_head_hard()
 	fi
 
 	[ ! -d "${TARGET_DIR}" ] && return 2
-	echo "WARNING: reset to HEAD^ *and* irreversibly clear ${TARGET_DIR}?  YES/NO"
-	read x
+
+	if [ "$2" == "YES" ] ; then
+		x=YES
+	else
+		echo "WARNING: reset to HEAD^ *and* irreversibly clear ${TARGET_DIR}?  YES/NO"
+		read x
+	fi
 	if [ "$x" == "YES" ] ; then
 		cd ${TARGET_DIR}
 		git fetch
@@ -350,7 +355,7 @@ function apply_media_tree()
 	git add --all
 	git commit -m "Linuxtv.org media tree sync - ${V4L_SYNC_DATE}"
 	git format-patch -o ../ -1 HEAD
-	reset_repo_head_hard ${TARGET_DIR}
+	reset_repo_head_hard ${TARGET_DIR} YES
 }
 
 function configure_repo_git()
