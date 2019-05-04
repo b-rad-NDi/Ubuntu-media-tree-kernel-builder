@@ -787,21 +787,18 @@ while getopts ":imMrxCcgbB:spV:" o; do
 	m)
 		## App operation: get latest drivers and make patched tarball for a particular kernel
 		#
-		init_mediatree_builder
 		download_media_tree
 		gen_media_tree_tarball_patched	# generate patched tarball
 		;;
 	M)
 		## App operation: App operation: unpack previous linuxtv.org tarball and patch for a particular kernel
 		#
-		init_mediatree_builder
 		unpack_media_tree
 		[ $? != 0 ] && exit 1
 		gen_media_tree_tarball_patched	# generate patched tarball
 		;;
 	s)
 		## App operation: Make a patch with the latest tarball applied
-		init_mediatree_builder
 		apply_media_tree .media-tree-clean-patch-repo
 		;;
 	r)
