@@ -726,11 +726,15 @@ function generate_ppa_data()
 	read x
 	[ "${x}" != "YES" ] && return 1
 
-	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
-	debuild -d -us -uc -S
+	if [ "$1" == "kernel" -o "$1" == "all" ] ; then
+		cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
+		debuild -d -us -uc -S
+	fi
 
-	generate_virtual_package image
-	generate_virtual_package headers
+	if [ "$1" == "virtual" -o "$1" == "all" ] ; then
+		generate_virtual_package image
+		generate_virtual_package headers
+	fi
 }
 
 function init_mediatree_builder()
@@ -877,10 +881,9 @@ while getopts ":imMrxCcgbB:spV:" o; do
 		;;
 	V)
 		## App operation: build PPA decriptors
-		if [ "${OPTARG}" == "all" ] ; then
-			generate_ppa_data
+		if [ "${OPTARG}" == "all" -o "${OPTARG}" == "kernel" -o "${OPTARG}" == "virtual" ] ; then
+			generate_ppa_data ${OPTARG}
 		fi
-#		generate_virtual_package ${OPTARG}
 		;;
 	h|*)
 		usage
