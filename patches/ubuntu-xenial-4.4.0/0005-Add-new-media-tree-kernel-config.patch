@@ -1,14 +1,14 @@
-From 4b1c751fb8f50f0528d0ff748933be4d1ec5f2be Mon Sep 17 00:00:00 2001
+From 297fa52e21a5b4507e2363cd847efdce1a6f5509 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 10 Jan 2019 16:31:41 -0600
-Subject: [PATCH 5/6] Add 'new' media tree kernel config
+Date: Tue, 28 May 2019 16:00:49 -0500
+Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 66 ++++++++++++++++++++++++++++---
- 1 file changed, 61 insertions(+), 5 deletions(-)
+ debian.master/config/config.common.ubuntu | 75 +++++++++++++++++++++++++------
+ 1 file changed, 62 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index f39945d..efc87f0 100644
+index d6de08a..ddb5f353 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2056,7 +2056,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -38,7 +38,7 @@ index f39945d..efc87f0 100644
  CONFIG_DVB_USB_AF9035=m
  CONFIG_DVB_USB_ANYSEE=m
  CONFIG_DVB_USB_AU6610=m
-@@ -3240,7 +3240,7 @@ CONFIG_I2C_AMD756_S4882=m
+@@ -3242,7 +3242,7 @@ CONFIG_I2C_AMD756_S4882=m
  CONFIG_I2C_AMD8111=m
  CONFIG_I2C_ARB_GPIO_CHALLENGE=m
  CONFIG_I2C_AXXIA=m
@@ -47,7 +47,7 @@ index f39945d..efc87f0 100644
  CONFIG_I2C_BCM_IPROC=m
  CONFIG_I2C_BOARDINFO=y
  CONFIG_I2C_CADENCE=m
-@@ -7067,7 +7067,7 @@ CONFIG_SKGE=m
+@@ -7069,7 +7069,7 @@ CONFIG_SKGE=m
  CONFIG_SKGE_GENESIS=y
  CONFIG_SKY2=m
  # CONFIG_SKY2_DEBUG is not set
@@ -56,7 +56,23 @@ index f39945d..efc87f0 100644
  CONFIG_SLABINFO=y
  CONFIG_SLHC=y
  CONFIG_SLICOSS=m
-@@ -9132,3 +9132,59 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -8795,14 +8795,7 @@ CONFIG_VIDEO_WM8775=m
+ CONFIG_VIDEO_XILINX=m
+ CONFIG_VIDEO_XILINX_TPG=m
+ CONFIG_VIDEO_XILINX_VTC=m
+-CONFIG_VIDEO_ZORAN=m
+-CONFIG_VIDEO_ZORAN_AVS6EYES=m
+-CONFIG_VIDEO_ZORAN_BUZ=m
+-CONFIG_VIDEO_ZORAN_DC10=m
+-CONFIG_VIDEO_ZORAN_DC30=m
+-CONFIG_VIDEO_ZORAN_LML33=m
+-CONFIG_VIDEO_ZORAN_LML33R10=m
+-CONFIG_VIDEO_ZORAN_ZR36060=m
++# CONFIG_VIDEO_ZORAN is not set
+ CONFIG_VIPERBOARD_ADC=m
+ CONFIG_VIRTIO=y
+ CONFIG_VIRTIO_BALLOON=y
+@@ -9134,3 +9127,59 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y

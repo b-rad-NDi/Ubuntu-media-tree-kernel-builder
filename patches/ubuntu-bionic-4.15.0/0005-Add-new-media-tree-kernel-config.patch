@@ -1,17 +1,17 @@
-From 49c55efc928fea50a4ab3a73723a59fb1783ec17 Mon Sep 17 00:00:00 2001
+From 04322de7f0bafe945215f1f6153e766b2ceb32c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 15 Nov 2018 12:44:18 -0600
+Date: Tue, 28 May 2019 16:01:51 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 26 ++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ debian.master/config/config.common.ubuntu | 35 +++++++++++++++++------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 2dc1b94582fc..66644494202c 100644
+index e1ee0834bb68..c68f14242ea0 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2478,7 +2478,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2480,7 +2480,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,23 @@ index 2dc1b94582fc..66644494202c 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10541,3 +10541,27 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10154,14 +10154,7 @@ CONFIG_VIDEO_WM8775=m
+ CONFIG_VIDEO_XILINX=m
+ CONFIG_VIDEO_XILINX_TPG=m
+ CONFIG_VIDEO_XILINX_VTC=m
+-CONFIG_VIDEO_ZORAN=m
+-CONFIG_VIDEO_ZORAN_AVS6EYES=m
+-CONFIG_VIDEO_ZORAN_BUZ=m
+-CONFIG_VIDEO_ZORAN_DC10=m
+-CONFIG_VIDEO_ZORAN_DC30=m
+-CONFIG_VIDEO_ZORAN_LML33=m
+-CONFIG_VIDEO_ZORAN_LML33R10=m
+-CONFIG_VIDEO_ZORAN_ZR36060=m
++# CONFIG_VIDEO_ZORAN is not set
+ CONFIG_VIPERBOARD_ADC=m
+ CONFIG_VIRTIO=y
+ CONFIG_VIRTIO_BALLOON=y
+@@ -10546,3 +10539,27 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
