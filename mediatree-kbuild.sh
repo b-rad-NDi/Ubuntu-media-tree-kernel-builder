@@ -121,7 +121,7 @@ function get_ubuntu()
 	fi
 	if [ ! -d "${TARGET_DIR}" -a -d ".clean-master-repo" ] ; then
 		cd .clean-master-repo
-		git pull
+#		git pull
 		cd -
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
 	elif [ ! -d "${TARGET_DIR}" ] ; then
@@ -144,7 +144,25 @@ function get_ubuntu()
 		cd ..
 	else
 		cd ${TARGET_DIR}
-		git pull
+#		git pull
+		if [ -z "${DISTRO_BRANCH}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
+			git pull
+		else
+			echo git fetch --all
+			git fetch --all
+#			if [ "$?" -ne 0 ] ; then
+				echo git reset --hard HEAD
+				git reset --hard HEAD
+				echo git checkout -b tmp_branch_cleanup_asdfghjkl
+				git checkout -b tmp_branch_cleanup_asdfghjkl
+				echo git branch -D ${DISTRO_BRANCH}
+				git branch -D ${DISTRO_BRANCH}
+				echo git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
+				git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
+				echo git branch -D tmp_branch_cleanup_asdfghjkl
+				git branch -D tmp_branch_cleanup_asdfghjkl
+#			fi
+		fi
 		if [ -z "${DISTRO_BRANCH}" ] ; then
 			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
 		else
