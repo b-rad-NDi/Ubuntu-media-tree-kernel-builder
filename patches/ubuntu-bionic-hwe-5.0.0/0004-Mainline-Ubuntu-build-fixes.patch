@@ -1,0 +1,23 @@
+From e450aa8b2c0ecd7d081c3207c7824e83f9722c5d Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 25 Jul 2019 15:30:15 -0500
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ include/linux/pci_ids.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 98f5bf854406..b8bb484d9cc8 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -3099,4 +3099,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
+-- 
+2.17.1
+
