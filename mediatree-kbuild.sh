@@ -147,6 +147,8 @@ function get_ubuntu()
 #		git pull
 		if [ -z "${DISTRO_BRANCH}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
 			git pull
+		elif [ -z "${DISTRO_BRANCH}" ] ; then
+			git pull
 		else
 			echo git fetch --all
 			git fetch --all
