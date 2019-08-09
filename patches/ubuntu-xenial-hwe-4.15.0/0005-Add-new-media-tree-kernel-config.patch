@@ -1,6 +1,6 @@
-From 040f86b02bfbf13cf85ce18bfe4a49b8fc2eba47 Mon Sep 17 00:00:00 2001
+From 21cd21b89ad4693c0a7d50a980e633e141eb9755 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 28 May 2019 14:12:20 -0500
+Date: Wed, 7 Aug 2019 23:51:06 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,10 +8,10 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index d6f8720..1161295 100644
+index c9b7b5d..b32f597 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
-@@ -2483,7 +2483,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2484,7 +2484,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,7 @@ index d6f8720..1161295 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10149,14 +10149,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10151,14 +10151,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index d6f8720..1161295 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10542,3 +10535,27 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10544,3 +10537,27 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -63,7 +63,7 @@ index d6f8720..1161295 100644
 +CONFIG_VIDEO_ASPEED=m
 +# CONFIG_VIDEO_SECO_CEC is not set
 +CONFIG_VIDEO_IPU3_IMGU=m
-+
++# CONFIG_CEC_PIN_ERROR_INJ is not set
 -- 
 2.7.4
 
