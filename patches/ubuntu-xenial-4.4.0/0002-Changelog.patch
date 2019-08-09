@@ -1,6 +1,6 @@
-From 31a0ab5cba95072cd747d21815b5ab306fab3f47 Mon Sep 17 00:00:00 2001
+From fcd1a1576c51351c40a9fd4074eb8c21f9d1609a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 17 Apr 2019 16:20:00 -0500
+Date: Fri, 09 Aug 2019 10:11:12 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 50 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 6ae3b7d..c4de94e 100644
+index 67b53d3..07605e0 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,53 @@
-+linux (4.4.0-145201904171620.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-157201908091011.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.4.0-145.171 rev 6fc830eb1ed94d62543e6a28aa4ee8e7e57b04f3
++    - 4.4.0-157.185 rev c908e95069c15c7455a2c1191b791dd1f2ef97e1
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
@@ -46,6 +46,7 @@ index 6ae3b7d..c4de94e 100644
 +    - 10.random.patches
 +    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
 +    - 20.missing.stat.bits
@@ -56,15 +57,14 @@ index 6ae3b7d..c4de94e 100644
 +    --- 0001-cx231xx-video-Set-media-controller-taint-for-analog-.patch
 +    --- 0002-cx25840-core-Set-media-controller-taint-for-pads.patch
 +    - 99.montage.3103b
-+    --- 0001-Import-ds3k-driver.patch
-+    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
-+    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
++    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
++    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 17 Apr 2019 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Fri, 09 Aug 2019 10:11:12 -0500
 +
- linux (4.4.0-145.171) xenial; urgency=medium
+ linux (4.4.0-157.185) xenial; urgency=medium
  
-   * linux: 4.4.0-145.171 -proposed tracker (LP: #1821724)
+   * linux: 4.4.0-157.185 -proposed tracker (LP: #1837476)
 -- 
 2.7.4
 
