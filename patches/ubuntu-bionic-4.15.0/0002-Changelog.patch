@@ -1,6 +1,6 @@
-From 6763a12ebf59fd4cf5ca55a93aeb7e0a295f5f07 Mon Sep 17 00:00:00 2001
+From 89f0d5a26729cf47938b36d43396cebafca09985 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 17 Apr 2019 16:20:00 -0500
+Date: Fri, 09 Aug 2019 10:11:12 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 50 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 0cbce9700b82..020d9d9a9a1f 100644
+index 9389633c25e6..0746ec2b5afb 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,53 @@
-+linux (4.15.0-47201904171620.0+mediatree+hauppauge) bionic; urgency=low
++linux (4.15.0-55201908091011.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-47.50 rev 53f4f4b0576f627345fb3769fdd6d20b6249dd91
++    - 4.15.0-55.60 rev 5d0a3afd71a0039eda2ba89daf0f6f930cbbb63a
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
@@ -46,6 +46,7 @@ index 0cbce9700b82..020d9d9a9a1f 100644
 +    - 10.random.patches
 +    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
 +    - 20.missing.stat.bits
@@ -56,15 +57,14 @@ index 0cbce9700b82..020d9d9a9a1f 100644
 +    --- 0001-cx231xx-video-Set-media-controller-taint-for-analog-.patch
 +    --- 0002-cx25840-core-Set-media-controller-taint-for-pads.patch
 +    - 99.montage.3103b
-+    --- 0001-Import-ds3k-driver.patch
-+    --- 0002-m88ds3103-Add-m88ds3103b-support.patch
-+    --- 0003-em28xx-Add-Hauppauge-461e-Rev2-DVB-S-S2.patch
++    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
++    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 17 Apr 2019 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Fri, 09 Aug 2019 10:11:12 -0500
 +
- linux (4.15.0-47.50) bionic; urgency=medium
+ linux (4.15.0-55.60) bionic; urgency=medium
  
-   * linux: 4.15.0-47.50 -proposed tracker (LP: #1819716)
+   * linux: 4.15.0-55.60 -proposed tracker (LP: #1834954)
 -- 
 2.17.1
 
