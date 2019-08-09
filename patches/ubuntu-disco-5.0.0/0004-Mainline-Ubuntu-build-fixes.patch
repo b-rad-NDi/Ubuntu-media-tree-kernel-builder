@@ -1,0 +1,123 @@
+From 188666ca04ed3dcad5b5ba778a87ba24ab094045 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 3 Jul 2019 12:51:23 -0500
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ drivers/dma-buf/sync_file.c |  2 +-
+ include/linux/dma-fence.h   | 22 +++++++++++-----------
+ include/linux/pci_ids.h     |  2 ++
+ 3 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
+index 35dd06479..e9a6636d4 100644
+--- a/drivers/dma-buf/sync_file.c
++++ b/drivers/dma-buf/sync_file.c
+@@ -144,7 +144,7 @@ char *sync_file_get_name(struct sync_file *sync_file, char *buf, int len)
+ 	} else {
+ 		struct dma_fence *fence = sync_file->fence;
+ 
+-		snprintf(buf, len, "%s-%s%llu-%d",
++		snprintf(buf, len, "%s-%s%llu-%u",
+ 			 fence->ops->get_driver_name(fence),
+ 			 fence->ops->get_timeline_name(fence),
+ 			 fence->context,
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 05d29dbc7..b5a0a3734 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -69,7 +69,7 @@ struct dma_fence {
+ 	struct list_head cb_list;
+ 	spinlock_t *lock;
+ 	u64 context;
+-	u64 seqno;
++	unsigned seqno;
+ 	unsigned long flags;
+ 	ktime_t timestamp;
+ 	int error;
+@@ -109,7 +109,7 @@ struct dma_fence_ops {
+ 	 * True if this dma_fence implementation uses 64bit seqno, false
+ 	 * otherwise.
+ 	 */
+-	bool use_64bit_seqno;
++//	bool use_64bit_seqno;
+ 
+ 	/**
+ 	 * @get_driver_name:
+@@ -244,7 +244,7 @@ struct dma_fence_ops {
+ };
+ 
+ void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
+-		    spinlock_t *lock, u64 context, u64 seqno);
++		    spinlock_t *lock, u64 context, unsigned seqno);
+ 
+ void dma_fence_release(struct kref *kref);
+ void dma_fence_free(struct dma_fence *fence);
+@@ -415,15 +415,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+  * Returns true if f1 is chronologically later than f2. Both fences must be
+  * from the same context, since a seqno is not common across contexts.
+  */
+-static inline bool __dma_fence_is_later(u64 f1, u64 f2,
+-					const struct dma_fence_ops *ops)
++static inline bool __dma_fence_is_later(u64 f1, u64 f2) //,
++//					const struct dma_fence_ops *ops)
+ {
+ 	/* This is for backward compatibility with drivers which can only handle
+ 	 * 32bit sequence numbers. Use a 64bit compare when the driver says to
+ 	 * do so.
+ 	 */
+-	if (ops->use_64bit_seqno)
+-		return f1 > f2;
++//	if (ops->use_64bit_seqno)
++//		return f1 > f2;
+ 
+ 	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
+ }
+@@ -442,7 +442,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+ 	if (WARN_ON(f1->context != f2->context))
+ 		return false;
+ 
+-	return __dma_fence_is_later(f1->seqno, f2->seqno, f1->ops);
++	return __dma_fence_is_later(f1->seqno, f2->seqno); //, f1->ops);
+ }
+ 
+ /**
+@@ -557,21 +557,21 @@ u64 dma_fence_context_alloc(unsigned num);
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+ 		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
+-			pr_info("f %llu#%llu: " fmt,			\
++			pr_info("f %llu#%u: " fmt,			\
+ 				__ff->context, __ff->seqno, ##args);	\
+ 	} while (0)
+ 
+ #define DMA_FENCE_WARN(f, fmt, args...) \
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+-		pr_warn("f %llu#%llu: " fmt, __ff->context, __ff->seqno,\
++		pr_warn("f %llu#%u: " fmt, __ff->context, __ff->seqno,\
+ 			 ##args);					\
+ 	} while (0)
+ 
+ #define DMA_FENCE_ERR(f, fmt, args...) \
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+-		pr_err("f %llu#%llu: " fmt, __ff->context, __ff->seqno,	\
++		pr_err("f %llu#%u: " fmt, __ff->context, __ff->seqno,	\
+ 			##args);					\
+ 	} while (0)
+ 
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 70e86148c..44e07bd7e 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -3102,4 +3102,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
+-- 
+2.20.1
+
