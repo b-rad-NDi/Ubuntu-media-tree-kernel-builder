@@ -1,3 +1,11 @@
+0.18.9
+  * New Ubuntu revisions
+  * Dingo support
+
+0.18.8
+  * New Ubuntu revisions
+  * RAID10 XFS backport
+
 0.18.7
   * Package naming snafu
 
