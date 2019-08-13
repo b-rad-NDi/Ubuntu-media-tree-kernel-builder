@@ -1,11 +1,11 @@
-From a9c0c45987e87f7fec891a23c6264c902576fcee Mon Sep 17 00:00:00 2001
+From 9217f35954416fb354da290e566e59a650d22a2c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 5 Aug 2019 15:52:00 -0500
+Date: Mon, 12 Aug 2019 15:53:39 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
- debian.master/control.d/flavour-control.stub |  22 ++--
- debian.master/control.stub.in                | 116 +------------------
+ debian.master/control.d/flavour-control.stub |   8 +-
+ debian.master/control.stub.in                | 114 +------------------
  debian.master/copyright                      |  22 ++++
  debian.master/rules.d/amd64.mk               |  22 ++--
  debian.master/rules.d/arm64.mk               |  10 +-
@@ -16,77 +16,32 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/rules.d/x32.mk                 |   2 +-
  debian/control.d/flavour-buildinfo.stub      |   2 +-
  debian/rules                                 |   2 +-
- debian/rules.d/0-common-vars.mk              |  31 +++--
+ debian/rules.d/0-common-vars.mk              |  19 +++-
  debian/rules.d/2-binary-arch.mk              |   4 +
- debian/scripts/dkms-build                    |   2 +-
- 15 files changed, 102 insertions(+), 173 deletions(-)
+ 14 files changed, 87 insertions(+), 158 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index ee041f9f0..c545e081c 100644
+index ee041f9f0..814f485c9 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
-@@ -21,17 +21,17 @@
- #
- # XXX: Leave the blank line before the first package!!
- 
--Package: linux-image=SIGN-ME-PKG=-PKGVER-ABINUM-FLAVOUR
-+Package: linux-image-mediatree=SIGN-ME-PKG=-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: kernel
- Priority: optional
- Provides: linux-image, fuse-module, aufs-dkms, =PROVIDES=${linux:rprovides}
--Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.04.1), linux-modules-PKGVER-ABINUM-FLAVOUR
-+Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.04.1), linux-modules-mediatree-PKGVER-ABINUM-FLAVOUR
+@@ -31,7 +31,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.
  Recommends: BOOTLOADER, initramfs-tools | linux-initramfs-tool
  Breaks: flash-kernel (<< 3.90ubuntu2) [arm64 armhf], s390-tools (<< 2.3.0-0ubuntu3) [s390x]
  Conflicts: linux-image=SIGN-PEER-PKG=-PKGVER-ABINUM-FLAVOUR
 -Suggests: fdutils, SRCPKGNAME-doc-PKGVER | SRCPKGNAME-source-PKGVER, SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR
-+Suggests: fdutils, SRCPKGNAME-doc-PKGVER | SRCPKGNAME-tools, linux-headers-mediatree-PKGVER-ABINUM-FLAVOUR
++Suggests: fdutils, SRCPKGNAME-doc-PKGVER | SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR
  Description: Linux kernel image for version PKGVER on DESC
   This package contains the=SIGN-ME-TXT= Linux kernel image for version PKGVER on
   DESC.
-@@ -44,7 +44,7 @@ Description: Linux kernel image for version PKGVER on DESC
-  the linux-FLAVOUR meta-package, which will ensure that upgrades work
-  correctly, and that supporting packages are also installed.
- 
--Package: linux-modules-PKGVER-ABINUM-FLAVOUR
-+Package: linux-modules-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: kernel
-@@ -64,13 +64,13 @@ Description: Linux kernel extra modules for version PKGVER on DESC
-  the linux-FLAVOUR meta-package, which will ensure that upgrades work
-  correctly, and that supporting packages are also installed.
- 
--Package: linux-modules-extra-PKGVER-ABINUM-FLAVOUR
-+Package: linux-modules-extra-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
+@@ -70,7 +70,7 @@ Architecture: ARCH
  Section: kernel
  Priority: optional
--Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-PKGVER-ABINUM-FLAVOUR | linux-image-unsigned-PKGVER-ABINUM-FLAVOUR, crda | wireless-crda
+ Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-PKGVER-ABINUM-FLAVOUR | linux-image-unsigned-PKGVER-ABINUM-FLAVOUR, crda | wireless-crda
 -Description: Linux kernel extra modules for version PKGVER on DESC
-+Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-mediatree-PKGVER-ABINUM-FLAVOUR | linux-image-unsigned-mediatree-PKGVER-ABINUM-FLAVOUR, crda | wireless-crda
 +Description: Linux kernel extra modules with slipstreamed mediatree drivers for version PKGVER on DESC
   This package contains the Linux kernel extra modules for version PKGVER on
   DESC.
   .
-@@ -86,12 +86,12 @@ Description: Linux kernel extra modules for version PKGVER on DESC
-  the linux-FLAVOUR meta-package, which will ensure that upgrades work
-  correctly, and that supporting packages are also installed.
- 
--Package: linux-headers-PKGVER-ABINUM-FLAVOUR
-+Package: linux-headers-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: devel
- Priority: optional
--Depends: ${misc:Depends}, SRCPKGNAME-headers-PKGVER-ABINUM, ${shlibs:Depends}
-+Depends: ${misc:Depends}, SRCPKGNAME-headers-mediatree-PKGVER-ABINUM, ${shlibs:Depends}
- Provides: linux-headers, linux-headers-3.0
- Description: Linux kernel headers for version PKGVER on DESC
-  This package provides kernel header files for version PKGVER on
 @@ -117,7 +117,7 @@ Description: Linux kernel debug image for version PKGVER on DESC
   is uncompressed, and unstripped. This package also includes the
   unstripped modules.
@@ -106,7 +61,7 @@ index ee041f9f0..c545e081c 100644
  Architecture: ARCH
  Section: devel
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 04d677f8b..cecfa819c 100644
+index 04d677f8b..72dc86df6 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -119,7 +74,7 @@ index 04d677f8b..cecfa819c 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 9),
-@@ -48,48 +49,12 @@ Build-Depends-Indep:
+@@ -48,47 +49,11 @@ Build-Depends-Indep:
   asciidoc <!stage1>,
   python-sphinx <!stage1>,
   python-sphinx-rtd-theme <!stage1>,
@@ -166,11 +121,9 @@ index 04d677f8b..cecfa819c 100644
 - /usr/share/doc/SRCPKGNAME-doc/00-INDEX for a list of what is
 - contained in each file.
 -
--Package: SRCPKGNAME-headers-PKGVER-ABINUM
-+Package: SRCPKGNAME-headers-mediatree-PKGVER-ABINUM
+ Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
- Multi-Arch: foreign
 @@ -101,74 +66,3 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
@@ -464,7 +417,7 @@ index 24da59cf2..f9c19aaf4 100755
  do_tools_perf_jvmti?=false
  
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index bcab5749f..a78592186 100644
+index bcab5749f..2321a2f38 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -35,6 +35,15 @@ family=ubuntu
@@ -483,27 +436,15 @@ index bcab5749f..a78592186 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -132,13 +141,13 @@ stampdir	:= $(CURDIR)/debian/stamps
- # are places that you'll find linux-image hard coded, but I guess thats OK since the
- # assumption that the binary package always starts with linux-image will never change.
- #
--bin_pkg_name_signed=linux-image-$(abi_release)
--bin_pkg_name_unsigned=linux-image-unsigned-$(abi_release)
--mods_pkg_name=linux-modules-$(abi_release)
--mods_extra_pkg_name=linux-modules-extra-$(abi_release)
+@@ -136,7 +145,7 @@ bin_pkg_name_signed=linux-image-$(abi_release)
+ bin_pkg_name_unsigned=linux-image-unsigned-$(abi_release)
+ mods_pkg_name=linux-modules-$(abi_release)
+ mods_extra_pkg_name=linux-modules-extra-$(abi_release)
 -bldinfo_pkg_name=linux-buildinfo-$(abi_release)
--hdrs_pkg_name=linux-headers-$(abi_release)
--indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
-+bin_pkg_name_signed=linux-image-mediatree-$(abi_release)
-+bin_pkg_name_unsigned=linux-image-mediatree-unsigned-$(abi_release)
-+mods_pkg_name=linux-modules-mediatree-$(abi_release)
-+mods_extra_pkg_name=linux-modules-extra-mediatree-$(abi_release)
 +bldinfo_pkg_name=linux-buildinfo-mediatree-$(abi_release)
-+hdrs_pkg_name=linux-headers-mediatree-$(abi_release)
-+indep_hdrs_pkg_name=$(src_pkg_name)-headers-mediatree-$(abi_release)
+ hdrs_pkg_name=linux-headers-$(abi_release)
+ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  
- #
- # The generation of content in the doc package depends on both 'AUTOBUILD=' and
 @@ -146,8 +155,8 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  # cycle, so its OK to leave 'do_doc_package_content=false' until those build
  # failures get sorted out. Finally, the doc package doesn't really need to be built
@@ -551,19 +492,6 @@ index 5132fd045..88d4d0899 100644
  binary-arch-deps-$(do_libc_dev_package) += binary-arch-headers
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
-diff --git a/debian/scripts/dkms-build b/debian/scripts/dkms-build
-index 6457d3650..53b4e1b1e 100755
---- a/debian/scripts/dkms-build
-+++ b/debian/scripts/dkms-build
-@@ -121,7 +121,7 @@ rc=0
- 	-k "$abi_flavour" \
- 	--sourcetree "$dkms_dir/source" \
- 	--dkmstree "$dkms_dir/build" \
--	--kernelsourcedir "$dkms_dir/headers/linux-headers-$abi_flavour" \
-+	--kernelsourcedir "$dkms_dir/headers/linux-headers-mediatree-$abi_flavour" \
- 	"$dkms_conf" || rc=1
- 
- # Find the log and add it to our own.
 -- 
 2.20.1
 
