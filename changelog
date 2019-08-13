@@ -1,3 +1,10 @@
+0.19.1
+  * Package rename snafu pt2
+
+0.19.0
+  * Package rename snafu
+  * Low latency builds disabled
+
 0.18.9
   * New Ubuntu revisions
   * Dingo support
