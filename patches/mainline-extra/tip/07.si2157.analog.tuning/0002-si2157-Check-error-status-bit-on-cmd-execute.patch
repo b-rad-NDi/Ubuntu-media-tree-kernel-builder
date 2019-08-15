@@ -43,7 +43,7 @@ index e125863..7571bbf 100644
  	cmd.rlen = 1;
  	ret = si2157_cmd_execute(client, &cmd);
 -	if (ret)
-+	if (ret && ret != -EAGAIN && dev->chiptype != SI2157_CHIPTYPE_SI2141)
++	if (ret && ret != -EAGAIN)
  		goto err_kfree;
  
  	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
