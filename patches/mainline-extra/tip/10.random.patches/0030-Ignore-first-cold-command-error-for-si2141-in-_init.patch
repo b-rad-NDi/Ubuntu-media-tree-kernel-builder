@@ -1,0 +1,25 @@
+From e5d051b429acd05eecc1829a8f6adb322e40e270 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 15 Aug 2019 13:18:09 -0500
+Subject: [PATCH] Ignore first cold command error for si2141 in _init
+
+---
+ drivers/media/tuners/si2157.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index 7cdaf13..bd956f4 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -120,7 +120,7 @@ static int si2157_init(struct dvb_frontend *fe)
+ 	}
+ 	cmd.rlen = 1;
+ 	ret = si2157_cmd_execute(client, &cmd);
+-	if (ret)
++	if (ret && dev->chiptype != SI2157_CHIPTYPE_SI2141)
+ 		goto err;
+ 
+ 	/* Si2141 needs a second command before it answers the revision query */
+-- 
+2.7.4
+
