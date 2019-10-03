@@ -16,7 +16,7 @@ index 7cdaf13..bd956f4 100644
  	cmd.rlen = 1;
  	ret = si2157_cmd_execute(client, &cmd);
 -	if (ret)
-+	if (ret && dev->chiptype != SI2157_CHIPTYPE_SI2141)
++	if (ret && (dev->chiptype != SI2157_CHIPTYPE_SI2141 || ret != -EAGAIN))
  		goto err;
  
  	/* Si2141 needs a second command before it answers the revision query */
