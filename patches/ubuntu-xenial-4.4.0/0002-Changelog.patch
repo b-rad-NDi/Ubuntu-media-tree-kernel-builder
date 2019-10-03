@@ -1,6 +1,6 @@
-From 242c5faaf16d467ff3da5a3fb6eaa4568d6725d3 Mon Sep 17 00:00:00 2001
+From 162e76b8ae0b0e2e2daec6b361bfae68e973e151 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 12 Aug 2019 16:20:00 -0500
+Date: Wed, 2 Oct 2019 20:01:19 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 50 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 67b53d3..3acd2cd 100644
+index 50ce60f..a3544f9 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,53 @@
-+linux (4.4.0-157201908121620.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-164201910022001.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.4.0-157.185 rev c908e95069c15c7455a2c1191b791dd1f2ef97e1
++    - 4.4.0-164.192 rev 129620476101ba4658c1a00c75387c64c2bb22ca
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
@@ -60,11 +60,11 @@ index 67b53d3..3acd2cd 100644
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Mon, 12 Aug 2019 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Wed, 02 Oct 2019 20:01:19 -0500
 +
- linux (4.4.0-157.185) xenial; urgency=medium
+ linux (4.4.0-164.192) xenial; urgency=medium
  
-   * linux: 4.4.0-157.185 -proposed tracker (LP: #1837476)
+   * CVE-2019-14835
 -- 
 2.7.4
 
