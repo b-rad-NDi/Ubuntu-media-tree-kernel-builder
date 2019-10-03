@@ -12,7 +12,7 @@ index e4db846660df..f3b5a88c150d 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,54 @@
-+linux (4.15.0-64201910022001.0+mediatree+hauppauge) bionic; urgency=low
++linux (4.15.0-64201910022001.1+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.15.0-64.73 rev 30ad65b80a88e84c3cc98a3613ee15d838155fc5

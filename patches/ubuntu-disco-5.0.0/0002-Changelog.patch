@@ -12,7 +12,7 @@ index 564bb526b..4b9d51183 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,43 @@
-+linux (5.0.0-29201910022001.0+mediatree+hauppauge) disco; urgency=low
++linux (5.0.0-29201910022001.1+mediatree+hauppauge) disco; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 5.0.0-29.31 rev bd9054d37b21ee6163c68320ccb63cdcba7ea660

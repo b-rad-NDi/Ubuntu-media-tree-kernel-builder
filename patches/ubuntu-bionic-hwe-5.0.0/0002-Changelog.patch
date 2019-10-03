@@ -12,7 +12,7 @@ index d926b2ffd281..752b387876ba 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,50 @@
-+linux-hwe (5.0.0-32201910022001.0+mediatree+hauppauge~hwe) bionic; urgency=low
++linux-hwe (5.0.0-32201910022001.1+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
 +    - 5.0.0-32.34 rev b9890b08d6f9ca3d3d50b91206dc2d3ff6411377

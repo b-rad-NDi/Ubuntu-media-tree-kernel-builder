@@ -1,18 +1,18 @@
-From 162e76b8ae0b0e2e2daec6b361bfae68e973e151 Mon Sep 17 00:00:00 2001
+From be64633ae05fb4702663c55f0b01a8ddd6139f8b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 2 Oct 2019 20:01:19 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 50 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ debian.master/changelog | 51 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 50ce60f..a3544f9 100644
+index 50ce60f..26aadeb 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,53 @@
-+linux (4.4.0-164201910022001.0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,54 @@
++linux (4.4.0-164201910022001.2+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.4.0-164.192 rev 129620476101ba4658c1a00c75387c64c2bb22ca
@@ -49,6 +49,7 @@ index 50ce60f..a3544f9 100644
 +    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
 +    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
++    --- 0030-Ignore-first-cold-command-error-for-si2141-in-_init.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
