@@ -1,7 +1,7 @@
-From 0a3437b1e6e0412343da69d947d469e489d909c1 Mon Sep 17 00:00:00 2001
+From 1e24b906676bceabe369ed46533cb0eec96eec19 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 12:07:07 -0600
-Subject: [PATCH 03/11] si2157: Better check for running tuner in init
+Subject: [PATCH 3/9] si2157: Better check for running tuner in init
 
 Getting the Xtal trim property to check if running is less error prone.
 Reset if_frequency if state is unknown.
@@ -14,10 +14,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 7571bbf..4a469e5 100644
+index 91e8ddcf2..1b90bc75c 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -90,24 +90,23 @@ static int si2157_init(struct dvb_frontend *fe)
+@@ -81,24 +81,23 @@ static int si2157_init(struct dvb_frontend *fe)
  	struct si2157_cmd cmd;
  	const struct firmware *fw;
  	const char *fw_name;
@@ -50,5 +50,5 @@ index 7571bbf..4a469e5 100644
  	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
  		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
 -- 
-2.7.4
+2.20.1
 

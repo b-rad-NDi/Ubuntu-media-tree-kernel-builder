@@ -1,7 +1,7 @@
-From 38183eb0477947d1aa9fb8fb50cceeec5d194fd2 Mon Sep 17 00:00:00 2001
+From 18995c4b5a27c9f04fdacb68f9c09b71596ddbb4 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 11:45:49 -0600
-Subject: [PATCH 01/11] si2157: Enable tuner status flags
+Subject: [PATCH 1/9] si2157: Enable tuner status flags
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 22 insertions(+)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 9e34d31..e125863 100644
+index e87040d6e..12c99b898 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -230,6 +230,28 @@ static int si2157_init(struct dvb_frontend *fe)
+@@ -225,6 +225,28 @@ static int si2157_init(struct dvb_frontend *fe)
  
  	dev_info(&client->dev, "firmware version: %c.%c.%d\n",
  			cmd.args[6], cmd.args[7], cmd.args[8]);
@@ -42,5 +42,5 @@ index 9e34d31..e125863 100644
  	/* init statistics in order signal app which are supported */
  	c->strength.len = 1;
 -- 
-2.7.4
+2.20.1
 

@@ -1,18 +1,17 @@
-From 2628293e7c3de5838158ddd7a04c93d68feabb2a Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Mon, 26 Feb 2018 15:09:02 -0600
-Subject: [PATCH 1/3] si2157: add on-demand rf strength func
+From c3f2aeee236f58e236f59b5e679856e660aebcdc Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 15 Jul 2019 15:00:06 -0500
+Subject: [PATCH] si2157: add on-demand rf strength func
 
-Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c | 38 +++++++++++++++++++++++++++++++++++++-
+ drivers/media/tuners/si2157.c | 38 ++++++++++++++++++++++++++++++++++-
  1 file changed, 37 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index a5ce14e..415a995 100644
+index cc9c9a073..f9685a942 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -747,6 +747,40 @@ static int si2157_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
+@@ -725,6 +725,40 @@ static int si2157_get_if_frequency(struct dvb_frontend *fe, u32 *frequency)
  	return 0;
  }
  
@@ -52,8 +51,8 @@ index a5ce14e..415a995 100644
 +
  static const struct dvb_tuner_ops si2157_ops = {
  	.info = {
- 		.name             = "Silicon Labs Si2141/2146/2147/2148/2157/2158",
-@@ -760,7 +794,9 @@ static const struct dvb_tuner_ops si2157_ops = {
+ 		.name             = "Silicon Labs Si2141/Si2146/2147/2148/2157/2158",
+@@ -738,7 +772,9 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.set_analog_params = si2157_set_analog_params,
  	.get_frequency     = si2157_get_frequency,
  	.get_bandwidth     = si2157_get_bandwidth,
@@ -65,5 +64,5 @@ index a5ce14e..415a995 100644
  
  static void si2157_stat_work(struct work_struct *work)
 -- 
-2.7.4
+2.20.1
 

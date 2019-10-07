@@ -1,21 +1,21 @@
-From 62e30c929cdc7542190b9c7d79a889847481af4b Mon Sep 17 00:00:00 2001
+From 4612cbb73b8d746587f8de763041f87f6c8513ec Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 13:21:43 -0600
-Subject: [PATCH 06/11] si2157: Add analog tuning related functions
+Subject: [PATCH 4/9] si2157: Add analog tuning related functions
 
 Include set_analog_params, get_frequency, and get_bandwidth.
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c      | 245 ++++++++++++++++++++++++++++++++++++-
+ drivers/media/tuners/si2157.c      | 245 ++++++++++++++++++++++++++++-
  drivers/media/tuners/si2157_priv.h |   2 +
  2 files changed, 244 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 0970df4..a1ae2e3 100644
+index 1b90bc75c..0d98e3681 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -388,7 +388,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -366,7 +366,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -24,7 +24,7 @@ index 0970df4..a1ae2e3 100644
  	if (if_frequency != dev->if_frequency) {
  		memcpy(cmd.args, "\x14\x00\x06\x07", 4);
  		cmd.args[4] = (if_frequency / 1000) & 0xff;
-@@ -402,7 +402,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -380,7 +380,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  		dev->if_frequency = if_frequency;
  	}
  
@@ -33,7 +33,7 @@ index 0970df4..a1ae2e3 100644
  	memcpy(cmd.args, "\x41\x00\x00\x00\x00\x00\x00\x00", 8);
  	cmd.args[4] = (c->frequency >>  0) & 0xff;
  	cmd.args[5] = (c->frequency >>  8) & 0xff;
-@@ -414,18 +414,254 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -392,18 +392,254 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -289,7 +289,7 @@ index 0970df4..a1ae2e3 100644
  	return 0;
  }
  
-@@ -439,6 +675,9 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -417,6 +653,9 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -300,10 +300,10 @@ index 0970df4..a1ae2e3 100644
  };
  
 diff --git a/drivers/media/tuners/si2157_priv.h b/drivers/media/tuners/si2157_priv.h
-index e6436f7..2a67c1b 100644
+index 2bda90335..132210a75 100644
 --- a/drivers/media/tuners/si2157_priv.h
 +++ b/drivers/media/tuners/si2157_priv.h
-@@ -30,6 +30,8 @@ struct si2157_dev {
+@@ -28,6 +28,8 @@ struct si2157_dev {
  	u8 chiptype;
  	u8 if_port;
  	u32 if_frequency;
@@ -313,5 +313,5 @@ index e6436f7..2a67c1b 100644
  
  #if defined(CONFIG_MEDIA_CONTROLLER)
 -- 
-2.7.4
+2.20.1
 

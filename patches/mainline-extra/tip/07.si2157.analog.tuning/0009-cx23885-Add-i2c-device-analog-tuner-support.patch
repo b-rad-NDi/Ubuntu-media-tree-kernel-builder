@@ -1,18 +1,18 @@
-From 839859c8982d20676aa34b92a7391d8c361c8456 Mon Sep 17 00:00:00 2001
+From 59c12b9d9b65ba26712f6bda520ce053098e9fc8 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 14:32:03 -0600
-Subject: [PATCH 11/11] cx23885: Add i2c device analog tuner support
+Subject: [PATCH 9/9] cx23885: Add i2c device analog tuner support
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/pci/cx23885/cx23885-video.c | 60 +++++++++++++++++++++++++------
+ drivers/media/pci/cx23885/cx23885-video.c | 60 +++++++++++++++++++----
  1 file changed, 50 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
-index 22ab6af..594bdcf 100644
+index ab69307e7..88aa2a8e9 100644
 --- a/drivers/media/pci/cx23885/cx23885-video.c
 +++ b/drivers/media/pci/cx23885/cx23885-video.c
-@@ -646,8 +646,17 @@ static int vidioc_querycap(struct file *file, void  *priv,
+@@ -636,8 +636,17 @@ static int vidioc_querycap(struct file *file, void  *priv,
  		sizeof(cap->card));
  	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
  	cap->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING | V4L2_CAP_AUDIO;
@@ -31,7 +31,7 @@ index 22ab6af..594bdcf 100644
  	if (vdev->vfl_type == VFL_TYPE_VBI)
  		cap->device_caps |= V4L2_CAP_VBI_CAPTURE;
  	else
-@@ -884,8 +893,16 @@ static int vidioc_g_tuner(struct file *file, void *priv,
+@@ -891,8 +900,16 @@ static int vidioc_g_tuner(struct file *file, void *priv,
  {
  	struct cx23885_dev *dev = video_drvdata(file);
  
@@ -50,7 +50,7 @@ index 22ab6af..594bdcf 100644
  	if (0 != t->index)
  		return -EINVAL;
  
-@@ -900,8 +917,16 @@ static int vidioc_s_tuner(struct file *file, void *priv,
+@@ -907,8 +924,16 @@ static int vidioc_s_tuner(struct file *file, void *priv,
  {
  	struct cx23885_dev *dev = video_drvdata(file);
  
@@ -69,7 +69,7 @@ index 22ab6af..594bdcf 100644
  	if (0 != t->index)
  		return -EINVAL;
  	/* Update the A/V core */
-@@ -915,9 +940,16 @@ static int vidioc_g_frequency(struct file *file, void *priv,
+@@ -922,9 +947,16 @@ static int vidioc_g_frequency(struct file *file, void *priv,
  {
  	struct cx23885_dev *dev = video_drvdata(file);
  
@@ -89,7 +89,7 @@ index 22ab6af..594bdcf 100644
  	f->type = V4L2_TUNER_ANALOG_TV;
  	f->frequency = dev->freq;
  
-@@ -931,8 +963,16 @@ static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency
+@@ -938,8 +970,16 @@ static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency
  	struct v4l2_ctrl *mute;
  	int old_mute_val = 1;
  
@@ -109,5 +109,5 @@ index 22ab6af..594bdcf 100644
  		return -EINVAL;
  
 -- 
-2.7.4
+2.20.1
 

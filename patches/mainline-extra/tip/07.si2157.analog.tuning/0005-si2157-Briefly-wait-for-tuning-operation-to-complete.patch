@@ -1,21 +1,21 @@
-From 77620f37d7ab6fe70019601b50e4b5d3db3e3e55 Mon Sep 17 00:00:00 2001
+From 4162f3980e38a2a7ceb807a9abbf5d3473e162f6 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 6 Feb 2018 18:51:17 -0600
-Subject: [PATCH 07/11] si2157: Briefly wait for tuning operation to complete
+Subject: [PATCH 5/9] si2157: Briefly wait for tuning operation to complete
 
 Waits up 40ms for tuning operation, then
 from 30-150ms (dig/analog) for signal lock
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/tuners/si2157.c | 82 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/media/tuners/si2157.c | 82 +++++++++++++++++++++++++++++++++++
  1 file changed, 82 insertions(+)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index a1ae2e3..79c7f1d 100644
+index 0d98e3681..cc9c9a073 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -318,6 +318,84 @@ static int si2157_sleep(struct dvb_frontend *fe)
+@@ -296,6 +296,84 @@ static int si2157_sleep(struct dvb_frontend *fe)
  	return ret;
  }
  
@@ -100,7 +100,7 @@ index a1ae2e3..79c7f1d 100644
  static int si2157_set_params(struct dvb_frontend *fe)
  {
  	struct i2c_client *client = fe->tuner_priv;
-@@ -417,6 +495,8 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -395,6 +473,8 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	dev->bandwidth = bandwidth;
  	dev->frequency = c->frequency;
  
@@ -109,7 +109,7 @@ index a1ae2e3..79c7f1d 100644
  	return 0;
  err:
  	dev->bandwidth = 0;
-@@ -626,6 +706,8 @@ static int si2157_set_analog_params(struct dvb_frontend *fe,
+@@ -604,6 +684,8 @@ static int si2157_set_analog_params(struct dvb_frontend *fe,
  #endif
  	dev->bandwidth = bandwidth;
  
@@ -119,5 +119,5 @@ index a1ae2e3..79c7f1d 100644
  err:
  	dev->bandwidth = 0;
 -- 
-2.7.4
+2.20.1
 

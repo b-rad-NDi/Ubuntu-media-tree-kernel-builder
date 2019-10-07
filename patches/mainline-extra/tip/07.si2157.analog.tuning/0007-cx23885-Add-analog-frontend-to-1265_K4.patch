@@ -1,7 +1,7 @@
-From 3f4a52da14fa189e041717f6e8ad64711a6a885a Mon Sep 17 00:00:00 2001
+From ef84a5ab64ca6f61c917dc2e03ecd2be872c293b Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 9 Mar 2018 13:49:38 -0600
-Subject: [PATCH 09/11] cx23885: Add analog frontend to 1265_K4
+Subject: [PATCH 7/9] cx23885: Add analog frontend to 1265_K4
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
@@ -10,10 +10,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  2 files changed, 12 insertions(+)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 854bcf2..b05c619 100644
+index 8dd73fb1d..37265cbf9 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -817,6 +817,13 @@ struct cx23885_board cx23885_boards[] = {
+@@ -807,6 +807,13 @@ struct cx23885_board cx23885_boards[] = {
  		.tuner_type     = TUNER_ABSENT,
  		.force_bff	= 1,
  		.input          = {{
@@ -28,10 +28,10 @@ index 854bcf2..b05c619 100644
  			.vmux   =	CX25840_VIN7_CH3 |
  					CX25840_VIN4_CH2 |
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index f31e615..2c756d4 100644
+index f09c7ba12..c6ee06f7c 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2562,6 +2562,11 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2553,6 +2553,11 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
@@ -44,5 +44,5 @@ index f31e615..2c756d4 100644
  		}
  		break;
 -- 
-2.7.4
+2.20.1
 

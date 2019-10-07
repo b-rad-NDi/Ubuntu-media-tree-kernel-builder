@@ -1,22 +1,22 @@
-From b842978c2e60d55ff26776436521c10060d3af30 Mon Sep 17 00:00:00 2001
+From 51d2e1d35f93c420cee5b1c968053fb7be9c7458 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
-Subject: [PATCH 08/11] cx23885: Add analog tuner support to Hauppauge QuadHD
+Subject: [PATCH 6/9] cx23885: Add analog tuner support to Hauppauge QuadHD
 
 Add si2157 analog frontend to 888 Hauppauge QuadHD boards
 
 Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
- drivers/media/pci/cx23885/cx23885-cards.c | 32 +++++++++++++++++++++++++++----
- drivers/media/pci/cx23885/cx23885-dvb.c   | 20 +++++++++++++++++++
- drivers/media/pci/cx23885/cx23885-video.c |  8 +++++++-
+ drivers/media/pci/cx23885/cx23885-cards.c | 32 ++++++++++++++++++++---
+ drivers/media/pci/cx23885/cx23885-dvb.c   | 20 ++++++++++++++
+ drivers/media/pci/cx23885/cx23885-video.c |  8 +++++-
  3 files changed, 55 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 3a1c551..854bcf2 100644
+index 8644205d3..8dd73fb1d 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -767,24 +767,48 @@ struct cx23885_board cx23885_boards[] = {
+@@ -757,24 +757,48 @@ struct cx23885_board cx23885_boards[] = {
  		} },
  	},
  	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB] = {
@@ -70,10 +70,10 @@ index 3a1c551..854bcf2 100644
  	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
  		.name		= "Hauppauge WinTV-HVR-1265(161111)",
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 7bb1feb..f31e615 100644
+index 4f386db33..f09c7ba12 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2382,6 +2382,16 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2373,6 +2373,16 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
@@ -90,7 +90,7 @@ index 7bb1feb..f31e615 100644
  			break;
  
  		/* port c - terrestrial/cable */
-@@ -2471,6 +2481,16 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2462,6 +2472,16 @@ static int dvb_register(struct cx23885_tsport *port)
  				goto frontend_detach;
  			}
  			port->i2c_client_tuner = client_tuner;
@@ -108,10 +108,10 @@ index 7bb1feb..f31e615 100644
  
  		/* port c - terrestrial/cable */
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
-index f8a3dea..22ab6af 100644
+index 0c59ecccc..ab69307e7 100644
 --- a/drivers/media/pci/cx23885/cx23885-video.c
 +++ b/drivers/media/pci/cx23885/cx23885-video.c
-@@ -264,6 +264,8 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
+@@ -254,6 +254,8 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
@@ -120,7 +120,7 @@ index f8a3dea..22ab6af 100644
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
  		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
  		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
-@@ -995,7 +997,9 @@ static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+@@ -1002,7 +1004,9 @@ static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
  	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
  	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
  	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
@@ -131,7 +131,7 @@ index f8a3dea..22ab6af 100644
  		fe = &dev->ts1.analog_fe;
  
  	if (fe && fe->ops.tuner_ops.set_analog_params) {
-@@ -1026,6 +1030,8 @@ int cx23885_set_frequency(struct file *file, void *priv,
+@@ -1033,6 +1037,8 @@ int cx23885_set_frequency(struct file *file, void *priv,
  	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:
@@ -141,5 +141,5 @@ index f8a3dea..22ab6af 100644
  		break;
  	default:
 -- 
-2.7.4
+2.20.1
 
