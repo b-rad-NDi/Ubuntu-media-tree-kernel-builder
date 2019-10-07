@@ -1,4 +1,4 @@
-From 9b6c07198a4c3e13b78a0e4385a5e76ba5a714f7 Mon Sep 17 00:00:00 2001
+From 85513cb2681d9e2044e2dcdf4ac57c91104fe344 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 15 Jul 2019 15:16:23 -0500
 Subject: [PATCH 2/2] em28xx: Add Hauppauge 461e revision 2
@@ -11,7 +11,7 @@ Uses new Montag 3103b demodulator.
  3 files changed, 83 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 1283c7ca9ad5..6561f7bd4896 100644
+index 1283c7ca9..6561f7bd4 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2397,6 +2397,20 @@ const struct em28xx_board em28xx_boards[] = {
@@ -47,7 +47,7 @@ index 1283c7ca9ad5..6561f7bd4896 100644
  			.driver_info = EM28178_BOARD_PCTV_292E },
  	{ USB_DEVICE(0x2013, 0x0264), /* Hauppauge WinTV-soloHD 292e SE */
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a98d4052b1c9..3afd0212dc14 100644
+index a98d4052b..3afd0212d 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -1219,6 +1219,65 @@ static int em28178_dvb_init_pctv_461e(struct em28xx *dev)
@@ -129,7 +129,7 @@ index a98d4052b1c9..3afd0212dc14 100644
  		result = em28178_dvb_init_pctv_292e(dev);
  		if (result)
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index a551072e62ed..1affdd1daf25 100644
+index a551072e6..1affdd1da 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -149,6 +149,7 @@
@@ -141,5 +141,5 @@ index a551072e62ed..1affdd1daf25 100644
  /* Limits minimum and default number of buffers */
  #define EM28XX_MIN_BUF 4
 -- 
-2.17.1
+2.20.1
 
