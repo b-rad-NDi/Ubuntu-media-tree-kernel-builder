@@ -1,25 +1,95 @@
-From 2b1d675babd8eccb480ae7c1a111c7327fd79306 Mon Sep 17 00:00:00 2001
+From 9d801569e75c5bfed9f8e1ee2f899de1315c6f6b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 25 Jul 2019 15:29:58 -0500
+Date: Wed, 3 Jul 2019 12:49:54 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/usb/em28xx/em28xx-dvb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/cec/cec-api.c               | 2 ++
+ drivers/media/mc/mc-device.c              | 2 ++
+ drivers/media/rc/lirc_dev.c               | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c     | 2 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c      | 2 ++
+ drivers/media/v4l2-core/videobuf-dma-sg.c | 2 ++
+ 6 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index 3cc4490b2229..3054eabfd16e 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -18,6 +18,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/version.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec-pin.h>
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
+index bfb833722bf0..e3735a4f0a88 100644
+--- a/drivers/media/mc/mc-device.c
++++ b/drivers/media/mc/mc-device.c
+@@ -24,6 +24,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
+index b7a05880fece..bf1620ad8297 100644
+--- a/drivers/media/rc/lirc_dev.c
++++ b/drivers/media/rc/lirc_dev.c
+@@ -17,6 +17,8 @@
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ 
++#include <media/compat.h>
++
+ #include "rc-core-priv.h"
+ #include <uapi/linux/lirc.h>
+ 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a73faf12f7e4..a98d4052b1c9 100644
+index b3d38d1755c0..a98d4052b1c9 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
  #include "mt352.h"
  #include "mt352_priv.h" /* FIXME */
  #include "tda1002x.h"
--#include "drx39xyj/drx39xxj.h"
+-#include "drx39xxj.h"
 +#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
  #include "tda18271.h"
  #include "s921.h"
  #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index a10b271561f2..552f35f4ec3e 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -29,6 +29,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index a1dc49a0aaf9..fca71695ed36 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -31,6 +31,8 @@
+ 
+ #include <media/videobuf-dma-sg.h>
+ 
++#include <media/compat.h>
++
+ #define MAGIC_DMABUF 0x19721112
+ #define MAGIC_SG_MEM 0x17890714
+ 
 -- 
 2.17.1
 

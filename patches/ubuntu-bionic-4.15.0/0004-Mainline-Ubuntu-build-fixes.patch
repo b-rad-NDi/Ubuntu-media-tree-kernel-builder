@@ -1,6 +1,6 @@
-From 5c1d555f8f927de43d8d4cafb8c3e79975dd44c2 Mon Sep 17 00:00:00 2001
+From 3d6a068aa8885addf3438c114d310b5769a62386 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 30 Sep 2019 17:20:03 -0500
+Date: Wed, 9 Oct 2019 14:23:21 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -9,9 +9,10 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/usb/gadget/function/uvc_queue.c |  2 +-
  fs/compat_ioctl.c                       | 42 ++-----------------------
  include/linux/dma-buf.h                 |  4 ++-
+ include/linux/dma-fence.h               | 22 ++++++-------
  include/linux/hdmi.h                    |  5 ++-
  include/linux/pci_ids.h                 |  3 ++
- 7 files changed, 15 insertions(+), 50 deletions(-)
+ 8 files changed, 26 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f917e..bf6f29ca3315 100644
@@ -171,11 +172,96 @@ index 30157b592666..131ccf711ac0 100644
  
  	/**
  	 * @detach:
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 05d29dbc7e62..ffaafe8e9d42 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -69,7 +69,7 @@ struct dma_fence {
+ 	struct list_head cb_list;
+ 	spinlock_t *lock;
+ 	u64 context;
+-	u64 seqno;
++	unsigned seqno;
+ 	unsigned long flags;
+ 	ktime_t timestamp;
+ 	int error;
+@@ -109,7 +109,7 @@ struct dma_fence_ops {
+ 	 * True if this dma_fence implementation uses 64bit seqno, false
+ 	 * otherwise.
+ 	 */
+-	bool use_64bit_seqno;
++//	bool use_64bit_seqno;
+ 
+ 	/**
+ 	 * @get_driver_name:
+@@ -244,7 +244,7 @@ struct dma_fence_ops {
+ };
+ 
+ void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
+-		    spinlock_t *lock, u64 context, u64 seqno);
++		    spinlock_t *lock, u64 context, unsigned seqno);
+ 
+ void dma_fence_release(struct kref *kref);
+ void dma_fence_free(struct dma_fence *fence);
+@@ -415,15 +415,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+  * Returns true if f1 is chronologically later than f2. Both fences must be
+  * from the same context, since a seqno is not common across contexts.
+  */
+-static inline bool __dma_fence_is_later(u64 f1, u64 f2,
+-					const struct dma_fence_ops *ops)
++static inline bool __dma_fence_is_later(u64 f1, u64 f2)//,
++//					const struct dma_fence_ops *ops)
+ {
+ 	/* This is for backward compatibility with drivers which can only handle
+ 	 * 32bit sequence numbers. Use a 64bit compare when the driver says to
+ 	 * do so.
+ 	 */
+-	if (ops->use_64bit_seqno)
+-		return f1 > f2;
++//	if (ops->use_64bit_seqno)
++//		return f1 > f2;
+ 
+ 	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
+ }
+@@ -442,7 +442,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+ 	if (WARN_ON(f1->context != f2->context))
+ 		return false;
+ 
+-	return __dma_fence_is_later(f1->seqno, f2->seqno, f1->ops);
++	return __dma_fence_is_later(f1->seqno, f2->seqno);//, f1->ops);
+ }
+ 
+ /**
+@@ -557,21 +557,21 @@ u64 dma_fence_context_alloc(unsigned num);
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+ 		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
+-			pr_info("f %llu#%llu: " fmt,			\
++			pr_info("f %llu#%u: " fmt,			\
+ 				__ff->context, __ff->seqno, ##args);	\
+ 	} while (0)
+ 
+ #define DMA_FENCE_WARN(f, fmt, args...) \
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+-		pr_warn("f %llu#%llu: " fmt, __ff->context, __ff->seqno,\
++		pr_warn("f %llu#%u: " fmt, __ff->context, __ff->seqno,\
+ 			 ##args);					\
+ 	} while (0)
+ 
+ #define DMA_FENCE_ERR(f, fmt, args...) \
+ 	do {								\
+ 		struct dma_fence *__ff = (f);				\
+-		pr_err("f %llu#%llu: " fmt, __ff->context, __ff->seqno,	\
++		pr_err("f %llu#%u: " fmt, __ff->context, __ff->seqno,	\
+ 			##args);					\
+ 	} while (0)
+ 
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index d2bacf502429..d5f71b78bc78 100644
+index 927ad6451105..31c3803627a2 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -347,9 +347,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+@@ -362,9 +362,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
  ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
  				 void *buffer, size_t size);
  int hdmi_infoframe_check(union hdmi_infoframe *frame);
@@ -188,10 +274,10 @@ index d2bacf502429..d5f71b78bc78 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 5eaf39dbc388..5deb2324bb59 100644
+index 70e86148cb1e..f2e70ce0a6b8 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1336,6 +1336,7 @@
+@@ -1338,6 +1338,7 @@
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP73_SMBUS     0x07D8
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -199,7 +285,7 @@ index 5eaf39dbc388..5deb2324bb59 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3098,4 +3099,6 @@
+@@ -3102,4 +3103,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
