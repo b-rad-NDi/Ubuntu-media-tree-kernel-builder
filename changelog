@@ -1,3 +1,14 @@
+0.19.4
+  * New Ubuntu revisions
+  * New media tree sync
+
+0.19.3
+  * New Ubuntu revisions
+  * Fix si2141 fix
+
+0.19.2
+  * Fix broken si2157 patch
+
 0.19.1
   * Package rename snafu pt2
 

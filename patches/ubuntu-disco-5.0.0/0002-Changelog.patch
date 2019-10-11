@@ -1,6 +1,6 @@
-From f8dc315bf03689877636a85c93a8fd3231d3eef1 Mon Sep 17 00:00:00 2001
+From eef2013dd71e456dacc6ca0f3b7362aeec57cade Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Oct 2019 20:01:19 -0500
+Date: Thu, 10 Oct 2019 11:11:11 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 40 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 564bb526b..4b9d51183 100644
+index 247f522f1..d96f1576d 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,43 @@
-+linux (5.0.0-29201910022001.1+mediatree+hauppauge) disco; urgency=low
++linux (5.0.0-31201910101111.0+mediatree+hauppauge) disco; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.0.0-29.31 rev bd9054d37b21ee6163c68320ccb63cdcba7ea660
++    - 5.0.0-31.33 rev 139f3f74bf3d1e176e631ed5d7a06ccb3cd22754
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-06-24-16-20.patch
@@ -50,11 +50,11 @@ index 564bb526b..4b9d51183 100644
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 02 Oct 2019 20:01:19 -0500
++ -- Fake User <hidden@email.co>  Thu, 10 Oct 2019 11:11:11 -0500
 +
- linux (5.0.0-29.31) disco; urgency=medium
+ linux (5.0.0-31.33) disco; urgency=medium
  
-   * powerpc/tm: Fix restoring FP/VMX facility incorrectly on interrupts
+   * disco/linux: 5.0.0-31.33 -proposed tracker (LP: #1846026)
 -- 
 2.20.1
 

@@ -1,24 +1,24 @@
-From 5bf4a5915fbc45ac0bdfa8a8533562f5b5e0ce60 Mon Sep 17 00:00:00 2001
+From d2f5180ff05c65d716f8000610a281f9beef4aa9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Oct 2019 20:01:19 -0500
+Date: Thu, 10 Oct 2019 11:11:11 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 51 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ debian.master/changelog | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index e4db846660df..f3b5a88c150d 100644
+index 1f969d686694..18f2d2a67609 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,54 @@
-+linux (4.15.0-64201910022001.1+mediatree+hauppauge) bionic; urgency=low
+@@ -1,3 +1,43 @@
++linux (4.15.0-65201910101111.1+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-64.73 rev 30ad65b80a88e84c3cc98a3613ee15d838155fc5
++    - 4.15.0-65.74 rev 0a70b6866307d7cccd907e009278381724e1876e
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2019-01-09-04-20.patch
++    - 0001-Linuxtv.org-media-tree-sync-2019-06-24-16-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -26,46 +26,35 @@ index e4db846660df..f3b5a88c150d 100644
 +    - 0006-Packaging-updates.patch
 +
 +  * Additional patches
-+    - 01.HVR19xx
-+    --- 0001-si2157-add-detection-of-si2177-tuner.patch
-+    --- 0002-pvrusb2-Add-multiple-dvb-frontend-support.patch
-+    --- 0003-pvrusb2-Add-i2c-client-demod-tuner-support.patch
-+    --- 0004-pvrusb2-Add-Hauppauge-HVR1955-1975-devices.patch
 +    - 07.si2157.analog.tuning
 +    --- 0001-si2157-Enable-tuner-status-flags.patch
 +    --- 0002-si2157-Check-error-status-bit-on-cmd-execute.patch
 +    --- 0003-si2157-Better-check-for-running-tuner-in-init.patch
-+    --- 0004-si2157-Add-clock-and-pin-setup-for-si2141.patch
-+    --- 0005-cx25840-Remove-offset-from-chip-specific-registers.patch
-+    --- 0006-si2157-Add-analog-tuning-related-functions.patch
-+    --- 0007-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
-+    --- 0008-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
-+    --- 0009-cx23885-Add-analog-frontend-to-1265_K4.patch
-+    --- 0010-cx231xx-Add-i2c-device-analog-tuner-support.patch
-+    --- 0011-cx23885-Add-i2c-device-analog-tuner-support.patch
++    --- 0004-si2157-Add-analog-tuning-related-functions.patch
++    --- 0005-si2157-Briefly-wait-for-tuning-operation-to-complete.patch
++    --- 0006-cx23885-Add-analog-tuner-support-to-Hauppauge-QuadHD.patch
++    --- 0007-cx23885-Add-analog-frontend-to-1265_K4.patch
++    --- 0008-cx231xx-Add-i2c-device-analog-tuner-support.patch
++    --- 0009-cx23885-Add-i2c-device-analog-tuner-support.patch
 +    - 10.random.patches
 +    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
 +    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
 +    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0005-si2168-different-default-that-windows-driver.patch
-+    --- 0020-si2168-add-frquency-data-to-frontend-info.patch
 +    --- 0030-Ignore-first-cold-command-error-for-si2141-in-_init.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 40.cx231xx.media.controller.fix
-+    --- 0001-cx231xx-video-Set-media-controller-taint-for-analog-.patch
-+    --- 0002-cx25840-core-Set-media-controller-taint-for-pads.patch
 +    - 99.montage.3103b
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 02 Oct 2019 20:01:19 -0500
++ -- Fake User <hidden@email.co>  Thu, 10 Oct 2019 11:11:11 -0500
 +
- linux (4.15.0-64.73) bionic; urgency=medium
+ linux (4.15.0-65.74) bionic; urgency=medium
  
-   * powerpc/tm: Fix restoring FP/VMX facility incorrectly on interrupts
+   * bionic/linux: 4.15.0-65.74 -proposed tracker (LP: #1844403)
 -- 
 2.17.1
 
