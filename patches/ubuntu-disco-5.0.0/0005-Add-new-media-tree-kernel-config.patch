@@ -1,17 +1,17 @@
-From 659d951bfc090b58ad99c4d1244a6118c9b75df3 Mon Sep 17 00:00:00 2001
+From 0cb724f295c9a39b0c2c6a06d93e87cdd70c426a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 3 Jul 2019 13:20:55 -0500
+Date: Fri, 11 Oct 2019 17:46:09 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 80 ++++++++++++++++++++++-
- 1 file changed, 79 insertions(+), 1 deletion(-)
+ debian.master/config/config.common.ubuntu | 83 ++++++++++++++++++++++-
+ 1 file changed, 81 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 93314411f..a2c584c44 100644
+index 3424eb3fc..27304e1ea 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2624,7 +2624,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2631,7 +2631,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,16 @@ index 93314411f..a2c584c44 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11037,3 +11037,81 @@ CONFIG_ZSWAP=y
+@@ -10530,7 +10530,7 @@ CONFIG_VIDEO_IMX_CSI=m
+ CONFIG_VIDEO_IMX_MEDIA=m
+ CONFIG_VIDEO_IMX_PXP=m
+ CONFIG_VIDEO_IMX_VDOA=m
+-CONFIG_VIDEO_IPU3_CIO2=m
++# CONFIG_VIDEO_IPU3_CIO2 is not set
+ CONFIG_VIDEO_IPU3_IMGU=m
+ CONFIG_VIDEO_IR_I2C=m
+ CONFIG_VIDEO_IVTV=m
+@@ -11053,3 +11053,82 @@ CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
  CONFIG_ZYNQMP_FIRMWARE=y
  # CONFIG_ZYNQMP_FIRMWARE_DEBUG is not set
@@ -102,6 +111,7 @@ index 93314411f..a2c584c44 100644
 +CONFIG_DVB_MN88443X=m
 +CONFIG_DVB_LNBH29=m
 +CONFIG_DVB_LGS8GL5=m
++CONFIG_VIDEO_OV5675=m
 -- 
 2.20.1
 

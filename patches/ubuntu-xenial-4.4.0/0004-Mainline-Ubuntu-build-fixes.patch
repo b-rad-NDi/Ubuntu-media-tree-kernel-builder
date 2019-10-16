@@ -1,6 +1,6 @@
-From fc637e8f494db4489c11af00dbdaa106b9ef8b0b Mon Sep 17 00:00:00 2001
+From 3c99e1a280b905ab8e5c6c0cf79d952bbcbedba0 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 10 Jan 2019 16:30:21 -0600
+Date: Tue, 15 Oct 2019 11:32:00 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -15,9 +15,10 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-buf.h                 |   2 +
  include/linux/hdmi.h                    |   5 +-
  include/linux/kconfig.h                 |   7 +++
+ include/linux/pci_ids.h                 |   1 +
  include/linux/refcount.h                | 104 ++++++++++++++++++++++++++++++++
  mm/slub.c                               |   2 +
- 13 files changed, 158 insertions(+), 90 deletions(-)
+ 14 files changed, 159 insertions(+), 90 deletions(-)
  create mode 100644 include/linux/refcount.h
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
@@ -298,7 +299,7 @@ index b73520a..f1ce621 100644
  	case HDMI_EXTENDED_COLORIMETRY_BT2020_CONST_LUM:
  		return "BT.2020 Constant Luminance";
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index a52ca5c..29ba8fe 100644
+index 5af9736..aa50a7c 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -195,34 +195,6 @@ static int do_video_stillpicture(unsigned int fd, unsigned int cmd,
@@ -336,7 +337,7 @@ index a52ca5c..29ba8fe 100644
  #ifdef CONFIG_BLOCK
  typedef struct sg_io_hdr32 {
  	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
-@@ -1330,17 +1302,12 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+@@ -1327,17 +1299,12 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
  COMPATIBLE_IOCTL(AUDIO_SET_ID)
  COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
  COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
@@ -354,7 +355,7 @@ index a52ca5c..29ba8fe 100644
  COMPATIBLE_IOCTL(DMX_GET_STC)
  COMPATIBLE_IOCTL(FE_GET_INFO)
  COMPATIBLE_IOCTL(FE_DISEQC_RESET_OVERLOAD)
-@@ -1371,16 +1338,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+@@ -1368,16 +1335,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
  COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
  COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
  COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
@@ -371,7 +372,7 @@ index a52ca5c..29ba8fe 100644
  
  /* joystick */
  COMPATIBLE_IOCTL(JSIOCGVERSION)
-@@ -1481,8 +1441,6 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
+@@ -1478,8 +1438,6 @@ static long do_ioctl_trans(int fd, unsigned int cmd,
  		return do_video_get_event(fd, cmd, argp);
  	case VIDEO_STILLPICTURE:
  		return do_video_stillpicture(fd, cmd, argp);
@@ -381,7 +382,7 @@ index a52ca5c..29ba8fe 100644
  
  	/*
 diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 143d40e..a647bcc 100644
+index af8b4a8..42ccfab 100644
 --- a/include/linux/compiler-gcc.h
 +++ b/include/linux/compiler-gcc.h
 @@ -2,6 +2,9 @@
@@ -408,10 +409,10 @@ index f98bd70..f8f0884 100644
  struct dma_buf;
  struct dma_buf_attachment;
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index d2bacf5..d5f71b7 100644
+index 9918a6c..1bb237d 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -347,9 +347,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+@@ -429,9 +429,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
  ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
  				 void *buffer, size_t size);
  int hdmi_infoframe_check(union hdmi_infoframe *frame);
@@ -441,6 +442,18 @@ index cc8fa10..7291175 100644
  /*
   * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
   * otherwise. For boolean options, this is equivalent to
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 21a5724..cb939f7 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1071,6 +1071,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4          0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
 diff --git a/include/linux/refcount.h b/include/linux/refcount.h
 new file mode 100644
 index 0000000..a685da2

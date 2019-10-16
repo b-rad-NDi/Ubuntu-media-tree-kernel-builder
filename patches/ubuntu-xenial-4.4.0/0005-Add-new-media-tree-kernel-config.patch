@@ -1,14 +1,14 @@
-From cc56f74116a14b6524b6f89cca4cba53f3b44edb Mon Sep 17 00:00:00 2001
+From 5104873dad7e2a7c3378851b2731370759b11fc2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 8 Oct 2019 15:06:35 -0500
+Date: Tue, 15 Oct 2019 11:33:16 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 154 +++++++++++++++++++++++++++---
- 1 file changed, 141 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 158 +++++++++++++++++++++++++++---
+ 1 file changed, 145 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 16f80d9..e372aa1 100644
+index 16f80d9..e9eb3fb 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2059,7 +2059,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -72,7 +72,7 @@ index 16f80d9..e372aa1 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9139,3 +9132,138 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9139,3 +9132,142 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -116,7 +116,7 @@ index 16f80d9..e372aa1 100644
 +CONFIG_LIRC=y
 +CONFIG_DVB_MMAP=y
 +# CONFIG_DVB_ULE_DEBUG is not set
-+CONFIG_VIDEO_IPU3_CIO2=m
++# CONFIG_VIDEO_IPU3_CIO2 is not set
 +CONFIG_IR_IMON_DECODER=m
 +CONFIG_IR_IMON_RAW=m
 +CONFIG_CXD2880_SPI_DRV=m
@@ -211,6 +211,10 @@ index 16f80d9..e372aa1 100644
 +# CONFIG_DVB_USB_CXUSB_ANALOG is not set
 +CONFIG_MEDIA_TUNER_TDA18250=m
 +CONFIG_DVB_ZD1301_DEMOD=m
++CONFIG_VIDEO_ADV7511_CEC=y
++CONFIG_VIDEO_ADV7180=m
++# CONFIG_VIDEO_OV5675 is not set
++
 -- 
 2.7.4
 

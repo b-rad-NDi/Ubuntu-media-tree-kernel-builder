@@ -1,13 +1,14 @@
-From aedc37abdd7a502de11bdc26f7e70f39dd5776c9 Mon Sep 17 00:00:00 2001
+From 2d88e49929256753659de902f0a3cd2343d1491f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 19 Sep 2019 16:47:09 -0500
+Date: Fri, 11 Oct 2019 17:45:02 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/dma-buf/sync_file.c |  2 +-
+ include/linux/dma-buf.h     |  4 ++--
  include/linux/dma-fence.h   | 22 +++++++++++-----------
- include/linux/pci_ids.h     |  3 +++
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ include/linux/pci_ids.h     |  4 ++++
+ 4 files changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
 index 35dd06479867..e9a6636d49da 100644
@@ -22,20 +23,42 @@ index 35dd06479867..e9a6636d49da 100644
  			 fence->ops->get_driver_name(fence),
  			 fence->ops->get_timeline_name(fence),
  			 fence->context,
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index ec212cb27fdc..bae060fae862 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -306,7 +306,7 @@ struct dma_buf {
+ 	struct module *owner;
+ 	struct list_head list_node;
+ 	void *priv;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 
+ 	/* poll support */
+ 	wait_queue_head_t poll;
+@@ -365,7 +365,7 @@ struct dma_buf_export_info {
+ 	const struct dma_buf_ops *ops;
+ 	size_t size;
+ 	int flags;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 	void *priv;
+ };
+ 
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 05d29dbc7e62..b5a0a3734263 100644
+index 3347c54f3a87..391e4cbe409c 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
-@@ -69,7 +69,7 @@ struct dma_fence {
- 	struct list_head cb_list;
- 	spinlock_t *lock;
+@@ -89,7 +89,7 @@ struct dma_fence {
+ 		struct rcu_head rcu;
+ 	};
  	u64 context;
 -	u64 seqno;
 +	unsigned seqno;
  	unsigned long flags;
- 	ktime_t timestamp;
+ 	struct kref refcount;
  	int error;
-@@ -109,7 +109,7 @@ struct dma_fence_ops {
+@@ -129,7 +129,7 @@ struct dma_fence_ops {
  	 * True if this dma_fence implementation uses 64bit seqno, false
  	 * otherwise.
  	 */
@@ -44,7 +67,7 @@ index 05d29dbc7e62..b5a0a3734263 100644
  
  	/**
  	 * @get_driver_name:
-@@ -244,7 +244,7 @@ struct dma_fence_ops {
+@@ -264,7 +264,7 @@ struct dma_fence_ops {
  };
  
  void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
@@ -53,7 +76,7 @@ index 05d29dbc7e62..b5a0a3734263 100644
  
  void dma_fence_release(struct kref *kref);
  void dma_fence_free(struct dma_fence *fence);
-@@ -415,15 +415,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+@@ -435,15 +435,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
   * Returns true if f1 is chronologically later than f2. Both fences must be
   * from the same context, since a seqno is not common across contexts.
   */
@@ -73,7 +96,7 @@ index 05d29dbc7e62..b5a0a3734263 100644
  
  	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
  }
-@@ -442,7 +442,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+@@ -462,7 +462,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
  	if (WARN_ON(f1->context != f2->context))
  		return false;
  
@@ -82,7 +105,7 @@ index 05d29dbc7e62..b5a0a3734263 100644
  }
  
  /**
-@@ -557,21 +557,21 @@ u64 dma_fence_context_alloc(unsigned num);
+@@ -577,21 +577,21 @@ u64 dma_fence_context_alloc(unsigned num);
  	do {								\
  		struct dma_fence *__ff = (f);				\
  		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
@@ -108,18 +131,26 @@ index 05d29dbc7e62..b5a0a3734263 100644
  	} while (0)
  
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 70e86148cb1e..f2e70ce0a6b8 100644
+index 21a572469a4e..38fa15b2b9af 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1338,6 +1338,7 @@
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP73_SMBUS     0x07D8
+@@ -1071,6 +1071,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4         0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
+@@ -1339,6 +1340,7 @@
+ #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
 +#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3102,4 +3103,6 @@
+@@ -3111,4 +3113,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  

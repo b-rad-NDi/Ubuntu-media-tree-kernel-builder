@@ -1,17 +1,17 @@
-From 7178afd7b61da87a53ff20efe1248cae3a719706 Mon Sep 17 00:00:00 2001
+From 62c3170be685b7075a3263cd0a53761f1cb8fa95 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 8 Oct 2019 19:30:27 -0500
+Date: Mon, 14 Oct 2019 13:02:18 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 116 ++++++++++++++++++++--
- 1 file changed, 107 insertions(+), 9 deletions(-)
+ debian.master/config/config.common.ubuntu | 117 ++++++++++++++++++++--
+ 1 file changed, 108 insertions(+), 9 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 67edc5e5eed5..c9ab9b7763c9 100644
+index 358f1059de70..9707fdf0017f 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2485,7 +2485,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2484,7 +2484,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,7 @@ index 67edc5e5eed5..c9ab9b7763c9 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10155,14 +10155,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10154,14 +10154,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index 67edc5e5eed5..c9ab9b7763c9 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10548,3 +10541,108 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10547,3 +10540,109 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -48,7 +48,7 @@ index 67edc5e5eed5..c9ab9b7763c9 100644
 +CONFIG_LIRC=y
 +CONFIG_DVB_MMAP=y
 +# CONFIG_DVB_ULE_DEBUG is not set
-+CONFIG_VIDEO_IPU3_CIO2=m
++# CONFIG_VIDEO_IPU3_CIO2 is not set
 +CONFIG_IR_IMON_DECODER=m
 +CONFIG_IR_IMON_RAW=m
 +CONFIG_CXD2880_SPI_DRV=m
@@ -145,6 +145,7 @@ index 67edc5e5eed5..c9ab9b7763c9 100644
 +CONFIG_VIDEO_ADV7511_CEC=y
 +CONFIG_VIDEO_OV2680=m
 +CONFIG_VIDEO_ADV7180=m
++CONFIG_VIDEO_OV5675=m
 -- 
 2.17.1
 

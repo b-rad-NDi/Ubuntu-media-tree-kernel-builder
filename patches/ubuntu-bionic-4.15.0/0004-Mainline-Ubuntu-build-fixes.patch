@@ -1,6 +1,6 @@
-From 3d6a068aa8885addf3438c114d310b5769a62386 Mon Sep 17 00:00:00 2001
+From 52e7d05b5ce1ab4bc663977b6d7470dcecdf99ac Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 9 Oct 2019 14:23:21 -0500
+Date: Fri, 11 Oct 2019 21:07:24 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -8,11 +8,11 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/isdn/hardware/mISDN/w6692.c     |  6 ++--
  drivers/usb/gadget/function/uvc_queue.c |  2 +-
  fs/compat_ioctl.c                       | 42 ++-----------------------
- include/linux/dma-buf.h                 |  4 ++-
+ include/linux/dma-buf.h                 |  8 +++--
  include/linux/dma-fence.h               | 22 ++++++-------
  include/linux/hdmi.h                    |  5 ++-
- include/linux/pci_ids.h                 |  3 ++
- 8 files changed, 26 insertions(+), 61 deletions(-)
+ include/linux/pci_ids.h                 |  4 +++
+ 8 files changed, 29 insertions(+), 63 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f917e..bf6f29ca3315 100644
@@ -67,7 +67,7 @@ index 278d50ff1eea..ac626fb808a6 100644
  		return ret;
  
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index 5fc5dc660600..bcd80dadccc5 100644
+index 635f94ae20b7..999a7e545ac9 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -117,6 +117,8 @@
@@ -114,7 +114,7 @@ index 5fc5dc660600..bcd80dadccc5 100644
  #ifdef CONFIG_BLOCK
  typedef struct sg_io_hdr32 {
  	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
-@@ -1208,9 +1182,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+@@ -1205,9 +1179,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
  COMPATIBLE_IOCTL(AUDIO_SET_ID)
  COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
  COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
@@ -124,7 +124,7 @@ index 5fc5dc660600..bcd80dadccc5 100644
  COMPATIBLE_IOCTL(DMX_START)
  COMPATIBLE_IOCTL(DMX_STOP)
  COMPATIBLE_IOCTL(DMX_SET_FILTER)
-@@ -1247,16 +1218,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+@@ -1244,16 +1215,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
  COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
  COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
  COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
@@ -141,7 +141,7 @@ index 5fc5dc660600..bcd80dadccc5 100644
  /* cec */
  COMPATIBLE_IOCTL(CEC_ADAP_G_CAPS)
  COMPATIBLE_IOCTL(CEC_ADAP_G_LOG_ADDRS)
-@@ -1361,8 +1325,6 @@ static long do_ioctl_trans(unsigned int cmd,
+@@ -1358,8 +1322,6 @@ static long do_ioctl_trans(unsigned int cmd,
  		return do_video_get_event(file, cmd, argp);
  	case VIDEO_STILLPICTURE:
  		return do_video_stillpicture(file, cmd, argp);
@@ -151,10 +151,10 @@ index 5fc5dc660600..bcd80dadccc5 100644
  
  	/*
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 30157b592666..131ccf711ac0 100644
+index cc794e763fe4..76ce3491d0bb 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
-@@ -33,6 +33,8 @@
+@@ -22,6 +22,8 @@
  #include <linux/dma-fence.h>
  #include <linux/wait.h>
  
@@ -163,7 +163,7 @@ index 30157b592666..131ccf711ac0 100644
  struct device;
  struct dma_buf;
  struct dma_buf_attachment;
-@@ -77,7 +79,7 @@ struct dma_buf_ops {
+@@ -68,7 +70,7 @@ struct dma_buf_ops {
  	 * to signal that backing storage is already allocated and incompatible
  	 * with the requirements of requesting device.
  	 */
@@ -172,20 +172,38 @@ index 30157b592666..131ccf711ac0 100644
  
  	/**
  	 * @detach:
+@@ -308,7 +310,7 @@ struct dma_buf {
+ 	struct module *owner;
+ 	struct list_head list_node;
+ 	void *priv;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 
+ 	/* poll support */
+ 	wait_queue_head_t poll;
+@@ -367,7 +369,7 @@ struct dma_buf_export_info {
+ 	const struct dma_buf_ops *ops;
+ 	size_t size;
+ 	int flags;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 	void *priv;
+ };
+ 
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 05d29dbc7e62..ffaafe8e9d42 100644
+index 3347c54f3a87..8a5d9cc77603 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
-@@ -69,7 +69,7 @@ struct dma_fence {
- 	struct list_head cb_list;
- 	spinlock_t *lock;
+@@ -89,7 +89,7 @@ struct dma_fence {
+ 		struct rcu_head rcu;
+ 	};
  	u64 context;
 -	u64 seqno;
 +	unsigned seqno;
  	unsigned long flags;
- 	ktime_t timestamp;
+ 	struct kref refcount;
  	int error;
-@@ -109,7 +109,7 @@ struct dma_fence_ops {
+@@ -129,7 +129,7 @@ struct dma_fence_ops {
  	 * True if this dma_fence implementation uses 64bit seqno, false
  	 * otherwise.
  	 */
@@ -194,7 +212,7 @@ index 05d29dbc7e62..ffaafe8e9d42 100644
  
  	/**
  	 * @get_driver_name:
-@@ -244,7 +244,7 @@ struct dma_fence_ops {
+@@ -264,7 +264,7 @@ struct dma_fence_ops {
  };
  
  void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
@@ -203,7 +221,7 @@ index 05d29dbc7e62..ffaafe8e9d42 100644
  
  void dma_fence_release(struct kref *kref);
  void dma_fence_free(struct dma_fence *fence);
-@@ -415,15 +415,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+@@ -435,15 +435,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
   * Returns true if f1 is chronologically later than f2. Both fences must be
   * from the same context, since a seqno is not common across contexts.
   */
@@ -223,7 +241,7 @@ index 05d29dbc7e62..ffaafe8e9d42 100644
  
  	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
  }
-@@ -442,7 +442,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+@@ -462,7 +462,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
  	if (WARN_ON(f1->context != f2->context))
  		return false;
  
@@ -232,7 +250,7 @@ index 05d29dbc7e62..ffaafe8e9d42 100644
  }
  
  /**
-@@ -557,21 +557,21 @@ u64 dma_fence_context_alloc(unsigned num);
+@@ -577,21 +577,21 @@ u64 dma_fence_context_alloc(unsigned num);
  	do {								\
  		struct dma_fence *__ff = (f);				\
  		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
@@ -258,10 +276,10 @@ index 05d29dbc7e62..ffaafe8e9d42 100644
  	} while (0)
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 927ad6451105..31c3803627a2 100644
+index 9918a6c910c5..1bb237d6f635 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -362,9 +362,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+@@ -429,9 +429,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
  ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
  				 void *buffer, size_t size);
  int hdmi_infoframe_check(union hdmi_infoframe *frame);
@@ -274,18 +292,26 @@ index 927ad6451105..31c3803627a2 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 70e86148cb1e..f2e70ce0a6b8 100644
+index 21a572469a4e..9a49bd2dd265 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1338,6 +1338,7 @@
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP73_SMBUS     0x07D8
+@@ -1071,6 +1071,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4          0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
+@@ -1339,6 +1340,7 @@
+ #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
 +#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3102,4 +3103,6 @@
+@@ -3111,4 +3113,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
