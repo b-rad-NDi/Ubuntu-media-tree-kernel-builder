@@ -1,7 +1,7 @@
-From 06dab3a182cd229fbca6dd891df5a030a7232e59 Mon Sep 17 00:00:00 2001
+From 4c5aa291e8448fc3ae6e846813e5b7a769828e0c Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 11:59:28 -0600
-Subject: [PATCH 02/11] si2157: Check error status bit on cmd execute
+Subject: [PATCH 2/9] si2157: Check error status bit on cmd execute
 
 Check error status bit on command execute, if error bit is
 set return -EAGAIN. Ignore -EAGAIN in probe during device check.
@@ -12,10 +12,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e125863..7571bbf 100644
+index 12f88304a..dcf55bbff 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -56,14 +56,20 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
+@@ -47,14 +47,20 @@ static int si2157_cmd_execute(struct i2c_client *client, struct si2157_cmd *cmd)
  				break;
  		}
  
@@ -38,7 +38,7 @@ index e125863..7571bbf 100644
  	}
  
  	mutex_unlock(&dev->i2c_mutex);
-@@ -477,7 +483,7 @@ static int si2157_probe(struct i2c_client *client,
+@@ -478,7 +484,7 @@ static int si2157_probe(struct i2c_client *client,
  	cmd.wlen = 0;
  	cmd.rlen = 1;
  	ret = si2157_cmd_execute(client, &cmd);
@@ -48,5 +48,5 @@ index e125863..7571bbf 100644
  
  	memcpy(&fe->ops.tuner_ops, &si2157_ops, sizeof(struct dvb_tuner_ops));
 -- 
-2.7.4
+2.20.1
 

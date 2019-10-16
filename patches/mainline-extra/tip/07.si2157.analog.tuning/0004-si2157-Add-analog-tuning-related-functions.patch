@@ -1,4 +1,4 @@
-From 4612cbb73b8d746587f8de763041f87f6c8513ec Mon Sep 17 00:00:00 2001
+From ae5fce207ec59bdd9346ffd321f189731037346f Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 13:21:43 -0600
 Subject: [PATCH 4/9] si2157: Add analog tuning related functions
@@ -12,10 +12,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  2 files changed, 244 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 1b90bc75c..0d98e3681 100644
+index 43f701b5e..a2398279a 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -366,7 +366,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -371,7 +371,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -24,7 +24,7 @@ index 1b90bc75c..0d98e3681 100644
  	if (if_frequency != dev->if_frequency) {
  		memcpy(cmd.args, "\x14\x00\x06\x07", 4);
  		cmd.args[4] = (if_frequency / 1000) & 0xff;
-@@ -380,7 +380,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -385,7 +385,7 @@ static int si2157_set_params(struct dvb_frontend *fe)
  		dev->if_frequency = if_frequency;
  	}
  
@@ -33,7 +33,7 @@ index 1b90bc75c..0d98e3681 100644
  	memcpy(cmd.args, "\x41\x00\x00\x00\x00\x00\x00\x00", 8);
  	cmd.args[4] = (c->frequency >>  0) & 0xff;
  	cmd.args[5] = (c->frequency >>  8) & 0xff;
-@@ -392,18 +392,254 @@ static int si2157_set_params(struct dvb_frontend *fe)
+@@ -397,18 +397,254 @@ static int si2157_set_params(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -289,7 +289,7 @@ index 1b90bc75c..0d98e3681 100644
  	return 0;
  }
  
-@@ -417,6 +653,9 @@ static const struct dvb_tuner_ops si2157_ops = {
+@@ -422,6 +658,9 @@ static const struct dvb_tuner_ops si2157_ops = {
  	.init = si2157_init,
  	.sleep = si2157_sleep,
  	.set_params = si2157_set_params,
@@ -300,10 +300,10 @@ index 1b90bc75c..0d98e3681 100644
  };
  
 diff --git a/drivers/media/tuners/si2157_priv.h b/drivers/media/tuners/si2157_priv.h
-index 2bda90335..132210a75 100644
+index 778f81b39..ef4796098 100644
 --- a/drivers/media/tuners/si2157_priv.h
 +++ b/drivers/media/tuners/si2157_priv.h
-@@ -28,6 +28,8 @@ struct si2157_dev {
+@@ -29,6 +29,8 @@ struct si2157_dev {
  	u8 chiptype;
  	u8 if_port;
  	u32 if_frequency;

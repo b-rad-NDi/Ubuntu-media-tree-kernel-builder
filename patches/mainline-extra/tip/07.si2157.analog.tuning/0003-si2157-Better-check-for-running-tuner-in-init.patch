@@ -1,4 +1,4 @@
-From 1e24b906676bceabe369ed46533cb0eec96eec19 Mon Sep 17 00:00:00 2001
+From 957a1ce096d7d979fbd72301be75eddfd22d0054 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Wed, 14 Feb 2018 12:07:07 -0600
 Subject: [PATCH 3/9] si2157: Better check for running tuner in init
@@ -14,7 +14,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index 91e8ddcf2..1b90bc75c 100644
+index dcf55bbff..43f701b5e 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
 @@ -81,24 +81,23 @@ static int si2157_init(struct dvb_frontend *fe)

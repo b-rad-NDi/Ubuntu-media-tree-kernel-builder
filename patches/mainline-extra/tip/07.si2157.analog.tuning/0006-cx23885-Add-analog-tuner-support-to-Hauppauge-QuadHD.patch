@@ -1,4 +1,4 @@
-From 51d2e1d35f93c420cee5b1c968053fb7be9c7458 Mon Sep 17 00:00:00 2001
+From f6136f2dc2a643a9cf23cfc40ca6ca2ec45d5cf5 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Tue, 28 Nov 2017 23:57:17 +0000
 Subject: [PATCH 6/9] cx23885: Add analog tuner support to Hauppauge QuadHD
@@ -108,10 +108,10 @@ index 4f386db33..f09c7ba12 100644
  
  		/* port c - terrestrial/cable */
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
-index 0c59ecccc..ab69307e7 100644
+index 8098b1549..3331d6833 100644
 --- a/drivers/media/pci/cx23885/cx23885-video.c
 +++ b/drivers/media/pci/cx23885/cx23885-video.c
-@@ -254,6 +254,8 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
+@@ -253,6 +253,8 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
@@ -120,7 +120,7 @@ index 0c59ecccc..ab69307e7 100644
  		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
  		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
  		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
-@@ -1002,7 +1004,9 @@ static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+@@ -995,7 +997,9 @@ static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
  	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
  	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
  	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
@@ -131,7 +131,7 @@ index 0c59ecccc..ab69307e7 100644
  		fe = &dev->ts1.analog_fe;
  
  	if (fe && fe->ops.tuner_ops.set_analog_params) {
-@@ -1033,6 +1037,8 @@ int cx23885_set_frequency(struct file *file, void *priv,
+@@ -1026,6 +1030,8 @@ int cx23885_set_frequency(struct file *file, void *priv,
  	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
  	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
  	case CX23885_BOARD_HAUPPAUGE_HVR1850:

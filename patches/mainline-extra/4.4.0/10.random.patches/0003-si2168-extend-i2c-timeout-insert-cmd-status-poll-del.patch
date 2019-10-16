@@ -1,17 +1,17 @@
-From 9b160b10e81dec8a3d95bf36ba1fc4f5811dcef7 Mon Sep 17 00:00:00 2001
+From b46b8437aa5ae55281588cf1f0a68f3fcec3132b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 29 Jul 2019 16:39:23 -0500
-Subject: [PATCH] si2168: extend i2c timeout, insert cmd status poll delay
+Subject: [PATCH 3/5] si2168: extend i2c timeout, insert cmd status poll delay
 
 ---
  drivers/media/dvb-frontends/si2168.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index ca1637e..bf6738a 100644
+index 88ef079..f28e09c 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -72,7 +72,7 @@ static int si2168_cmd_execute_unlocked(struct i2c_client *client,
+@@ -74,7 +74,7 @@ static int si2168_cmd_execute_unlocked(struct i2c_client *client,
  
  	if (cmd->rlen) {
  		/* wait cmd execution terminate */
@@ -20,7 +20,7 @@ index ca1637e..bf6738a 100644
  		timeout = jiffies + msecs_to_jiffies(TIMEOUT);
  		while (!time_after(jiffies, timeout)) {
  			ret = si2168_i2c_master_recv_unlocked(client, cmd->args,
-@@ -87,6 +87,8 @@ static int si2168_cmd_execute_unlocked(struct i2c_client *client,
+@@ -89,6 +89,8 @@ static int si2168_cmd_execute_unlocked(struct i2c_client *client,
  			/* firmware ready? */
  			if ((cmd->args[0] >> 7) & 0x01)
  				break;

@@ -1,0 +1,26 @@
+From 598464197654aaf82872dde093008a947b603598 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Fri, 11 Oct 2019 20:43:30 -0500
+Subject: [PATCH 4/5] si2168: different default that windows driver
+
+Unsure of meaning, look into...
+---
+ drivers/media/dvb-frontends/si2168.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index 0d9d384cf..72794ead8 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -418,6 +418,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 	}
+ 
+ 	cmd_init(&cmd, "\x14\x00\x0f\x10\x10\x00", 6, 4);
++	/* BUGBUG? FW defaults to 1, but windows driver uses 30; above is 0? */
++	cmd.args[5] = 30;
+ 	ret = si2168_cmd_execute(client, &cmd);
+ 	if (ret)
+ 		goto err;
+-- 
+2.20.1
+

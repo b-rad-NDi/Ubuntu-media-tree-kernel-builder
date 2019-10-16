@@ -1,4 +1,4 @@
-From a9a848a20e50b0f25f93662d237cdb9e9f53c7f1 Mon Sep 17 00:00:00 2001
+From f3afbff92e8b4fcf631400d7e60aabb41b0ba798 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 26 May 2017 09:43:30 -0500
 Subject: [PATCH 2/5] cx23885: Set Hauppauge HVR1255 tuner type to TDA18271
@@ -11,10 +11,10 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index b05c619..c34488e 100644
+index 37265cb..5556d0f 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -325,8 +325,7 @@ struct cx23885_board cx23885_boards[] = {
+@@ -315,8 +315,7 @@ struct cx23885_board cx23885_boards[] = {
  		.name		= "Hauppauge WinTV-HVR1255",
  		.porta		= CX23885_ANALOG_VIDEO,
  		.portc		= CX23885_MPEG_DVB,
@@ -24,7 +24,7 @@ index b05c619..c34488e 100644
  		.force_bff	= 1,
  		.input          = {{
  			.type   = CX23885_VMUX_TELEVISION,
-@@ -354,8 +353,7 @@ struct cx23885_board cx23885_boards[] = {
+@@ -344,8 +343,7 @@ struct cx23885_board cx23885_boards[] = {
  		.name		= "Hauppauge WinTV-HVR1255",
  		.porta		= CX23885_ANALOG_VIDEO,
  		.portc		= CX23885_MPEG_DVB,

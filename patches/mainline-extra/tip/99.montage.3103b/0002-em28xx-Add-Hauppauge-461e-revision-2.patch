@@ -1,9 +1,8 @@
-From 85513cb2681d9e2044e2dcdf4ac57c91104fe344 Mon Sep 17 00:00:00 2001
+From 361835baea75efe0008190793b61160794079b5b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 15 Jul 2019 15:16:23 -0500
+Date: Fri, 11 Oct 2019 20:57:43 -0500
 Subject: [PATCH 2/2] em28xx: Add Hauppauge 461e revision 2
 
-Uses new Montag 3103b demodulator.
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 18 +++++++
  drivers/media/usb/em28xx/em28xx-dvb.c   | 64 +++++++++++++++++++++++++
@@ -11,7 +10,7 @@ Uses new Montag 3103b demodulator.
  3 files changed, 83 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index 1283c7ca9..6561f7bd4 100644
+index def9cdd93..a8c321d11 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -2397,6 +2397,20 @@ const struct em28xx_board em28xx_boards[] = {
@@ -35,7 +34,7 @@ index 1283c7ca9..6561f7bd4 100644
  	/*
  	 * 2013:025f PCTV tripleStick (292e).
  	 * Empia EM28178, Silicon Labs Si2168, Silicon Labs Si2157
-@@ -2678,6 +2692,10 @@ struct usb_device_id em28xx_id_table[] = {
+@@ -2696,6 +2710,10 @@ struct usb_device_id em28xx_id_table[] = {
  			.driver_info = EM2765_BOARD_SPEEDLINK_VAD_LAPLACE },
  	{ USB_DEVICE(0x2013, 0x0258),
  			.driver_info = EM28178_BOARD_PCTV_461E },
@@ -47,7 +46,7 @@ index 1283c7ca9..6561f7bd4 100644
  			.driver_info = EM28178_BOARD_PCTV_292E },
  	{ USB_DEVICE(0x2013, 0x0264), /* Hauppauge WinTV-soloHD 292e SE */
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a98d4052b..3afd0212d 100644
+index d986ec719..018c813a2 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -1219,6 +1219,65 @@ static int em28178_dvb_init_pctv_461e(struct em28xx *dev)
@@ -129,14 +128,14 @@ index a98d4052b..3afd0212d 100644
  		result = em28178_dvb_init_pctv_292e(dev);
  		if (result)
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index a551072e6..1affdd1da 100644
+index 4ecadd57d..acbb62397 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
-@@ -149,6 +149,7 @@
- #define EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 100
+@@ -150,6 +150,7 @@
  #define EM2884_BOARD_TERRATEC_H6		  101
  #define EM2882_BOARD_ZOLID_HYBRID_TV_STICK		102
-+#define EM28178_BOARD_PCTV_461E_V2		  103
+ #define EM2861_BOARD_MAGIX_VIDEOWANDLER2          103
++#define EM28178_BOARD_PCTV_461E_V2                104
  
  /* Limits minimum and default number of buffers */
  #define EM28XX_MIN_BUF 4

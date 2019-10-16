@@ -1,4 +1,4 @@
-From ef84a5ab64ca6f61c917dc2e03ecd2be872c293b Mon Sep 17 00:00:00 2001
+From eca528e534cdbc16d7122cafcc82e80e623d63cb Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 9 Mar 2018 13:49:38 -0600
 Subject: [PATCH 7/9] cx23885: Add analog frontend to 1265_K4

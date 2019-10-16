@@ -1,17 +1,17 @@
-From 5fc13a184e1f8039678ea0012722401cc9b91128 Mon Sep 17 00:00:00 2001
+From 553c9a6a7a00749694f1df0160b60729aea6ac2e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 29 Jul 2019 15:53:05 -0500
-Subject: [PATCH 3/3] si2168: extend i2c timeout, insert cmd status poll delay
+Subject: [PATCH 3/5] si2168: extend i2c timeout, insert cmd status poll delay
 
 ---
  drivers/media/dvb-frontends/si2168.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 36fe1b840..4af1aaaa0 100644
+index ac56f4681..0d9d384cf 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -37,7 +37,7 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
+@@ -44,7 +44,7 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
  
  	if (cmd->rlen) {
  		/* wait cmd execution terminate */
@@ -20,7 +20,7 @@ index 36fe1b840..4af1aaaa0 100644
  		timeout = jiffies + msecs_to_jiffies(TIMEOUT);
  		while (!time_after(jiffies, timeout)) {
  			ret = i2c_master_recv(client, cmd->args, cmd->rlen);
-@@ -51,6 +51,8 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
+@@ -58,6 +58,8 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
  			/* firmware ready? */
  			if ((cmd->args[0] >> 7) & 0x01)
  				break;

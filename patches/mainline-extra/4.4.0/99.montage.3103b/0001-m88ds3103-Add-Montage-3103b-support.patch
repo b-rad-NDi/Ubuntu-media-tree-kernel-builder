@@ -1,4 +1,4 @@
-From bea5adbda3d29d398330f6d5a02aa35c0623aa8c Mon Sep 17 00:00:00 2001
+From 388f20e1a83a6e87424c268217d38fd03f870eb5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 7 Oct 2019 16:21:44 -0500
 Subject: [PATCH 1/2] m88ds3103: Add Montage 3103b support

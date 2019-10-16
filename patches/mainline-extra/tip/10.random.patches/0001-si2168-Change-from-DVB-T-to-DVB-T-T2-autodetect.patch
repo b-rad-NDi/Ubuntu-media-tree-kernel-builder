@@ -1,6 +1,6 @@
-From 45ef0e4195bba66d865c002d7da71874d5e51b84 Mon Sep 17 00:00:00 2001
+From d7228a4c0626f7921d36df91a41c21f5811eaec9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 26 Feb 2018 16:31:04 -0600
+Date: Fri, 11 Oct 2019 20:41:09 -0500
 Subject: [PATCH 1/5] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
 DVB-T2 support can be a bit lacking in user land, this provides a module
@@ -11,17 +11,15 @@ signal type is taken into account when reading status.
 
 The module parameter is default disabled, to be backwards compatible
 with current behaviour.
-
-Signed-off-by: Brad Love <hidden@email.co>
 ---
- drivers/media/dvb-frontends/si2168.c | 61 ++++++++++++++++++++++++++++++++++--
+ drivers/media/dvb-frontends/si2168.c | 61 ++++++++++++++++++++++++++--
  1 file changed, 58 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 324493e..f889e35 100644
+index 14b93a7d3..ac56f4681 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -18,6 +18,10 @@
+@@ -9,6 +9,10 @@
  
  #include "si2168_priv.h"
  
@@ -31,8 +29,8 @@ index 324493e..f889e35 100644
 +
  static const struct dvb_frontend_ops si2168_ops;
  
- /* execute firmware command */
-@@ -111,7 +115,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+ static void cmd_init(struct si2168_cmd *cmd, const u8 *buf, int wlen, int rlen)
+@@ -116,7 +120,7 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  	struct i2c_client *client = fe->demodulator_priv;
  	struct si2168_dev *dev = i2c_get_clientdata(client);
  	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
@@ -41,7 +39,7 @@ index 324493e..f889e35 100644
  	unsigned int utmp, utmp1, utmp2;
  	struct si2168_cmd cmd;
  
-@@ -122,7 +126,23 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+@@ -127,7 +131,23 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  		goto err;
  	}
  
@@ -64,9 +62,9 @@ index 324493e..f889e35 100644
 +
 +	switch (sys) {
  	case SYS_DVBT:
- 		memcpy(cmd.args, "\xa0\x01", 2);
- 		cmd.wlen = 2;
-@@ -144,9 +164,29 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
+ 		cmd_init(&cmd, "\xa0\x01", 2, 13);
+ 		break;
+@@ -143,9 +163,29 @@ static int si2168_read_status(struct dvb_frontend *fe, enum fe_status *status)
  	}
  
  	ret = si2168_cmd_execute(client, &cmd);
@@ -96,7 +94,7 @@ index 324493e..f889e35 100644
  	switch ((cmd.args[2] >> 1) & 0x03) {
  	case 0x01:
  		*status = FE_HAS_SIGNAL | FE_HAS_CARRIER;
-@@ -254,7 +294,10 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -249,7 +289,10 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
  	switch (c->delivery_system) {
  	case SYS_DVBT:
@@ -108,7 +106,7 @@ index 324493e..f889e35 100644
  		break;
  	case SYS_DVBC_ANNEX_A:
  		delivery_system = 0x30;
-@@ -324,6 +367,16 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+@@ -315,6 +358,16 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  		ret = si2168_cmd_execute(client, &cmd);
  		if (ret)
  			goto err;
@@ -124,16 +122,16 @@ index 324493e..f889e35 100644
 +			goto err;
  	}
  
- 	memcpy(cmd.args, "\x51\x03", 2);
-@@ -363,6 +416,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
+ 	cmd_init(&cmd, "\x51\x03", 2, 12);
+@@ -344,6 +397,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)
  
- 	memcpy(cmd.args, "\x14\x00\x0a\x10\x00\x00", 6);
+ 	cmd_init(&cmd, "\x14\x00\x0a\x10\x00\x00", 6, 4);
  	cmd.args[4] = delivery_system | bandwidth;
 +	if (delivery_system == 0xf0)
 +		cmd.args[5] |= 2; /* Auto detect DVB-T/T2 */
  	if (dev->spectral_inversion)
  		cmd.args[5] |= 1;
- 	cmd.wlen = 6;
+ 	ret = si2168_cmd_execute(client, &cmd);
 -- 
-2.7.4
+2.20.1
 
