@@ -207,13 +207,20 @@ function get_media_build()
 	else
 		TARGET_DIR=${1}
 	fi
+
+	echo "Initializing/Updating media_build system"
+	echo ""
+
 	if [ ! -d "${TARGET_DIR}" ] ; then
 		git clone git://linuxtv.org/media_build.git ${TARGET_DIR}
+		retval=$?
 	else
 		cd ${TARGET_DIR}
 		git pull
+		retval=$?
 		cd ..
 	fi
+	return ${retval}
 }
 
 function download_media_tree()
@@ -771,10 +778,6 @@ function init_mediatree_builder()
 		echo ""
 	fi
 
-	cd ${TOP_DEVDIR}
-	echo "Initializing/Updating media_build system"
-	get_media_build
-	echo ""
 	return ${ret_val}
 }
 
