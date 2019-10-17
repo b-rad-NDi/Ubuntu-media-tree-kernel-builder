@@ -721,14 +721,15 @@ function build_kernel_bin()
 
 function generate_ppa_data()
 {
-	echo "This should only be executed in a completely clean state"
-	echo "For example, after:"
-	echo "   ./mediatree.sh -r -p -x -c"
-	echo "Continue?"
-	read x
-	[ "${x}" != "YES" ] && return 1
-
 	if [ "$1" == "kernel" -o "$1" == "all" ] ; then
+		echo "This should only be executed in a completely clean state"
+		echo "For example, after:"
+		echo "   ./mediatree.sh -r -p -x -c"
+		echo "Continue?"
+		read x
+		[ "${x}" != "YES" ] && return 1
+
+
 		cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 		debuild -d -us -uc -S
 	fi
