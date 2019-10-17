@@ -806,10 +806,18 @@ fi
 # patch makefile to turn these on by default !
 #  skipmodule=true skipabi=true
 
-while getopts ":imMrxCcgbB:spV:" o; do
+while getopts ":iI:mMrxCcgbB:spV:" o; do
 	case "${o}" in
-	i)
-		init_mediatree_builder
+	I|i)
+		if [ "${OPTARG}" == "media_build" ] ; then
+			get_media_build
+		elif [ "${OPTARG}" == "all" ] ; then
+			init_mediatree_builder
+			[ $? != 0 ] && exit 133
+			get_media_build
+		else
+			init_mediatree_builder
+		fi
 		[ $? != 0 ] && exit 133
 		;;
 	m)
