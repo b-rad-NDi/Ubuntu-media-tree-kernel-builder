@@ -1,0 +1,31 @@
+From 5c1c3f8e751bbc9fafc7d49ffc8b08e8ee4fd9bf Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 30 Oct 2019 12:38:01 -0500
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index 555862498..506816d24 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -2758,7 +2758,7 @@ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+ CONFIG_DVB_MANTIS=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ # CONFIG_DVB_MMAP is not set
+@@ -11411,3 +11411,5 @@ CONFIG_ZYNQMP_FIRMWARE=y
+ CONFIG_ZYNQMP_IPI_MBOX=y
+ CONFIG_ZYNQMP_PM_DOMAINS=y
+ CONFIG_ZYNQMP_POWER=y
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_VIDEO_OV5675=m
+-- 
+2.20.1
+
