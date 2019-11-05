@@ -1,15 +1,16 @@
-From 6e9e7ee8ea4b90ae4183ae3ecea3b81e5c32aab2 Mon Sep 17 00:00:00 2001
+From 9e59afae1748e4389b31dfbe207c2312028f1192 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 30 Oct 2019 12:40:47 -0500
+Date: Wed, 30 Oct 2019 19:11:00 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |   8 +-
  debian.master/control.stub.in                | 111 +------------------
  debian.master/copyright                      |  22 ++++
- debian.master/rules.d/amd64.mk               |  22 ++--
+ debian.master/rules.d/amd64.mk               |  24 ++--
  debian.master/rules.d/arm64.mk               |  12 +-
  debian.master/rules.d/armhf.mk               |  10 +-
+ debian.master/rules.d/i386.mk                |   2 +-
  debian.master/rules.d/ppc64el.mk             |  12 +-
  debian.master/rules.d/s390x.mk               |  12 +-
  debian.master/rules.d/x32.mk                 |   2 +-
@@ -18,7 +19,7 @@ Subject: [PATCH 6/6] Packaging updates
  debian/rules                                 |   2 +-
  debian/rules.d/0-common-vars.mk              |  19 +++-
  debian/rules.d/2-binary-arch.mk              |   4 +
- 14 files changed, 87 insertions(+), 159 deletions(-)
+ 15 files changed, 89 insertions(+), 161 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index ee041f9f0..814f485c9 100644
@@ -224,10 +225,18 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 9ffa35ccb..9ce782f6a 100644
+index 9ffa35ccb..14523f190 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -9,18 +9,18 @@ install_file	= vmlinuz
+@@ -2,25 +2,25 @@ human_arch	= 64 bit x86
+ build_arch	= x86
+ header_arch	= $(build_arch)
+ defconfig	= defconfig
+-flavours	= generic lowlatency
++flavours	= generic
+ build_image	= bzImage
+ kernel_file	= arch/$(build_arch)/boot/bzImage
+ install_file	= vmlinuz
  loader		= grub
  vdso		= vdso_install
  no_dumpfile	= true
@@ -305,6 +314,19 @@ index 085e8acdc..5f37244fe 100644
 +do_tools_bpftool = false
  
  do_dtbs		= true
+diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
+index a0c64b728..4280686ec 100644
+--- a/debian.master/rules.d/i386.mk
++++ b/debian.master/rules.d/i386.mk
+@@ -2,7 +2,7 @@ human_arch	= 32 bit x86
+ build_arch	= i386
+ header_arch	= $(build_arch)
+ defconfig	= defconfig
+-flavours        = generic lowlatency
++flavours        = generic
+ build_image	= bzImage
+ kernel_file	= arch/$(build_arch)/boot/bzImage
+ install_file	= vmlinuz
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
 index 3934ef482..7cf1efd64 100644
 --- a/debian.master/rules.d/ppc64el.mk
