@@ -1,12 +1,13 @@
-From 5198026ac595c3ecba11859214a8f6b1ea12901a Mon Sep 17 00:00:00 2001
+From f309b6b385488a060323b7f0905b7c3a94cd52e4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 30 Oct 2019 12:35:42 -0500
+Date: Fri, 1 Nov 2019 12:55:06 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- include/linux/dma-buf.h | 4 ++--
- include/linux/pci_ids.h | 4 ++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ include/linux/dma-buf.h   |  4 ++--
+ include/linux/dma-fence.h | 14 +++++++-------
+ include/linux/pci_ids.h   |  4 ++++
+ 3 files changed, 13 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
 index ec212cb27..bae060fae 100644
@@ -28,6 +29,43 @@ index ec212cb27..bae060fae 100644
 -	struct dma_resv *resv;
 +	struct reservation_object *resv;
  	void *priv;
+ };
+ 
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 3347c54f3..7108cda11 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -63,8 +63,12 @@ struct dma_fence_cb;
+  * been completed, or never called at all.
+  */
+ struct dma_fence {
+-	spinlock_t *lock;
++	struct kref refcount;
+ 	const struct dma_fence_ops *ops;
++		struct rcu_head rcu;
++		struct list_head cb_list;
++		/* @cb_list replaced by @timestamp on dma_fence_signal() */
++	spinlock_t *lock;
+ 	/*
+ 	 * We clear the callback list on kref_put so that by the time we
+ 	 * release the fence it is unused. No one should be adding to the
+@@ -82,16 +86,12 @@ struct dma_fence {
+ 	 * Listed in chronological order.
+ 	 */
+ 	union {
+-		struct list_head cb_list;
+-		/* @cb_list replaced by @timestamp on dma_fence_signal() */
+-		ktime_t timestamp;
+-		/* @timestamp replaced by @rcu on dma_fence_release() */
+-		struct rcu_head rcu;
+ 	};
+ 	u64 context;
+ 	u64 seqno;
+ 	unsigned long flags;
+-	struct kref refcount;
++		ktime_t timestamp;
++		/* @timestamp replaced by @rcu on dma_fence_release() */
+ 	int error;
  };
  
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h

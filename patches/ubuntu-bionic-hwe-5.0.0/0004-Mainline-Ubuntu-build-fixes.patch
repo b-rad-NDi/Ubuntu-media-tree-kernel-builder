@@ -1,14 +1,14 @@
-From 2d88e49929256753659de902f0a3cd2343d1491f Mon Sep 17 00:00:00 2001
+From 33db782c519f09777b641e69471a23147fed5dc7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 11 Oct 2019 17:45:02 -0500
+Date: Fri, 1 Nov 2019 14:00:26 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/dma-buf/sync_file.c |  2 +-
  include/linux/dma-buf.h     |  4 ++--
- include/linux/dma-fence.h   | 22 +++++++++++-----------
+ include/linux/dma-fence.h   | 42 +++++++++++++++++++------------------
  include/linux/pci_ids.h     |  4 ++++
- 4 files changed, 18 insertions(+), 14 deletions(-)
+ 4 files changed, 29 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
 index 35dd06479867..e9a6636d49da 100644
@@ -46,19 +46,49 @@ index ec212cb27fdc..bae060fae862 100644
  };
  
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3347c54f3a87..391e4cbe409c 100644
+index 3347c54f3a87..d9c7c253351e 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
-@@ -89,7 +89,7 @@ struct dma_fence {
- 		struct rcu_head rcu;
- 	};
+@@ -63,8 +63,14 @@ struct dma_fence_cb;
+  * been completed, or never called at all.
+  */
+ struct dma_fence {
+-	spinlock_t *lock;
++	struct kref refcount;
+ 	const struct dma_fence_ops *ops;
++	struct rcu_head rcu;
++	struct list_head cb_list;
++	/* @cb_list replaced by @timestamp on dma_fence_signal() */
++
++	spinlock_t *lock;
++
+ 	/*
+ 	 * We clear the callback list on kref_put so that by the time we
+ 	 * release the fence it is unused. No one should be adding to the
+@@ -81,17 +87,13 @@ struct dma_fence {
+ 	 *
+ 	 * Listed in chronological order.
+ 	 */
+-	union {
+-		struct list_head cb_list;
+-		/* @cb_list replaced by @timestamp on dma_fence_signal() */
+-		ktime_t timestamp;
+-		/* @timestamp replaced by @rcu on dma_fence_release() */
+-		struct rcu_head rcu;
+-	};
++//	union {
++//	};
  	u64 context;
 -	u64 seqno;
 +	unsigned seqno;
  	unsigned long flags;
- 	struct kref refcount;
+-	struct kref refcount;
++	ktime_t timestamp;
++	/* @timestamp replaced by @rcu on dma_fence_release() */
  	int error;
-@@ -129,7 +129,7 @@ struct dma_fence_ops {
+ };
+ 
+@@ -129,7 +131,7 @@ struct dma_fence_ops {
  	 * True if this dma_fence implementation uses 64bit seqno, false
  	 * otherwise.
  	 */
@@ -67,7 +97,7 @@ index 3347c54f3a87..391e4cbe409c 100644
  
  	/**
  	 * @get_driver_name:
-@@ -264,7 +264,7 @@ struct dma_fence_ops {
+@@ -264,7 +266,7 @@ struct dma_fence_ops {
  };
  
  void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
@@ -76,7 +106,7 @@ index 3347c54f3a87..391e4cbe409c 100644
  
  void dma_fence_release(struct kref *kref);
  void dma_fence_free(struct dma_fence *fence);
-@@ -435,15 +435,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+@@ -435,15 +437,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
   * Returns true if f1 is chronologically later than f2. Both fences must be
   * from the same context, since a seqno is not common across contexts.
   */
@@ -96,7 +126,7 @@ index 3347c54f3a87..391e4cbe409c 100644
  
  	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
  }
-@@ -462,7 +462,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+@@ -462,7 +464,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
  	if (WARN_ON(f1->context != f2->context))
  		return false;
  
@@ -105,7 +135,7 @@ index 3347c54f3a87..391e4cbe409c 100644
  }
  
  /**
-@@ -577,21 +577,21 @@ u64 dma_fence_context_alloc(unsigned num);
+@@ -577,21 +579,21 @@ u64 dma_fence_context_alloc(unsigned num);
  	do {								\
  		struct dma_fence *__ff = (f);				\
  		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
