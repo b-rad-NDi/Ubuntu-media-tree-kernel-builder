@@ -1,6 +1,6 @@
-From fd35db08644ab5529ec750911ccd3c1c1446b78e Mon Sep 17 00:00:00 2001
+From 6bf1f7d646a509009d455bed828afa0ab3b72b5f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 5 Nov 2019 13:13:13 -0600
+Date: Thu, 7 Nov 2019 13:17:19 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,11 +8,11 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 40 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index cc97804..454ab0a 100644
+index cc97804..96f9505 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,43 @@
-+linux-hwe (4.15.0-68201911051313.0+mediatree+hauppauge~hwe) xenial; urgency=low
++linux-hwe (4.15.0-68201911071317.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
 +    - 4.15.0-68.77 rev 62649a358205b0f6d41fef79e4103ae100ca8db2
@@ -50,7 +50,7 @@ index cc97804..454ab0a 100644
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 05 Nov 2019 13:13:13 -0600
++ -- Fake User <hidden@email.co>  Thu, 07 Nov 2019 13:17:19 -0600
 +
  linux-hwe (4.15.0-68.77~16.04.1) xenial; urgency=medium
  

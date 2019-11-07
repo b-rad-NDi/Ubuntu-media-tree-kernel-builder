@@ -1,6 +1,6 @@
-From 0f5a304ceb23b7729979dc8083acb3988c558904 Mon Sep 17 00:00:00 2001
+From 98f9a9864cdc87d4c9bd8cbbe23a69f75f3b3658 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 5 Nov 2019 13:13:13 -0600
+Date: Thu, 7 Nov 2019 13:17:19 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,11 +8,11 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 40 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index ff5421981..25cbac9cb 100644
+index ff5421981..6aa122690 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,43 @@
-+linux (5.0.0-32201911051313.0+mediatree+hauppauge) disco; urgency=low
++linux (5.0.0-32201911071317.0+mediatree+hauppauge) disco; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 5.0.0-32.34 rev cc97d0c8fa5c69e49d64f0c9ede434e5e22201d5
@@ -50,7 +50,7 @@ index ff5421981..25cbac9cb 100644
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 05 Nov 2019 13:13:13 -0600
++ -- Fake User <hidden@email.co>  Thu, 07 Nov 2019 13:17:19 -0600
 +
  linux (5.0.0-32.34) disco; urgency=medium
  
