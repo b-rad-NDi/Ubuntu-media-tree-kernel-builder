@@ -21,11 +21,11 @@ index 3331d6833..22ba24e53 100644
 +	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
-+		cap->device_caps |= V4L2_CAP_TUNER;
++		cap->capabilities |= V4L2_CAP_TUNER;
 +		break;
 +	default:
 +		if (dev->tuner_type != TUNER_ABSENT)
-+			cap->device_caps |= V4L2_CAP_TUNER;
++			cap->capabilities |= V4L2_CAP_TUNER;
 +		break;
 +	}
  	return 0;
