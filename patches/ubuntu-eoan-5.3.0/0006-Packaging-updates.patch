@@ -395,19 +395,6 @@ index ed92b3d53..18505efb1 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
-diff --git a/debian/dkms-versions b/debian/dkms-versions
-index bcc0b54d8..59056b84a 100644
---- a/debian/dkms-versions
-+++ b/debian/dkms-versions
-@@ -1,4 +1,4 @@
--zfs-linux 0.8.1-1ubuntu12
--nvidia-graphics-drivers-390 390.129-0ubuntu1
--nvidia-graphics-drivers-430 430.50-0ubuntu1
--virtualbox 6.0.12-dfsg-1
-+zfs-linux 0.8.1-1ubuntu17
-+nvidia-graphics-drivers-390 390.129-0ubuntu2
-+nvidia-graphics-drivers-430 430.50-0ubuntu3
-+virtualbox 6.0.14-dfsg-1
 diff --git a/debian/rules b/debian/rules
 index 8cb6604e1..2aef5a435 100755
 --- a/debian/rules
