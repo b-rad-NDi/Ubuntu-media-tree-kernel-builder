@@ -1,14 +1,15 @@
-From 45b1f77dadab26a4086cccf0785000e5d6d5248d Mon Sep 17 00:00:00 2001
+From edc3ca605a08e6b6831e5f4488075f3cb0177199 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 11 Oct 2019 17:55:34 -0500
+Date: Mon, 18 Nov 2019 16:19:16 -0600
 Subject: [PATCH 9/9] cx23885: Add i2c device analog tuner support
 
+Signed-off-by: Brad Love <hidden@email.co>
 ---
- drivers/media/pci/cx23885/cx23885-video.c | 62 +++++++++++++++++++----
- 1 file changed, 51 insertions(+), 11 deletions(-)
+ drivers/media/pci/cx23885/cx23885-video.c | 81 ++++++++++++++++++++++++++-----
+ 1 file changed, 69 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
-index 3331d6833..22ba24e53 100644
+index 3331d68..8cd4547 100644
 --- a/drivers/media/pci/cx23885/cx23885-video.c
 +++ b/drivers/media/pci/cx23885/cx23885-video.c
 @@ -637,8 +637,17 @@ static int vidioc_querycap(struct file *file, void  *priv,
@@ -16,12 +17,11 @@ index 3331d6833..22ba24e53 100644
  			    V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_VBI_CAPTURE |
  			    V4L2_CAP_DEVICE_CAPS;
 -	if (dev->tuner_type != TUNER_ABSENT)
--		cap->capabilities |= V4L2_CAP_TUNER;
 +	switch (dev->board) { /* i2c device tuners */
 +	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
 +	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
-+		cap->capabilities |= V4L2_CAP_TUNER;
+ 		cap->capabilities |= V4L2_CAP_TUNER;
 +		break;
 +	default:
 +		if (dev->tuner_type != TUNER_ABSENT)
@@ -108,6 +108,43 @@ index 3331d6833..22ba24e53 100644
  	if (unlikely(f->tuner != 0))
  		return -EINVAL;
  
+@@ -1307,8 +1347,17 @@ int cx23885_video_register(struct cx23885_dev *dev)
+ 	dev->video_dev->queue = &dev->vb2_vidq;
+ 	dev->video_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+ 				      V4L2_CAP_AUDIO | V4L2_CAP_VIDEO_CAPTURE;
+-	if (dev->tuner_type != TUNER_ABSENT)
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 		dev->video_dev->device_caps |= V4L2_CAP_TUNER;
++		break;
++	default:
++		if (dev->tuner_type != TUNER_ABSENT)
++			dev->video_dev->device_caps |= V4L2_CAP_TUNER;
++	}
++
+ 	err = video_register_device(dev->video_dev, VFL_TYPE_GRABBER,
+ 				    video_nr[dev->nr]);
+ 	if (err < 0) {
+@@ -1325,8 +1374,16 @@ int cx23885_video_register(struct cx23885_dev *dev)
+ 	dev->vbi_dev->queue = &dev->vb2_vbiq;
+ 	dev->vbi_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+ 				    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE;
+-	if (dev->tuner_type != TUNER_ABSENT)
++	switch (dev->board) { /* i2c device tuners */
++	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
++	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+ 		dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
++		break;
++	default:
++		if (dev->tuner_type != TUNER_ABSENT)
++			dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
++	}
+ 	err = video_register_device(dev->vbi_dev, VFL_TYPE_VBI,
+ 				    vbi_nr[dev->nr]);
+ 	if (err < 0) {
 -- 
-2.20.1
+2.7.4
 
