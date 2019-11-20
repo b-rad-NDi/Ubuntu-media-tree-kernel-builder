@@ -846,6 +846,7 @@ while getopts ":iI:mMrxCcgbB:spV:" o; do
 		#
 		download_media_tree
 		gen_media_tree_tarball_patched	# generate patched tarball
+		[ $? != 0 ] && exit 1
 		;;
 	M)
 		## App operation: App operation: unpack previous linuxtv.org tarball and patch for a particular kernel
@@ -853,10 +854,12 @@ while getopts ":iI:mMrxCcgbB:spV:" o; do
 		unpack_media_tree
 		[ $? != 0 ] && exit 1
 		gen_media_tree_tarball_patched	# generate patched tarball
+		[ $? != 0 ] && exit 1
 		;;
 	s)
 		## App operation: Make a patch with the latest tarball applied
 		apply_media_tree .media-tree-clean-patch-repo
+		[ $? != 0 ] && exit 1
 		;;
 	r)
 		## App operation: Reset to original commit main kernel build directory
@@ -868,6 +871,7 @@ while getopts ":iI:mMrxCcgbB:spV:" o; do
 		echo "!!!  This will irrerversibly wipe out the entire directory and restore it to original state"
 		echo "!!!  Any changes you have made will be lost."
 		reset_repo_revision_hard
+		[ $? != 0 ] && exit 1
 		;;
 	p)
 		## App operation: Apply all patches to main kernel build directory
@@ -904,6 +908,7 @@ while getopts ":iI:mMrxCcgbB:spV:" o; do
 		# Add dbg to build debug versions
 		#
 		build_kernel_bin
+		[ $? != 0 ] && exit 1
 		;;
 	B)
 		## App operation: Build kernel either min (default), full, or dbg
@@ -913,15 +918,18 @@ while getopts ":iI:mMrxCcgbB:spV:" o; do
 			exit 1
 		fi
 		build_kernel_bin ${OPTARG}
+		[ $? != 0 ] && exit 1
 		;;
 	V)
 		## App operation: build PPA decriptors
 		if [ "${OPTARG}" == "all" -o "${OPTARG}" == "kernel" -o "${OPTARG}" == "virtual" ] ; then
 			generate_ppa_data ${OPTARG}
+			[ $? != 0 ] && exit 133
 		fi
 		;;
 	h|*)
 		usage
+		exit 0
 		;;
 	esac
 done
