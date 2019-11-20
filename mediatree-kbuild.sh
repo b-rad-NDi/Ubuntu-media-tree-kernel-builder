@@ -680,49 +680,42 @@ function generate_virtual_package()
 		VP_BUILD_TIME=`date -R`
 	fi
 
-	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
-		cp ../linux-${1}-mediatree.control ./ns_control
-		echo "linux${deb_branch}-${1}-mediatree (${VPACKAGE_VER}+${DISTRO_CODENAME}) ${DISTRO_CODENAME}; urgency=low" > changelog
-		git log --pretty=format:"  * %h %s" -n 13 >> changelog
-		echo "" >> changelog
-		echo "" >> changelog
-		echo " -- ${U_FULLNAME} <${U_EMAIL}>  ${VP_BUILD_TIME}" >> changelog
-		echo "" >> changelog
-		cat ../changelog >> changelog
-	else
-		return 1
-	fi
+	cp ../linux-mediatree.control ./ns_control
+	echo "linux${deb_branch}-mediatree (${VPACKAGE_VER}+${DISTRO_CODENAME}) ${DISTRO_CODENAME}; urgency=low" > changelog
+	git log --pretty=format:"  * %h %s" -n 13 >> changelog
+	echo "" >> changelog
+	echo "" >> changelog
+	echo " -- ${U_FULLNAME} <${U_EMAIL}>  ${VP_BUILD_TIME}" >> changelog
+	echo "" >> changelog
+	cat ../changelog >> changelog
 
-	sed -i "s/__LINUX_KBUILD_PKG_SRC_NAME__/linux${deb_branch}-${1}-mediatree/g" ns_control
+	sed -i "s/__LINUX_KBUILD_PKG_SRC_NAME__/linux${deb_branch}-mediatree/g" ns_control
 	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
 	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
 	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
 	echo "#########################################"
 	echo "#########################################"
 	echo "Building virtual package that depends on:"
-	if [ "${1}" == "headers" ] ; then
 		echo "    linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
-	else
 		echo "    linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 		echo "    linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 		echo "    linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
-	fi
 	echo "#########################################"
 	echo "#########################################"
 	equivs-build --full ns_control
-	if [ ! -f "linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc" ] ; then
-		echo "Missing linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc"
+	if [ ! -f "linux${deb_branch}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc" ] ; then
+		echo "Missing linux${deb_branch}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc"
 		return 1
 	fi
-	dpkg-source -x linux${deb_branch}-${1}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc
+	dpkg-source -x linux${deb_branch}-mediatree_${VPACKAGE_VER}+${DISTRO_CODENAME}.dsc
 	[ $? -ne 0 ] && return 1
-	cd linux${deb_branch}-${1}-mediatree-${VPACKAGE_VER}+${DISTRO_CODENAME}
+	cd linux${deb_branch}-mediatree-${VPACKAGE_VER}+${DISTRO_CODENAME}
 	debuild -us -uc -S
 	cd ..
-	cp linux${deb_branch}-${1}-mediatree*.tar.gz ..
-	cp linux${deb_branch}-${1}-mediatree*.dsc ..
-	cp linux${deb_branch}-${1}-mediatree*_source.changes ..
-	cp linux${deb_branch}-${1}-mediatree*_source.buildinfo .. 2>/dev/null
+	cp linux${deb_branch}-mediatree*.tar.gz ..
+	cp linux${deb_branch}-mediatree*.dsc ..
+	cp linux${deb_branch}-mediatree*_source.changes ..
+	cp linux${deb_branch}-mediatree*_source.buildinfo .. 2>/dev/null
 
 	return 0
 }
@@ -752,14 +745,12 @@ function generate_ppa_data()
 		read x
 		[ "${x}" != "YES" ] && return 1
 
-
 		cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 		debuild -d -us -uc -S
 	fi
 
 	if [ "$1" == "virtual" -o "$1" == "all" ] ; then
-		generate_virtual_package image
-		generate_virtual_package headers
+		generate_virtual_package
 	fi
 }
 
