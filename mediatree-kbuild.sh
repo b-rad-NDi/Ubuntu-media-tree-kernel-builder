@@ -778,6 +778,11 @@ function init_mediatree_builder()
 		echo ""
 	fi
 
+	cd ${TOP_DEVDIR}
+	if [ ! -d media_build ] ; then
+		get_media_build
+	fi
+
 	return ${ret_val}
 }
 
