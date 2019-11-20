@@ -1,3 +1,15 @@
+0.0.2
+  * Clean up deprecated virtual packages
+
+0.0.1
+  * Versioning reset due to package name change
+
+0.0.0
+  * BUMP BUMP
+
+0.19.7
+  * Deprecate virtual packages, migrate to linux-mediatree
+
 0.19.6
   * New Ubuntu revisions
   * Fix cx23885 analog tuner
