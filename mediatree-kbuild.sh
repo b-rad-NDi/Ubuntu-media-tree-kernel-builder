@@ -475,7 +475,11 @@ function apply_patches()
 	fi
 	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
-		regen_changelog "`date +%Y%m%d%H%M`"
+		if [ -n "${KBUILD_DATE_OVERRIDE}" ] ; then
+			regen_changelog "`date -d \"${KBUILD_DATE_OVERRIDE}\" +%Y%m%d%H%M`"
+		else
+			regen_changelog "`date +%Y%m%d%H%M`"
+		fi
 		git add debian.${deb_branch}/changelog
 		git commit -m 'Changelog'
 		unset UPDATE_MT_KBUILD_VER
@@ -576,7 +580,12 @@ function regen_changelog()
 		export K_ABI_MOD=0
 	fi
 
-	K_BUILD_TIME=`date -R`
+	if [ -n "${KBUILD_DATE_OVERRIDE}" ] ; then
+		K_BUILD_TIME="${KBUILD_DATE_OVERRIDE}"
+		unset KBUILD_DATE_OVERRIDE
+	else
+		K_BUILD_TIME=`date -R`
+	fi
 
 	echo "${deb_package} (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) ${DISTRO_CODENAME}; urgency=low" > /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
@@ -634,6 +643,7 @@ function generate_new_kernel_version()
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
 	regen_changelog "`date +%Y%m%d%H%M`"
+
 	update_identity
 
 	clean_kernel
@@ -662,7 +672,13 @@ function generate_virtual_package()
 	cd .vpackage_tmp
 	rm -rf linux-*-mediatree-*/
 	rm -f *
-	VP_BUILD_TIME=`date -R`
+
+	if [ -n "${KBUILD_DATE_OVERRIDE}" ] ; then
+		VP_BUILD_TIME="${KBUILD_DATE_OVERRIDE}"
+		unset KBUILD_DATE_OVERRIDE
+	else
+		VP_BUILD_TIME=`date -R`
+	fi
 
 	if [ "${1}" == "image" -o "${1}" == "headers" ] ; then
 		cp ../linux-${1}-mediatree.control ./ns_control
