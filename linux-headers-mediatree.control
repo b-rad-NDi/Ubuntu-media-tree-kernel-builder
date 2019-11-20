@@ -1,5 +1,5 @@
 Source: __LINUX_KBUILD_PKG_SRC_NAME__
-Section: devel
+Section: oldlibs
 Priority: optional
 Homepage: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
 Standards-Version: 3.9.8
@@ -7,11 +7,11 @@ Standards-Version: 3.9.8
 Package: __LINUX_KBUILD_PKG_SRC_NAME__
 Version: 0.1
 Maintainer: __MAINTAINER_INFO__
-Depends: __LINUX_HEADER_PACKAGE__
-Suggests: __LINUX_IMAGE_PACKAGES__
+Depends: linux-mediatree
 Architecture: all
 # Copyright: <copyright file; defaults to GPL2>
 Changelog: changelog
 # Readme: README
-Description: Header files related to linux-image-mediatree
- This package provides kernel header files for version ___
+Description: transitional package
+ This is a transitional package. It can be safely removed.
+ It is merely intended to install the new version, linux-mediatree.
