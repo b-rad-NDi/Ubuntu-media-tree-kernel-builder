@@ -670,7 +670,8 @@ function generate_virtual_package()
 
 	VPACKAGE_VER=`head -n 1 changelog`
 	cd .vpackage_tmp
-	rm -rf linux-*-mediatree-*/
+	rm -rf linux-mediatree-*/
+	rm -rf linux-hwe-mediatree-*/
 	rm -f *
 
 	if [ -n "${KBUILD_DATE_OVERRIDE}" ] ; then
