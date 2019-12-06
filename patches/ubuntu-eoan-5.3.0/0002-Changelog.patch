@@ -1,6 +1,6 @@
-From edeeae4a727025edf5e83f1fbcb9ce1829eaa8ac Mon Sep 17 00:00:00 2001
+From ec63076b566a7a8c881ef737fe4f106ad16c5221 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 19 Nov 2019 13:17:23 -0600
+Date: Thu, 5 Dec 2019 16:20:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 40 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index fd1674b30..3d774e769 100644
+index 0a6c15fcc..eb1ef7f3f 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,43 @@
-+linux (5.3.0-23201911191317.0+mediatree+hauppauge) eoan; urgency=low
++linux (5.3.0-24201912051620.0+mediatree+hauppauge) eoan; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.3.0-23.25 rev d59079bbc08cfd0d4d7622a2db5618afe854a699
++    - 5.3.0-24.26 rev 5d6a65cfff22572237a7a68463dd1df11adb7341
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -50,11 +50,11 @@ index fd1674b30..3d774e769 100644
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 19 Nov 2019 13:17:23 -0600
++ -- Fake User <hidden@email.co>  Thu, 05 Dec 2019 16:20:00 -0600
 +
- linux (5.3.0-23.25) eoan; urgency=medium
+ linux (5.3.0-24.26) eoan; urgency=medium
  
-   * Incomplete i915 fix for 64-bit x86 kernels (LP: #1852141) // CVE-2019-0155
+   * eoan/linux: 5.3.0-24.26 -proposed tracker (LP: #1852232)
 -- 
 2.20.1
 
