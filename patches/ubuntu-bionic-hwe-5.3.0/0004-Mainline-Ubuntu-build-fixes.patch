@@ -1,0 +1,100 @@
+From f2496cd0021d7f209756de3042fffc243c778905 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Fri, 1 Nov 2019 12:55:06 -0500
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ include/linux/dma-buf.h   |  4 ++--
+ include/linux/dma-fence.h | 14 +++++++-------
+ include/linux/pci_ids.h   |  4 ++++
+ 3 files changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index ec212cb27fdc..bae060fae862 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -306,7 +306,7 @@ struct dma_buf {
+ 	struct module *owner;
+ 	struct list_head list_node;
+ 	void *priv;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 
+ 	/* poll support */
+ 	wait_queue_head_t poll;
+@@ -365,7 +365,7 @@ struct dma_buf_export_info {
+ 	const struct dma_buf_ops *ops;
+ 	size_t size;
+ 	int flags;
+-	struct dma_resv *resv;
++	struct reservation_object *resv;
+ 	void *priv;
+ };
+ 
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 3347c54f3a87..7108cda11150 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -63,8 +63,12 @@ struct dma_fence_cb;
+  * been completed, or never called at all.
+  */
+ struct dma_fence {
+-	spinlock_t *lock;
++	struct kref refcount;
+ 	const struct dma_fence_ops *ops;
++		struct rcu_head rcu;
++		struct list_head cb_list;
++		/* @cb_list replaced by @timestamp on dma_fence_signal() */
++	spinlock_t *lock;
+ 	/*
+ 	 * We clear the callback list on kref_put so that by the time we
+ 	 * release the fence it is unused. No one should be adding to the
+@@ -82,16 +86,12 @@ struct dma_fence {
+ 	 * Listed in chronological order.
+ 	 */
+ 	union {
+-		struct list_head cb_list;
+-		/* @cb_list replaced by @timestamp on dma_fence_signal() */
+-		ktime_t timestamp;
+-		/* @timestamp replaced by @rcu on dma_fence_release() */
+-		struct rcu_head rcu;
+ 	};
+ 	u64 context;
+ 	u64 seqno;
+ 	unsigned long flags;
+-	struct kref refcount;
++		ktime_t timestamp;
++		/* @timestamp replaced by @rcu on dma_fence_release() */
+ 	int error;
+ };
+ 
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 21a572469a4e..38fa15b2b9af 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1071,6 +1071,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4         0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
+@@ -1339,6 +1340,7 @@
+ #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
++#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ 
+ #define PCI_VENDOR_ID_IMS		0x10e0
+ #define PCI_DEVICE_ID_IMS_TT128		0x9128
+@@ -3111,4 +3113,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
+-- 
+2.17.1
+
