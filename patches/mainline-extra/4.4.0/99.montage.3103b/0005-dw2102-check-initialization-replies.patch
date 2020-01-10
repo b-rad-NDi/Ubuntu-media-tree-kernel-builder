@@ -1,0 +1,75 @@
+From 4e25a7b973b0ae9b662bde4a26f0d6d1e44b6e71 Mon Sep 17 00:00:00 2001
+From: Michael Bunk <micha@freedict.org>
+Date: Sat, 4 Jan 2020 19:35:49 +0100
+Subject: [PATCH 5/6] dw2102: check initialization replies
+
+In tt_s2_4600_frontend_attach() initialization commands are sent over
+USB to the device.  The replies were not checked for success.
+
+Now it is checked, whether the proper values are returned.
+
+Also, the error messages are more detailed now.  Before, the same
+message was used with different initialization commands, so it was
+impossible to tell which command failed.
+
+Signed-off-by: Michael Bunk <micha@freedict.org>
+---
+ drivers/media/usb/dvb-usb/dw2102.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
+index b5f4aa1..f3fe8f0 100644
+--- a/drivers/media/usb/dvb-usb/dw2102.c
++++ b/drivers/media/usb/dvb-usb/dw2102.c
+@@ -1564,14 +1564,18 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
+ 	state->data[2] = 0x0;
+ 
+ 	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
+-		err("command 0x0e transfer failed.");
++		err("command 0x0e 80 00 transfer failed.");
++	if(state->data[0] != 1)
++		err("command 0x0e 80 00 reply unexpected.");
+ 
+ 	state->data[0] = 0xe;
+ 	state->data[1] = 0x02;
+ 	state->data[2] = 1;
+ 
+ 	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
+-		err("command 0x0e transfer failed.");
++		err("command 0x0e 02 01 transfer failed.");
++	if(state->data[0] != 1)
++		err("command 0x0e 02 01 reply unexpected.");
+ 	msleep(300);
+ 
+ 	state->data[0] = 0xe;
+@@ -1579,19 +1583,25 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
+ 	state->data[2] = 0;
+ 
+ 	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
+-		err("command 0x0e transfer failed.");
++		err("command 0x0e 83 00 transfer failed.");
++	if(state->data[0] != 1)
++		err("command 0x0e 83 00 reply unexpected.");
+ 
+ 	state->data[0] = 0xe;
+ 	state->data[1] = 0x83;
+ 	state->data[2] = 1;
+ 
+ 	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
+-		err("command 0x0e transfer failed.");
++		err("command 0x0e 83 01 transfer failed.");
++	if(state->data[0] != 1)
++		err("command 0x0e 83 01 reply unexpected.");
+ 
+ 	state->data[0] = 0x51;
+ 
+ 	if (dvb_usb_generic_rw(d, state->data, 1, state->data, 1, 0) < 0)
+ 		err("command 0x51 transfer failed.");
++	if(state->data[0] != 1)
++		err("command 0x51 reply unexpected.");
+ 
+ 	/* probe for demodulator i2c address */
+ 	demod_addr = -1;
+-- 
+2.7.4
+

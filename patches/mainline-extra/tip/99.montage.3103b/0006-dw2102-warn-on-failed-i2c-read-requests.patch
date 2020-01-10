@@ -1,0 +1,27 @@
+From e74aca2552cba950a9f6576799fd0232e9526ee1 Mon Sep 17 00:00:00 2001
+From: Michael Bunk <micha@freedict.org>
+Date: Sat, 4 Jan 2020 19:11:08 +0100
+Subject: [PATCH 6/6] dw2102: warn on failed i2c read requests
+
+Signed-off-by: Michael Bunk <micha@freedict.org>
+---
+ drivers/media/usb/dvb-usb/dw2102.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
+index f3fe8f08c..6fe0357a7 100644
+--- a/drivers/media/usb/dvb-usb/dw2102.c
++++ b/drivers/media/usb/dvb-usb/dw2102.c
+@@ -770,6 +770,9 @@ static int su3000_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
+ 					state->data, msg[1].len + 1, 0) < 0)
+ 			err("i2c transfer failed.");
+ 
++		if (state->data[0] != 8)
++		   warn("i2c read request failed: i2c status %d", state->data[0]);
++
+ 		memcpy(msg[1].buf, &state->data[1], msg[1].len);
+ 		break;
+ 	default:
+-- 
+2.20.1
+
