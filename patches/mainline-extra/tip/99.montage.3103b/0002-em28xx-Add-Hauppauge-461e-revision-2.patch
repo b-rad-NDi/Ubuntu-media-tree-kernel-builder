@@ -1,7 +1,7 @@
-From 361835baea75efe0008190793b61160794079b5b Mon Sep 17 00:00:00 2001
+From ba575e7b14cd58036a0c91d2bf43eee8e8138729 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 11 Oct 2019 20:57:43 -0500
-Subject: [PATCH 2/2] em28xx: Add Hauppauge 461e revision 2
+Subject: [PATCH 2/6] em28xx: Add Hauppauge 461e revision 2
 
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 18 +++++++
@@ -46,7 +46,7 @@ index def9cdd93..a8c321d11 100644
  			.driver_info = EM28178_BOARD_PCTV_292E },
  	{ USB_DEVICE(0x2013, 0x0264), /* Hauppauge WinTV-soloHD 292e SE */
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index d986ec719..018c813a2 100644
+index d986ec719..09c336975 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -1219,6 +1219,65 @@ static int em28178_dvb_init_pctv_461e(struct em28xx *dev)
@@ -66,10 +66,10 @@ index d986ec719..018c813a2 100644
 +	m88ds3103_pdata.i2c_wr_max = 33;
 +	m88ds3103_pdata.ts_mode = M88DS3103_TS_PARALLEL;
 +	m88ds3103_pdata.ts_clk = 16000;
-+	m88ds3103_pdata.ts_clk_pol = 1;
++	m88ds3103_pdata.ts_clk_pol = 0;
 +	m88ds3103_pdata.agc = 0x99;
-+	m88ds3103_pdata.agc_inv = 1;
-+	m88ds3103_pdata.spec_inv = 1;
++	m88ds3103_pdata.agc_inv = 0;
++	m88ds3103_pdata.spec_inv = 0;
 +	dvb->i2c_client_demod = dvb_module_probe("m88ds3103", "m88ds3103b",
 +						 &dev->i2c_adap[dev->def_i2c_bus],
 +						 0x6a, &m88ds3103_pdata);
