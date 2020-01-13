@@ -1,6 +1,6 @@
-From 58c643991efea016ffbfbb0b6a11efe860348b59 Mon Sep 17 00:00:00 2001
+From b0b1358d51d12ade3f9a5ea8064f41766941be1a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 6 Dec 2019 14:18:53 -0600
+Date: Mon, 13 Jan 2020 13:06:54 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -12,13 +12,13 @@ Subject: [PATCH 6/6] Packaging updates
  debian.hwe/rules.d/armhf.mk               | 10 ++---
  debian.hwe/rules.d/i386.mk                |  2 +-
  debian.hwe/rules.d/ppc64el.mk             | 12 +++---
- debian.hwe/rules.d/s390x.mk               | 12 +++---
+ debian.hwe/rules.d/s390x.mk               | 10 ++---
  debian.hwe/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub   |  2 +-
  debian/rules                              |  2 +-
  debian/rules.d/0-common-vars.mk           | 19 ++++++---
  debian/rules.d/2-binary-arch.mk           |  4 ++
- 14 files changed, 85 insertions(+), 98 deletions(-)
+ 14 files changed, 84 insertions(+), 97 deletions(-)
 
 diff --git a/debian.hwe/control.d/flavour-control.stub b/debian.hwe/control.d/flavour-control.stub
 index 8516504c1483..271b405a5b5b 100644
@@ -61,7 +61,7 @@ index 8516504c1483..271b405a5b5b 100644
  Architecture: ARCH
  Section: devel
 diff --git a/debian.hwe/control.stub.in b/debian.hwe/control.stub.in
-index 2130dc2df538..7abaca03fea2 100644
+index 61dc04f7253a..72718ab8e57d 100644
 --- a/debian.hwe/control.stub.in
 +++ b/debian.hwe/control.stub.in
 @@ -1,7 +1,8 @@
@@ -74,7 +74,7 @@ index 2130dc2df538..7abaca03fea2 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 9),
-@@ -54,30 +55,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
+@@ -53,30 +54,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -105,7 +105,7 @@ index 2130dc2df538..7abaca03fea2 100644
  Package: linux-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -89,28 +66,3 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -88,28 +65,3 @@ Description: Header files related to Linux kernel version PKGVER
   This package provides kernel header files for version PKGVER, for sites
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
@@ -291,20 +291,18 @@ index 3934ef482a57..7cf1efd64dfa 100644
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/s390x.mk b/debian.hwe/rules.d/s390x.mk
-index 4b3698fc9c45..b141c0abadfa 100644
+index 7d66ac47c3d6..0d1905b79a3d 100644
 --- a/debian.hwe/rules.d/s390x.mk
 +++ b/debian.hwe/rules.d/s390x.mk
-@@ -11,11 +11,11 @@ vdso		= vdso_install
+@@ -11,10 +11,10 @@ vdso		= vdso_install
  no_dumpfile	= true
  
  do_extras_package = true
--sipl_signed       = true
 -do_tools_usbip    = true
 -do_tools_cpupower = true
 -do_tools_perf     = true
 -do_tools_perf_jvmti = true
 -do_tools_bpftool  = true
-+sipl_signed       = false
 +do_tools_usbip    = false
 +do_tools_cpupower = false
 +do_tools_perf     = false
@@ -336,7 +334,7 @@ index ed92b3d53ba5..18505efb1b11 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 8cb6604e18db..2aef5a43540e 100755
+index 5f50e30f0ca9..a0c7f5fbbbff 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -406,10 +404,10 @@ index 9607f65feb53..1ea3cc939405 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 2aea5e857f79..48612a18a4db 100644
+index 45c46cab912c..e5eb1baddad9 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -781,10 +781,14 @@ build-arch: $(build-arch-deps-true)
+@@ -782,10 +782,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

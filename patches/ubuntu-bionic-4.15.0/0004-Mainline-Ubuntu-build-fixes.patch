@@ -1,6 +1,6 @@
-From a5e34557998d4fff918a2a0ce43ae1349c2ef7d6 Mon Sep 17 00:00:00 2001
+From d783805946fc9d86bcff428631a509a18a86d31f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 1 Nov 2019 14:14:50 -0500
+Date: Mon, 13 Jan 2020 13:11:54 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -67,7 +67,7 @@ index 278d50ff1eea..ac626fb808a6 100644
  		return ret;
  
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index 635f94ae20b7..999a7e545ac9 100644
+index f69043dc18f6..e25150c7ea3a 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -117,6 +117,8 @@
@@ -79,7 +79,7 @@ index 635f94ae20b7..999a7e545ac9 100644
  #define convert_in_user(srcptr, dstptr)			\
  ({							\
  	typeof(*srcptr) val;				\
-@@ -200,34 +202,6 @@ static int do_video_stillpicture(struct file *file,
+@@ -202,34 +204,6 @@ static int do_video_stillpicture(struct file *file,
  	return err;
  }
  
@@ -106,7 +106,7 @@ index 635f94ae20b7..999a7e545ac9 100644
 -	if (err)
 -		return -EFAULT;
 -
--	err = do_ioctl(file, cmd, (unsigned long) up_native);
+-	err = do_ioctl(file, VIDEO_STILLPICTURE, (unsigned long) up_native);
 -
 -	return err;
 -}
@@ -114,7 +114,7 @@ index 635f94ae20b7..999a7e545ac9 100644
  #ifdef CONFIG_BLOCK
  typedef struct sg_io_hdr32 {
  	compat_int_t interface_id;	/* [i] 'S' for SCSI generic (required) */
-@@ -1205,9 +1179,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
+@@ -1207,9 +1181,6 @@ COMPATIBLE_IOCTL(AUDIO_CLEAR_BUFFER)
  COMPATIBLE_IOCTL(AUDIO_SET_ID)
  COMPATIBLE_IOCTL(AUDIO_SET_MIXER)
  COMPATIBLE_IOCTL(AUDIO_SET_STREAMTYPE)
@@ -124,7 +124,7 @@ index 635f94ae20b7..999a7e545ac9 100644
  COMPATIBLE_IOCTL(DMX_START)
  COMPATIBLE_IOCTL(DMX_STOP)
  COMPATIBLE_IOCTL(DMX_SET_FILTER)
-@@ -1244,16 +1215,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
+@@ -1246,16 +1217,9 @@ COMPATIBLE_IOCTL(VIDEO_FAST_FORWARD)
  COMPATIBLE_IOCTL(VIDEO_SLOWMOTION)
  COMPATIBLE_IOCTL(VIDEO_GET_CAPABILITIES)
  COMPATIBLE_IOCTL(VIDEO_CLEAR_BUFFER)
@@ -141,9 +141,9 @@ index 635f94ae20b7..999a7e545ac9 100644
  /* cec */
  COMPATIBLE_IOCTL(CEC_ADAP_G_CAPS)
  COMPATIBLE_IOCTL(CEC_ADAP_G_LOG_ADDRS)
-@@ -1358,8 +1322,6 @@ static long do_ioctl_trans(unsigned int cmd,
+@@ -1360,8 +1324,6 @@ static long do_ioctl_trans(unsigned int cmd,
  		return do_video_get_event(file, cmd, argp);
- 	case VIDEO_STILLPICTURE:
+ 	case VIDEO_STILLPICTURE32:
  		return do_video_stillpicture(file, cmd, argp);
 -	case VIDEO_SET_SPU_PALETTE:
 -		return do_video_set_spu_palette(file, cmd, argp);

@@ -4,13 +4,13 @@ Date: Wed, 30 Oct 2019 12:38:01 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 4 +++-
+ debian.hwe/config/config.common.ubuntu | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
 index 212beaae80a0..8a8d0d8bce28 100644
---- a/debian.master/config/config.common.ubuntu
-+++ b/debian.master/config/config.common.ubuntu
+--- a/debian.hwe/config/config.common.ubuntu
++++ b/debian.hwe/config/config.common.ubuntu
 @@ -2759,7 +2759,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
