@@ -666,7 +666,7 @@ function generate_virtual_package()
 		deb_branch="-${DISTRO_BRANCH}"
 	fi
 
-	LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '201[7-9][[:digit:]]{8}'`
+	LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '202[0-9][[:digit:]]{8}'`
 
 	VPACKAGE_VER=`head -n 1 changelog`
 	cd .vpackage_tmp
