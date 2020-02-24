@@ -1,0 +1,31 @@
+From f84b0216fa638c704a98ded02fe1df8125c1ee48 Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Fri, 21 Feb 2020 14:48:21 -0600
+Subject: [PATCH 2/3] em28xx-core: Fix TS2 active led
+
+TS2 active led is completely igored, fix that.
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+---
+ drivers/media/usb/em28xx/em28xx-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index e6088b5d1..299cd38a8 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -698,8 +698,10 @@ int em28xx_capture_start(struct em28xx *dev, int start)
+ 
+ 	if (dev->mode == EM28XX_ANALOG_MODE)
+ 		led = em28xx_find_led(dev, EM28XX_LED_ANALOG_CAPTURING);
+-	else
++	else if (dev->ts == PRIMARY_TS)
+ 		led = em28xx_find_led(dev, EM28XX_LED_DIGITAL_CAPTURING);
++	else
++		led = em28xx_find_led(dev, EM28XX_LED_DIGITAL_CAPTURING_TS2);
+ 
+ 	if (led)
+ 		em28xx_write_reg_bits(dev, led->gpio_reg,
+-- 
+2.20.1
+

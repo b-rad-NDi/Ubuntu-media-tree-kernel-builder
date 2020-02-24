@@ -1,0 +1,159 @@
+From 58ea34ae14e83f152557d1bb5af4069459e282bc Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 24 Feb 2020 11:08:49 -0600
+Subject: [PATCH 3/3] em28xx: Add support for Hauppauge USB QuadHD
+
+Hauppauge USB QuadHD contains two two-tuner em28xx devices behind a usb hub.
+Each of the four dvb adapters contains a MaxLinear 692 combo ATSC demod/tuner.
+
+Signed-off-by: Brad Love <hidden@email.co>
+---
+ drivers/media/usb/em28xx/em28xx-cards.c | 46 +++++++++++++++++++++++++
+ drivers/media/usb/em28xx/em28xx-dvb.c   | 26 ++++++++++++++
+ drivers/media/usb/em28xx/em28xx.h       |  1 +
+ 3 files changed, 73 insertions(+)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index a8c321d11..d9d53056c 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -549,6 +549,21 @@ static const struct em28xx_reg_seq hauppauge_dualhd_dvb[] = {
+ 	{-1,                             -1,   -1,     -1},
+ };
+ 
++/* Hauppauge USB QuadHD */
++static struct em28xx_reg_seq hauppauge_usb_quadhd_atsc_reg_seq[] = {
++	{EM2874_R80_GPIO_P0_CTRL,      0xff, 0xff,      0},
++	{0x0d,                         0xff, 0xff,    200},
++	{0x50,                         0x04, 0xff,    300},
++	{EM2874_R80_GPIO_P0_CTRL,      0xb0, 0xf0,    100}, /* demod 1 reset */
++	{EM2874_R80_GPIO_P0_CTRL,      0xf0, 0xf0,    100},
++	{EM2874_R80_GPIO_P0_CTRL,      0xd0, 0xf0,    100}, /* demod 2 reset */
++	{EM2874_R80_GPIO_P0_CTRL,      0xf0, 0xf0,    100},
++	{EM2874_R5F_TS_ENABLE,         0x44, 0xff,     50},
++	{EM2874_R5D_TS1_PKT_SIZE,      0x05, 0xff,     50},
++	{EM2874_R5E_TS2_PKT_SIZE,      0x05, 0xff,     50},
++	{-1,                           -1,   -1,       -1},
++};
++
+ /*
+  *  Button definitions
+  */
+@@ -644,6 +659,22 @@ static struct em28xx_led hauppauge_dualhd_leds[] = {
+ 	{-1, 0, 0, 0},
+ };
+ 
++static struct em28xx_led hauppauge_usb_quadhd_leds[] = {
++	{
++		.role      = EM28XX_LED_DIGITAL_CAPTURING,
++		.gpio_reg  = EM2874_R80_GPIO_P0_CTRL,
++		.gpio_mask = EM_GPIO_2,
++		.inverted  = 1,
++	},
++	{
++		.role      = EM28XX_LED_DIGITAL_CAPTURING_TS2,
++		.gpio_reg  = EM2874_R80_GPIO_P0_CTRL,
++		.gpio_mask = EM_GPIO_0,
++		.inverted  = 1,
++	},
++	{-1, 0, 0, 0},
++};
++
+ /*
+  *  Board definitions
+  */
+@@ -2519,6 +2550,19 @@ const struct em28xx_board em28xx_boards[] = {
+ 			.amux     = EM28XX_AMUX_LINE_IN,
+ 		} },
+ 	},
++	/* 2040:826d Hauppauge USB QuadHD
++	 * Empia 28274, Max Linear 692 ATSC combo demod/tuner
++	 */
++	[EM2874S_BOARD_HAUPPAUGE_USB_QUADHD] = {
++		.name          = "Hauppauge USB QuadHD ATSC",
++		.def_i2c_bus   = 1,
++		.has_dual_ts   = 1,
++		.has_dvb       = 1,
++		.i2c_speed     = EM28XX_I2C_CLK_WAIT_ENABLE | EM28XX_I2C_FREQ_100_KHZ,
++		.tuner_type    = TUNER_ABSENT,
++		.tuner_gpio    = hauppauge_usb_quadhd_atsc_reg_seq,
++		.leds          = hauppauge_usb_quadhd_leds,
++	},
+ };
+ EXPORT_SYMBOL_GPL(em28xx_boards);
+ 
+@@ -2652,6 +2696,8 @@ struct usb_device_id em28xx_id_table[] = {
+ 			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 },
+ 	{ USB_DEVICE(0x2040, 0x826d),
+ 			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 },
++	{ USB_DEVICE(0x2040, 0x846d),
++			.driver_info = EM2874S_BOARD_HAUPPAUGE_USB_QUADHD },
+ 	{ USB_DEVICE(0x0438, 0xb002),
+ 			.driver_info = EM2880_BOARD_AMD_ATI_TV_WONDER_HD_600 },
+ 	{ USB_DEVICE(0x2001, 0xf112),
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 09c336975..a3c4cab7e 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -62,6 +62,7 @@
+ #include "si2157.h"
+ #include "tc90522.h"
+ #include "qm1d1c0042.h"
++#include "mxl692.h"
+ 
+ MODULE_AUTHOR("Mauro Carvalho Chehab <mchehab@kernel.org>");
+ MODULE_LICENSE("GPL v2");
+@@ -1463,6 +1464,26 @@ static int em28174_dvb_init_hauppauge_wintv_dualhd_01595(struct em28xx *dev)
+ 	return 0;
+ }
+ 
++static int em2874S_dvb_init_hauppauge_usb_quadhd(struct em28xx *dev)
++{
++	struct em28xx_dvb *dvb = dev->dvb;
++	struct mxl692_config mxl692_config = {};
++	unsigned char addr;
++
++	/* attach demod/tuner combo */
++	mxl692_config.id = (dev->ts == PRIMARY_TS) ? 0 : 1;
++	mxl692_config.fe = &dvb->fe[0];
++	addr = (dev->ts == PRIMARY_TS) ? 0x60 : 0x63;
++
++	dvb->i2c_client_demod = dvb_module_probe("mxl692", NULL,
++						 &dev->i2c_adap[dev->def_i2c_bus],
++						 addr, &mxl692_config);
++	if (!dvb->i2c_client_demod)
++		return -ENODEV;
++
++	return 0;
++}
++
+ static int em28xx_dvb_init(struct em28xx *dev)
+ {
+ 	int result = 0, dvb_alt = 0;
+@@ -1949,6 +1970,11 @@ static int em28xx_dvb_init(struct em28xx *dev)
+ 		if (result)
+ 			goto out_free;
+ 		break;
++	case EM2874S_BOARD_HAUPPAUGE_USB_QUADHD:
++		result = em2874S_dvb_init_hauppauge_usb_quadhd(dev);
++		if (result)
++			goto out_free;
++		break;
+ 	default:
+ 		dev_err(&dev->intf->dev,
+ 			"The frontend of your DVB/ATSC card isn't supported yet\n");
+diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
+index acbb62397..1782bfaf0 100644
+--- a/drivers/media/usb/em28xx/em28xx.h
++++ b/drivers/media/usb/em28xx/em28xx.h
+@@ -151,6 +151,7 @@
+ #define EM2882_BOARD_ZOLID_HYBRID_TV_STICK		102
+ #define EM2861_BOARD_MAGIX_VIDEOWANDLER2          103
+ #define EM28178_BOARD_PCTV_461E_V2                104
++#define EM2874S_BOARD_HAUPPAUGE_USB_QUADHD        105
+ 
+ /* Limits minimum and default number of buffers */
+ #define EM28XX_MIN_BUF 4
+-- 
+2.20.1
+
