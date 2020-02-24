@@ -1,25 +1,25 @@
-From 99a632249f6a2167f50b195a0542a2c175e5d48b Mon Sep 17 00:00:00 2001
+From 3294b0d1f06c138682d74044a71255661ac15064 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 12 Aug 2019 15:46:57 -0500
+Date: Mon, 24 Feb 2020 15:30:38 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.hwe/control.d/flavour-control.stub | 12 +++++------
  debian.hwe/control.stub.in                | 34 ++++++-------------------------
  debian.hwe/copyright                      | 22 ++++++++++++++++++++
- debian.hwe/rules.d/amd64.mk               | 22 ++++++++++----------
- debian.hwe/rules.d/arm64.mk               |  8 ++++----
- debian.hwe/rules.d/armhf.mk               |  8 ++++----
- debian.hwe/rules.d/i386.mk                | 14 ++++++-------
- debian.hwe/rules.d/ppc64el.mk             | 10 ++++-----
- debian.hwe/rules.d/s390x.mk               |  8 ++++----
+ debian.hwe/rules.d/amd64.mk               | 24 +++++++++++-----------
+ debian.hwe/rules.d/arm64.mk               | 10 ++++-----
+ debian.hwe/rules.d/armhf.mk               | 10 ++++-----
+ debian.hwe/rules.d/i386.mk                | 16 +++++++--------
+ debian.hwe/rules.d/ppc64el.mk             | 12 +++++------
+ debian.hwe/rules.d/s390x.mk               | 10 ++++-----
  debian.hwe/rules.d/x32.mk                 |  2 +-
  debian.master/rules.d/hooks.mk            |  5 +++++
  debian/control.d/flavour-buildinfo.stub   |  2 +-
  debian/rules                              |  2 +-
  debian/rules.d/0-common-vars.mk           | 17 ++++++++++++----
  debian/rules.d/2-binary-arch.mk           |  4 ++++
- 15 files changed, 94 insertions(+), 76 deletions(-)
+ 15 files changed, 100 insertions(+), 82 deletions(-)
  create mode 100644 debian.master/rules.d/hooks.mk
 
 diff --git a/debian.hwe/control.d/flavour-control.stub b/debian.hwe/control.d/flavour-control.stub
@@ -173,10 +173,10 @@ index d1d04a6..b6f183f 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe/rules.d/amd64.mk b/debian.hwe/rules.d/amd64.mk
-index 4046adf..b031944 100644
+index 3d248c2..3bcd556 100644
 --- a/debian.hwe/rules.d/amd64.mk
 +++ b/debian.hwe/rules.d/amd64.mk
-@@ -2,23 +2,23 @@ human_arch	= 64 bit x86
+@@ -2,24 +2,24 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -193,6 +193,7 @@ index 4046adf..b031944 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 -do_tools_x86	= true
 -do_tools_hyperv	= true
 -do_tools_host = true
@@ -201,6 +202,7 @@ index 4046adf..b031944 100644
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
 +do_tools_x86	= false
 +do_tools_hyperv	= false
 +do_tools_host = false
@@ -212,10 +214,10 @@ index 4046adf..b031944 100644
  do_zfs		= true
  do_dkms_nvidia  = true
 diff --git a/debian.hwe/rules.d/arm64.mk b/debian.hwe/rules.d/arm64.mk
-index c7e9a9c..de0ab473 100644
+index c49d25e..49e2954 100644
 --- a/debian.hwe/rules.d/arm64.mk
 +++ b/debian.hwe/rules.d/arm64.mk
-@@ -12,10 +12,10 @@ loader		= grub
+@@ -12,11 +12,11 @@ loader		= grub
  vdso		= vdso_install
  
  do_extras_package = true
@@ -223,18 +225,20 @@ index c7e9a9c..de0ab473 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
  
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/armhf.mk b/debian.hwe/rules.d/armhf.mk
-index d516ae1..18cd460 100644
+index 085e8ac..5f37244 100644
 --- a/debian.hwe/rules.d/armhf.mk
 +++ b/debian.hwe/rules.d/armhf.mk
-@@ -10,9 +10,9 @@ no_dumpfile	= true
+@@ -10,10 +10,10 @@ no_dumpfile	= true
  
  loader		= grub
  
@@ -242,17 +246,19 @@ index d516ae1..18cd460 100644
 -do_tools_cpupower = true
 -do_tools_perf	= true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf	= false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
  
  do_dtbs		= true
 diff --git a/debian.hwe/rules.d/i386.mk b/debian.hwe/rules.d/i386.mk
-index a422f9f..c3ec338 100644
+index 89ad2a6..336f0dd 100644
 --- a/debian.hwe/rules.d/i386.mk
 +++ b/debian.hwe/rules.d/i386.mk
-@@ -2,17 +2,17 @@ human_arch	= 32 bit x86
+@@ -2,18 +2,18 @@ human_arch	= 32 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -268,20 +274,22 @@ index a422f9f..c3ec338 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 -do_tools_x86	= true
 -do_tools_hyperv = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
 +do_tools_x86	= false
 +do_tools_hyperv = false
  do_extras_package = true
 diff --git a/debian.hwe/rules.d/ppc64el.mk b/debian.hwe/rules.d/ppc64el.mk
-index c540bac..c5f2c59 100644
+index 3934ef4..7cf1efd 100644
 --- a/debian.hwe/rules.d/ppc64el.mk
 +++ b/debian.hwe/rules.d/ppc64el.mk
-@@ -10,11 +10,11 @@ no_dumpfile	= true
+@@ -10,12 +10,12 @@ no_dumpfile	= true
  vdso		= vdso_install
  loader		= grub
  do_extras_package = true
@@ -290,19 +298,21 @@ index c540bac..c5f2c59 100644
 -do_tools_cpupower = true
 -do_tools_perf	  = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool  = true
 +opal_signed       = false
 +do_tools_usbip    = false
 +do_tools_cpupower = false
 +do_tools_perf	  = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool  = false
  
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/s390x.mk b/debian.hwe/rules.d/s390x.mk
-index dad66b1..9fd8847 100644
+index cbc1885..b6fb07b 100644
 --- a/debian.hwe/rules.d/s390x.mk
 +++ b/debian.hwe/rules.d/s390x.mk
-@@ -12,9 +12,9 @@ no_dumpfile	= true
+@@ -12,10 +12,10 @@ no_dumpfile	= true
  
  do_extras_package = true
  
@@ -310,10 +320,12 @@ index dad66b1..9fd8847 100644
 -do_tools_cpupower = true
 -do_tools_perf     = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool  = true
 +do_tools_usbip    = false
 +do_tools_cpupower = false
 +do_tools_perf     = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool  = false
  
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/x32.mk b/debian.hwe/rules.d/x32.mk
@@ -351,12 +363,12 @@ index ed92b3d..18505ef 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 04a7181..02f1b51 100755
+index 4a47076..376653e 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
  
- do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
+ do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_bpftool) $(do_tools_x86)))
  do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
 -do_tools_common?=true
 +do_tools_common?=false
@@ -413,10 +425,10 @@ index adde3b7..9cd46cc 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 3e4c81a..474c4f8 100644
+index 2485a17..96be990 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -744,10 +744,14 @@ build-arch: $(build-arch-deps-true)
+@@ -768,10 +768,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
