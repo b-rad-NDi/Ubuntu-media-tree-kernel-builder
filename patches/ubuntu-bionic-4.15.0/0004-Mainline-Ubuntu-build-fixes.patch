@@ -1,6 +1,6 @@
-From d783805946fc9d86bcff428631a509a18a86d31f Mon Sep 17 00:00:00 2001
+From afabfbc21e28b14215041d9433fe2370d216761a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 13 Jan 2020 13:11:54 -0600
+Date: Sun, 19 Apr 2020 11:44:33 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -11,8 +11,9 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-buf.h                 |  8 +++--
  include/linux/dma-fence.h               | 42 +++++++++++++------------
  include/linux/hdmi.h                    |  5 ++-
+ include/linux/mmc/sdio_ids.h            |  2 ++
  include/linux/pci_ids.h                 |  4 +++
- 8 files changed, 40 insertions(+), 72 deletions(-)
+ 9 files changed, 42 insertions(+), 72 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f917e..bf6f29ca3315 100644
@@ -67,7 +68,7 @@ index 278d50ff1eea..ac626fb808a6 100644
  		return ret;
  
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index f69043dc18f6..e25150c7ea3a 100644
+index c738ae525893..283ef4483a0a 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -117,6 +117,8 @@
@@ -321,6 +322,19 @@ index 9918a6c910c5..1bb237d6f635 100644
 +			union hdmi_infoframe *frame);
  
  #endif /* _DRM_HDMI_H */
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index d1a5d5df02f5..08b25c02b5a1 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -71,6 +71,8 @@
+ 
+ #define SDIO_VENDOR_ID_TI			0x0097
+ #define SDIO_DEVICE_ID_TI_WL1271		0x4076
++#define SDIO_VENDOR_ID_TI_WL1251		0x104c
++#define SDIO_DEVICE_ID_TI_WL1251		0x9066
+ 
+ #define SDIO_VENDOR_ID_STE			0x0020
+ #define SDIO_DEVICE_ID_STE_CW1200		0x2280
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
 index 21a572469a4e..9a49bd2dd265 100644
 --- a/include/linux/pci_ids.h

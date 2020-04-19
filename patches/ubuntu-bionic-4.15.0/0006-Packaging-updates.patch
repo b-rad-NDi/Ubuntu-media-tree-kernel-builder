@@ -1,24 +1,24 @@
-From ab5b64d775ed50efcc80dd63158dbc4035371f4f Mon Sep 17 00:00:00 2001
+From 280d5e864822283384e8a40133504eeb742aeb62 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 12 Aug 2019 16:12:50 -0500
+Date: Mon, 20 Apr 2020 11:46:02 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  8 +-
- debian.master/control.stub.in                | 94 ++------------------
- debian.master/copyright                      | 22 +++++
- debian.master/rules.d/amd64.mk               | 22 ++---
- debian.master/rules.d/arm64.mk               |  8 +-
- debian.master/rules.d/armhf.mk               |  8 +-
- debian.master/rules.d/i386.mk                | 14 +--
- debian.master/rules.d/ppc64el.mk             | 10 +--
- debian.master/rules.d/s390x.mk               |  8 +-
+ debian.master/control.stub.in                | 78 +-------------------
+ debian.master/copyright                      | 22 ++++++
+ debian.master/rules.d/amd64.mk               | 24 +++---
+ debian.master/rules.d/arm64.mk               | 10 +--
+ debian.master/rules.d/armhf.mk               | 10 +--
+ debian.master/rules.d/i386.mk                | 16 ++--
+ debian.master/rules.d/ppc64el.mk             | 12 +--
+ debian.master/rules.d/s390x.mk               | 10 +--
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 19 ++--
+ debian/rules.d/0-common-vars.mk              | 19 +++--
  debian/rules.d/2-binary-arch.mk              |  4 +
- 14 files changed, 88 insertions(+), 135 deletions(-)
+ 14 files changed, 92 insertions(+), 127 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 918b41abcef0..143bcc6264a7 100644
@@ -61,7 +61,7 @@ index 918b41abcef0..143bcc6264a7 100644
  Architecture: ARCH
  Section: devel
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 4109df0a7119..031c876b8cd8 100644
+index e11700d36cfb..24559b8929c8 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -74,13 +74,7 @@ index 4109df0a7119..031c876b8cd8 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 9),
-@@ -46,47 +47,11 @@ Build-Depends-Indep:
-  asciidoc <!stage1>,
-  python-sphinx <!stage1>,
-  python-sphinx-rtd-theme <!stage1>,
--Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/bionic
-+Vcs-Git: git://github.com/~b-rad-NDi/Ubuntu-media-tree-kernel-builder.git
-+Vcs-Browser: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
+@@ -52,30 +53,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/bionic
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -108,23 +102,10 @@ index 4109df0a7119..031c876b8cd8 100644
 - you do not want this package. Install the appropriate linux-headers
 - package instead.
 -
--Package: SRCPKGNAME-doc
--Build-Profiles: <!stage1>
--Architecture: all
--Section: doc
--Priority: optional
--Depends: ${misc:Depends}
--Description: Linux kernel specific documentation for version PKGVER
-- This package provides the various documents in the PKGVER kernel
-- Documentation/ subdirectory.  These document kernel subsystems, APIs, device
-- drivers, and so on.  See
-- /usr/share/doc/SRCPKGNAME-doc/00-INDEX for a list of what is
-- contained in each file.
--
- Package: SRCPKGNAME-headers-PKGVER-ABINUM
+ Package: SRCPKGNAME-doc
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -99,32 +64,7 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -101,32 +78,7 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -158,7 +139,7 @@ index 4109df0a7119..031c876b8cd8 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 ppc64el s390x
  Section: devel
-@@ -137,18 +77,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -139,18 +91,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -178,7 +159,7 @@ index 4109df0a7119..031c876b8cd8 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
  Section: devel
-@@ -159,14 +88,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -161,14 +102,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   version locked tools for cloud tools for version PKGVER-ABINUM on
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
@@ -224,10 +205,10 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 88c598ba4bec..3b596066adec 100644
+index 3d248c270232..3bcd556b3d85 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -2,22 +2,22 @@ human_arch	= 64 bit x86
+@@ -2,24 +2,24 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -244,6 +225,7 @@ index 88c598ba4bec..3b596066adec 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 -do_tools_x86	= true
 -do_tools_hyperv	= true
 -do_tools_host = true
@@ -252,6 +234,7 @@ index 88c598ba4bec..3b596066adec 100644
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
 +do_tools_x86	= false
 +do_tools_hyperv	= false
 +do_tools_host = false
@@ -261,11 +244,12 @@ index 88c598ba4bec..3b596066adec 100644
 +do_tools_common = false
 +do_tools_acpidbg = false
  do_zfs		= true
+ do_dkms_nvidia  = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index c7e9a9c1e199..de0ab4731b30 100644
+index c49d25e752df..49e2954831e8 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
-@@ -12,10 +12,10 @@ loader		= grub
+@@ -12,11 +12,11 @@ loader		= grub
  vdso		= vdso_install
  
  do_extras_package = true
@@ -273,18 +257,20 @@ index c7e9a9c1e199..de0ab4731b30 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
  
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
-index d516ae13454c..18cd460ff2a4 100644
+index 085e8acdc8aa..5f37244feb69 100644
 --- a/debian.master/rules.d/armhf.mk
 +++ b/debian.master/rules.d/armhf.mk
-@@ -10,9 +10,9 @@ no_dumpfile	= true
+@@ -10,10 +10,10 @@ no_dumpfile	= true
  
  loader		= grub
  
@@ -292,17 +278,19 @@ index d516ae13454c..18cd460ff2a4 100644
 -do_tools_cpupower = true
 -do_tools_perf	= true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf	= false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
  
  do_dtbs		= true
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
-index a422f9feba6c..c3ec338a2d41 100644
+index 89ad2a6c26cf..336f0ddac910 100644
 --- a/debian.master/rules.d/i386.mk
 +++ b/debian.master/rules.d/i386.mk
-@@ -2,17 +2,17 @@ human_arch	= 32 bit x86
+@@ -2,18 +2,18 @@ human_arch	= 32 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -318,20 +306,22 @@ index a422f9feba6c..c3ec338a2d41 100644
 -do_tools_cpupower = true
 -do_tools_perf   = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool = true
 -do_tools_x86	= true
 -do_tools_hyperv = true
 +do_tools_usbip  = false
 +do_tools_cpupower = false
 +do_tools_perf   = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool = false
 +do_tools_x86	= false
 +do_tools_hyperv = false
  do_extras_package = true
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index c540bacaa166..c5f2c5938443 100644
+index 3934ef482a57..7cf1efd64dfa 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
-@@ -10,11 +10,11 @@ no_dumpfile	= true
+@@ -10,12 +10,12 @@ no_dumpfile	= true
  vdso		= vdso_install
  loader		= grub
  do_extras_package = true
@@ -340,19 +330,21 @@ index c540bacaa166..c5f2c5938443 100644
 -do_tools_cpupower = true
 -do_tools_perf	  = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool  = true
 +opal_signed       = false
 +do_tools_usbip    = false
 +do_tools_cpupower = false
 +do_tools_perf	  = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool  = false
  
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index dad66b1a674f..9fd8847d94e3 100644
+index cbc188507892..b6fb07b56a88 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
-@@ -12,9 +12,9 @@ no_dumpfile	= true
+@@ -12,10 +12,10 @@ no_dumpfile	= true
  
  do_extras_package = true
  
@@ -360,10 +352,12 @@ index dad66b1a674f..9fd8847d94e3 100644
 -do_tools_cpupower = true
 -do_tools_perf     = true
 -do_tools_perf_jvmti = true
+-do_tools_bpftool  = true
 +do_tools_usbip    = false
 +do_tools_cpupower = false
 +do_tools_perf     = false
 +do_tools_perf_jvmti = false
++do_tools_bpftool  = false
  
  do_zfs		= true
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
@@ -390,12 +384,12 @@ index ed92b3d53ba5..18505efb1b11 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index cc3a2cc3a238..5af222da7334 100755
+index f732ba6f698d..0de18301db48 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
  
- do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_x86)))
+ do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_bpftool) $(do_tools_x86)))
  do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
 -do_tools_common?=true
 +do_tools_common?=false
@@ -460,10 +454,10 @@ index 44c1ba11908d..1250300af56d 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index ca0109d72e73..f89415637343 100644
+index 0e2b48d4ce5b..8883a436a6e8 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -746,10 +746,14 @@ build-arch: $(build-arch-deps-true)
+@@ -770,10 +770,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
