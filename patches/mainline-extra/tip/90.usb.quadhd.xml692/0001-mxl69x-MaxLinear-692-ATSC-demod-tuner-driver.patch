@@ -368,7 +368,7 @@ index 000000000..e95ffb8f3
 +	}
 +
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +
 +	return status;
 +}
@@ -383,7 +383,7 @@ index 000000000..e95ffb8f3
 +	totalLen = (totalLen + 3) & ~3;  /* 4 byte alignment */
 +
 +	if (totalLen > (MXL_EAGLE_MAX_I2C_PACKET_SIZE - MXL_EAGLE_I2C_MHEADER_SIZE))
-+		pr_err("%s() hrmph?\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() hrmph?\n", __func__);
 +
 +	pLocalBuf = localBuf;
 +
@@ -405,7 +405,7 @@ index 000000000..e95ffb8f3
 +
 +	return status;
 +err_finish:
-+	pr_err("%s() FAIL\n", __func__);
++	dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
 +	return status;
 +}
 +
@@ -435,7 +435,7 @@ index 000000000..e95ffb8f3
 +		status = -EREMOTEIO;
 +
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +
 +	return status;
 +}
@@ -450,7 +450,7 @@ index 000000000..e95ffb8f3
 +	totalLen = (totalLen + 3) & ~3;  /* 4 byte alignment */
 +
 +	if (totalLen > (MXL_EAGLE_MAX_I2C_PACKET_SIZE - MXL_EAGLE_I2C_PHEADER_SIZE))
-+		pr_err("%s() hrmph?\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() hrmph?\n", __func__);
 +
 +	pLocalBuf = localBuf;
 +
@@ -466,7 +466,7 @@ index 000000000..e95ffb8f3
 +	}
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
 +	return status;
 +}
 +
@@ -486,7 +486,7 @@ index 000000000..e95ffb8f3
 +		//read in 4 byte chunks
 +		for (ix=0; ix<size; ix+=4) {
 +			if (mxl692_i2c_read(dev, pBuffer+ix, 4) < 0) {
-+				pr_err("%s() Line %d   ix=%d   size=%d\n", __func__, __LINE__, ix, size);
++				dev_err(&dev->i2c_client->dev, "%s() Line %d   ix=%d   size=%d\n", __func__, __LINE__, ix, size);
 +				status = -EREMOTEIO;
 +				goto err_finish;
 +			}
@@ -496,7 +496,7 @@ index 000000000..e95ffb8f3
 +		status = -EREMOTEIO;
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
 +	return status;
 +}
 +
@@ -558,7 +558,7 @@ index 000000000..e95ffb8f3
 +	         (pRxMsgHeader->checksum == 0));
 +
 +	if ( (timeout == 0) || (status != 0) ) {
-+		pr_err("%s() FAIL Line %d   timeout=%d   status=%d\n", __func__, __LINE__, timeout, status);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL Line %d   timeout=%d   status=%d\n", __func__, __LINE__, timeout, status);
 +		status = -ETIMEDOUT;
 +		goto err_finish;
 +	}
@@ -571,13 +571,13 @@ index 000000000..e95ffb8f3
 +	if ((pRxMsgHeader->seqNum != txMsgHeader->seqNum) ||
 +	    (pRxMsgHeader->opcode != txMsgHeader->opcode) ||
 +	    (pRxMsgHeader->payloadSize != rxExpectedPayloadSize)) {
-+		pr_debug("%s() Something failed seq=%s  opcode=%s  pSize=%s\n",
++		dev_dbg(&dev->i2c_client->dev, "%s() Something failed seq=%s  opcode=%s  pSize=%s\n",
 +		       __func__,
 +		       pRxMsgHeader->seqNum != txMsgHeader->seqNum ? "X" : "0",
 +		       pRxMsgHeader->opcode != txMsgHeader->opcode ? "X" : "0",
 +		       pRxMsgHeader->payloadSize != rxExpectedPayloadSize ? "X" : "0");
 +		if (pRxMsgHeader->payloadSize != rxExpectedPayloadSize)
-+			pr_err("%s() pRxMsgHeader->payloadSize=%d   rxExpectedPayloadSize=%d\n",
++			dev_err(&dev->i2c_client->dev, "%s() pRxMsgHeader->payloadSize=%d   rxExpectedPayloadSize=%d\n",
 +			       __func__, pRxMsgHeader->payloadSize, rxExpectedPayloadSize);
 +		status = -EREMOTEIO;
 +		goto err_finish;
@@ -604,7 +604,7 @@ index 000000000..e95ffb8f3
 +	}
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +
 +	mutex_unlock(&dev->i2c_lock);
 +	return status;
@@ -624,7 +624,7 @@ index 000000000..e95ffb8f3
 +
 +	mutex_lock(&dev->i2c_lock);
 +
-+	pr_err("%s()\n", __func__);
++	dev_err(&dev->i2c_client->dev, "%s()\n", __func__);
 +
 +	status = mxl692_validate_fw_header(pFwBuffer, bufferLen);
 +	if (status != 0)
@@ -662,7 +662,7 @@ index 000000000..e95ffb8f3
 +err_finish:
 +	mutex_unlock(&dev->i2c_lock);
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +	return status;
 +}
 +
@@ -680,9 +680,9 @@ index 000000000..e95ffb8f3
 +	if (status != 0)
 +		return status;
 +
-+	pr_err("MxL692_DEMOD Chip ID: %s \n", chipId[devVersionStruct.chipId]);
++	dev_err(&dev->i2c_client->dev, "MxL692_DEMOD Chip ID: %s \n", chipId[devVersionStruct.chipId]);
 +
-+	pr_err("MxL692_DEMOD FW Version: %d.%d.%d.%d_RC%d \n",
++	dev_err(&dev->i2c_client->dev, "MxL692_DEMOD FW Version: %d.%d.%d.%d_RC%d \n",
 +	       devVersionStruct.firmwareVer[0],
 +	       devVersionStruct.firmwareVer[1],
 +	       devVersionStruct.firmwareVer[2],
@@ -697,7 +697,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 deviceType = MXL_EAGLE_DEVICE_MAX, regValue = 0x2;
 +
-+	pr_err("%s()\n", __func__);
++	dev_err(&dev->i2c_client->dev, "%s()\n", __func__);
 +
 +	/* legacy i2c override */
 +	status = mxl692_memwrite(dev, 0x80000100, (u8*)&regValue, sizeof(u32));
@@ -714,7 +714,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +	return status;
 +}
 +
@@ -724,7 +724,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 regValue;
 +
-+	pr_debug("%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
 +
 +	/* configure main regulator according to the power supply source */
 +	status = mxl692_memread(dev, 0x90000000, (u8*)&regValue, sizeof(u32));
@@ -750,7 +750,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +	return status;
 +}
 +
@@ -760,7 +760,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 regValue, regValue1;
 +
-+	pr_debug("%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
 +
 +	status = mxl692_memread(dev, 0x90000000, (u8*)&regValue, sizeof(u32));
 +	if (status != 0)
@@ -871,7 +871,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +	return status;
 +}
 +
@@ -881,7 +881,7 @@ index 000000000..e95ffb8f3
 +{
 +	int status = 0;
 +
-+	pr_debug("%s() %s\n", __func__, powerMode == MXL_EAGLE_POWER_MODE_SLEEP ?
++	dev_dbg(&dev->i2c_client->dev, "%s() %s\n", __func__, powerMode == MXL_EAGLE_POWER_MODE_SLEEP ?
 +	       "sleep" : "active");
 +
 +	status = mxl692_i2c_writeread(dev,
@@ -891,7 +891,7 @@ index 000000000..e95ffb8f3
 +				      NULL,
 +				      0);
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
 +	return status;
 +}
 +
@@ -929,7 +929,7 @@ index 000000000..e95ffb8f3
 +
 +	status = request_firmware(&firmware, MXL692_FIRMWARE, &client->dev);
 +	if (status) {
-+		pr_err("%s() firmware missing? %s\n", __func__, MXL692_FIRMWARE);
++		dev_err(&dev->i2c_client->dev, "%s() firmware missing? %s\n", __func__, MXL692_FIRMWARE);
 +		return -ENODEV;
 +	}
 +
@@ -996,9 +996,9 @@ index 000000000..e95ffb8f3
 +				      NULL,
 +				      0);
 +	if(status != 0)
-+	    pr_err("DEVICE_DEMODULATOR_TYPE_SET...FAIL  Status:0x%x\n", status);
++	    dev_err(&dev->i2c_client->dev, "DEVICE_DEMODULATOR_TYPE_SET...FAIL  Status:0x%x\n", status);
 +
-+	usleep_range(200 * 1000, 210 * 1000); /* was 500! */
++	usleep_range(300 * 1000, 310 * 1000); /* was 500! */
 +
 +	//Config Device Power Mode
 +	status = mxl692_powermode(dev, powerMode);
@@ -1050,7 +1050,7 @@ index 000000000..e95ffb8f3
 +	tunerChannelParams.bandWidth = MXL_EAGLE_TUNER_BW_6MHz;
 +	tunerChannelParams.tuneMode = MXL_EAGLE_TUNER_CHANNEL_TUNE_MODE_VIEW;
 +
-+	pr_err(" Tuning Freq: %d\n", tunerChannelParams.freqInHz);
++	dev_dbg(&dev->i2c_client->dev, " Tuning Freq: %d\n", tunerChannelParams.freqInHz);
 +
 +	status = mxl692_i2c_writeread(dev,
 +				      MXL_EAGLE_OPCODE_TUNER_CHANNEL_TUNE_SET,
@@ -1094,7 +1094,7 @@ index 000000000..e95ffb8f3
 +	int ret = 0;
 +	*status = 0;
 +
-+	pr_debug("%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
 +	atscStatusStruct = (struct MXL_EAGLE_ATSC_DEMOD_STATUS_T*)&rxBuffer;
 +
 +	switch(demodType)
@@ -1132,7 +1132,7 @@ index 000000000..e95ffb8f3
 +	int mxl_status = 0;
 +	enum MXL_EAGLE_DEMOD_TYPE_E demodType = dev->demodType;
 +
-+	pr_debug("%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
 +	atscStatusStruct = (struct MXL_EAGLE_ATSC_DEMOD_STATUS_T*)&rxBuffer;
 +
 +	switch(demodType)
