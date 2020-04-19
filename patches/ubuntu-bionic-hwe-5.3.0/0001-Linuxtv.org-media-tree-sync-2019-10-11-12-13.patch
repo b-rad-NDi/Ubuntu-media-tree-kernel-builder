@@ -1,6 +1,6 @@
-From f0e352d3ef92edf9f04db9130d0d34e2d3a4cfdd Mon Sep 17 00:00:00 2001
+From 17d68c17e5053b2fd4f033915303be2cb304f6f7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 21 Feb 2020 18:46:24 -0600
+Date: Mon, 20 Apr 2020 11:08:21 -0500
 Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
 
 ---
@@ -69,6 +69,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/adv7180.c                   |   12 +-
  drivers/media/i2c/adv7343.c                   |    5 +-
  drivers/media/i2c/adv748x/adv748x-core.c      |   19 +-
+ drivers/media/i2c/adv748x/adv748x.h           |    8 +-
  drivers/media/i2c/adv7511-v4l2.c              |   28 +-
  drivers/media/i2c/adv7604.c                   |   22 +-
  drivers/media/i2c/adv7842.c                   |   42 +-
@@ -79,10 +80,11 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/max2175.c                   |    9 +-
  drivers/media/i2c/mt9m001.c                   |    7 +-
  drivers/media/i2c/mt9m111.c                   |    7 +-
+ drivers/media/i2c/mt9v032.c                   |   10 +-
  drivers/media/i2c/ov2640.c                    |    7 +-
  drivers/media/i2c/ov2659.c                    |  132 +-
  drivers/media/i2c/ov2680.c                    |    9 +-
- drivers/media/i2c/ov5640.c                    |   14 +-
+ drivers/media/i2c/ov5640.c                    |   16 +-
  drivers/media/i2c/ov5645.c                    |  125 +-
  drivers/media/i2c/ov5647.c                    |    5 +-
  drivers/media/i2c/ov5675.c                    | 1183 +++++++
@@ -104,6 +106,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/tvp7002.c                   |    4 +-
  drivers/media/mc/mc-device.c                  |   67 +-
  drivers/media/mc/mc-devnode.c                 |    1 +
+ drivers/media/mc/mc-entity.c                  |    4 +-
  drivers/media/pci/bt8xx/btcx-risc.c           |    1 +
  drivers/media/pci/bt8xx/bttv-cards.c          |    1 +
  drivers/media/pci/bt8xx/bttv-driver.c         |   20 +-
@@ -123,8 +126,9 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/pci/cx18/cx18-mailbox.c         |    2 +-
  drivers/media/pci/cx23885/altera-ci.c         |    1 +
  drivers/media/pci/cx23885/cx23885-417.c       |    1 -
- drivers/media/pci/cx23885/cx23885-video.c     |    7 +-
- drivers/media/pci/cx23885/cx23885.h           |    2 +-
+ drivers/media/pci/cx23885/cx23885-cards.c     |   24 -
+ drivers/media/pci/cx23885/cx23885-video.c     |   10 +-
+ drivers/media/pci/cx23885/cx23885.h           |    3 +-
  drivers/media/pci/cx23885/cx23888-ir.c        |    5 +-
  drivers/media/pci/cx25821/cx25821-alsa.c      |    1 +
  drivers/media/pci/cx25821/cx25821-cards.c     |    1 +
@@ -182,7 +186,6 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/am437x/am437x-vpfe.h   |   49 +-
  .../media/platform/am437x/am437x-vpfe_regs.h  |   36 +-
  drivers/media/platform/aspeed-video.c         |   16 +-
- drivers/media/platform/atmel/atmel-isi.c      |    2 +-
  .../media/platform/atmel/atmel-sama5d2-isc.c  |    7 +-
  drivers/media/platform/cadence/cdns-csi2tx.c  |  155 +-
  drivers/media/platform/cec-gpio/cec-gpio.c    |   41 +-
@@ -246,7 +249,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/qcom/venus/vdec.c      |  549 +++-
  .../media/platform/qcom/venus/vdec_ctrls.c    |    7 +-
  drivers/media/platform/qcom/venus/venc.c      |   20 +-
- drivers/media/platform/rcar-vin/rcar-core.c   |   62 +-
+ drivers/media/platform/rcar-vin/rcar-core.c   |   60 +-
  drivers/media/platform/rcar-vin/rcar-dma.c    |  114 +-
  drivers/media/platform/rcar-vin/rcar-v4l2.c   |  162 +-
  drivers/media/platform/rcar-vin/rcar-vin.h    |   13 +-
@@ -274,6 +277,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/seco-cec/seco-cec.c    |   55 +-
  drivers/media/platform/sh_veu.c               |   28 +-
  drivers/media/platform/sh_vou.c               |   17 +-
+ drivers/media/platform/sti/bdisp/bdisp-hw.c   |    6 +-
  drivers/media/platform/sti/bdisp/bdisp-v4l2.c |    9 +-
  .../platform/sti/c8sectpfe/c8sectpfe-core.c   |    8 +-
  drivers/media/platform/sti/cec/stih-cec.c     |   32 +-
@@ -333,6 +337,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/radio/wl128x/fmdrv_common.h     |   88 +-
  drivers/media/rc/ene_ir.c                     |    1 +
  drivers/media/rc/fintek-cir.c                 |    1 +
+ drivers/media/rc/iguanair.c                   |    2 +-
  drivers/media/rc/img-ir/img-ir-core.c         |    4 +-
  drivers/media/rc/imon.c                       |   65 +-
  drivers/media/rc/imon_raw.c                   |   43 +-
@@ -354,7 +359,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/rc/mtk-cir.c                    |    6 +-
  drivers/media/rc/nuvoton-cir.c                |    1 +
  drivers/media/rc/rc-core-priv.h               |    2 +-
- drivers/media/rc/rc-main.c                    |    2 +
+ drivers/media/rc/rc-main.c                    |   29 +-
  drivers/media/rc/serial_ir.c                  |    1 +
  drivers/media/rc/sir_ir.c                     |    1 +
  drivers/media/rc/sunxi-cir.c                  |   89 +-
@@ -392,11 +397,13 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/dvb-usb-v2/ec168.c          |    2 +-
  drivers/media/usb/dvb-usb-v2/gl861.c          |  393 +--
  drivers/media/usb/dvb-usb-v2/rtl28xxu.c       |    6 +-
- drivers/media/usb/dvb-usb/af9005.c            |    5 +-
+ drivers/media/usb/dvb-usb/af9005.c            |    7 +-
  drivers/media/usb/dvb-usb/cxusb.c             |  164 +-
+ drivers/media/usb/dvb-usb/digitv.c            |   10 +-
+ drivers/media/usb/dvb-usb/dvb-usb-urb.c       |    2 +-
+ drivers/media/usb/dvb-usb/vp7045.c            |   21 +-
  drivers/media/usb/em28xx/em28xx-audio.c       |    1 -
  drivers/media/usb/em28xx/em28xx-cards.c       |   23 +-
- drivers/media/usb/em28xx/em28xx-core.c        |    2 +-
  drivers/media/usb/em28xx/em28xx-dvb.c         |   32 +-
  drivers/media/usb/em28xx/em28xx-video.c       |   11 +-
  drivers/media/usb/em28xx/em28xx.h             |    5 +-
@@ -411,7 +418,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/gspca/etoms.c               |    1 +
  drivers/media/usb/gspca/finepix.c             |    1 +
  drivers/media/usb/gspca/gl860/gl860.c         |    1 +
- drivers/media/usb/gspca/gspca.c               |   38 +-
+ drivers/media/usb/gspca/gspca.c               |   40 +-
  drivers/media/usb/gspca/jeilinj.c             |    1 +
  drivers/media/usb/gspca/kinect.c              |    1 +
  drivers/media/usb/gspca/konica.c              |    1 +
@@ -481,31 +488,34 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/usbtv/usbtv-video.c         |    2 -
  drivers/media/usb/usbvision/usbvision-video.c |   28 +-
  drivers/media/usb/usbvision/usbvision.h       |    1 -
- drivers/media/usb/uvc/uvc_driver.c            |   28 +-
+ drivers/media/usb/uvc/uvc_driver.c            |   65 +-
  drivers/media/usb/uvc/uvc_v4l2.c              |    2 -
+ drivers/media/usb/uvc/uvcvideo.h              |    1 -
  drivers/media/usb/zr364xx/zr364xx.c           |   12 +-
  drivers/media/v4l2-core/Kconfig               |    5 +
  drivers/media/v4l2-core/Makefile              |   15 +-
  drivers/media/v4l2-core/v4l2-async.c          |   28 +-
  drivers/media/v4l2-core/v4l2-common.c         |  338 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  148 +-
  drivers/media/v4l2-core/v4l2-ctrls.c          |  389 ++-
  drivers/media/v4l2-core/v4l2-dev.c            |    9 +-
  drivers/media/v4l2-core/v4l2-device.c         |   39 +-
  drivers/media/v4l2-core/v4l2-dv-timings.c     |    2 +-
  drivers/media/v4l2-core/v4l2-fwnode.c         |   32 +-
  drivers/media/v4l2-core/v4l2-i2c.c            |  184 ++
- drivers/media/v4l2-core/v4l2-ioctl.c          |  109 +-
- drivers/media/v4l2-core/v4l2-mem2mem.c        |   47 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  133 +-
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |   51 +-
  drivers/media/v4l2-core/v4l2-spi.c            |   78 +
  drivers/media/v4l2-core/v4l2-subdev.c         |    6 +-
  drivers/media/v4l2-core/videobuf-dma-contig.c |    9 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c     |    5 +-
  drivers/staging/media/Kconfig                 |    4 -
  drivers/staging/media/Makefile                |    2 -
  .../staging/media/allegro-dvt/allegro-core.c  |    4 +-
  drivers/staging/media/hantro/Kconfig          |    2 +-
  drivers/staging/media/hantro/Makefile         |    7 +-
  drivers/staging/media/hantro/hantro.h         |   55 +-
- drivers/staging/media/hantro/hantro_drv.c     |  125 +-
+ drivers/staging/media/hantro/hantro_drv.c     |  129 +-
  .../staging/media/hantro/hantro_g1_h264_dec.c |  291 ++
  .../media/hantro/hantro_g1_mpeg2_dec.c        |   25 +-
  .../staging/media/hantro/hantro_g1_vp8_dec.c  |  502 +++
@@ -538,6 +548,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/staging/media/ipu3/ipu3-tables.h      |    4 +-
  drivers/staging/media/ipu3/ipu3.c             |    3 +-
  drivers/staging/media/meson/vdec/esparser.c   |    4 +-
+ drivers/staging/media/meson/vdec/vdec.c       |    2 -
  drivers/staging/media/omap4iss/iss.c          |    1 -
  drivers/staging/media/omap4iss/iss_video.c    |   40 +-
  drivers/staging/media/omap4iss/iss_video.h    |    2 -
@@ -553,6 +564,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/linux/dma-buf.h                       |    4 +-
  include/linux/dma-fence.h                     |   34 +-
  include/linux/kernel_version.h                |    1 +
+ include/linux/mmc/sdio_ids.h                  |    2 -
  include/linux/pci_ids.h                       |   10 +-
  include/media/cec.h                           |   31 -
  include/media/compat.h                        | 2762 +++++++++++++++++
@@ -569,14 +581,16 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/media/v4l2-async.h                    |   30 +-
  include/media/v4l2-common.h                   |  183 +-
  include/media/v4l2-ctrls.h                    |   88 +-
+ include/media/v4l2-device.h                   |   12 +-
  include/media/v4l2-ioctl.h                    |    2 +
+ include/media/v4l2-rect.h                     |    8 +-
  include/media/vp8-ctrls.h                     |  112 +
  include/uapi/linux/cec-funcs.h                |   28 +-
  include/uapi/linux/cec.h                      |  129 +
  include/uapi/linux/media-bus-format.h         |    3 +-
  include/uapi/linux/v4l2-controls.h            |    1 +
  include/uapi/linux/videodev2.h                |   12 +-
- 572 files changed, 18591 insertions(+), 9041 deletions(-)
+ 586 files changed, 18726 insertions(+), 9271 deletions(-)
  create mode 100644 drivers/media/i2c/ov5675.c
  create mode 100644 drivers/media/platform/sunxi/Kconfig
  create mode 100644 drivers/media/platform/sunxi/Makefile
@@ -2936,6 +2950,37 @@ index f57cd77a32fa..23e02ff27b17 100644
  };
  
  module_i2c_driver(adv748x_driver);
+diff --git a/drivers/media/i2c/adv748x/adv748x.h b/drivers/media/i2c/adv748x/adv748x.h
+index fccb388ce179..5042f9e94aee 100644
+--- a/drivers/media/i2c/adv748x/adv748x.h
++++ b/drivers/media/i2c/adv748x/adv748x.h
+@@ -394,10 +394,10 @@ int adv748x_write_block(struct adv748x_state *state, int client_page,
+ 
+ #define io_read(s, r) adv748x_read(s, ADV748X_PAGE_IO, r)
+ #define io_write(s, r, v) adv748x_write(s, ADV748X_PAGE_IO, r, v)
+-#define io_clrset(s, r, m, v) io_write(s, r, (io_read(s, r) & ~(m)) | (v))
++#define io_clrset(s, r, m, v) io_write(s, r, (io_read(s, r) & ~m) | v)
+ 
+ #define hdmi_read(s, r) adv748x_read(s, ADV748X_PAGE_HDMI, r)
+-#define hdmi_read16(s, r, m) (((hdmi_read(s, r) << 8) | hdmi_read(s, (r)+1)) & (m))
++#define hdmi_read16(s, r, m) (((hdmi_read(s, r) << 8) | hdmi_read(s, r+1)) & m)
+ #define hdmi_write(s, r, v) adv748x_write(s, ADV748X_PAGE_HDMI, r, v)
+ 
+ #define repeater_read(s, r) adv748x_read(s, ADV748X_PAGE_REPEATER, r)
+@@ -405,11 +405,11 @@ int adv748x_write_block(struct adv748x_state *state, int client_page,
+ 
+ #define sdp_read(s, r) adv748x_read(s, ADV748X_PAGE_SDP, r)
+ #define sdp_write(s, r, v) adv748x_write(s, ADV748X_PAGE_SDP, r, v)
+-#define sdp_clrset(s, r, m, v) sdp_write(s, r, (sdp_read(s, r) & ~(m)) | (v))
++#define sdp_clrset(s, r, m, v) sdp_write(s, r, (sdp_read(s, r) & ~m) | v)
+ 
+ #define cp_read(s, r) adv748x_read(s, ADV748X_PAGE_CP, r)
+ #define cp_write(s, r, v) adv748x_write(s, ADV748X_PAGE_CP, r, v)
+-#define cp_clrset(s, r, m, v) cp_write(s, r, (cp_read(s, r) & ~(m)) | (v))
++#define cp_clrset(s, r, m, v) cp_write(s, r, (cp_read(s, r) & ~m) | v)
+ 
+ #define tx_read(t, r) adv748x_read(t->state, t->page, r)
+ #define tx_write(t, r, v) adv748x_write(t->state, t->page, r, v)
 diff --git a/drivers/media/i2c/adv7511-v4l2.c b/drivers/media/i2c/adv7511-v4l2.c
 index 2ad6bdf1a9fc..62763ec4cd07 100644
 --- a/drivers/media/i2c/adv7511-v4l2.c
@@ -3362,6 +3407,37 @@ index 12cb012d91f7..17e8253f5748 100644
  	.remove		= mt9m111_remove,
  	.id_table	= mt9m111_id,
  };
+diff --git a/drivers/media/i2c/mt9v032.c b/drivers/media/i2c/mt9v032.c
+index 5bd3ae82992f..4b9b98cf6674 100644
+--- a/drivers/media/i2c/mt9v032.c
++++ b/drivers/media/i2c/mt9v032.c
+@@ -428,12 +428,10 @@ static int mt9v032_enum_mbus_code(struct v4l2_subdev *subdev,
+ 				  struct v4l2_subdev_pad_config *cfg,
+ 				  struct v4l2_subdev_mbus_code_enum *code)
+ {
+-	struct mt9v032 *mt9v032 = to_mt9v032(subdev);
+-
+ 	if (code->index > 0)
+ 		return -EINVAL;
+ 
+-	code->code = mt9v032->format.code;
++	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+ 	return 0;
+ }
+ 
+@@ -441,11 +439,7 @@ static int mt9v032_enum_frame_size(struct v4l2_subdev *subdev,
+ 				   struct v4l2_subdev_pad_config *cfg,
+ 				   struct v4l2_subdev_frame_size_enum *fse)
+ {
+-	struct mt9v032 *mt9v032 = to_mt9v032(subdev);
+-
+-	if (fse->index >= 3)
+-		return -EINVAL;
+-	if (mt9v032->format.code != fse->code)
++	if (fse->index >= 3 || fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
+ 		return -EINVAL;
+ 
+ 	fse->min_width = MT9V032_WINDOW_WIDTH_DEF / (1 << fse->index);
 diff --git a/drivers/media/i2c/ov2640.c b/drivers/media/i2c/ov2640.c
 index ecd167d7c4d2..4a4bd5b665a1 100644
 --- a/drivers/media/i2c/ov2640.c
@@ -3724,7 +3800,7 @@ index b10bcfabaeeb..59cdbc33658c 100644
  		return -EINVAL;
  
 diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-index 75b7cfeaf0eb..500d9bbff10b 100644
+index 2312412dcc51..500d9bbff10b 100644
 --- a/drivers/media/i2c/ov5640.c
 +++ b/drivers/media/i2c/ov5640.c
 @@ -158,8 +158,8 @@ static const int ov5640_framerates[] = {
@@ -3737,6 +3813,15 @@ index 75b7cfeaf0eb..500d9bbff10b 100644
  };
  
  #define OV5640_NUM_SUPPLIES ARRAY_SIZE(ov5640_supply_name)
+@@ -874,7 +874,7 @@ static unsigned long ov5640_calc_sys_clk(struct ov5640_dev *sensor,
+ 			 * We have reached the maximum allowed PLL1 output,
+ 			 * increase sysdiv.
+ 			 */
+-			if (!_rate)
++			if (!rate)
+ 				break;
+ 
+ 			/*
 @@ -1611,11 +1611,6 @@ ov5640_find_mode(struct ov5640_dev *sensor, enum ov5640_frame_rate fr,
  	    !(mode->hact == 640 && mode->vact == 480))
  		return NULL;
@@ -5786,6 +5871,22 @@ index f11382afe23b..e1a3095736fa 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/errno.h>
+diff --git a/drivers/media/mc/mc-entity.c b/drivers/media/mc/mc-entity.c
+index 668770e9f609..7c429ce98bae 100644
+--- a/drivers/media/mc/mc-entity.c
++++ b/drivers/media/mc/mc-entity.c
+@@ -639,9 +639,9 @@ int media_get_pad_index(struct media_entity *entity, bool is_sink,
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < entity->num_pads; i++) {
+-		if (entity->pads[i].flags & MEDIA_PAD_FL_SINK)
++		if (entity->pads[i].flags == MEDIA_PAD_FL_SINK)
+ 			pad_is_sink = true;
+-		else if (entity->pads[i].flags & MEDIA_PAD_FL_SOURCE)
++		else if (entity->pads[i].flags == MEDIA_PAD_FL_SOURCE)
+ 			pad_is_sink = false;
+ 		else
+ 			continue;	/* This is an error! */
 diff --git a/drivers/media/pci/bt8xx/btcx-risc.c b/drivers/media/pci/bt8xx/btcx-risc.c
 index 1139a5ad2418..8a7dfddeafa4 100644
 --- a/drivers/media/pci/bt8xx/btcx-risc.c
@@ -6398,8 +6499,57 @@ index 82f96a4091ac..2327fe612610 100644
  	f->pixelformat = V4L2_PIX_FMT_MPEG;
  
  	return 0;
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index 8e5a2c580821..8644205d3cd3 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -801,25 +801,6 @@ struct cx23885_board cx23885_boards[] = {
+ 		.name		= "Hauppauge WinTV-Starburst2",
+ 		.portb		= CX23885_MPEG_DVB,
+ 	},
+-	[CX23885_BOARD_AVERMEDIA_CE310B] = {
+-		.name		= "AVerMedia CE310B",
+-		.porta		= CX23885_ANALOG_VIDEO,
+-		.force_bff	= 1,
+-		.input          = {{
+-			.type   = CX23885_VMUX_COMPOSITE1,
+-			.vmux   = CX25840_VIN1_CH1 |
+-				  CX25840_NONE_CH2 |
+-				  CX25840_NONE0_CH3,
+-			.amux   = CX25840_AUDIO7,
+-		}, {
+-			.type   = CX23885_VMUX_SVIDEO,
+-			.vmux   = CX25840_VIN8_CH1 |
+-				  CX25840_NONE_CH2 |
+-				  CX25840_VIN7_CH3 |
+-				  CX25840_SVIDEO_ON,
+-			.amux   = CX25840_AUDIO7,
+-		} },
+-	},
+ };
+ const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
+ 
+@@ -1143,10 +1124,6 @@ struct cx23885_subid cx23885_subids[] = {
+ 		.subvendor = 0x0070,
+ 		.subdevice = 0xf02a,
+ 		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST2,
+-	}, {
+-		.subvendor = 0x1461,
+-		.subdevice = 0x3100,
+-		.card      = CX23885_BOARD_AVERMEDIA_CE310B,
+ 	},
+ };
+ const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
+@@ -2371,7 +2348,6 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+ 	case CX23885_BOARD_DVBSKY_T982:
+ 	case CX23885_BOARD_VIEWCAST_260E:
+ 	case CX23885_BOARD_VIEWCAST_460E:
+-	case CX23885_BOARD_AVERMEDIA_CE310B:
+ 		dev->sd_cx25840 = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+ 				&dev->i2c_bus[2].i2c_adap,
+ 				"cx25840", 0x88 >> 1, NULL);
 diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
-index b254473db9a3..8098b15493de 100644
+index ac766c278053..8098b15493de 100644
 --- a/drivers/media/pci/cx23885/cx23885-video.c
 +++ b/drivers/media/pci/cx23885/cx23885-video.c
 @@ -67,7 +67,6 @@ MODULE_PARM_DESC(vid_limit, "capture memory limit in megabytes");
@@ -6410,7 +6560,17 @@ index b254473db9a3..8098b15493de 100644
  		.fourcc   = V4L2_PIX_FMT_YUYV,
  		.depth    = 16,
  		.flags    = FORMAT_FLAGS_PACKED,
-@@ -411,9 +410,9 @@ static int buffer_prepare(struct vb2_buffer *vb)
+@@ -258,8 +257,7 @@ static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
+ 		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
+ 		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
+ 		(dev->board == CX23885_BOARD_VIEWCAST_260E) ||
+-		(dev->board == CX23885_BOARD_VIEWCAST_460E) ||
+-		(dev->board == CX23885_BOARD_AVERMEDIA_CE310B)) {
++		(dev->board == CX23885_BOARD_VIEWCAST_460E)) {
+ 		/* Configure audio routing */
+ 		v4l2_subdev_call(dev->sd_cx25840, audio, s_routing,
+ 			INPUT(input)->amux, 0, 0);
+@@ -412,9 +410,9 @@ static int buffer_prepare(struct vb2_buffer *vb)
  	default:
  		BUG();
  	}
@@ -6422,7 +6582,7 @@ index b254473db9a3..8098b15493de 100644
  		(unsigned long)buf->risc.dma);
  	return 0;
  }
-@@ -647,8 +646,6 @@ static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+@@ -648,8 +646,6 @@ static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
  	if (unlikely(f->index >= ARRAY_SIZE(formats)))
  		return -EINVAL;
  
@@ -6432,7 +6592,7 @@ index b254473db9a3..8098b15493de 100644
  
  	return 0;
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index 9da66fdd5a0d..2bf7752928ef 100644
+index 930ea4b12d3c..2bf7752928ef 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
 @@ -5,6 +5,7 @@
@@ -6443,7 +6603,15 @@ index 9da66fdd5a0d..2bf7752928ef 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/pci.h>
-@@ -127,7 +128,6 @@
+@@ -101,7 +102,6 @@
+ #define CX23885_BOARD_HAUPPAUGE_STARBURST2     59
+ #define CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885 60
+ #define CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885 61
+-#define CX23885_BOARD_AVERMEDIA_CE310B         62
+ 
+ #define GPIO_0 0x00000001
+ #define GPIO_1 0x00000002
+@@ -128,7 +128,6 @@
  	V4L2_STD_PAL_60 |  V4L2_STD_SECAM_L   |  V4L2_STD_SECAM_DK)
  
  struct cx23885_fmt {
@@ -10461,19 +10629,6 @@ index 0aa436623358..eb12f3793062 100644
  
  	if (!video)
  		return -ENOMEM;
-diff --git a/drivers/media/platform/atmel/atmel-isi.c b/drivers/media/platform/atmel/atmel-isi.c
-index d7d94c1a39d3..428f117caa59 100644
---- a/drivers/media/platform/atmel/atmel-isi.c
-+++ b/drivers/media/platform/atmel/atmel-isi.c
-@@ -493,7 +493,7 @@ static void stop_streaming(struct vb2_queue *vq)
- 	spin_unlock_irq(&isi->irqlock);
- 
- 	if (!isi->enable_preview_path) {
--		timeout = jiffies + FRAME_INTERVAL_MILLI_SEC * HZ;
-+		timeout = jiffies + (FRAME_INTERVAL_MILLI_SEC * HZ) / 1000;
- 		/* Wait until the end of the current frame. */
- 		while ((isi_readl(isi, ISI_STATUS) & ISI_CTRL_CDC) &&
- 				time_before(jiffies, timeout))
 diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
 index 266df14da2d5..78381651238d 100644
 --- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
@@ -18941,7 +19096,7 @@ index 114e14e4e41c..501fb8ca55fb 100644
  
  static int venc_probe(struct platform_device *pdev)
 diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
-index 64f9cf790445..334c62805959 100644
+index a6efe1a8099a..334c62805959 100644
 --- a/drivers/media/platform/rcar-vin/rcar-core.c
 +++ b/drivers/media/platform/rcar-vin/rcar-core.c
 @@ -389,6 +389,28 @@ static void rvin_group_put(struct rvin_dev *vin)
@@ -18989,15 +19144,6 @@ index 64f9cf790445..334c62805959 100644
  	ret = v4l2_ctrl_add_handler(&vin->ctrl_handler, subdev->ctrl_handler,
  				    NULL, true);
  	if (ret < 0) {
-@@ -633,7 +664,7 @@ static int rvin_parallel_init(struct rvin_dev *vin)
- 	ret = v4l2_async_notifier_register(&vin->v4l2_dev, &vin->notifier);
- 	if (ret < 0) {
- 		vin_err(vin, "Notifier registration failed\n");
--		v4l2_async_notifier_cleanup(&vin->group->notifier);
-+		v4l2_async_notifier_cleanup(&vin->notifier);
- 		return ret;
- 	}
- 
 @@ -870,6 +901,21 @@ static int rvin_mc_init(struct rvin_dev *vin)
  	if (ret)
  		rvin_group_put(vin);
@@ -21141,6 +21287,30 @@ index 5799aa4b9323..2236702c21b4 100644
  };
  
  static int sh_vou_probe(struct platform_device *pdev)
+diff --git a/drivers/media/platform/sti/bdisp/bdisp-hw.c b/drivers/media/platform/sti/bdisp/bdisp-hw.c
+index a74e9fd65238..4372abbb5950 100644
+--- a/drivers/media/platform/sti/bdisp/bdisp-hw.c
++++ b/drivers/media/platform/sti/bdisp/bdisp-hw.c
+@@ -14,8 +14,8 @@
+ #define MAX_SRC_WIDTH           2048
+ 
+ /* Reset & boot poll config */
+-#define POLL_RST_MAX            500
+-#define POLL_RST_DELAY_MS       2
++#define POLL_RST_MAX            50
++#define POLL_RST_DELAY_MS       20
+ 
+ enum bdisp_target_plan {
+ 	BDISP_RGB,
+@@ -382,7 +382,7 @@ int bdisp_hw_reset(struct bdisp_dev *bdisp)
+ 	for (i = 0; i < POLL_RST_MAX; i++) {
+ 		if (readl(bdisp->regs + BLT_STA1) & BLT_STA1_IDLE)
+ 			break;
+-		udelay(POLL_RST_DELAY_MS * 1000);
++		msleep(POLL_RST_DELAY_MS);
+ 	}
+ 	if (i == POLL_RST_MAX)
+ 		dev_err(bdisp->dev, "Reset timeout\n");
 diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
 index 908e7a144c5b..e90f1ba30574 100644
 --- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
@@ -29547,6 +29717,19 @@ index b74bb13161fd..ecf90f7a79a7 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
+diff --git a/drivers/media/rc/iguanair.c b/drivers/media/rc/iguanair.c
+index a7deca1fefb7..872d6441e512 100644
+--- a/drivers/media/rc/iguanair.c
++++ b/drivers/media/rc/iguanair.c
+@@ -413,7 +413,7 @@ static int iguanair_probe(struct usb_interface *intf,
+ 	int ret, pipein, pipeout;
+ 	struct usb_host_interface *idesc;
+ 
+-	idesc = intf->cur_altsetting;
++	idesc = intf->altsetting;
+ 	if (idesc->desc.bNumEndpoints < 2)
+ 		return -ENODEV;
+ 
 diff --git a/drivers/media/rc/img-ir/img-ir-core.c b/drivers/media/rc/img-ir/img-ir-core.c
 index 7e457f26a595..094aa6a06315 100644
 --- a/drivers/media/rc/img-ir/img-ir-core.c
@@ -30662,7 +30845,7 @@ index 9f21b3e8b377..5f36244cc34f 100644
   *
   * Copyright (C) 2010 by Mauro Carvalho Chehab
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index 7741151606ef..d56f3b892370 100644
+index 6f80c251f641..d56f3b892370 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -3,6 +3,7 @@
@@ -30673,7 +30856,59 @@ index 7741151606ef..d56f3b892370 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <media/rc-core.h>
-@@ -2016,6 +2017,7 @@ static int __init rc_core_init(void)
+@@ -1891,28 +1892,23 @@ int rc_register_device(struct rc_dev *dev)
+ 
+ 	dev->registered = true;
+ 
+-	/*
+-	 * once the the input device is registered in rc_setup_rx_device,
+-	 * userspace can open the input device and rc_open() will be called
+-	 * as a result. This results in driver code being allowed to submit
+-	 * keycodes with rc_keydown, so lirc must be registered first.
+-	 */
+-	if (dev->allowed_protocols != RC_PROTO_BIT_CEC) {
+-		rc = ir_lirc_register(dev);
+-		if (rc < 0)
+-			goto out_dev;
+-	}
+-
+ 	if (dev->driver_type != RC_DRIVER_IR_RAW_TX) {
+ 		rc = rc_setup_rx_device(dev);
+ 		if (rc)
+-			goto out_lirc;
++			goto out_dev;
++	}
++
++	/* Ensure that the lirc kfifo is setup before we start the thread */
++	if (dev->allowed_protocols != RC_PROTO_BIT_CEC) {
++		rc = ir_lirc_register(dev);
++		if (rc < 0)
++			goto out_rx;
+ 	}
+ 
+ 	if (dev->driver_type == RC_DRIVER_IR_RAW) {
+ 		rc = ir_raw_event_register(dev);
+ 		if (rc < 0)
+-			goto out_rx;
++			goto out_lirc;
+ 	}
+ 
+ 	dev_dbg(&dev->dev, "Registered rc%u (driver: %s)\n", dev->minor,
+@@ -1920,11 +1916,11 @@ int rc_register_device(struct rc_dev *dev)
+ 
+ 	return 0;
+ 
+-out_rx:
+-	rc_free_rx_device(dev);
+ out_lirc:
+ 	if (dev->allowed_protocols != RC_PROTO_BIT_CEC)
+ 		ir_lirc_unregister(dev);
++out_rx:
++	rc_free_rx_device(dev);
+ out_dev:
+ 	device_del(&dev->dev);
+ out_rx_free:
+@@ -2021,6 +2017,7 @@ static int __init rc_core_init(void)
  
  	led_trigger_register_simple("rc-feedback", &led_feedback);
  	rc_map_register(&empty_map);
@@ -34449,9 +34684,18 @@ index 1a36bda28542..5016ede7b35f 100644
  		&rtl28xxu_props, "GoTView MasterHD 3", NULL) },
  	{ }
 diff --git a/drivers/media/usb/dvb-usb/af9005.c b/drivers/media/usb/dvb-usb/af9005.c
-index ac93e88d7038..02697d86e8c1 100644
+index 89b4b5d84cdf..02697d86e8c1 100644
 --- a/drivers/media/usb/dvb-usb/af9005.c
 +++ b/drivers/media/usb/dvb-usb/af9005.c
+@@ -554,7 +554,7 @@ static int af9005_boot_packet(struct usb_device *udev, int type, u8 *reply,
+ 			      u8 *buf, int size)
+ {
+ 	u16 checksum;
+-	int act_len = 0, i, ret;
++	int act_len, i, ret;
+ 
+ 	memset(buf, 0, size);
+ 	buf[0] = (u8) (FW_BULKOUT_SIZE & 0xff);
 @@ -976,9 +976,8 @@ static int af9005_identify_state(struct usb_device *udev,
  	else if (reply == 0x02)
  		*cold = 0;
@@ -34688,6 +34932,94 @@ index e3d58f5247ae..f02fa0a67aa4 100644
  static struct usb_driver cxusb_driver = {
  	.name		= "dvb_usb_cxusb",
  	.probe		= cxusb_probe,
+diff --git a/drivers/media/usb/dvb-usb/digitv.c b/drivers/media/usb/dvb-usb/digitv.c
+index 99a39339d45d..dd5bb230cec1 100644
+--- a/drivers/media/usb/dvb-usb/digitv.c
++++ b/drivers/media/usb/dvb-usb/digitv.c
+@@ -230,22 +230,18 @@ static struct rc_map_table rc_map_digitv_table[] = {
+ 
+ static int digitv_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ {
+-	int ret, i;
++	int i;
+ 	u8 key[5];
+ 	u8 b[4] = { 0 };
+ 
+ 	*event = 0;
+ 	*state = REMOTE_NO_KEY_PRESSED;
+ 
+-	ret = digitv_ctrl_msg(d, USB_READ_REMOTE, 0, NULL, 0, &key[1], 4);
+-	if (ret)
+-		return ret;
++	digitv_ctrl_msg(d,USB_READ_REMOTE,0,NULL,0,&key[1],4);
+ 
+ 	/* Tell the device we've read the remote. Not sure how necessary
+ 	   this is, but the Nebula SDK does it. */
+-	ret = digitv_ctrl_msg(d, USB_WRITE_REMOTE, 0, b, 4, NULL, 0);
+-	if (ret)
+-		return ret;
++	digitv_ctrl_msg(d,USB_WRITE_REMOTE,0,b,4,NULL,0);
+ 
+ 	/* if something is inside the buffer, simulate key press */
+ 	if (key[1] != 0)
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb-urb.c b/drivers/media/usb/dvb-usb/dvb-usb-urb.c
+index 2aabf90d8697..c1b4e94a37f8 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb-urb.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-urb.c
+@@ -12,7 +12,7 @@
+ int dvb_usb_generic_rw(struct dvb_usb_device *d, u8 *wbuf, u16 wlen, u8 *rbuf,
+ 	u16 rlen, int delay_ms)
+ {
+-	int actlen = 0, ret = -ENOMEM;
++	int actlen,ret = -ENOMEM;
+ 
+ 	if (!d || wbuf == NULL || wlen == 0)
+ 		return -EINVAL;
+diff --git a/drivers/media/usb/dvb-usb/vp7045.c b/drivers/media/usb/dvb-usb/vp7045.c
+index 2baf57216d19..80c1cf05384b 100644
+--- a/drivers/media/usb/dvb-usb/vp7045.c
++++ b/drivers/media/usb/dvb-usb/vp7045.c
+@@ -96,14 +96,10 @@ static int vp7045_power_ctrl(struct dvb_usb_device *d, int onoff)
+ 
+ static int vp7045_rc_query(struct dvb_usb_device *d)
+ {
+-	int ret;
+ 	u8 key;
++	vp7045_usb_op(d,RC_VAL_READ,NULL,0,&key,1,20);
+ 
+-	ret = vp7045_usb_op(d, RC_VAL_READ, NULL, 0, &key, 1, 20);
+-	if (ret)
+-		return ret;
+-
+-	deb_rc("remote query key: %x\n", key);
++	deb_rc("remote query key: %x %d\n",key,key);
+ 
+ 	if (key != 0x44) {
+ 		/*
+@@ -119,18 +115,15 @@ static int vp7045_rc_query(struct dvb_usb_device *d)
+ 
+ static int vp7045_read_eeprom(struct dvb_usb_device *d,u8 *buf, int len, int offset)
+ {
+-	int i, ret;
+-	u8 v, br[2];
++	int i = 0;
++	u8 v,br[2];
+ 	for (i=0; i < len; i++) {
+ 		v = offset + i;
+-		ret = vp7045_usb_op(d, GET_EE_VALUE, &v, 1, br, 2, 5);
+-		if (ret)
+-			return ret;
+-
++		vp7045_usb_op(d,GET_EE_VALUE,&v,1,br,2,5);
+ 		buf[i] = br[1];
+ 	}
+-	deb_info("VP7045 EEPROM read (offs: %d, len: %d) : ", offset, i);
+-	debug_dump(buf, i, deb_info);
++	deb_info("VP7045 EEPROM read (offs: %d, len: %d) : ",offset, i);
++	debug_dump(buf,i,deb_info);
+ 	return 0;
+ }
+ 
 diff --git a/drivers/media/usb/em28xx/em28xx-audio.c b/drivers/media/usb/em28xx/em28xx-audio.c
 index 49c9b70b632b..79dfbb25714b 100644
 --- a/drivers/media/usb/em28xx/em28xx-audio.c
@@ -34753,19 +35085,6 @@ index 1de835a591a0..def9cdd931a9 100644
  	/* Check to see next free device and mark as used */
  	do {
  		nr = find_first_zero_bit(em28xx_devused, EM28XX_MAXBOARDS);
-diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 2b8c84a5c9a8..e6088b5d1b80 100644
---- a/drivers/media/usb/em28xx/em28xx-core.c
-+++ b/drivers/media/usb/em28xx/em28xx-core.c
-@@ -931,7 +931,7 @@ int em28xx_alloc_urbs(struct em28xx *dev, enum em28xx_mode mode, int xfer_bulk,
- 
- 	usb_bufs->buf = kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
- 	if (!usb_bufs->buf) {
--		kfree(usb_bufs->buf);
-+		kfree(usb_bufs->urb);
- 		return -ENOMEM;
- 	}
- 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
 index a73faf12f7e4..930cef9025d6 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
@@ -35174,7 +35493,7 @@ index 2c05ea2598e7..745fcc3af105 100644
  
  #include "gspca.h"
 diff --git a/drivers/media/usb/gspca/gspca.c b/drivers/media/usb/gspca/gspca.c
-index be11f7830bca..31a4585a83b6 100644
+index 7bc833982c46..31a4585a83b6 100644
 --- a/drivers/media/usb/gspca/gspca.c
 +++ b/drivers/media/usb/gspca/gspca.c
 @@ -8,6 +8,7 @@
@@ -35263,6 +35582,15 @@ index be11f7830bca..31a4585a83b6 100644
  	return 0;
  }
  
+@@ -1468,7 +1462,7 @@ int gspca_dev_probe2(struct usb_interface *intf,
+ 		pr_err("couldn't kzalloc gspca struct\n");
+ 		return -ENOMEM;
+ 	}
+-	gspca_dev->usb_buf = kzalloc(USB_BUF_SZ, GFP_KERNEL);
++	gspca_dev->usb_buf = kmalloc(USB_BUF_SZ, GFP_KERNEL);
+ 	if (!gspca_dev->usb_buf) {
+ 		pr_err("out of memory\n");
+ 		ret = -ENOMEM;
 diff --git a/drivers/media/usb/gspca/jeilinj.c b/drivers/media/usb/gspca/jeilinj.c
 index 20b2468d065b..94f5ff13bdba 100644
 --- a/drivers/media/usb/gspca/jeilinj.c
@@ -36514,10 +36842,59 @@ index 4198f972a47b..11539578e8d2 100644
  #define USBVISION_SUPPORTED_PALETTES ARRAY_SIZE(usbvision_v4l2_format)
  
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 428235ca2635..66ee168ddc7e 100644
+index 99883550375e..66ee168ddc7e 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2151,20 +2151,6 @@ static int uvc_probe(struct usb_interface *intf,
+@@ -497,22 +497,6 @@ static int uvc_parse_format(struct uvc_device *dev,
+ 			}
+ 		}
+ 
+-		/* Some devices report bpp that doesn't match the format. */
+-		if (dev->quirks & UVC_QUIRK_FORCE_BPP) {
+-			const struct v4l2_format_info *info =
+-				v4l2_format_info(format->fcc);
+-
+-			if (info) {
+-				unsigned int div = info->hdiv * info->vdiv;
+-
+-				n = info->bpp[0] * div;
+-				for (i = 1; i < info->comp_planes; i++)
+-					n += info->bpp[i];
+-
+-				format->bpp = DIV_ROUND_UP(8 * n, div);
+-			}
+-		}
+-
+ 		if (buffer[2] == UVC_VS_FORMAT_UNCOMPRESSED) {
+ 			ftype = UVC_VS_FRAME_UNCOMPRESSED;
+ 		} else {
+@@ -1509,11 +1493,6 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
+ 			break;
+ 		if (forward == prev)
+ 			continue;
+-		if (forward->chain.next || forward->chain.prev) {
+-			uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+-				"entity %d already in chain.\n", forward->id);
+-			return -EINVAL;
+-		}
+ 
+ 		switch (UVC_ENTITY_TYPE(forward)) {
+ 		case UVC_VC_EXTENSION_UNIT:
+@@ -1595,13 +1574,6 @@ static int uvc_scan_chain_backward(struct uvc_video_chain *chain,
+ 				return -1;
+ 			}
+ 
+-			if (term->chain.next || term->chain.prev) {
+-				uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+-					"entity %d already in chain.\n",
+-					term->id);
+-				return -EINVAL;
+-			}
+-
+ 			if (uvc_trace_param & UVC_TRACE_PROBE)
+ 				printk(KERN_CONT " %d", term->id);
+ 
+@@ -2179,20 +2151,6 @@ static int uvc_probe(struct usb_interface *intf,
  			   sizeof(dev->name) - len);
  	}
  
@@ -36538,7 +36915,7 @@ index 428235ca2635..66ee168ddc7e 100644
  	/* Parse the Video Class control descriptor. */
  	if (uvc_parse_control(dev) < 0) {
  		uvc_trace(UVC_TRACE_PROBE, "Unable to parse UVC "
-@@ -2185,7 +2171,19 @@ static int uvc_probe(struct usb_interface *intf,
+@@ -2213,7 +2171,19 @@ static int uvc_probe(struct usb_interface *intf,
  			"linux-uvc-devel mailing list.\n");
  	}
  
@@ -36559,6 +36936,22 @@ index 428235ca2635..66ee168ddc7e 100644
  	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
  		goto error;
  
+@@ -2890,15 +2860,6 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= (kernel_ulong_t)&uvc_quirk_force_y8 },
+-	/* GEO Semiconductor GC6500 */
+-	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+-				| USB_DEVICE_ID_MATCH_INT_INFO,
+-	  .idVendor		= 0x29fe,
+-	  .idProduct		= 0x4d53,
+-	  .bInterfaceClass	= USB_CLASS_VIDEO,
+-	  .bInterfaceSubClass	= 1,
+-	  .bInterfaceProtocol	= 0,
+-	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_BPP) },
+ 	/* Intel RealSense D4M */
+ 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+ 				| USB_DEVICE_ID_MATCH_INT_INFO,
 diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
 index 203329cadbc4..0335e69b70ab 100644
 --- a/drivers/media/usb/uvc/uvc_v4l2.c
@@ -36579,6 +36972,18 @@ index 203329cadbc4..0335e69b70ab 100644
  
  done:
  	mutex_unlock(&stream->mutex);
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 24e3d8c647e7..c7c1baa90dea 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -198,7 +198,6 @@
+ #define UVC_QUIRK_RESTRICT_FRAME_RATE	0x00000200
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+-#define UVC_QUIRK_FORCE_BPP		0x00001000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
 diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
 index a9bcba4fa9c6..aff78d63b869 100644
 --- a/drivers/media/usb/zr364xx/zr364xx.c
@@ -37119,6 +37524,298 @@ index f8ad1c580a3e..d0e5ebc736f9 100644
  	};
  	unsigned int i;
  
+diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+index 7ad6db8dd9f6..e1eaf1135c7f 100644
+--- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
++++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+@@ -1183,38 +1183,36 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	u32 aux_space;
+ 	int compatible_arg = 1;
+ 	long err = 0;
+-	unsigned int ncmd;
+ 
+ 	/*
+ 	 * 1. When struct size is different, converts the command.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_G_FMT32: ncmd = VIDIOC_G_FMT; break;
+-	case VIDIOC_S_FMT32: ncmd = VIDIOC_S_FMT; break;
+-	case VIDIOC_QUERYBUF32: ncmd = VIDIOC_QUERYBUF; break;
+-	case VIDIOC_G_FBUF32: ncmd = VIDIOC_G_FBUF; break;
+-	case VIDIOC_S_FBUF32: ncmd = VIDIOC_S_FBUF; break;
+-	case VIDIOC_QBUF32: ncmd = VIDIOC_QBUF; break;
+-	case VIDIOC_DQBUF32: ncmd = VIDIOC_DQBUF; break;
+-	case VIDIOC_ENUMSTD32: ncmd = VIDIOC_ENUMSTD; break;
+-	case VIDIOC_ENUMINPUT32: ncmd = VIDIOC_ENUMINPUT; break;
+-	case VIDIOC_TRY_FMT32: ncmd = VIDIOC_TRY_FMT; break;
+-	case VIDIOC_G_EXT_CTRLS32: ncmd = VIDIOC_G_EXT_CTRLS; break;
+-	case VIDIOC_S_EXT_CTRLS32: ncmd = VIDIOC_S_EXT_CTRLS; break;
+-	case VIDIOC_TRY_EXT_CTRLS32: ncmd = VIDIOC_TRY_EXT_CTRLS; break;
+-	case VIDIOC_DQEVENT32: ncmd = VIDIOC_DQEVENT; break;
+-	case VIDIOC_OVERLAY32: ncmd = VIDIOC_OVERLAY; break;
+-	case VIDIOC_STREAMON32: ncmd = VIDIOC_STREAMON; break;
+-	case VIDIOC_STREAMOFF32: ncmd = VIDIOC_STREAMOFF; break;
+-	case VIDIOC_G_INPUT32: ncmd = VIDIOC_G_INPUT; break;
+-	case VIDIOC_S_INPUT32: ncmd = VIDIOC_S_INPUT; break;
+-	case VIDIOC_G_OUTPUT32: ncmd = VIDIOC_G_OUTPUT; break;
+-	case VIDIOC_S_OUTPUT32: ncmd = VIDIOC_S_OUTPUT; break;
+-	case VIDIOC_CREATE_BUFS32: ncmd = VIDIOC_CREATE_BUFS; break;
+-	case VIDIOC_PREPARE_BUF32: ncmd = VIDIOC_PREPARE_BUF; break;
+-	case VIDIOC_G_EDID32: ncmd = VIDIOC_G_EDID; break;
+-	case VIDIOC_S_EDID32: ncmd = VIDIOC_S_EDID; break;
+-	default: ncmd = cmd; break;
++	case VIDIOC_G_FMT32: cmd = VIDIOC_G_FMT; break;
++	case VIDIOC_S_FMT32: cmd = VIDIOC_S_FMT; break;
++	case VIDIOC_QUERYBUF32: cmd = VIDIOC_QUERYBUF; break;
++	case VIDIOC_G_FBUF32: cmd = VIDIOC_G_FBUF; break;
++	case VIDIOC_S_FBUF32: cmd = VIDIOC_S_FBUF; break;
++	case VIDIOC_QBUF32: cmd = VIDIOC_QBUF; break;
++	case VIDIOC_DQBUF32: cmd = VIDIOC_DQBUF; break;
++	case VIDIOC_ENUMSTD32: cmd = VIDIOC_ENUMSTD; break;
++	case VIDIOC_ENUMINPUT32: cmd = VIDIOC_ENUMINPUT; break;
++	case VIDIOC_TRY_FMT32: cmd = VIDIOC_TRY_FMT; break;
++	case VIDIOC_G_EXT_CTRLS32: cmd = VIDIOC_G_EXT_CTRLS; break;
++	case VIDIOC_S_EXT_CTRLS32: cmd = VIDIOC_S_EXT_CTRLS; break;
++	case VIDIOC_TRY_EXT_CTRLS32: cmd = VIDIOC_TRY_EXT_CTRLS; break;
++	case VIDIOC_DQEVENT32: cmd = VIDIOC_DQEVENT; break;
++	case VIDIOC_OVERLAY32: cmd = VIDIOC_OVERLAY; break;
++	case VIDIOC_STREAMON32: cmd = VIDIOC_STREAMON; break;
++	case VIDIOC_STREAMOFF32: cmd = VIDIOC_STREAMOFF; break;
++	case VIDIOC_G_INPUT32: cmd = VIDIOC_G_INPUT; break;
++	case VIDIOC_S_INPUT32: cmd = VIDIOC_S_INPUT; break;
++	case VIDIOC_G_OUTPUT32: cmd = VIDIOC_G_OUTPUT; break;
++	case VIDIOC_S_OUTPUT32: cmd = VIDIOC_S_OUTPUT; break;
++	case VIDIOC_CREATE_BUFS32: cmd = VIDIOC_CREATE_BUFS; break;
++	case VIDIOC_PREPARE_BUF32: cmd = VIDIOC_PREPARE_BUF; break;
++	case VIDIOC_G_EDID32: cmd = VIDIOC_G_EDID; break;
++	case VIDIOC_S_EDID32: cmd = VIDIOC_S_EDID; break;
+ 	}
+ 
+ 	/*
+@@ -1223,11 +1221,11 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * argument into it.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_OVERLAY32:
+-	case VIDIOC_STREAMON32:
+-	case VIDIOC_STREAMOFF32:
+-	case VIDIOC_S_INPUT32:
+-	case VIDIOC_S_OUTPUT32:
++	case VIDIOC_OVERLAY:
++	case VIDIOC_STREAMON:
++	case VIDIOC_STREAMOFF:
++	case VIDIOC_S_INPUT:
++	case VIDIOC_S_OUTPUT:
+ 		err = alloc_userspace(sizeof(unsigned int), 0, &new_p64);
+ 		if (!err && assign_in_user((unsigned int __user *)new_p64,
+ 					   (compat_uint_t __user *)p32))
+@@ -1235,23 +1233,23 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_INPUT32:
+-	case VIDIOC_G_OUTPUT32:
++	case VIDIOC_G_INPUT:
++	case VIDIOC_G_OUTPUT:
+ 		err = alloc_userspace(sizeof(unsigned int), 0, &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_EDID32:
+-	case VIDIOC_S_EDID32:
++	case VIDIOC_G_EDID:
++	case VIDIOC_S_EDID:
+ 		err = alloc_userspace(sizeof(struct v4l2_edid), 0, &new_p64);
+ 		if (!err)
+ 			err = get_v4l2_edid32(new_p64, p32);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_FMT32:
+-	case VIDIOC_S_FMT32:
+-	case VIDIOC_TRY_FMT32:
++	case VIDIOC_G_FMT:
++	case VIDIOC_S_FMT:
++	case VIDIOC_TRY_FMT:
+ 		err = bufsize_v4l2_format(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_format),
+@@ -1264,7 +1262,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_CREATE_BUFS32:
++	case VIDIOC_CREATE_BUFS:
+ 		err = bufsize_v4l2_create(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_create_buffers),
+@@ -1277,10 +1275,10 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_PREPARE_BUF32:
+-	case VIDIOC_QUERYBUF32:
+-	case VIDIOC_QBUF32:
+-	case VIDIOC_DQBUF32:
++	case VIDIOC_PREPARE_BUF:
++	case VIDIOC_QUERYBUF:
++	case VIDIOC_QBUF:
++	case VIDIOC_DQBUF:
+ 		err = bufsize_v4l2_buffer(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_buffer),
+@@ -1293,7 +1291,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_S_FBUF32:
++	case VIDIOC_S_FBUF:
+ 		err = alloc_userspace(sizeof(struct v4l2_framebuffer), 0,
+ 				      &new_p64);
+ 		if (!err)
+@@ -1301,13 +1299,13 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_FBUF32:
++	case VIDIOC_G_FBUF:
+ 		err = alloc_userspace(sizeof(struct v4l2_framebuffer), 0,
+ 				      &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_ENUMSTD32:
++	case VIDIOC_ENUMSTD:
+ 		err = alloc_userspace(sizeof(struct v4l2_standard), 0,
+ 				      &new_p64);
+ 		if (!err)
+@@ -1315,16 +1313,16 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_ENUMINPUT32:
++	case VIDIOC_ENUMINPUT:
+ 		err = alloc_userspace(sizeof(struct v4l2_input), 0, &new_p64);
+ 		if (!err)
+ 			err = get_v4l2_input32(new_p64, p32);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_EXT_CTRLS32:
+-	case VIDIOC_S_EXT_CTRLS32:
+-	case VIDIOC_TRY_EXT_CTRLS32:
++	case VIDIOC_G_EXT_CTRLS:
++	case VIDIOC_S_EXT_CTRLS:
++	case VIDIOC_TRY_EXT_CTRLS:
+ 		err = bufsize_v4l2_ext_controls(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_ext_controls),
+@@ -1336,7 +1334,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		}
+ 		compatible_arg = 0;
+ 		break;
+-	case VIDIOC_DQEVENT32:
++	case VIDIOC_DQEVENT:
+ 		err = alloc_userspace(sizeof(struct v4l2_event), 0, &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+@@ -1354,9 +1352,9 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * Otherwise, it will pass the newly allocated @new_p64 argument.
+ 	 */
+ 	if (compatible_arg)
+-		err = native_ioctl(file, ncmd, (unsigned long)p32);
++		err = native_ioctl(file, cmd, (unsigned long)p32);
+ 	else
+-		err = native_ioctl(file, ncmd, (unsigned long)new_p64);
++		err = native_ioctl(file, cmd, (unsigned long)new_p64);
+ 
+ 	if (err == -ENOTTY)
+ 		return err;
+@@ -1372,13 +1370,13 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * the blocks to maximum allowed value.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_G_EXT_CTRLS32:
+-	case VIDIOC_S_EXT_CTRLS32:
+-	case VIDIOC_TRY_EXT_CTRLS32:
++	case VIDIOC_G_EXT_CTRLS:
++	case VIDIOC_S_EXT_CTRLS:
++	case VIDIOC_TRY_EXT_CTRLS:
+ 		if (put_v4l2_ext_controls32(file, new_p64, p32))
+ 			err = -EFAULT;
+ 		break;
+-	case VIDIOC_S_EDID32:
++	case VIDIOC_S_EDID:
+ 		if (put_v4l2_edid32(new_p64, p32))
+ 			err = -EFAULT;
+ 		break;
+@@ -1391,49 +1389,49 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * the original 32 bits structure.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_S_INPUT32:
+-	case VIDIOC_S_OUTPUT32:
+-	case VIDIOC_G_INPUT32:
+-	case VIDIOC_G_OUTPUT32:
++	case VIDIOC_S_INPUT:
++	case VIDIOC_S_OUTPUT:
++	case VIDIOC_G_INPUT:
++	case VIDIOC_G_OUTPUT:
+ 		if (assign_in_user((compat_uint_t __user *)p32,
+ 				   ((unsigned int __user *)new_p64)))
+ 			err = -EFAULT;
+ 		break;
+ 
+-	case VIDIOC_G_FBUF32:
++	case VIDIOC_G_FBUF:
+ 		err = put_v4l2_framebuffer32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_DQEVENT32:
++	case VIDIOC_DQEVENT:
+ 		err = put_v4l2_event32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_G_EDID32:
++	case VIDIOC_G_EDID:
+ 		err = put_v4l2_edid32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_G_FMT32:
+-	case VIDIOC_S_FMT32:
+-	case VIDIOC_TRY_FMT32:
++	case VIDIOC_G_FMT:
++	case VIDIOC_S_FMT:
++	case VIDIOC_TRY_FMT:
+ 		err = put_v4l2_format32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_CREATE_BUFS32:
++	case VIDIOC_CREATE_BUFS:
+ 		err = put_v4l2_create32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_PREPARE_BUF32:
+-	case VIDIOC_QUERYBUF32:
+-	case VIDIOC_QBUF32:
+-	case VIDIOC_DQBUF32:
++	case VIDIOC_PREPARE_BUF:
++	case VIDIOC_QUERYBUF:
++	case VIDIOC_QBUF:
++	case VIDIOC_DQBUF:
+ 		err = put_v4l2_buffer32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_ENUMSTD32:
++	case VIDIOC_ENUMSTD:
+ 		err = put_v4l2_standard32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_ENUMINPUT32:
++	case VIDIOC_ENUMINPUT:
+ 		err = put_v4l2_input32(new_p64, p32);
+ 		break;
+ 	}
 diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
 index 67efaed804d5..39090ddfe6bf 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls.c
@@ -38271,7 +38968,7 @@ index 000000000000..5bf99e7c0c09
 +}
 +EXPORT_SYMBOL_GPL(v4l2_i2c_tuner_addrs);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 874030dcd23c..92dea1ef00a1 100644
+index b0f4b8d783ae..92dea1ef00a1 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -1051,20 +1051,25 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
@@ -38455,6 +39152,48 @@ index 874030dcd23c..92dea1ef00a1 100644
  static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
  				struct file *file, void *fh, void *arg)
  {
+@@ -1582,12 +1602,12 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_s_fmt_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_sliced_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_s_fmt_sliced_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_vid_out))
+@@ -1613,22 +1633,22 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_s_fmt_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_sliced_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_s_fmt_sliced_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_sdr_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_s_fmt_sdr_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_sdr_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_s_fmt_sdr_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_meta_cap))
 @@ -1648,6 +1668,7 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
  				struct file *file, void *fh, void *arg)
  {
@@ -38472,6 +39211,48 @@ index 874030dcd23c..92dea1ef00a1 100644
  		return ret;
  	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
  		if (unlikely(!ops->vidioc_try_fmt_vid_cap_mplane))
+@@ -1681,12 +1704,12 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_try_fmt_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_sliced_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_try_fmt_sliced_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_vid_out))
+@@ -1712,22 +1735,22 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_try_fmt_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_sliced_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_try_fmt_sliced_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_sdr_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_try_fmt_sdr_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_sdr_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_try_fmt_sdr_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_meta_cap))
 @@ -2168,9 +2191,11 @@ static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
  
  	p->error_idx = p->count;
@@ -38515,7 +39296,7 @@ index 874030dcd23c..92dea1ef00a1 100644
  		return -ENOTTY;
  	return check_ext_ctrls(p, 0) ? ops->vidioc_try_ext_ctrls(file, fh, p) :
 diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index 4f5176702937..19937dd3c6f6 100644
+index 4e8c96b1a525..19937dd3c6f6 100644
 --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
 +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
 @@ -603,11 +603,10 @@ int v4l2_m2m_streamoff(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
@@ -38601,6 +39382,21 @@ index 4f5176702937..19937dd3c6f6 100644
  	return rc;
  }
  EXPORT_SYMBOL_GPL(v4l2_m2m_poll);
+@@ -802,12 +809,12 @@ int v4l2_m2m_register_media_controller(struct v4l2_m2m_dev *m2m_dev,
+ 		goto err_rel_entity1;
+ 
+ 	/* Connect the three entities */
+-	ret = media_create_pad_link(m2m_dev->source, 0, &m2m_dev->proc, 0,
++	ret = media_create_pad_link(m2m_dev->source, 0, &m2m_dev->proc, 1,
+ 			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
+ 		goto err_rel_entity2;
+ 
+-	ret = media_create_pad_link(&m2m_dev->proc, 1, &m2m_dev->sink, 0,
++	ret = media_create_pad_link(&m2m_dev->proc, 0, &m2m_dev->sink, 0,
+ 			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
+ 		goto err_rm_links0;
 diff --git a/drivers/media/v4l2-core/v4l2-spi.c b/drivers/media/v4l2-core/v4l2-spi.c
 new file mode 100644
 index 000000000000..eadecdff7349
@@ -38751,6 +39547,23 @@ index 76b4ac7b1678..aeb2f497c683 100644
  
  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
  		ret = follow_pfn(vma, user_address, &this_pfn);
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index 28262190c3ab..66a6c6c236a7 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -349,11 +349,8 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
+ 	BUG_ON(dma->sglen);
+ 
+ 	if (dma->pages) {
+-		for (i = 0; i < dma->nr_pages; i++) {
+-			if (dma->direction == DMA_FROM_DEVICE)
+-				set_page_dirty_lock(dma->pages[i]);
++		for (i = 0; i < dma->nr_pages; i++)
+ 			put_page(dma->pages[i]);
+-		}
+ 		kfree(dma->pages);
+ 		dma->pages = NULL;
+ 	}
 diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
 index 534d85d6c5e3..642adc4c24d2 100644
 --- a/drivers/staging/media/Kconfig
@@ -38959,7 +39772,7 @@ index 62dcca9ff19c..deb90ae37859 100644
  
  #endif /* HANTRO_H_ */
 diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 46dcb46bb927..26108c96b674 100644
+index e8a02fbd9fdc..26108c96b674 100644
 --- a/drivers/staging/media/hantro/hantro_drv.c
 +++ b/drivers/staging/media/hantro/hantro_drv.c
 @@ -43,8 +43,9 @@ void *hantro_get_ctrl(struct hantro_ctx *ctx, u32 id)
@@ -39178,6 +39991,22 @@ index 46dcb46bb927..26108c96b674 100644
  	{ .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
  #endif
  	{ /* sentinel */ }
+@@ -490,13 +553,13 @@ static int hantro_attach_func(struct hantro_dev *vpu,
+ 		goto err_rel_entity1;
+ 
+ 	/* Connect the three entities */
+-	ret = media_create_pad_link(&func->vdev.entity, 0, &func->proc, 0,
++	ret = media_create_pad_link(&func->vdev.entity, 0, &func->proc, 1,
+ 				    MEDIA_LNK_FL_IMMUTABLE |
+ 				    MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
+ 		goto err_rel_entity2;
+ 
+-	ret = media_create_pad_link(&func->proc, 1, &func->sink, 0,
++	ret = media_create_pad_link(&func->proc, 0, &func->sink, 0,
+ 				    MEDIA_LNK_FL_IMMUTABLE |
+ 				    MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
 @@ -734,10 +797,8 @@ static int hantro_probe(struct platform_device *pdev)
  			continue;
  
@@ -43992,6 +44821,19 @@ index 3a21a8cec799..95102a4bdc62 100644
  
  	ret = devm_request_irq(dev, irq, esparser_isr, IRQF_SHARED,
  			       "esparserirq", core);
+diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+index 8dd1396909d7..0a1a04fd5d13 100644
+--- a/drivers/staging/media/meson/vdec/vdec.c
++++ b/drivers/staging/media/meson/vdec/vdec.c
+@@ -133,8 +133,6 @@ vdec_queue_recycle(struct amvdec_session *sess, struct vb2_buffer *vb)
+ 	struct amvdec_buffer *new_buf;
+ 
+ 	new_buf = kmalloc(sizeof(*new_buf), GFP_KERNEL);
+-	if (!new_buf)
+-		return;
+ 	new_buf->vb = vb;
+ 
+ 	mutex_lock(&sess->bufs_recycle_lock);
 diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
 index c8be1db532ab..1a966cb2f3a6 100644
 --- a/drivers/staging/media/omap4iss/iss.c
@@ -44773,6 +45615,19 @@ index 000000000000..c39cf53c8354
 +++ b/include/linux/kernel_version.h
 @@ -0,0 +1 @@
 +#define V4L2_VERSION 328704
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index 08b25c02b5a1..d1a5d5df02f5 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -71,8 +71,6 @@
+ 
+ #define SDIO_VENDOR_ID_TI			0x0097
+ #define SDIO_DEVICE_ID_TI_WL1271		0x4076
+-#define SDIO_VENDOR_ID_TI_WL1251		0x104c
+-#define SDIO_DEVICE_ID_TI_WL1251		0x9066
+ 
+ #define SDIO_VENDOR_ID_STE			0x0020
+ #define SDIO_DEVICE_ID_STE_CW1200		0x2280
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
 index 290db814b735..21a572469a4e 100644
 --- a/include/linux/pci_ids.h
@@ -48454,6 +49309,50 @@ index b4433483af23..26205ba3a0a0 100644
  		     struct media_device *mdev,
  		     struct v4l2_ext_controls *c);
  
+diff --git a/include/media/v4l2-device.h b/include/media/v4l2-device.h
+index a0e93f0ef62a..e0b8f2602670 100644
+--- a/include/media/v4l2-device.h
++++ b/include/media/v4l2-device.h
+@@ -371,7 +371,7 @@ static inline bool v4l2_device_supports_requests(struct v4l2_device *v4l2_dev)
+ 		struct v4l2_subdev *__sd;				\
+ 									\
+ 		__v4l2_device_call_subdevs_p(v4l2_dev, __sd,		\
+-			(grpid) == 0 || __sd->grp_id == (grpid), o, f ,	\
++			!(grpid) || __sd->grp_id == (grpid), o, f ,	\
+ 			##args);					\
+ 	} while (0)
+ 
+@@ -403,7 +403,7 @@ static inline bool v4l2_device_supports_requests(struct v4l2_device *v4l2_dev)
+ ({									\
+ 	struct v4l2_subdev *__sd;					\
+ 	__v4l2_device_call_subdevs_until_err_p(v4l2_dev, __sd,		\
+-			(grpid) == 0 || __sd->grp_id == (grpid), o, f ,	\
++			!(grpid) || __sd->grp_id == (grpid), o, f ,	\
+ 			##args);					\
+ })
+ 
+@@ -431,8 +431,8 @@ static inline bool v4l2_device_supports_requests(struct v4l2_device *v4l2_dev)
+ 		struct v4l2_subdev *__sd;				\
+ 									\
+ 		__v4l2_device_call_subdevs_p(v4l2_dev, __sd,		\
+-			(grpmsk) == 0 || (__sd->grp_id & (grpmsk)), o,	\
+-			f , ##args);					\
++			!(grpmsk) || (__sd->grp_id & (grpmsk)), o, f ,	\
++			##args);					\
+ 	} while (0)
+ 
+ /**
+@@ -462,8 +462,8 @@ static inline bool v4l2_device_supports_requests(struct v4l2_device *v4l2_dev)
+ ({									\
+ 	struct v4l2_subdev *__sd;					\
+ 	__v4l2_device_call_subdevs_until_err_p(v4l2_dev, __sd,		\
+-			(grpmsk) == 0 || (__sd->grp_id & (grpmsk)), o,	\
+-			f , ##args);					\
++			!(grpmsk) || (__sd->grp_id & (grpmsk)), o, f ,	\
++			##args);					\
+ })
+ 
+ 
 diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
 index 400f2e46c108..4bba65a59d46 100644
 --- a/include/media/v4l2-ioctl.h
@@ -48467,6 +49366,25 @@ index 400f2e46c108..4bba65a59d46 100644
  
  /*  Video standard functions  */
  
+diff --git a/include/media/v4l2-rect.h b/include/media/v4l2-rect.h
+index 8800a640c224..c86474dc7b55 100644
+--- a/include/media/v4l2-rect.h
++++ b/include/media/v4l2-rect.h
+@@ -63,10 +63,10 @@ static inline void v4l2_rect_map_inside(struct v4l2_rect *r,
+ 		r->left = boundary->left;
+ 	if (r->top < boundary->top)
+ 		r->top = boundary->top;
+-	if (r->left + r->width > boundary->left + boundary->width)
+-		r->left = boundary->left + boundary->width - r->width;
+-	if (r->top + r->height > boundary->top + boundary->height)
+-		r->top = boundary->top + boundary->height - r->height;
++	if (r->left + r->width > boundary->width)
++		r->left = boundary->width - r->width;
++	if (r->top + r->height > boundary->height)
++		r->top = boundary->height - r->height;
+ }
+ 
+ /**
 diff --git a/include/media/vp8-ctrls.h b/include/media/vp8-ctrls.h
 new file mode 100644
 index 000000000000..53cba826e482

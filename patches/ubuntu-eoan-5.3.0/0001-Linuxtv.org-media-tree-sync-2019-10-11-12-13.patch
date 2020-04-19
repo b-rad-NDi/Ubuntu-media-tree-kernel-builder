@@ -1,11 +1,11 @@
-From c3f4d7a9e92ed8b34b28828f5448fdb6f1cc44b8 Mon Sep 17 00:00:00 2001
+From e52aeab07548bf3641a57b520d9ee6a3db22e456 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 21 Feb 2020 18:39:55 -0600
+Date: Mon, 20 Apr 2020 10:58:48 -0500
 Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
 
 ---
  drivers/media/Kconfig                         |    7 +-
- drivers/media/cec/cec-adap.c                  |   15 +-
+ drivers/media/cec/cec-adap.c                  |   55 +-
  drivers/media/cec/cec-api.c                   |   22 +-
  drivers/media/cec/cec-core.c                  |    5 -
  drivers/media/common/saa7146/saa7146_core.c   |    1 +
@@ -87,7 +87,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/ov5647.c                    |    5 +-
  drivers/media/i2c/ov5675.c                    | 1183 +++++++
  drivers/media/i2c/ov5695.c                    |    7 +-
- drivers/media/i2c/ov6650.c                    |  104 +-
+ drivers/media/i2c/ov6650.c                    |   25 +-
  drivers/media/i2c/ov7670.c                    |    6 +-
  drivers/media/i2c/ov772x.c                    |    5 +-
  drivers/media/i2c/ov7740.c                    |   13 +-
@@ -181,13 +181,11 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/am437x/am437x-vpfe.c   |  882 +++---
  drivers/media/platform/am437x/am437x-vpfe.h   |   49 +-
  .../media/platform/am437x/am437x-vpfe_regs.h  |   36 +-
- drivers/media/platform/aspeed-video.c         |   13 +-
- drivers/media/platform/atmel/atmel-isi.c      |    2 +-
+ drivers/media/platform/aspeed-video.c         |   16 +-
  .../media/platform/atmel/atmel-sama5d2-isc.c  |    7 +-
- drivers/media/platform/cadence/cdns-csi2rx.c  |    2 +-
  drivers/media/platform/cadence/cdns-csi2tx.c  |  155 +-
  drivers/media/platform/cec-gpio/cec-gpio.c    |   41 +-
- drivers/media/platform/coda/coda-common.c     |    4 +-
+ drivers/media/platform/coda/coda-common.c     |    8 +-
  .../media/platform/cros-ec-cec/cros-ec-cec.c  |   74 +-
  .../media/platform/davinci/dm644x_ccdc_regs.h |   20 +-
  drivers/media/platform/davinci/vpbe_display.c |   21 +-
@@ -202,7 +200,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/exynos4-is/fimc-core.c |   20 -
  .../media/platform/exynos4-is/fimc-is-param.c |    1 +
  drivers/media/platform/exynos4-is/fimc-is.c   |    2 +-
- .../platform/exynos4-is/fimc-isp-video.c      |    1 -
+ .../platform/exynos4-is/fimc-isp-video.c      |    3 +-
  drivers/media/platform/exynos4-is/fimc-isp.c  |    4 +-
  .../media/platform/exynos4-is/fimc-lite-reg.h |   80 +-
  drivers/media/platform/exynos4-is/fimc-lite.c |    8 -
@@ -247,9 +245,9 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/qcom/venus/vdec.c      |  549 +++-
  .../media/platform/qcom/venus/vdec_ctrls.c    |    7 +-
  drivers/media/platform/qcom/venus/venc.c      |   20 +-
- drivers/media/platform/rcar-vin/rcar-core.c   |   62 +-
+ drivers/media/platform/rcar-vin/rcar-core.c   |   60 +-
  drivers/media/platform/rcar-vin/rcar-dma.c    |  114 +-
- drivers/media/platform/rcar-vin/rcar-v4l2.c   |  165 +-
+ drivers/media/platform/rcar-vin/rcar-v4l2.c   |  162 +-
  drivers/media/platform/rcar-vin/rcar-vin.h    |   13 +-
  drivers/media/platform/rcar_drif.c            |    1 -
  drivers/media/platform/rcar_fdp1.c            |    1 +
@@ -334,6 +332,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/radio/wl128x/fmdrv_common.h     |   88 +-
  drivers/media/rc/ene_ir.c                     |    1 +
  drivers/media/rc/fintek-cir.c                 |    1 +
+ drivers/media/rc/iguanair.c                   |    2 +-
  drivers/media/rc/img-ir/img-ir-core.c         |    4 +-
  drivers/media/rc/imon.c                       |   65 +-
  drivers/media/rc/imon_raw.c                   |   43 +-
@@ -355,7 +354,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/rc/mtk-cir.c                    |    6 +-
  drivers/media/rc/nuvoton-cir.c                |    1 +
  drivers/media/rc/rc-core-priv.h               |    2 +-
- drivers/media/rc/rc-main.c                    |    2 +
+ drivers/media/rc/rc-main.c                    |   29 +-
  drivers/media/rc/serial_ir.c                  |    1 +
  drivers/media/rc/sir_ir.c                     |    1 +
  drivers/media/rc/sunxi-cir.c                  |   89 +-
@@ -375,7 +374,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/airspy/airspy.c             |    3 -
  drivers/media/usb/au0828/au0828-video.c       |    6 -
  drivers/media/usb/au0828/au0828.h             |    1 +
- drivers/media/usb/b2c2/flexcop-usb.c          |    3 -
+ drivers/media/usb/b2c2/flexcop-usb.c          |    5 +-
  drivers/media/usb/cpia2/cpia2_v4l.c           |   25 +-
  drivers/media/usb/cx231xx/Kconfig             |    2 +-
  drivers/media/usb/cx231xx/cx231xx-417.c       |  510 +--
@@ -393,10 +392,13 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/dvb-usb-v2/ec168.c          |    2 +-
  drivers/media/usb/dvb-usb-v2/gl861.c          |  393 +--
  drivers/media/usb/dvb-usb-v2/rtl28xxu.c       |    6 +-
+ drivers/media/usb/dvb-usb/af9005.c            |    7 +-
  drivers/media/usb/dvb-usb/cxusb.c             |  164 +-
+ drivers/media/usb/dvb-usb/digitv.c            |   10 +-
+ drivers/media/usb/dvb-usb/dvb-usb-urb.c       |    2 +-
+ drivers/media/usb/dvb-usb/vp7045.c            |   21 +-
  drivers/media/usb/em28xx/em28xx-audio.c       |    1 -
  drivers/media/usb/em28xx/em28xx-cards.c       |   23 +-
- drivers/media/usb/em28xx/em28xx-core.c        |    2 +-
  drivers/media/usb/em28xx/em28xx-dvb.c         |   32 +-
  drivers/media/usb/em28xx/em28xx-video.c       |   11 +-
  drivers/media/usb/em28xx/em28xx.h             |    5 +-
@@ -411,7 +413,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/gspca/etoms.c               |    1 +
  drivers/media/usb/gspca/finepix.c             |    1 +
  drivers/media/usb/gspca/gl860/gl860.c         |    1 +
- drivers/media/usb/gspca/gspca.c               |   38 +-
+ drivers/media/usb/gspca/gspca.c               |   40 +-
  drivers/media/usb/gspca/jeilinj.c             |    1 +
  drivers/media/usb/gspca/kinect.c              |    1 +
  drivers/media/usb/gspca/konica.c              |    1 +
@@ -463,6 +465,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/hdpvr/hdpvr-i2c.c           |    6 +-
  drivers/media/usb/hdpvr/hdpvr-video.c         |    3 -
  drivers/media/usb/msi2500/msi2500.c           |    8 -
+ drivers/media/usb/pulse8-cec/pulse8-cec.c     |   17 +-
  drivers/media/usb/pvrusb2/pvrusb2-eeprom.c    |    3 +-
  drivers/media/usb/pvrusb2/pvrusb2-hdw.c       |   19 +-
  drivers/media/usb/pvrusb2/pvrusb2-v4l2.c      |   13 +-
@@ -480,24 +483,26 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/usbtv/usbtv-video.c         |    2 -
  drivers/media/usb/usbvision/usbvision-video.c |   28 +-
  drivers/media/usb/usbvision/usbvision.h       |    1 -
- drivers/media/usb/uvc/uvc_driver.c            |   28 +-
+ drivers/media/usb/uvc/uvc_driver.c            |   40 +-
  drivers/media/usb/uvc/uvc_v4l2.c              |    2 -
  drivers/media/usb/zr364xx/zr364xx.c           |   12 +-
  drivers/media/v4l2-core/Kconfig               |    5 +
  drivers/media/v4l2-core/Makefile              |   15 +-
  drivers/media/v4l2-core/v4l2-async.c          |   28 +-
  drivers/media/v4l2-core/v4l2-common.c         |  338 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  148 +-
  drivers/media/v4l2-core/v4l2-ctrls.c          |  389 ++-
  drivers/media/v4l2-core/v4l2-dev.c            |    9 +-
  drivers/media/v4l2-core/v4l2-device.c         |   39 +-
  drivers/media/v4l2-core/v4l2-dv-timings.c     |    2 +-
  drivers/media/v4l2-core/v4l2-fwnode.c         |   32 +-
  drivers/media/v4l2-core/v4l2-i2c.c            |  184 ++
- drivers/media/v4l2-core/v4l2-ioctl.c          |  109 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  133 +-
  drivers/media/v4l2-core/v4l2-mem2mem.c        |   47 +-
  drivers/media/v4l2-core/v4l2-spi.c            |   78 +
  drivers/media/v4l2-core/v4l2-subdev.c         |    6 +-
  drivers/media/v4l2-core/videobuf-dma-contig.c |    9 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c     |    5 +-
  drivers/staging/media/Kconfig                 |    4 -
  drivers/staging/media/Makefile                |    2 -
  .../staging/media/allegro-dvt/allegro-core.c  |    4 +-
@@ -533,6 +538,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/staging/media/imx/imx6-mipi-csi2.c    |   27 +-
  drivers/staging/media/imx/imx7-media-csi.c    |   72 +-
  drivers/staging/media/imx/imx7-mipi-csis.c    |   38 +-
+ .../staging/media/ipu3/include/intel-ipu3.h   |    2 +-
  drivers/staging/media/ipu3/ipu3-tables.h      |    4 +-
  drivers/staging/media/ipu3/ipu3.c             |    3 +-
  drivers/staging/media/meson/vdec/esparser.c   |    4 +-
@@ -543,7 +549,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/staging/media/sunxi/cedrus/cedrus.c   |   73 +-
  drivers/staging/media/sunxi/cedrus/cedrus.h   |    7 +-
  .../staging/media/sunxi/cedrus/cedrus_dec.c   |    2 +-
- .../staging/media/sunxi/cedrus/cedrus_h264.c  |    4 +-
+ .../staging/media/sunxi/cedrus/cedrus_h264.c  |    8 +-
  .../staging/media/sunxi/cedrus/cedrus_hw.c    |    8 +-
  .../staging/media/sunxi/cedrus/cedrus_regs.h  |   31 +-
  .../staging/media/sunxi/cedrus/cedrus_video.c |  102 +-
@@ -551,6 +557,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/linux/dma-buf.h                       |    4 +-
  include/linux/dma-fence.h                     |   34 +-
  include/linux/kernel_version.h                |    1 +
+ include/linux/mmc/sdio_ids.h                  |    2 -
  include/linux/pci_ids.h                       |   10 +-
  include/media/cec.h                           |   31 -
  include/media/compat.h                        | 2762 +++++++++++++++++
@@ -568,13 +575,14 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/media/v4l2-common.h                   |  183 +-
  include/media/v4l2-ctrls.h                    |   88 +-
  include/media/v4l2-ioctl.h                    |    2 +
+ include/media/v4l2-rect.h                     |    8 +-
  include/media/vp8-ctrls.h                     |  112 +
  include/uapi/linux/cec-funcs.h                |   28 +-
  include/uapi/linux/cec.h                      |  129 +
  include/uapi/linux/media-bus-format.h         |    3 +-
  include/uapi/linux/v4l2-controls.h            |    1 +
  include/uapi/linux/videodev2.h                |   12 +-
- 570 files changed, 18620 insertions(+), 9017 deletions(-)
+ 578 files changed, 18703 insertions(+), 9188 deletions(-)
  create mode 100644 drivers/media/i2c/ov5675.c
  create mode 100644 drivers/media/platform/sunxi/Kconfig
  create mode 100644 drivers/media/platform/sunxi/Makefile
@@ -631,7 +639,7 @@ index 21cd9c029..b36a41332 100644
  	bool
  	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_RADIO_SUPPORT
 diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
-index 451c61bde..9340435a9 100644
+index e3688997d..9340435a9 100644
 --- a/drivers/media/cec/cec-adap.c
 +++ b/drivers/media/cec/cec-adap.c
 @@ -319,6 +319,8 @@ static void cec_post_state_event(struct cec_adapter *adap)
@@ -643,7 +651,100 @@ index 451c61bde..9340435a9 100644
  	cec_queue_event(adap, &ev);
  }
  
-@@ -1614,6 +1616,9 @@ EXPORT_SYMBOL_GPL(cec_s_phys_addr_from_edid);
+@@ -378,8 +380,7 @@ static void cec_data_cancel(struct cec_data *data, u8 tx_status)
+ 	} else {
+ 		list_del_init(&data->list);
+ 		if (!(data->msg.tx_status & CEC_TX_STATUS_OK))
+-			if (!WARN_ON(!data->adap->transmit_queue_sz))
+-				data->adap->transmit_queue_sz--;
++			data->adap->transmit_queue_sz--;
+ 	}
+ 
+ 	if (data->msg.tx_status & CEC_TX_STATUS_OK) {
+@@ -431,14 +432,6 @@ static void cec_flush(struct cec_adapter *adap)
+ 		 * need to do anything special in that case.
+ 		 */
+ 	}
+-	/*
+-	 * If something went wrong and this counter isn't what it should
+-	 * be, then this will reset it back to 0. Warn if it is not 0,
+-	 * since it indicates a bug, either in this framework or in a
+-	 * CEC driver.
+-	 */
+-	if (WARN_ON(adap->transmit_queue_sz))
+-		adap->transmit_queue_sz = 0;
+ }
+ 
+ /*
+@@ -463,7 +456,7 @@ int cec_thread_func(void *_adap)
+ 		bool timeout = false;
+ 		u8 attempts;
+ 
+-		if (adap->transmit_in_progress) {
++		if (adap->transmitting) {
+ 			int err;
+ 
+ 			/*
+@@ -498,7 +491,7 @@ int cec_thread_func(void *_adap)
+ 			goto unlock;
+ 		}
+ 
+-		if (adap->transmit_in_progress && timeout) {
++		if (adap->transmitting && timeout) {
+ 			/*
+ 			 * If we timeout, then log that. Normally this does
+ 			 * not happen and it is an indication of a faulty CEC
+@@ -507,18 +500,14 @@ int cec_thread_func(void *_adap)
+ 			 * so much traffic on the bus that the adapter was
+ 			 * unable to transmit for CEC_XFER_TIMEOUT_MS (2.1s).
+ 			 */
+-			if (adap->transmitting) {
+-				pr_warn("cec-%s: message %*ph timed out\n", adap->name,
+-					adap->transmitting->msg.len,
+-					adap->transmitting->msg.msg);
+-				/* Just give up on this. */
+-				cec_data_cancel(adap->transmitting,
+-						CEC_TX_STATUS_TIMEOUT);
+-			} else {
+-				pr_warn("cec-%s: transmit timed out\n", adap->name);
+-			}
++			pr_warn("cec-%s: message %*ph timed out\n", adap->name,
++				adap->transmitting->msg.len,
++				adap->transmitting->msg.msg);
+ 			adap->transmit_in_progress = false;
+ 			adap->tx_timeouts++;
++			/* Just give up on this. */
++			cec_data_cancel(adap->transmitting,
++					CEC_TX_STATUS_TIMEOUT);
+ 			goto unlock;
+ 		}
+ 
+@@ -533,8 +522,7 @@ int cec_thread_func(void *_adap)
+ 		data = list_first_entry(&adap->transmit_queue,
+ 					struct cec_data, list);
+ 		list_del_init(&data->list);
+-		if (!WARN_ON(!data->adap->transmit_queue_sz))
+-			adap->transmit_queue_sz--;
++		adap->transmit_queue_sz--;
+ 
+ 		/* Make this the current transmitting message */
+ 		adap->transmitting = data;
+@@ -1097,11 +1085,11 @@ void cec_received_msg_ts(struct cec_adapter *adap,
+ 			valid_la = false;
+ 		else if (!cec_msg_is_broadcast(msg) && !(dir_fl & DIRECTED))
+ 			valid_la = false;
+-		else if (cec_msg_is_broadcast(msg) && !(dir_fl & BCAST))
++		else if (cec_msg_is_broadcast(msg) && !(dir_fl & BCAST1_4))
+ 			valid_la = false;
+ 		else if (cec_msg_is_broadcast(msg) &&
+-			 adap->log_addrs.cec_version < CEC_OP_CEC_VERSION_2_0 &&
+-			 !(dir_fl & BCAST1_4))
++			 adap->log_addrs.cec_version >= CEC_OP_CEC_VERSION_2_0 &&
++			 !(dir_fl & BCAST2_0))
+ 			valid_la = false;
+ 	}
+ 	if (valid_la && min_len) {
+@@ -1628,6 +1616,9 @@ EXPORT_SYMBOL_GPL(cec_s_phys_addr_from_edid);
  void cec_s_conn_info(struct cec_adapter *adap,
  		     const struct cec_connector_info *conn_info)
  {
@@ -653,7 +754,7 @@ index 451c61bde..9340435a9 100644
  	if (!(adap->capabilities & CEC_CAP_CONNECTOR_INFO))
  		return;
  
-@@ -1973,7 +1978,7 @@ static int cec_receive_notify(struct cec_adapter *adap, struct cec_msg *msg,
+@@ -1987,7 +1978,7 @@ static int cec_receive_notify(struct cec_adapter *adap, struct cec_msg *msg,
  		 * Play function, this message can have variable length
  		 * depending on the specific play function that is used.
  		 */
@@ -662,7 +763,7 @@ index 451c61bde..9340435a9 100644
  			if (msg->len == 2)
  				rc_keydown(adap->rc, RC_PROTO_CEC,
  					   msg->msg[2], 0);
-@@ -1990,8 +1995,12 @@ static int cec_receive_notify(struct cec_adapter *adap, struct cec_msg *msg,
+@@ -2004,8 +1995,12 @@ static int cec_receive_notify(struct cec_adapter *adap, struct cec_msg *msg,
  		 * For the time being these messages are not processed by the
  		 * framework and are simply forwarded to the user space.
  		 */
@@ -5131,7 +5232,7 @@ index e65a94353..d6cd15bb6 100644
  		dev_err(dev, "v4l2 async register subdev failed\n");
  		goto err_clean_entity;
 diff --git a/drivers/media/i2c/ov6650.c b/drivers/media/i2c/ov6650.c
-index a5b2448c0..16887049f 100644
+index af482620f..16887049f 100644
 --- a/drivers/media/i2c/ov6650.c
 +++ b/drivers/media/i2c/ov6650.c
 @@ -130,7 +130,6 @@
@@ -5142,137 +5243,7 @@ index a5b2448c0..16887049f 100644
  
  #define COMA_RESET		BIT(7)
  #define COMA_QCIF		BIT(5)
-@@ -201,7 +200,6 @@ struct ov6650 {
- 	unsigned long		pclk_max;	/* from resolution and format */
- 	struct v4l2_fract	tpf;		/* as requested with s_frame_interval */
- 	u32 code;
--	enum v4l2_colorspace	colorspace;
- };
- 
- 
-@@ -214,6 +212,17 @@ static u32 ov6650_codes[] = {
- 	MEDIA_BUS_FMT_Y8_1X8,
- };
- 
-+static const struct v4l2_mbus_framefmt ov6650_def_fmt = {
-+	.width		= W_CIF,
-+	.height		= H_CIF,
-+	.code		= MEDIA_BUS_FMT_SBGGR8_1X8,
-+	.colorspace	= V4L2_COLORSPACE_SRGB,
-+	.field		= V4L2_FIELD_NONE,
-+	.ycbcr_enc	= V4L2_YCBCR_ENC_DEFAULT,
-+	.quantization	= V4L2_QUANTIZATION_DEFAULT,
-+	.xfer_func	= V4L2_XFER_FUNC_DEFAULT,
-+};
-+
- /* read a register */
- static int ov6650_reg_read(struct i2c_client *client, u8 reg, u8 *val)
- {
-@@ -514,12 +523,20 @@ static int ov6650_get_fmt(struct v4l2_subdev *sd,
- 	if (format->pad)
- 		return -EINVAL;
- 
--	mf->width	= priv->rect.width >> priv->half_scale;
--	mf->height	= priv->rect.height >> priv->half_scale;
--	mf->code	= priv->code;
--	mf->colorspace	= priv->colorspace;
--	mf->field	= V4L2_FIELD_NONE;
-+	/* initialize response with default media bus frame format */
-+	*mf = ov6650_def_fmt;
-+
-+	/* update media bus format code and frame size */
-+	if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
-+		mf->width = cfg->try_fmt.width;
-+		mf->height = cfg->try_fmt.height;
-+		mf->code = cfg->try_fmt.code;
- 
-+	} else {
-+		mf->width = priv->rect.width >> priv->half_scale;
-+		mf->height = priv->rect.height >> priv->half_scale;
-+		mf->code = priv->code;
-+	}
- 	return 0;
- }
- 
-@@ -624,11 +641,6 @@ static int ov6650_s_fmt(struct v4l2_subdev *sd, struct v4l2_mbus_framefmt *mf)
- 		priv->pclk_max = 8000000;
- 	}
- 
--	if (code == MEDIA_BUS_FMT_SBGGR8_1X8)
--		priv->colorspace = V4L2_COLORSPACE_SRGB;
--	else if (code != 0)
--		priv->colorspace = V4L2_COLORSPACE_JPEG;
--
- 	if (half_scale) {
- 		dev_dbg(&client->dev, "max resolution: QCIF\n");
- 		coma_set |= COMA_QCIF;
-@@ -662,11 +674,6 @@ static int ov6650_s_fmt(struct v4l2_subdev *sd, struct v4l2_mbus_framefmt *mf)
- 	if (!ret)
- 		priv->code = code;
- 
--	if (!ret) {
--		mf->colorspace	= priv->colorspace;
--		mf->width = priv->rect.width >> half_scale;
--		mf->height = priv->rect.height >> half_scale;
--	}
- 	return ret;
- }
- 
-@@ -685,8 +692,6 @@ static int ov6650_set_fmt(struct v4l2_subdev *sd,
- 		v4l_bound_align_image(&mf->width, 2, W_CIF, 1,
- 				&mf->height, 2, H_CIF, 1, 0);
- 
--	mf->field = V4L2_FIELD_NONE;
--
- 	switch (mf->code) {
- 	case MEDIA_BUS_FMT_Y10_1X10:
- 		mf->code = MEDIA_BUS_FMT_Y8_1X8;
-@@ -696,20 +701,39 @@ static int ov6650_set_fmt(struct v4l2_subdev *sd,
- 	case MEDIA_BUS_FMT_YUYV8_2X8:
- 	case MEDIA_BUS_FMT_VYUY8_2X8:
- 	case MEDIA_BUS_FMT_UYVY8_2X8:
--		mf->colorspace = V4L2_COLORSPACE_JPEG;
- 		break;
- 	default:
- 		mf->code = MEDIA_BUS_FMT_SBGGR8_1X8;
- 		/* fall through */
- 	case MEDIA_BUS_FMT_SBGGR8_1X8:
--		mf->colorspace = V4L2_COLORSPACE_SRGB;
- 		break;
- 	}
- 
--	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE)
--		return ov6650_s_fmt(sd, mf);
--	cfg->try_fmt = *mf;
-+	if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
-+		/* store media bus format code and frame size in pad config */
-+		cfg->try_fmt.width = mf->width;
-+		cfg->try_fmt.height = mf->height;
-+		cfg->try_fmt.code = mf->code;
-+
-+		/* return default mbus frame format updated with pad config */
-+		*mf = ov6650_def_fmt;
-+		mf->width = cfg->try_fmt.width;
-+		mf->height = cfg->try_fmt.height;
-+		mf->code = cfg->try_fmt.code;
-+
-+	} else {
-+		/* apply new media bus format code and frame size */
-+		int ret = ov6650_s_fmt(sd, mf);
- 
-+		if (ret)
-+			return ret;
-+
-+		/* return default format updated with active size and code */
-+		*mf = ov6650_def_fmt;
-+		mf->width = priv->rect.width >> priv->half_scale;
-+		mf->height = priv->rect.height >> priv->half_scale;
-+		mf->code = priv->code;
-+	}
- 	return 0;
- }
- 
-@@ -759,17 +783,19 @@ static int ov6650_s_frame_interval(struct v4l2_subdev *sd,
+@@ -784,17 +783,19 @@ static int ov6650_s_frame_interval(struct v4l2_subdev *sd,
  	else if (div > GET_CLKRC_DIV(CLKRC_DIV_MASK))
  		div = GET_CLKRC_DIV(CLKRC_DIV_MASK);
  
@@ -5299,33 +5270,18 @@ index a5b2448c0..16887049f 100644
  	}
  
  	return ret;
-@@ -852,6 +878,11 @@ static int ov6650_video_probe(struct v4l2_subdev *sd)
- 	ret = ov6650_reset(client);
- 	if (!ret)
- 		ret = ov6650_prog_dflt(client);
-+	if (!ret) {
-+		struct v4l2_mbus_framefmt mf = ov6650_def_fmt;
-+
-+		ret = ov6650_s_fmt(sd, &mf);
-+	}
- 	if (!ret)
- 		ret = v4l2_ctrl_handler_setup(&priv->hdl);
- 
-@@ -1006,13 +1037,6 @@ static int ov6650_probe(struct i2c_client *client,
- 	priv->rect.top	  = DEF_VSTRT << 1;
+@@ -1037,10 +1038,6 @@ static int ov6650_probe(struct i2c_client *client,
  	priv->rect.width  = W_CIF;
  	priv->rect.height = H_CIF;
--	priv->half_scale  = false;
--	priv->code	  = MEDIA_BUS_FMT_YUYV8_2X8;
--	priv->colorspace  = V4L2_COLORSPACE_JPEG;
--
+ 
 -	/* Hardware default frame interval */
 -	priv->tpf.numerator   = GET_CLKRC_DIV(DEF_CLKRC);
 -	priv->tpf.denominator = FRAME_RATE_MAX;
- 
+-
  	priv->subdev.internal_ops = &ov6650_internal_ops;
  
-@@ -1052,6 +1076,6 @@ static struct i2c_driver ov6650_i2c_driver = {
+ 	ret = v4l2_async_register_subdev(&priv->subdev);
+@@ -1079,6 +1076,6 @@ static struct i2c_driver ov6650_i2c_driver = {
  
  module_i2c_driver(ov6650_i2c_driver);
  
@@ -10464,7 +10420,7 @@ index 4a0ed2972..63ecdca3b 100644
  #define VPFE_CONFIG_PCLK_INV_SHIFT		0
  #define VPFE_CONFIG_PCLK_INV_MASK		1
 diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 9794d3c24..eb12f3793 100644
+index 0aa436623..eb12f3793 100644
 --- a/drivers/media/platform/aspeed-video.c
 +++ b/drivers/media/platform/aspeed-video.c
 @@ -606,16 +606,6 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
@@ -10501,19 +10457,16 @@ index 9794d3c24..eb12f3793 100644
  		goto err_release_reserved_mem;
  	}
  
-diff --git a/drivers/media/platform/atmel/atmel-isi.c b/drivers/media/platform/atmel/atmel-isi.c
-index d7d94c1a3..428f117ca 100644
---- a/drivers/media/platform/atmel/atmel-isi.c
-+++ b/drivers/media/platform/atmel/atmel-isi.c
-@@ -493,7 +493,7 @@ static void stop_streaming(struct vb2_queue *vq)
- 	spin_unlock_irq(&isi->irqlock);
+@@ -1657,8 +1646,7 @@ static int aspeed_video_probe(struct platform_device *pdev)
+ {
+ 	int rc;
+ 	struct resource *res;
+-	struct aspeed_video *video =
+-		devm_kzalloc(&pdev->dev, sizeof(*video), GFP_KERNEL);
++	struct aspeed_video *video = kzalloc(sizeof(*video), GFP_KERNEL);
  
- 	if (!isi->enable_preview_path) {
--		timeout = jiffies + FRAME_INTERVAL_MILLI_SEC * HZ;
-+		timeout = jiffies + (FRAME_INTERVAL_MILLI_SEC * HZ) / 1000;
- 		/* Wait until the end of the current frame. */
- 		while ((isi_readl(isi, ISI_STATUS) & ISI_CTRL_CDC) &&
- 				time_before(jiffies, timeout))
+ 	if (!video)
+ 		return -ENOMEM;
 diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
 index 266df14da..783816512 100644
 --- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
@@ -10532,19 +10485,6 @@ index 266df14da..783816512 100644
  
  	ret = devm_request_irq(dev, irq, isc_interrupt, 0,
  			       ATMEL_ISC_NAME, isc);
-diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-index 31ace114e..be9ec5977 100644
---- a/drivers/media/platform/cadence/cdns-csi2rx.c
-+++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-@@ -129,7 +129,7 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
- 	 */
- 	for (i = csi2rx->num_lanes; i < csi2rx->max_lanes; i++) {
- 		unsigned int idx = find_first_zero_bit(&lanes_used,
--						       sizeof(lanes_used));
-+						       csi2rx->max_lanes);
- 		set_bit(idx, &lanes_used);
- 		reg |= CSI2RX_STATIC_CFG_DLANE_MAP(i, i + 1);
- 	}
 diff --git a/drivers/media/platform/cadence/cdns-csi2tx.c b/drivers/media/platform/cadence/cdns-csi2tx.c
 index 5042d053b..e4d08acfb 100644
 --- a/drivers/media/platform/cadence/cdns-csi2tx.c
@@ -10907,7 +10847,7 @@ index 5b17d3a31..7be91e712 100644
  	return 0;
  }
 diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
-index 01428de25..73222c061 100644
+index 49f33c864..73222c061 100644
 --- a/drivers/media/platform/coda/coda-common.c
 +++ b/drivers/media/platform/coda/coda-common.c
 @@ -390,9 +390,6 @@ static int coda_querycap(struct file *file, void *priv,
@@ -10920,6 +10860,25 @@ index 01428de25..73222c061 100644
  	return 0;
  }
  
+@@ -1087,16 +1084,16 @@ static int coda_decoder_cmd(struct file *file, void *fh,
+ 
+ 	switch (dc->cmd) {
+ 	case V4L2_DEC_CMD_START:
+-		mutex_lock(&dev->coda_mutex);
+ 		mutex_lock(&ctx->bitstream_mutex);
++		mutex_lock(&dev->coda_mutex);
+ 		coda_bitstream_flush(ctx);
++		mutex_unlock(&dev->coda_mutex);
+ 		dst_vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
+ 					 V4L2_BUF_TYPE_VIDEO_CAPTURE);
+ 		vb2_clear_last_buffer_dequeued(dst_vq);
+ 		ctx->bit_stream_param &= ~CODA_BIT_STREAM_END_FLAG;
+ 		coda_fill_bitstream(ctx, NULL);
+ 		mutex_unlock(&ctx->bitstream_mutex);
+-		mutex_unlock(&dev->coda_mutex);
+ 		break;
+ 	case V4L2_DEC_CMD_STOP:
+ 		stream_end = false;
 @@ -2699,6 +2696,7 @@ static int coda_register_device(struct coda_dev *dev, int i)
  	vfd->lock	= &dev->dev_mutex;
  	vfd->v4l2_dev	= &dev->v4l2_dev;
@@ -11920,9 +11879,18 @@ index b7cc8e651..fbdc7824c 100644
  	dev_info(dev, "FIMC-IS CPU memory base: %#x\n", (u32)is->memory.paddr);
  
 diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index a75f932a2..378cc302e 100644
+index 75fcea3e3..378cc302e 100644
 --- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
 +++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+@@ -313,7 +313,7 @@ static int isp_video_release(struct file *file)
+ 		ivc->streaming = 0;
+ 	}
+ 
+-	_vb2_fop_release(file, NULL);
++	vb2_fop_release(file);
+ 
+ 	if (v4l2_fh_is_singular_file(file)) {
+ 		fimc_pipeline_call(&ivc->ve, close);
 @@ -362,7 +362,6 @@ static int isp_video_enum_fmt(struct file *file, void *priv,
  	if (WARN_ON(fmt == NULL))
  		return -EINVAL;
@@ -18966,7 +18934,7 @@ index 114e14e4e..501fb8ca5 100644
  
  static int venc_probe(struct platform_device *pdev)
 diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
-index 64f9cf790..334c62805 100644
+index a6efe1a80..334c62805 100644
 --- a/drivers/media/platform/rcar-vin/rcar-core.c
 +++ b/drivers/media/platform/rcar-vin/rcar-core.c
 @@ -389,6 +389,28 @@ static void rvin_group_put(struct rvin_dev *vin)
@@ -19014,15 +18982,6 @@ index 64f9cf790..334c62805 100644
  	ret = v4l2_ctrl_add_handler(&vin->ctrl_handler, subdev->ctrl_handler,
  				    NULL, true);
  	if (ret < 0) {
-@@ -633,7 +664,7 @@ static int rvin_parallel_init(struct rvin_dev *vin)
- 	ret = v4l2_async_notifier_register(&vin->v4l2_dev, &vin->notifier);
- 	if (ret < 0) {
- 		vin_err(vin, "Notifier registration failed\n");
--		v4l2_async_notifier_cleanup(&vin->group->notifier);
-+		v4l2_async_notifier_cleanup(&vin->notifier);
- 		return ret;
- 	}
- 
 @@ -870,6 +901,21 @@ static int rvin_mc_init(struct rvin_dev *vin)
  	if (ret)
  		rvin_group_put(vin);
@@ -19320,7 +19279,7 @@ index 91ab06440..af4f77414 100644
 +	spin_unlock_irqrestore(&vin->qlock, flags);
 +}
 diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-index 0936bcd98..9a9b89c0d 100644
+index 93774b611..9a9b89c0d 100644
 --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
 +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
 @@ -54,12 +54,24 @@ static const struct rvin_video_format rvin_formats[] = {
@@ -19460,11 +19419,7 @@ index 0936bcd98..9a9b89c0d 100644
  		pix->pixelformat = RVIN_DEFAULT_FORMAT;
  
  	v4l2_fill_mbus_format(&format.format, pix, vin->mbus_code);
-@@ -196,21 +210,15 @@ static int rvin_try_format(struct rvin_dev *vin, u32 which,
- 	ret = v4l2_subdev_call(sd, pad, set_fmt, pad_cfg, &format);
- 	if (ret < 0 && ret != -ENOIOCTLCMD)
- 		goto done;
-+	ret = 0;
+@@ -200,18 +214,11 @@ static int rvin_try_format(struct rvin_dev *vin, u32 which,
  
  	v4l2_fill_pix_format(pix, &format.format);
  
@@ -19488,7 +19443,7 @@ index 0936bcd98..9a9b89c0d 100644
  	}
  
  	if (field != V4L2_FIELD_ANY)
-@@ -220,17 +228,10 @@ static int rvin_try_format(struct rvin_dev *vin, u32 which,
+@@ -221,13 +228,6 @@ static int rvin_try_format(struct rvin_dev *vin, u32 which,
  	pix->height = height;
  
  	rvin_format_align(vin, pix);
@@ -19502,12 +19457,7 @@ index 0936bcd98..9a9b89c0d 100644
  done:
  	v4l2_subdev_free_pad_config(pad_cfg);
  
--	return 0;
-+	return ret;
- }
- 
- static int rvin_querycap(struct file *file, void *priv,
-@@ -250,29 +251,34 @@ static int rvin_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -251,29 +251,34 @@ static int rvin_try_fmt_vid_cap(struct file *file, void *priv,
  {
  	struct rvin_dev *vin = video_drvdata(file);
  
@@ -19549,7 +19499,7 @@ index 0936bcd98..9a9b89c0d 100644
  
  	return 0;
  }
-@@ -310,8 +316,8 @@ static int rvin_g_selection(struct file *file, void *fh,
+@@ -311,8 +316,8 @@ static int rvin_g_selection(struct file *file, void *fh,
  	case V4L2_SEL_TGT_CROP_BOUNDS:
  	case V4L2_SEL_TGT_CROP_DEFAULT:
  		s->r.left = s->r.top = 0;
@@ -19560,7 +19510,7 @@ index 0936bcd98..9a9b89c0d 100644
  		break;
  	case V4L2_SEL_TGT_CROP:
  		s->r = vin->crop;
-@@ -353,21 +359,22 @@ static int rvin_s_selection(struct file *file, void *fh,
+@@ -354,21 +359,22 @@ static int rvin_s_selection(struct file *file, void *fh,
  	case V4L2_SEL_TGT_CROP:
  		/* Can't crop outside of source input */
  		max_rect.top = max_rect.left = 0;
@@ -19590,7 +19540,7 @@ index 0936bcd98..9a9b89c0d 100644
  		break;
  	case V4L2_SEL_TGT_COMPOSE:
  		/* Make sure compose rect fits inside output format */
-@@ -384,7 +391,7 @@ static int rvin_s_selection(struct file *file, void *fh,
+@@ -385,7 +391,7 @@ static int rvin_s_selection(struct file *file, void *fh,
  		while ((r.top * vin->format.bytesperline) & HW_BUFFER_MASK)
  			r.top--;
  
@@ -19599,7 +19549,7 @@ index 0936bcd98..9a9b89c0d 100644
  		while ((r.left * fmt->bpp) & HW_BUFFER_MASK)
  			r.left--;
  
-@@ -781,26 +788,26 @@ static int rvin_open(struct file *file)
+@@ -782,26 +788,26 @@ static int rvin_open(struct file *file)
  	if (ret)
  		goto err_unlock;
  
@@ -29581,6 +29531,19 @@ index b74bb1316..ecf90f7a7 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
+diff --git a/drivers/media/rc/iguanair.c b/drivers/media/rc/iguanair.c
+index a7deca1fe..872d6441e 100644
+--- a/drivers/media/rc/iguanair.c
++++ b/drivers/media/rc/iguanair.c
+@@ -413,7 +413,7 @@ static int iguanair_probe(struct usb_interface *intf,
+ 	int ret, pipein, pipeout;
+ 	struct usb_host_interface *idesc;
+ 
+-	idesc = intf->cur_altsetting;
++	idesc = intf->altsetting;
+ 	if (idesc->desc.bNumEndpoints < 2)
+ 		return -ENODEV;
+ 
 diff --git a/drivers/media/rc/img-ir/img-ir-core.c b/drivers/media/rc/img-ir/img-ir-core.c
 index 7e457f26a..094aa6a06 100644
 --- a/drivers/media/rc/img-ir/img-ir-core.c
@@ -30696,7 +30659,7 @@ index 9f21b3e8b..5f36244cc 100644
   *
   * Copyright (C) 2010 by Mauro Carvalho Chehab
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index 774115160..d56f3b892 100644
+index 6f80c251f..d56f3b892 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -3,6 +3,7 @@
@@ -30707,7 +30670,59 @@ index 774115160..d56f3b892 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <media/rc-core.h>
-@@ -2016,6 +2017,7 @@ static int __init rc_core_init(void)
+@@ -1891,28 +1892,23 @@ int rc_register_device(struct rc_dev *dev)
+ 
+ 	dev->registered = true;
+ 
+-	/*
+-	 * once the the input device is registered in rc_setup_rx_device,
+-	 * userspace can open the input device and rc_open() will be called
+-	 * as a result. This results in driver code being allowed to submit
+-	 * keycodes with rc_keydown, so lirc must be registered first.
+-	 */
+-	if (dev->allowed_protocols != RC_PROTO_BIT_CEC) {
+-		rc = ir_lirc_register(dev);
+-		if (rc < 0)
+-			goto out_dev;
+-	}
+-
+ 	if (dev->driver_type != RC_DRIVER_IR_RAW_TX) {
+ 		rc = rc_setup_rx_device(dev);
+ 		if (rc)
+-			goto out_lirc;
++			goto out_dev;
++	}
++
++	/* Ensure that the lirc kfifo is setup before we start the thread */
++	if (dev->allowed_protocols != RC_PROTO_BIT_CEC) {
++		rc = ir_lirc_register(dev);
++		if (rc < 0)
++			goto out_rx;
+ 	}
+ 
+ 	if (dev->driver_type == RC_DRIVER_IR_RAW) {
+ 		rc = ir_raw_event_register(dev);
+ 		if (rc < 0)
+-			goto out_rx;
++			goto out_lirc;
+ 	}
+ 
+ 	dev_dbg(&dev->dev, "Registered rc%u (driver: %s)\n", dev->minor,
+@@ -1920,11 +1916,11 @@ int rc_register_device(struct rc_dev *dev)
+ 
+ 	return 0;
+ 
+-out_rx:
+-	rc_free_rx_device(dev);
+ out_lirc:
+ 	if (dev->allowed_protocols != RC_PROTO_BIT_CEC)
+ 		ir_lirc_unregister(dev);
++out_rx:
++	rc_free_rx_device(dev);
+ out_dev:
+ 	device_del(&dev->dev);
+ out_rx_free:
+@@ -2021,6 +2017,7 @@ static int __init rc_core_init(void)
  
  	led_trigger_register_simple("rc-feedback", &led_feedback);
  	rc_map_register(&empty_map);
@@ -31249,9 +31264,18 @@ index 01a668b1b..bb73afa7e 100644
  
  #include <linux/bitops.h>
 diff --git a/drivers/media/usb/b2c2/flexcop-usb.c b/drivers/media/usb/b2c2/flexcop-usb.c
-index d1331f828..4bf85e9b7 100644
+index 039963a77..4bf85e9b7 100644
 --- a/drivers/media/usb/b2c2/flexcop-usb.c
 +++ b/drivers/media/usb/b2c2/flexcop-usb.c
+@@ -295,7 +295,7 @@ static int flexcop_usb_i2c_req(struct flexcop_i2c_adapter *i2c,
+ 
+ 	mutex_unlock(&fc_usb->data_mutex);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* actual bus specific access functions,
 @@ -544,9 +544,6 @@ static int flexcop_usb_probe(struct usb_interface *intf,
  	struct flexcop_device *fc = NULL;
  	int ret;
@@ -34473,6 +34497,31 @@ index 1a36bda28..5016ede7b 100644
  	{ DVB_USB_DEVICE(0x5654, 0xca42,
  		&rtl28xxu_props, "GoTView MasterHD 3", NULL) },
  	{ }
+diff --git a/drivers/media/usb/dvb-usb/af9005.c b/drivers/media/usb/dvb-usb/af9005.c
+index 89b4b5d84..02697d86e 100644
+--- a/drivers/media/usb/dvb-usb/af9005.c
++++ b/drivers/media/usb/dvb-usb/af9005.c
+@@ -554,7 +554,7 @@ static int af9005_boot_packet(struct usb_device *udev, int type, u8 *reply,
+ 			      u8 *buf, int size)
+ {
+ 	u16 checksum;
+-	int act_len = 0, i, ret;
++	int act_len, i, ret;
+ 
+ 	memset(buf, 0, size);
+ 	buf[0] = (u8) (FW_BULKOUT_SIZE & 0xff);
+@@ -976,9 +976,8 @@ static int af9005_identify_state(struct usb_device *udev,
+ 	else if (reply == 0x02)
+ 		*cold = 0;
+ 	else
+-		ret = -EIO;
+-	if (!ret)
+-		deb_info("Identify state cold = %d\n", *cold);
++		return -EIO;
++	deb_info("Identify state cold = %d\n", *cold);
+ 
+ err:
+ 	kfree(buf);
 diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
 index e3d58f524..f02fa0a67 100644
 --- a/drivers/media/usb/dvb-usb/cxusb.c
@@ -34697,6 +34746,94 @@ index e3d58f524..f02fa0a67 100644
  static struct usb_driver cxusb_driver = {
  	.name		= "dvb_usb_cxusb",
  	.probe		= cxusb_probe,
+diff --git a/drivers/media/usb/dvb-usb/digitv.c b/drivers/media/usb/dvb-usb/digitv.c
+index 99a39339d..dd5bb230c 100644
+--- a/drivers/media/usb/dvb-usb/digitv.c
++++ b/drivers/media/usb/dvb-usb/digitv.c
+@@ -230,22 +230,18 @@ static struct rc_map_table rc_map_digitv_table[] = {
+ 
+ static int digitv_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ {
+-	int ret, i;
++	int i;
+ 	u8 key[5];
+ 	u8 b[4] = { 0 };
+ 
+ 	*event = 0;
+ 	*state = REMOTE_NO_KEY_PRESSED;
+ 
+-	ret = digitv_ctrl_msg(d, USB_READ_REMOTE, 0, NULL, 0, &key[1], 4);
+-	if (ret)
+-		return ret;
++	digitv_ctrl_msg(d,USB_READ_REMOTE,0,NULL,0,&key[1],4);
+ 
+ 	/* Tell the device we've read the remote. Not sure how necessary
+ 	   this is, but the Nebula SDK does it. */
+-	ret = digitv_ctrl_msg(d, USB_WRITE_REMOTE, 0, b, 4, NULL, 0);
+-	if (ret)
+-		return ret;
++	digitv_ctrl_msg(d,USB_WRITE_REMOTE,0,b,4,NULL,0);
+ 
+ 	/* if something is inside the buffer, simulate key press */
+ 	if (key[1] != 0)
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb-urb.c b/drivers/media/usb/dvb-usb/dvb-usb-urb.c
+index 2aabf90d8..c1b4e94a3 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb-urb.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-urb.c
+@@ -12,7 +12,7 @@
+ int dvb_usb_generic_rw(struct dvb_usb_device *d, u8 *wbuf, u16 wlen, u8 *rbuf,
+ 	u16 rlen, int delay_ms)
+ {
+-	int actlen = 0, ret = -ENOMEM;
++	int actlen,ret = -ENOMEM;
+ 
+ 	if (!d || wbuf == NULL || wlen == 0)
+ 		return -EINVAL;
+diff --git a/drivers/media/usb/dvb-usb/vp7045.c b/drivers/media/usb/dvb-usb/vp7045.c
+index 2baf57216..80c1cf053 100644
+--- a/drivers/media/usb/dvb-usb/vp7045.c
++++ b/drivers/media/usb/dvb-usb/vp7045.c
+@@ -96,14 +96,10 @@ static int vp7045_power_ctrl(struct dvb_usb_device *d, int onoff)
+ 
+ static int vp7045_rc_query(struct dvb_usb_device *d)
+ {
+-	int ret;
+ 	u8 key;
++	vp7045_usb_op(d,RC_VAL_READ,NULL,0,&key,1,20);
+ 
+-	ret = vp7045_usb_op(d, RC_VAL_READ, NULL, 0, &key, 1, 20);
+-	if (ret)
+-		return ret;
+-
+-	deb_rc("remote query key: %x\n", key);
++	deb_rc("remote query key: %x %d\n",key,key);
+ 
+ 	if (key != 0x44) {
+ 		/*
+@@ -119,18 +115,15 @@ static int vp7045_rc_query(struct dvb_usb_device *d)
+ 
+ static int vp7045_read_eeprom(struct dvb_usb_device *d,u8 *buf, int len, int offset)
+ {
+-	int i, ret;
+-	u8 v, br[2];
++	int i = 0;
++	u8 v,br[2];
+ 	for (i=0; i < len; i++) {
+ 		v = offset + i;
+-		ret = vp7045_usb_op(d, GET_EE_VALUE, &v, 1, br, 2, 5);
+-		if (ret)
+-			return ret;
+-
++		vp7045_usb_op(d,GET_EE_VALUE,&v,1,br,2,5);
+ 		buf[i] = br[1];
+ 	}
+-	deb_info("VP7045 EEPROM read (offs: %d, len: %d) : ", offset, i);
+-	debug_dump(buf, i, deb_info);
++	deb_info("VP7045 EEPROM read (offs: %d, len: %d) : ",offset, i);
++	debug_dump(buf,i,deb_info);
+ 	return 0;
+ }
+ 
 diff --git a/drivers/media/usb/em28xx/em28xx-audio.c b/drivers/media/usb/em28xx/em28xx-audio.c
 index 49c9b70b6..79dfbb257 100644
 --- a/drivers/media/usb/em28xx/em28xx-audio.c
@@ -34762,19 +34899,6 @@ index 1de835a59..def9cdd93 100644
  	/* Check to see next free device and mark as used */
  	do {
  		nr = find_first_zero_bit(em28xx_devused, EM28XX_MAXBOARDS);
-diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 2b8c84a5c..e6088b5d1 100644
---- a/drivers/media/usb/em28xx/em28xx-core.c
-+++ b/drivers/media/usb/em28xx/em28xx-core.c
-@@ -931,7 +931,7 @@ int em28xx_alloc_urbs(struct em28xx *dev, enum em28xx_mode mode, int xfer_bulk,
- 
- 	usb_bufs->buf = kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
- 	if (!usb_bufs->buf) {
--		kfree(usb_bufs->buf);
-+		kfree(usb_bufs->urb);
- 		return -ENOMEM;
- 	}
- 
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
 index a73faf12f..930cef902 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
@@ -35183,7 +35307,7 @@ index 2c05ea259..745fcc3af 100644
  
  #include "gspca.h"
 diff --git a/drivers/media/usb/gspca/gspca.c b/drivers/media/usb/gspca/gspca.c
-index be11f7830..31a4585a8 100644
+index 7bc833982..31a4585a8 100644
 --- a/drivers/media/usb/gspca/gspca.c
 +++ b/drivers/media/usb/gspca/gspca.c
 @@ -8,6 +8,7 @@
@@ -35272,6 +35396,15 @@ index be11f7830..31a4585a8 100644
  	return 0;
  }
  
+@@ -1468,7 +1462,7 @@ int gspca_dev_probe2(struct usb_interface *intf,
+ 		pr_err("couldn't kzalloc gspca struct\n");
+ 		return -ENOMEM;
+ 	}
+-	gspca_dev->usb_buf = kzalloc(USB_BUF_SZ, GFP_KERNEL);
++	gspca_dev->usb_buf = kmalloc(USB_BUF_SZ, GFP_KERNEL);
+ 	if (!gspca_dev->usb_buf) {
+ 		pr_err("out of memory\n");
+ 		ret = -ENOMEM;
 diff --git a/drivers/media/usb/gspca/jeilinj.c b/drivers/media/usb/gspca/jeilinj.c
 index 20b2468d0..94f5ff13b 100644
 --- a/drivers/media/usb/gspca/jeilinj.c
@@ -35963,6 +36096,67 @@ index 4c9b2a12a..65be6f140 100644
  	f->pixelformat = formats[f->index].pixelformat;
  
  	return 0;
+diff --git a/drivers/media/usb/pulse8-cec/pulse8-cec.c b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+index 59609556d..ac88ade94 100644
+--- a/drivers/media/usb/pulse8-cec/pulse8-cec.c
++++ b/drivers/media/usb/pulse8-cec/pulse8-cec.c
+@@ -116,7 +116,6 @@ struct pulse8 {
+ 	unsigned int vers;
+ 	struct completion cmd_done;
+ 	struct work_struct work;
+-	u8 work_result;
+ 	struct delayed_work ping_eeprom_work;
+ 	struct cec_msg rx_msg;
+ 	u8 data[DATA_SIZE];
+@@ -138,10 +137,8 @@ static void pulse8_irq_work_handler(struct work_struct *work)
+ {
+ 	struct pulse8 *pulse8 =
+ 		container_of(work, struct pulse8, work);
+-	u8 result = pulse8->work_result;
+ 
+-	pulse8->work_result = 0;
+-	switch (result & 0x3f) {
++	switch (pulse8->data[0] & 0x3f) {
+ 	case MSGCODE_FRAME_DATA:
+ 		cec_received_msg(pulse8->adap, &pulse8->rx_msg);
+ 		break;
+@@ -175,12 +172,12 @@ static irqreturn_t pulse8_interrupt(struct serio *serio, unsigned char data,
+ 		pulse8->escape = false;
+ 	} else if (data == MSGEND) {
+ 		struct cec_msg *msg = &pulse8->rx_msg;
+-		u8 msgcode = pulse8->buf[0];
+ 
+ 		if (debug)
+ 			dev_info(pulse8->dev, "received: %*ph\n",
+ 				 pulse8->idx, pulse8->buf);
+-		switch (msgcode & 0x3f) {
++		pulse8->data[0] = pulse8->buf[0];
++		switch (pulse8->buf[0] & 0x3f) {
+ 		case MSGCODE_FRAME_START:
+ 			msg->len = 1;
+ 			msg->msg[0] = pulse8->buf[1];
+@@ -189,20 +186,14 @@ static irqreturn_t pulse8_interrupt(struct serio *serio, unsigned char data,
+ 			if (msg->len == CEC_MAX_MSG_SIZE)
+ 				break;
+ 			msg->msg[msg->len++] = pulse8->buf[1];
+-			if (msgcode & MSGCODE_FRAME_EOM) {
+-				WARN_ON(pulse8->work_result);
+-				pulse8->work_result = msgcode;
++			if (pulse8->buf[0] & MSGCODE_FRAME_EOM)
+ 				schedule_work(&pulse8->work);
+-				break;
+-			}
+ 			break;
+ 		case MSGCODE_TRANSMIT_SUCCEEDED:
+ 		case MSGCODE_TRANSMIT_FAILED_LINE:
+ 		case MSGCODE_TRANSMIT_FAILED_ACK:
+ 		case MSGCODE_TRANSMIT_FAILED_TIMEOUT_DATA:
+ 		case MSGCODE_TRANSMIT_FAILED_TIMEOUT_LINE:
+-			WARN_ON(pulse8->work_result);
+-			pulse8->work_result = msgcode;
+ 			schedule_work(&pulse8->work);
+ 			break;
+ 		case MSGCODE_HIGH_ERROR:
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-eeprom.c b/drivers/media/usb/pvrusb2/pvrusb2-eeprom.c
 index 79f0e0c6d..8e81af537 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-eeprom.c
@@ -36462,10 +36656,36 @@ index 4198f972a..11539578e 100644
  #define USBVISION_SUPPORTED_PALETTES ARRAY_SIZE(usbvision_v4l2_format)
  
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 428235ca2..66ee168dd 100644
+index 2b688cc39..66ee168dd 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2151,20 +2151,6 @@ static int uvc_probe(struct usb_interface *intf,
+@@ -1493,11 +1493,6 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
+ 			break;
+ 		if (forward == prev)
+ 			continue;
+-		if (forward->chain.next || forward->chain.prev) {
+-			uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+-				"entity %d already in chain.\n", forward->id);
+-			return -EINVAL;
+-		}
+ 
+ 		switch (UVC_ENTITY_TYPE(forward)) {
+ 		case UVC_VC_EXTENSION_UNIT:
+@@ -1579,13 +1574,6 @@ static int uvc_scan_chain_backward(struct uvc_video_chain *chain,
+ 				return -1;
+ 			}
+ 
+-			if (term->chain.next || term->chain.prev) {
+-				uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+-					"entity %d already in chain.\n",
+-					term->id);
+-				return -EINVAL;
+-			}
+-
+ 			if (uvc_trace_param & UVC_TRACE_PROBE)
+ 				printk(KERN_CONT " %d", term->id);
+ 
+@@ -2163,20 +2151,6 @@ static int uvc_probe(struct usb_interface *intf,
  			   sizeof(dev->name) - len);
  	}
  
@@ -36486,7 +36706,7 @@ index 428235ca2..66ee168dd 100644
  	/* Parse the Video Class control descriptor. */
  	if (uvc_parse_control(dev) < 0) {
  		uvc_trace(UVC_TRACE_PROBE, "Unable to parse UVC "
-@@ -2185,7 +2171,19 @@ static int uvc_probe(struct usb_interface *intf,
+@@ -2197,7 +2171,19 @@ static int uvc_probe(struct usb_interface *intf,
  			"linux-uvc-devel mailing list.\n");
  	}
  
@@ -37067,6 +37287,298 @@ index f8ad1c580..d0e5ebc73 100644
  	};
  	unsigned int i;
  
+diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+index 7ad6db8dd..e1eaf1135 100644
+--- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
++++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+@@ -1183,38 +1183,36 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	u32 aux_space;
+ 	int compatible_arg = 1;
+ 	long err = 0;
+-	unsigned int ncmd;
+ 
+ 	/*
+ 	 * 1. When struct size is different, converts the command.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_G_FMT32: ncmd = VIDIOC_G_FMT; break;
+-	case VIDIOC_S_FMT32: ncmd = VIDIOC_S_FMT; break;
+-	case VIDIOC_QUERYBUF32: ncmd = VIDIOC_QUERYBUF; break;
+-	case VIDIOC_G_FBUF32: ncmd = VIDIOC_G_FBUF; break;
+-	case VIDIOC_S_FBUF32: ncmd = VIDIOC_S_FBUF; break;
+-	case VIDIOC_QBUF32: ncmd = VIDIOC_QBUF; break;
+-	case VIDIOC_DQBUF32: ncmd = VIDIOC_DQBUF; break;
+-	case VIDIOC_ENUMSTD32: ncmd = VIDIOC_ENUMSTD; break;
+-	case VIDIOC_ENUMINPUT32: ncmd = VIDIOC_ENUMINPUT; break;
+-	case VIDIOC_TRY_FMT32: ncmd = VIDIOC_TRY_FMT; break;
+-	case VIDIOC_G_EXT_CTRLS32: ncmd = VIDIOC_G_EXT_CTRLS; break;
+-	case VIDIOC_S_EXT_CTRLS32: ncmd = VIDIOC_S_EXT_CTRLS; break;
+-	case VIDIOC_TRY_EXT_CTRLS32: ncmd = VIDIOC_TRY_EXT_CTRLS; break;
+-	case VIDIOC_DQEVENT32: ncmd = VIDIOC_DQEVENT; break;
+-	case VIDIOC_OVERLAY32: ncmd = VIDIOC_OVERLAY; break;
+-	case VIDIOC_STREAMON32: ncmd = VIDIOC_STREAMON; break;
+-	case VIDIOC_STREAMOFF32: ncmd = VIDIOC_STREAMOFF; break;
+-	case VIDIOC_G_INPUT32: ncmd = VIDIOC_G_INPUT; break;
+-	case VIDIOC_S_INPUT32: ncmd = VIDIOC_S_INPUT; break;
+-	case VIDIOC_G_OUTPUT32: ncmd = VIDIOC_G_OUTPUT; break;
+-	case VIDIOC_S_OUTPUT32: ncmd = VIDIOC_S_OUTPUT; break;
+-	case VIDIOC_CREATE_BUFS32: ncmd = VIDIOC_CREATE_BUFS; break;
+-	case VIDIOC_PREPARE_BUF32: ncmd = VIDIOC_PREPARE_BUF; break;
+-	case VIDIOC_G_EDID32: ncmd = VIDIOC_G_EDID; break;
+-	case VIDIOC_S_EDID32: ncmd = VIDIOC_S_EDID; break;
+-	default: ncmd = cmd; break;
++	case VIDIOC_G_FMT32: cmd = VIDIOC_G_FMT; break;
++	case VIDIOC_S_FMT32: cmd = VIDIOC_S_FMT; break;
++	case VIDIOC_QUERYBUF32: cmd = VIDIOC_QUERYBUF; break;
++	case VIDIOC_G_FBUF32: cmd = VIDIOC_G_FBUF; break;
++	case VIDIOC_S_FBUF32: cmd = VIDIOC_S_FBUF; break;
++	case VIDIOC_QBUF32: cmd = VIDIOC_QBUF; break;
++	case VIDIOC_DQBUF32: cmd = VIDIOC_DQBUF; break;
++	case VIDIOC_ENUMSTD32: cmd = VIDIOC_ENUMSTD; break;
++	case VIDIOC_ENUMINPUT32: cmd = VIDIOC_ENUMINPUT; break;
++	case VIDIOC_TRY_FMT32: cmd = VIDIOC_TRY_FMT; break;
++	case VIDIOC_G_EXT_CTRLS32: cmd = VIDIOC_G_EXT_CTRLS; break;
++	case VIDIOC_S_EXT_CTRLS32: cmd = VIDIOC_S_EXT_CTRLS; break;
++	case VIDIOC_TRY_EXT_CTRLS32: cmd = VIDIOC_TRY_EXT_CTRLS; break;
++	case VIDIOC_DQEVENT32: cmd = VIDIOC_DQEVENT; break;
++	case VIDIOC_OVERLAY32: cmd = VIDIOC_OVERLAY; break;
++	case VIDIOC_STREAMON32: cmd = VIDIOC_STREAMON; break;
++	case VIDIOC_STREAMOFF32: cmd = VIDIOC_STREAMOFF; break;
++	case VIDIOC_G_INPUT32: cmd = VIDIOC_G_INPUT; break;
++	case VIDIOC_S_INPUT32: cmd = VIDIOC_S_INPUT; break;
++	case VIDIOC_G_OUTPUT32: cmd = VIDIOC_G_OUTPUT; break;
++	case VIDIOC_S_OUTPUT32: cmd = VIDIOC_S_OUTPUT; break;
++	case VIDIOC_CREATE_BUFS32: cmd = VIDIOC_CREATE_BUFS; break;
++	case VIDIOC_PREPARE_BUF32: cmd = VIDIOC_PREPARE_BUF; break;
++	case VIDIOC_G_EDID32: cmd = VIDIOC_G_EDID; break;
++	case VIDIOC_S_EDID32: cmd = VIDIOC_S_EDID; break;
+ 	}
+ 
+ 	/*
+@@ -1223,11 +1221,11 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * argument into it.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_OVERLAY32:
+-	case VIDIOC_STREAMON32:
+-	case VIDIOC_STREAMOFF32:
+-	case VIDIOC_S_INPUT32:
+-	case VIDIOC_S_OUTPUT32:
++	case VIDIOC_OVERLAY:
++	case VIDIOC_STREAMON:
++	case VIDIOC_STREAMOFF:
++	case VIDIOC_S_INPUT:
++	case VIDIOC_S_OUTPUT:
+ 		err = alloc_userspace(sizeof(unsigned int), 0, &new_p64);
+ 		if (!err && assign_in_user((unsigned int __user *)new_p64,
+ 					   (compat_uint_t __user *)p32))
+@@ -1235,23 +1233,23 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_INPUT32:
+-	case VIDIOC_G_OUTPUT32:
++	case VIDIOC_G_INPUT:
++	case VIDIOC_G_OUTPUT:
+ 		err = alloc_userspace(sizeof(unsigned int), 0, &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_EDID32:
+-	case VIDIOC_S_EDID32:
++	case VIDIOC_G_EDID:
++	case VIDIOC_S_EDID:
+ 		err = alloc_userspace(sizeof(struct v4l2_edid), 0, &new_p64);
+ 		if (!err)
+ 			err = get_v4l2_edid32(new_p64, p32);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_FMT32:
+-	case VIDIOC_S_FMT32:
+-	case VIDIOC_TRY_FMT32:
++	case VIDIOC_G_FMT:
++	case VIDIOC_S_FMT:
++	case VIDIOC_TRY_FMT:
+ 		err = bufsize_v4l2_format(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_format),
+@@ -1264,7 +1262,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_CREATE_BUFS32:
++	case VIDIOC_CREATE_BUFS:
+ 		err = bufsize_v4l2_create(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_create_buffers),
+@@ -1277,10 +1275,10 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_PREPARE_BUF32:
+-	case VIDIOC_QUERYBUF32:
+-	case VIDIOC_QBUF32:
+-	case VIDIOC_DQBUF32:
++	case VIDIOC_PREPARE_BUF:
++	case VIDIOC_QUERYBUF:
++	case VIDIOC_QBUF:
++	case VIDIOC_DQBUF:
+ 		err = bufsize_v4l2_buffer(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_buffer),
+@@ -1293,7 +1291,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_S_FBUF32:
++	case VIDIOC_S_FBUF:
+ 		err = alloc_userspace(sizeof(struct v4l2_framebuffer), 0,
+ 				      &new_p64);
+ 		if (!err)
+@@ -1301,13 +1299,13 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_FBUF32:
++	case VIDIOC_G_FBUF:
+ 		err = alloc_userspace(sizeof(struct v4l2_framebuffer), 0,
+ 				      &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_ENUMSTD32:
++	case VIDIOC_ENUMSTD:
+ 		err = alloc_userspace(sizeof(struct v4l2_standard), 0,
+ 				      &new_p64);
+ 		if (!err)
+@@ -1315,16 +1313,16 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_ENUMINPUT32:
++	case VIDIOC_ENUMINPUT:
+ 		err = alloc_userspace(sizeof(struct v4l2_input), 0, &new_p64);
+ 		if (!err)
+ 			err = get_v4l2_input32(new_p64, p32);
+ 		compatible_arg = 0;
+ 		break;
+ 
+-	case VIDIOC_G_EXT_CTRLS32:
+-	case VIDIOC_S_EXT_CTRLS32:
+-	case VIDIOC_TRY_EXT_CTRLS32:
++	case VIDIOC_G_EXT_CTRLS:
++	case VIDIOC_S_EXT_CTRLS:
++	case VIDIOC_TRY_EXT_CTRLS:
+ 		err = bufsize_v4l2_ext_controls(p32, &aux_space);
+ 		if (!err)
+ 			err = alloc_userspace(sizeof(struct v4l2_ext_controls),
+@@ -1336,7 +1334,7 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 		}
+ 		compatible_arg = 0;
+ 		break;
+-	case VIDIOC_DQEVENT32:
++	case VIDIOC_DQEVENT:
+ 		err = alloc_userspace(sizeof(struct v4l2_event), 0, &new_p64);
+ 		compatible_arg = 0;
+ 		break;
+@@ -1354,9 +1352,9 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * Otherwise, it will pass the newly allocated @new_p64 argument.
+ 	 */
+ 	if (compatible_arg)
+-		err = native_ioctl(file, ncmd, (unsigned long)p32);
++		err = native_ioctl(file, cmd, (unsigned long)p32);
+ 	else
+-		err = native_ioctl(file, ncmd, (unsigned long)new_p64);
++		err = native_ioctl(file, cmd, (unsigned long)new_p64);
+ 
+ 	if (err == -ENOTTY)
+ 		return err;
+@@ -1372,13 +1370,13 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * the blocks to maximum allowed value.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_G_EXT_CTRLS32:
+-	case VIDIOC_S_EXT_CTRLS32:
+-	case VIDIOC_TRY_EXT_CTRLS32:
++	case VIDIOC_G_EXT_CTRLS:
++	case VIDIOC_S_EXT_CTRLS:
++	case VIDIOC_TRY_EXT_CTRLS:
+ 		if (put_v4l2_ext_controls32(file, new_p64, p32))
+ 			err = -EFAULT;
+ 		break;
+-	case VIDIOC_S_EDID32:
++	case VIDIOC_S_EDID:
+ 		if (put_v4l2_edid32(new_p64, p32))
+ 			err = -EFAULT;
+ 		break;
+@@ -1391,49 +1389,49 @@ static long do_video_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	 * the original 32 bits structure.
+ 	 */
+ 	switch (cmd) {
+-	case VIDIOC_S_INPUT32:
+-	case VIDIOC_S_OUTPUT32:
+-	case VIDIOC_G_INPUT32:
+-	case VIDIOC_G_OUTPUT32:
++	case VIDIOC_S_INPUT:
++	case VIDIOC_S_OUTPUT:
++	case VIDIOC_G_INPUT:
++	case VIDIOC_G_OUTPUT:
+ 		if (assign_in_user((compat_uint_t __user *)p32,
+ 				   ((unsigned int __user *)new_p64)))
+ 			err = -EFAULT;
+ 		break;
+ 
+-	case VIDIOC_G_FBUF32:
++	case VIDIOC_G_FBUF:
+ 		err = put_v4l2_framebuffer32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_DQEVENT32:
++	case VIDIOC_DQEVENT:
+ 		err = put_v4l2_event32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_G_EDID32:
++	case VIDIOC_G_EDID:
+ 		err = put_v4l2_edid32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_G_FMT32:
+-	case VIDIOC_S_FMT32:
+-	case VIDIOC_TRY_FMT32:
++	case VIDIOC_G_FMT:
++	case VIDIOC_S_FMT:
++	case VIDIOC_TRY_FMT:
+ 		err = put_v4l2_format32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_CREATE_BUFS32:
++	case VIDIOC_CREATE_BUFS:
+ 		err = put_v4l2_create32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_PREPARE_BUF32:
+-	case VIDIOC_QUERYBUF32:
+-	case VIDIOC_QBUF32:
+-	case VIDIOC_DQBUF32:
++	case VIDIOC_PREPARE_BUF:
++	case VIDIOC_QUERYBUF:
++	case VIDIOC_QBUF:
++	case VIDIOC_DQBUF:
+ 		err = put_v4l2_buffer32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_ENUMSTD32:
++	case VIDIOC_ENUMSTD:
+ 		err = put_v4l2_standard32(new_p64, p32);
+ 		break;
+ 
+-	case VIDIOC_ENUMINPUT32:
++	case VIDIOC_ENUMINPUT:
+ 		err = put_v4l2_input32(new_p64, p32);
+ 		break;
+ 	}
 diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
 index 67efaed80..39090ddfe 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls.c
@@ -38219,7 +38731,7 @@ index 000000000..5bf99e7c0
 +}
 +EXPORT_SYMBOL_GPL(v4l2_i2c_tuner_addrs);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 874030dcd..92dea1ef0 100644
+index b0f4b8d78..92dea1ef0 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -1051,20 +1051,25 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
@@ -38403,6 +38915,48 @@ index 874030dcd..92dea1ef0 100644
  static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
  				struct file *file, void *fh, void *arg)
  {
+@@ -1582,12 +1602,12 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_s_fmt_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_sliced_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_s_fmt_sliced_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_vid_out))
+@@ -1613,22 +1633,22 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_s_fmt_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_sliced_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_s_fmt_sliced_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_sdr_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_s_fmt_sdr_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_OUTPUT:
+ 		if (unlikely(!ops->vidioc_s_fmt_sdr_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_s_fmt_sdr_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 		if (unlikely(!ops->vidioc_s_fmt_meta_cap))
 @@ -1648,6 +1668,7 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
  				struct file *file, void *fh, void *arg)
  {
@@ -38420,6 +38974,48 @@ index 874030dcd..92dea1ef0 100644
  		return ret;
  	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
  		if (unlikely(!ops->vidioc_try_fmt_vid_cap_mplane))
+@@ -1681,12 +1704,12 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_try_fmt_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_sliced_vbi_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_try_fmt_sliced_vbi_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_vid_out))
+@@ -1712,22 +1735,22 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+ 	case V4L2_BUF_TYPE_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.vbi.flags);
++		CLEAR_AFTER_FIELD(p, fmt.vbi);
+ 		return ops->vidioc_try_fmt_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_sliced_vbi_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sliced.io_size);
++		CLEAR_AFTER_FIELD(p, fmt.sliced);
+ 		return ops->vidioc_try_fmt_sliced_vbi_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_sdr_cap))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_try_fmt_sdr_cap(file, fh, arg);
+ 	case V4L2_BUF_TYPE_SDR_OUTPUT:
+ 		if (unlikely(!ops->vidioc_try_fmt_sdr_out))
+ 			break;
+-		CLEAR_AFTER_FIELD(p, fmt.sdr.buffersize);
++		CLEAR_AFTER_FIELD(p, fmt.sdr);
+ 		return ops->vidioc_try_fmt_sdr_out(file, fh, arg);
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 		if (unlikely(!ops->vidioc_try_fmt_meta_cap))
 @@ -2168,9 +2191,11 @@ static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
  
  	p->error_idx = p->count;
@@ -38699,6 +39295,23 @@ index 76b4ac7b1..aeb2f497c 100644
  
  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
  		ret = follow_pfn(vma, user_address, &this_pfn);
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index 28262190c..66a6c6c23 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -349,11 +349,8 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
+ 	BUG_ON(dma->sglen);
+ 
+ 	if (dma->pages) {
+-		for (i = 0; i < dma->nr_pages; i++) {
+-			if (dma->direction == DMA_FROM_DEVICE)
+-				set_page_dirty_lock(dma->pages[i]);
++		for (i = 0; i < dma->nr_pages; i++)
+ 			put_page(dma->pages[i]);
+-		}
+ 		kfree(dma->pages);
+ 		dma->pages = NULL;
+ 	}
 diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
 index 534d85d6c..642adc4c2 100644
 --- a/drivers/staging/media/Kconfig
@@ -43875,6 +44488,19 @@ index b7f0354b1..7477e5805 100644
  
  	ret = mipi_csis_clk_get(state);
  	if (ret < 0)
+diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
+index 0b1cb9f9c..c7cd27efa 100644
+--- a/drivers/staging/media/ipu3/include/intel-ipu3.h
++++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+@@ -449,7 +449,7 @@ struct ipu3_uapi_awb_fr_config_s {
+ 	__u16 reserved1;
+ 	__u32 bayer_sign;
+ 	__u8 bayer_nf;
+-	__u8 reserved2[7];
++	__u8 reserved2[3];
+ } __attribute__((aligned(32))) __packed;
+ 
+ /**
 diff --git a/drivers/staging/media/ipu3/ipu3-tables.h b/drivers/staging/media/ipu3/ipu3-tables.h
 index a1bf3286f..9f719c48b 100644
 --- a/drivers/staging/media/ipu3/ipu3-tables.h
@@ -44244,7 +44870,7 @@ index bdad87eb9..56ca4c9ad 100644
  			V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS);
  		run.h264.pps = cedrus_find_control_data(ctx,
 diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-index a30bb283f..d6a782703 100644
+index 9c22acd9e..d6a782703 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
 +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
 @@ -118,7 +118,7 @@ static void cedrus_write_frame_list(struct cedrus_ctx *ctx,
@@ -44265,6 +44891,17 @@ index a30bb283f..d6a782703 100644
  		cedrus_buf = vb2_v4l2_to_cedrus_buffer(ref_buf);
  		position = cedrus_buf->codec.h264.position;
  
+@@ -240,8 +240,8 @@ static void cedrus_write_scaling_lists(struct cedrus_ctx *ctx,
+ 			       sizeof(scaling->scaling_list_8x8[0]));
+ 
+ 	cedrus_h264_write_sram(dev, CEDRUS_SRAM_H264_SCALING_LIST_8x8_1,
+-			       scaling->scaling_list_8x8[1],
+-			       sizeof(scaling->scaling_list_8x8[1]));
++			       scaling->scaling_list_8x8[3],
++			       sizeof(scaling->scaling_list_8x8[3]));
+ 
+ 	cedrus_h264_write_sram(dev, CEDRUS_SRAM_H264_SCALING_LIST_4x4,
+ 			       scaling->scaling_list_4x4,
 diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_hw.c b/drivers/staging/media/sunxi/cedrus/cedrus_hw.c
 index c34aec7c6..a942cd9be 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus_hw.c
@@ -44697,6 +45334,19 @@ index 000000000..c39cf53c8
 +++ b/include/linux/kernel_version.h
 @@ -0,0 +1 @@
 +#define V4L2_VERSION 328704
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index 08b25c02b..d1a5d5df0 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -71,8 +71,6 @@
+ 
+ #define SDIO_VENDOR_ID_TI			0x0097
+ #define SDIO_DEVICE_ID_TI_WL1271		0x4076
+-#define SDIO_VENDOR_ID_TI_WL1251		0x104c
+-#define SDIO_DEVICE_ID_TI_WL1251		0x9066
+ 
+ #define SDIO_VENDOR_ID_STE			0x0020
+ #define SDIO_DEVICE_ID_STE_CW1200		0x2280
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
 index 290db814b..21a572469 100644
 --- a/include/linux/pci_ids.h
@@ -48391,6 +49041,25 @@ index 400f2e46c..4bba65a59 100644
  
  /*  Video standard functions  */
  
+diff --git a/include/media/v4l2-rect.h b/include/media/v4l2-rect.h
+index 8800a640c..c86474dc7 100644
+--- a/include/media/v4l2-rect.h
++++ b/include/media/v4l2-rect.h
+@@ -63,10 +63,10 @@ static inline void v4l2_rect_map_inside(struct v4l2_rect *r,
+ 		r->left = boundary->left;
+ 	if (r->top < boundary->top)
+ 		r->top = boundary->top;
+-	if (r->left + r->width > boundary->left + boundary->width)
+-		r->left = boundary->left + boundary->width - r->width;
+-	if (r->top + r->height > boundary->top + boundary->height)
+-		r->top = boundary->top + boundary->height - r->height;
++	if (r->left + r->width > boundary->width)
++		r->left = boundary->width - r->width;
++	if (r->top + r->height > boundary->height)
++		r->top = boundary->height - r->height;
+ }
+ 
+ /**
 diff --git a/include/media/vp8-ctrls.h b/include/media/vp8-ctrls.h
 new file mode 100644
 index 000000000..53cba826e
