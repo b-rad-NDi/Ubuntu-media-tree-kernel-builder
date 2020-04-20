@@ -1,3 +1,15 @@
+0.0.6
+  * New Ubuntu revisions
+
+0.0.5
+  * New Ubuntu revisions
+  * New MaxLinear 692 driver
+  * New Hauppauge USB QuadHD support
+
+0.0.4
+  * New Ubuntu revisions
+  * Working m88ds3103b driver
+
 0.0.3
   * New Ubuntu revisions
   * Bionic HWE migrates to 5.3.0

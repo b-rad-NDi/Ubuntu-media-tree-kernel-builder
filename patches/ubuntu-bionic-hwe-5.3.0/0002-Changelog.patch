@@ -1,21 +1,21 @@
-From 7f46df43a5ccc7fb461d93805242a1e0df623287 Mon Sep 17 00:00:00 2001
+From 76ac9b66a86a996b294915a0e5cf5fb82383e583 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 6 Dec 2019 16:20:00 -0600
+Date: Mon, 20 Apr 2020 04:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe/changelog | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ debian.hwe/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 4e5be9617f22..6e67c98c516d 100644
+index 5b48ef936584..c2ef06fc96d7 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
-@@ -1,3 +1,43 @@
-+linux-hwe (5.3.0-25201912061620.0+mediatree+hauppauge~hwe) bionic; urgency=low
+@@ -1,3 +1,51 @@
++linux-hwe (5.3.0-47202004200420.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 5.3.0-25.27 rev 2ea3399a032cd0a1abd85de71ff7565e475ce9ae
++    - 5.3.0-47.39 rev 4288bbf5ef1d0ec5446310dda59b2ad38d1a61ee
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -46,15 +46,23 @@ index 4e5be9617f22..6e67c98c516d 100644
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 99.montage.3103b
++    - 80.montage.3103b
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
++    --- 0003-dw2102-Log-probed-demodulator-type-and-address.patch
++    --- 0004-dw2102-probe-for-demodulator-i2c-address.patch
++    --- 0005-dw2102-check-initialization-replies.patch
++    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
++    - 90.usb.quadhd.xml692
++    --- 0001-mxl69x-MaxLinear-692-ATSC-demod-tuner-driver.patch
++    --- 0002-em28xx-core-Fix-TS2-active-led.patch
++    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Fri, 06 Dec 2019 16:20:00 -0600
++ -- Fake User <hidden@email.co>  Mon, 20 Apr 2020 04:20:00 -0500
 +
- linux-hwe (5.3.0-25.27~18.04.1) bionic; urgency=medium
+ linux-hwe (5.3.0-47.39~18.04.1) bionic; urgency=medium
  
-   * bionic/linux-hwe: 5.3.0-25.27~18.04.1 -proposed tracker (LP: #1855309)
+   * bionic/linux-hwe: 5.3.0-47.39~18.04.1 -proposed tracker (LP: #1870719)
 -- 
 2.17.1
 

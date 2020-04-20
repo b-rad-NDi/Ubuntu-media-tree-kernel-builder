@@ -1,21 +1,21 @@
-From 50096967d5dfb21b5838baa772d8eb75e338fd99 Mon Sep 17 00:00:00 2001
+From 4ad0d922a3f4004e9055aa9bfe32a658568c1871 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 5 Dec 2019 16:20:00 -0600
+Date: Mon, 20 Apr 2020 04:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ debian.master/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 4740a7a..0121a04 100644
+index 3768bc1..57b379e 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,43 @@
-+linux (4.4.0-170201912051620.0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,51 @@
++linux (4.4.0-177202004200420.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.4.0-170.199 rev 6a3433948fdca4055ca7d95741d1582d693cd58d
++    - 4.4.0-177.207 rev 1d6d038afa709652a3537ce886d1929d86f22a89
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -46,15 +46,23 @@ index 4740a7a..0121a04 100644
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 99.montage.3103b
++    - 80.montage.3103b
 +    --- 0001-m88ds3103-Add-Montage-3103b-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-revision-2.patch
++    --- 0003-dw2102-Log-probed-demodulator-type-and-address.patch
++    --- 0004-dw2102-probe-for-demodulator-i2c-address.patch
++    --- 0005-dw2102-check-initialization-replies.patch
++    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
++    - 90.usb.quadhd.xml692
++    --- 0001-mxl69x-MaxLinear-692-ATSC-demod-tuner-driver.patch
++    --- 0002-em28xx-core-Fix-TS2-active-led.patch
++    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 05 Dec 2019 16:20:00 -0600
++ -- Fake User <hidden@email.co>  Mon, 20 Apr 2020 04:20:00 -0500
 +
- linux (4.4.0-170.199) xenial; urgency=medium
+ linux (4.4.0-177.207) xenial; urgency=medium
  
-   * xenial/linux: 4.4.0-170.199 -proposed tracker (LP: #1852306)
+   * xenial/linux: 4.4.0-177.207 -proposed tracker (LP: #1867243)
 -- 
 2.7.4
 
