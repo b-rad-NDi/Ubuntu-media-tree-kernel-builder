@@ -1,25 +1,23 @@
-From 8fddd2881c6f3aa498c50a16d7f51450e9448c5c Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Fri, 21 Feb 2020 13:23:41 -0600
+From 441c0f7f33ea56815ea624b98bbdf7e765daaa02 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 27 May 2020 14:57:46 -0500
 Subject: [PATCH 1/3] mxl69x: MaxLinear 692 ATSC demod/tuner driver
 
 MaxLinear 692 is a combo demod/tuner which has ATSC and QAM capabilities.
 Only ATSC is currently implemented.
-
-Signed-off-by: Brad Love <brad@nextdimension.cc>
 ---
  drivers/media/dvb-frontends/Kconfig       |    7 +
  drivers/media/dvb-frontends/Makefile      |    1 +
- drivers/media/dvb-frontends/mxl692.c      | 1181 +++++++++++++++++++++
+ drivers/media/dvb-frontends/mxl692.c      | 1371 +++++++++++++++++++++++++++++
  drivers/media/dvb-frontends/mxl692.h      |   38 +
- drivers/media/dvb-frontends/mxl692_defs.h |  540 ++++++++++
- 5 files changed, 1767 insertions(+)
+ drivers/media/dvb-frontends/mxl692_defs.h |  540 ++++++++++++
+ 5 files changed, 1957 insertions(+)
  create mode 100644 drivers/media/dvb-frontends/mxl692.c
  create mode 100644 drivers/media/dvb-frontends/mxl692.h
  create mode 100644 drivers/media/dvb-frontends/mxl692_defs.h
 
 diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
-index a29e9ddf9..233aa289c 100644
+index a29e9dd..233aa28 100644
 --- a/drivers/media/dvb-frontends/Kconfig
 +++ b/drivers/media/dvb-frontends/Kconfig
 @@ -65,6 +65,13 @@ config DVB_MXL5XX
@@ -37,7 +35,7 @@ index a29e9ddf9..233aa289c 100644
  	tristate "Montage Technology M88DS3103"
  	depends on DVB_CORE && I2C && I2C_MUX
 diff --git a/drivers/media/dvb-frontends/Makefile b/drivers/media/dvb-frontends/Makefile
-index e91791626..b9f47d68e 100644
+index e917916..b9f47d6 100644
 --- a/drivers/media/dvb-frontends/Makefile
 +++ b/drivers/media/dvb-frontends/Makefile
 @@ -55,6 +55,7 @@ obj-$(CONFIG_DVB_S5H1420) += s5h1420.o
@@ -50,10 +48,10 @@ index e91791626..b9f47d68e 100644
  obj-$(CONFIG_DVB_LNBH25) += lnbh25.o
 diff --git a/drivers/media/dvb-frontends/mxl692.c b/drivers/media/dvb-frontends/mxl692.c
 new file mode 100644
-index 000000000..e95ffb8f3
+index 0000000..d710712
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692.c
-@@ -0,0 +1,1181 @@
+@@ -0,0 +1,1371 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Driver for the MaxLinear MxL69x family of tuners/demods
@@ -95,6 +93,7 @@ index 000000000..e95ffb8f3
 +	int device_type;
 +	int seqNum;
 +	int init_done;
++	enum MXL_EAGLE_POWER_MODE_E powermode;
 +};
 +
 +static int mxl692_i2c_write(struct mxl692_dev *dev, u8 *pBuffer, u16 bufferLen)
@@ -109,7 +108,7 @@ index 000000000..e95ffb8f3
 +
 +	ret = i2c_transfer(dev->i2c_client->adapter, &msg, 1);
 +	if (ret != 1)
-+		dev_info(&dev->i2c_client->dev, "%s: i2c write error!\n", __func__);
++		dev_info(&dev->i2c_client->dev, "i2c write error!\n");
 +
 +	return ret;
 +}
@@ -127,7 +126,7 @@ index 000000000..e95ffb8f3
 +
 +	ret = i2c_transfer(dev->i2c_client->adapter, &msg, 1);
 +	if (ret != 1)
-+		dev_info(&dev->i2c_client->dev, "%s: i2c read error!\n", __func__);
++		dev_info(&dev->i2c_client->dev, "i2c read error!\n");
 +
 +	return ret;
 +}
@@ -140,9 +139,9 @@ index 000000000..e95ffb8f3
 +	gIsBigEndian = (*pTemp == 0) ? 1 : 0;
 +
 +	if (gIsBigEndian)
-+		pr_err("%s() BIG   endian\n", __func__);
++		pr_debug("%s( BIG )\n", __func__);
 +	else
-+		pr_err("%s() SMALL endian\n", __func__);
++		pr_debug("%s( SMALL )\n", __func__);
 +
 +}
 +
@@ -319,7 +318,7 @@ index 000000000..e95ffb8f3
 +		status = -EINVAL;
 +err_finish:
 +	if (status != 0)
-+		pr_err("%s() FAIL!\n", __func__);
++		pr_err("%s FAIL! %d\n", __func__, status);
 +	return status;
 +}
 +
@@ -368,7 +367,7 @@ index 000000000..e95ffb8f3
 +	}
 +
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +
 +	return status;
 +}
@@ -383,7 +382,7 @@ index 000000000..e95ffb8f3
 +	totalLen = (totalLen + 3) & ~3;  /* 4 byte alignment */
 +
 +	if (totalLen > (MXL_EAGLE_MAX_I2C_PACKET_SIZE - MXL_EAGLE_I2C_MHEADER_SIZE))
-+		dev_err(&dev->i2c_client->dev, "%s() hrmph?\n", __func__);
++		dev_dbg(&dev->i2c_client->dev, "hrmph?\n");
 +
 +	pLocalBuf = localBuf;
 +
@@ -405,7 +404,7 @@ index 000000000..e95ffb8f3
 +
 +	return status;
 +err_finish:
-+	dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
++	dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -435,7 +434,7 @@ index 000000000..e95ffb8f3
 +		status = -EREMOTEIO;
 +
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +
 +	return status;
 +}
@@ -450,7 +449,7 @@ index 000000000..e95ffb8f3
 +	totalLen = (totalLen + 3) & ~3;  /* 4 byte alignment */
 +
 +	if (totalLen > (MXL_EAGLE_MAX_I2C_PACKET_SIZE - MXL_EAGLE_I2C_PHEADER_SIZE))
-+		dev_err(&dev->i2c_client->dev, "%s() hrmph?\n", __func__);
++		dev_dbg(&dev->i2c_client->dev, "hrmph?\n");
 +
 +	pLocalBuf = localBuf;
 +
@@ -466,7 +465,7 @@ index 000000000..e95ffb8f3
 +	}
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -486,7 +485,7 @@ index 000000000..e95ffb8f3
 +		//read in 4 byte chunks
 +		for (ix=0; ix<size; ix+=4) {
 +			if (mxl692_i2c_read(dev, pBuffer+ix, 4) < 0) {
-+				dev_err(&dev->i2c_client->dev, "%s() Line %d   ix=%d   size=%d\n", __func__, __LINE__, ix, size);
++				dev_dbg(&dev->i2c_client->dev, "ix=%d   size=%d\n", ix, size);
 +				status = -EREMOTEIO;
 +				goto err_finish;
 +			}
@@ -496,7 +495,7 @@ index 000000000..e95ffb8f3
 +		status = -EREMOTEIO;
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -558,7 +557,7 @@ index 000000000..e95ffb8f3
 +	         (pRxMsgHeader->checksum == 0));
 +
 +	if ( (timeout == 0) || (status != 0) ) {
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL Line %d   timeout=%d   status=%d\n", __func__, __LINE__, timeout, status);
++		dev_dbg(&dev->i2c_client->dev, "timeout=%d   status=%d\n", timeout, status);
 +		status = -ETIMEDOUT;
 +		goto err_finish;
 +	}
@@ -571,14 +570,13 @@ index 000000000..e95ffb8f3
 +	if ((pRxMsgHeader->seqNum != txMsgHeader->seqNum) ||
 +	    (pRxMsgHeader->opcode != txMsgHeader->opcode) ||
 +	    (pRxMsgHeader->payloadSize != rxExpectedPayloadSize)) {
-+		dev_dbg(&dev->i2c_client->dev, "%s() Something failed seq=%s  opcode=%s  pSize=%s\n",
-+		       __func__,
++		dev_dbg(&dev->i2c_client->dev, "Something failed seq=%s  opcode=%s  pSize=%s\n",
 +		       pRxMsgHeader->seqNum != txMsgHeader->seqNum ? "X" : "0",
 +		       pRxMsgHeader->opcode != txMsgHeader->opcode ? "X" : "0",
 +		       pRxMsgHeader->payloadSize != rxExpectedPayloadSize ? "X" : "0");
 +		if (pRxMsgHeader->payloadSize != rxExpectedPayloadSize)
-+			dev_err(&dev->i2c_client->dev, "%s() pRxMsgHeader->payloadSize=%d   rxExpectedPayloadSize=%d\n",
-+			       __func__, pRxMsgHeader->payloadSize, rxExpectedPayloadSize);
++			dev_dbg(&dev->i2c_client->dev, "pRxMsgHeader->payloadSize=%d   rxExpectedPayloadSize=%d\n",
++			       pRxMsgHeader->payloadSize, rxExpectedPayloadSize);
 +		status = -EREMOTEIO;
 +		goto err_finish;
 +	}
@@ -604,7 +602,7 @@ index 000000000..e95ffb8f3
 +	}
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +
 +	mutex_unlock(&dev->i2c_lock);
 +	return status;
@@ -624,7 +622,7 @@ index 000000000..e95ffb8f3
 +
 +	mutex_lock(&dev->i2c_lock);
 +
-+	dev_err(&dev->i2c_client->dev, "%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "\n");
 +
 +	status = mxl692_validate_fw_header(pFwBuffer, bufferLen);
 +	if (status != 0)
@@ -662,7 +660,7 @@ index 000000000..e95ffb8f3
 +err_finish:
 +	mutex_unlock(&dev->i2c_lock);
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -680,9 +678,9 @@ index 000000000..e95ffb8f3
 +	if (status != 0)
 +		return status;
 +
-+	dev_err(&dev->i2c_client->dev, "MxL692_DEMOD Chip ID: %s \n", chipId[devVersionStruct.chipId]);
++	dev_dbg(&dev->i2c_client->dev, "MxL692_DEMOD Chip ID: %s \n", chipId[devVersionStruct.chipId]);
 +
-+	dev_err(&dev->i2c_client->dev, "MxL692_DEMOD FW Version: %d.%d.%d.%d_RC%d \n",
++	dev_dbg(&dev->i2c_client->dev, "MxL692_DEMOD FW Version: %d.%d.%d.%d_RC%d \n",
 +	       devVersionStruct.firmwareVer[0],
 +	       devVersionStruct.firmwareVer[1],
 +	       devVersionStruct.firmwareVer[2],
@@ -697,7 +695,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 deviceType = MXL_EAGLE_DEVICE_MAX, regValue = 0x2;
 +
-+	dev_err(&dev->i2c_client->dev, "%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "\n");
 +
 +	/* legacy i2c override */
 +	status = mxl692_memwrite(dev, 0x80000100, (u8*)&regValue, sizeof(u32));
@@ -714,7 +712,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -724,7 +722,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 regValue;
 +
-+	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "\n");
 +
 +	/* configure main regulator according to the power supply source */
 +	status = mxl692_memread(dev, 0x90000000, (u8*)&regValue, sizeof(u32));
@@ -750,7 +748,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -760,7 +758,7 @@ index 000000000..e95ffb8f3
 +	int status = 0;
 +	u32 regValue, regValue1;
 +
-+	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
++	dev_dbg(&dev->i2c_client->dev, "\n");
 +
 +	status = mxl692_memread(dev, 0x90000000, (u8*)&regValue, sizeof(u32));
 +	if (status != 0)
@@ -871,7 +869,7 @@ index 000000000..e95ffb8f3
 +
 +err_finish:
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
 +	return status;
 +}
 +
@@ -881,7 +879,7 @@ index 000000000..e95ffb8f3
 +{
 +	int status = 0;
 +
-+	dev_dbg(&dev->i2c_client->dev, "%s() %s\n", __func__, powerMode == MXL_EAGLE_POWER_MODE_SLEEP ?
++	dev_dbg(&dev->i2c_client->dev, "%s\n", powerMode == MXL_EAGLE_POWER_MODE_SLEEP ?
 +	       "sleep" : "active");
 +
 +	status = mxl692_i2c_writeread(dev,
@@ -891,7 +889,10 @@ index 000000000..e95ffb8f3
 +				      NULL,
 +				      0);
 +	if (status != 0)
-+		dev_err(&dev->i2c_client->dev, "%s() FAIL!\n", __func__);
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", status);
++
++	dev->powermode = powerMode;
++
 +	return status;
 +}
 +
@@ -899,24 +900,27 @@ index 000000000..e95ffb8f3
 +{
 +	struct mxl692_dev *dev = fe->demodulator_priv;
 +	struct i2c_client *client = dev->i2c_client;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	int status = 0;
 +	const struct firmware *firmware;
 +	struct MXL_EAGLE_DEV_XTAL_T devXtalConfig = {};
 +
++	dev_dbg(&dev->i2c_client->dev, "\n");
++
 +	if(dev->init_done)
-+		return 0;
++		goto warm;
 +
 +	dev->seqNum = 1;
 +
 +	status = mxl692_reset(dev);
 +	if(status != 0)
-+	    return -EREMOTEIO;
++		goto err;
 +
-+	usleep_range(100 * 1000, 110 * 1000); /* was 1000! */
++	usleep_range(50 * 1000, 60 * 1000); /* was 1000! */
 +
 +	status = mxl692_config_regulators(dev, MXL_EAGLE_POWER_SUPPLY_SOURCE_DUAL);
 +	if(status != 0)
-+	    return -EREMOTEIO;
++		goto err;
 +
 +	devXtalConfig.xtalCap = 26;
 +	devXtalConfig.clkOutDivEnable = 0;
@@ -925,34 +929,53 @@ index 000000000..e95ffb8f3
 +	devXtalConfig.xtalSharingEnable = 1;
 +	status = mxl692_config_xtal(dev, &devXtalConfig);
 +	if(status != 0)
-+		return -EREMOTEIO;
++		goto err;
 +
 +	status = request_firmware(&firmware, MXL692_FIRMWARE, &client->dev);
 +	if (status) {
-+		dev_err(&dev->i2c_client->dev, "%s() firmware missing? %s\n", __func__, MXL692_FIRMWARE);
-+		return -ENODEV;
++		dev_dbg(&dev->i2c_client->dev, "firmware missing? %s\n", MXL692_FIRMWARE);
++		goto err;
 +	}
 +
 +	status = mxl692_fwdownload(dev, firmware->data, firmware->size);
 +	if(status != 0)
-+	    return -EREMOTEIO;
++		goto err_release_firmware;
 +
 +	release_firmware(firmware);
 +
-+	usleep_range(500 * 1000, 510 * 1000); /* was 1000! */
++//	usleep_range(500 * 1000, 510 * 1000); /* was 1000! */
 +	status = mxl692_get_versions(dev);
 +	if(status != 0)
-+	    return -EREMOTEIO;
++		goto err;
++
++	dev->powermode = MXL_EAGLE_POWER_MODE_SLEEP;
++
++warm:
++        /* Init stats here to indicate which stats are supported */
++        c->cnr.len = 1;
++        c->cnr.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++        c->post_bit_error.len = 1;
++        c->post_bit_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++        c->post_bit_count.len = 1;
++        c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++        c->block_error.len = 1;
++        c->block_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
 +
 +	dev->init_done = 1;
 +	return 0;
++err_release_firmware:
++	release_firmware(firmware);
++err:
++	return status;
 +}
 +
 +static int mxl692_sleep(struct dvb_frontend *fe)
 +{
 +	struct mxl692_dev *dev = fe->demodulator_priv;
 +
-+	mxl692_powermode(dev, MXL_EAGLE_POWER_MODE_SLEEP);
++	if (dev->powermode != MXL_EAGLE_POWER_MODE_SLEEP)
++		mxl692_powermode(dev, MXL_EAGLE_POWER_MODE_SLEEP);
++
 +	return 0;
 +}
 +
@@ -965,9 +988,11 @@ index 000000000..e95ffb8f3
 +	enum MXL_EAGLE_DEMOD_TYPE_E demodType;
 +	enum MXL_EAGLE_POWER_MODE_E powerMode = MXL_EAGLE_POWER_MODE_ACTIVE;
 +	struct MXL_EAGLE_MPEGOUT_PARAMS_T mpegOutParams = {};
-+	enum MXL_EAGLE_QAM_DEMOD_ANNEX_TYPE_E qamAnnexType = MXL_EAGLE_QAM_DEMOD_ANNEX_A;
-+//	struct MXL_EAGLE_QAM_DEMOD_PARAMS_T qamParamsStruct = {};
++	enum MXL_EAGLE_QAM_DEMOD_ANNEX_TYPE_E qamAnnexType = MXL_EAGLE_QAM_DEMOD_ANNEX_B;
++	struct MXL_EAGLE_QAM_DEMOD_PARAMS_T qamParamsStruct = {};
 +	struct MXL_EAGLE_TUNER_CHANNEL_PARAMS_T tunerChannelParams = {};
++
++//	pr_debug("%s()\n", __func__);
 +
 +	switch (p->modulation) {
 +	case VSB_8:
@@ -996,16 +1021,22 @@ index 000000000..e95ffb8f3
 +				      NULL,
 +				      0);
 +	if(status != 0)
-+	    dev_err(&dev->i2c_client->dev, "DEVICE_DEMODULATOR_TYPE_SET...FAIL  Status:0x%x\n", status);
++	    dev_dbg(&dev->i2c_client->dev, "DEVICE_DEMODULATOR_TYPE_SET...FAIL  Status:0x%x\n", status);
 +
-+	usleep_range(300 * 1000, 310 * 1000); /* was 500! */
++	usleep_range(20 * 1000, 30 * 1000); /* was 500! */
++
++//	dev_dbg(&dev->i2c_client->dev, "%s() Line %d\n", __func__, __LINE__);
 +
 +	//Config Device Power Mode
-+	status = mxl692_powermode(dev, powerMode);
-+	if(status != 0)
-+		goto err;
++	if (dev->powermode != MXL_EAGLE_POWER_MODE_ACTIVE) {
++		status = mxl692_powermode(dev, powerMode);
++		if(status != 0)
++			goto err;
 +
-+	usleep_range(200 * 1000, 210 * 1000); /* was 500! */
++		usleep_range(50 * 1000, 60 * 1000); /* was 500! */
++	}
++
++//	dev_dbg(&dev->i2c_client->dev, "%s() Line %d\n", __func__, __LINE__);
 +
 +	mpegOutParams.mpegIsParallel = 0;
 +	mpegOutParams.lsbOrMsbFirst = MXL_EAGLE_DATA_SERIAL_MSB_1ST; // MXL_EAGLE_DATA_SERIAL_LSB_1ST
@@ -1039,12 +1070,34 @@ index 000000000..e95ffb8f3
 +					      0);
 +		if(status != 0)
 +			goto err;
++
++		qamParamsStruct.annexType = qamAnnexType;
++		qamParamsStruct.qamType = MXL_EAGLE_QAM_DEMOD_AUTO;
++		qamParamsStruct.iqFlip = MXL_EAGLE_DEMOD_IQ_AUTO;
++		if (p->modulation == QAM_64)
++			qamParamsStruct.symbolRateHz = 5057000;
++		else
++			qamParamsStruct.symbolRateHz = 5361000;
++
++		qamParamsStruct.symbolRate256QamHz = 5361000;
++
++		status = mxl692_i2c_writeread(dev,
++					      MXL_EAGLE_OPCODE_QAM_PARAMS_SET,
++					      (u8*)&qamParamsStruct,
++					      sizeof(struct MXL_EAGLE_QAM_DEMOD_PARAMS_T),
++					      NULL, 0);
++		if(status != 0)
++			goto err;
++
++		dev_dbg(&dev->i2c_client->dev, "QAM\n");
 +		break;
 +	default:
 +		break;
 +	}
 +
-+	usleep_range(200 * 1000, 210 * 1000); /* was 500! */
++//	dev_dbg(&dev->i2c_client->dev, "%s() Line %d\n", __func__, __LINE__);
++
++	usleep_range(20 * 1000, 30 * 1000); /* was 500! */
 +
 +	tunerChannelParams.freqInHz = p->frequency;
 +	tunerChannelParams.bandWidth = MXL_EAGLE_TUNER_BW_6MHz;
@@ -1061,7 +1114,9 @@ index 000000000..e95ffb8f3
 +	if(status != 0)
 +		goto err;
 +
-+	usleep_range(200 * 1000, 210 * 1000); /* was 500! */
++//	dev_dbg(&dev->i2c_client->dev, "%s() Line %d\n", __func__, __LINE__);
++
++	usleep_range(20 * 1000, 30 * 1000); /* was 500! */
 +
 +	switch(demodType)
 +	{
@@ -1072,9 +1127,18 @@ index 000000000..e95ffb8f3
 +		if(status != 0)
 +			goto err;
 +		break;
++	case MXL_EAGLE_DEMOD_TYPE_QAM:
++		status = mxl692_i2c_writeread(dev,
++					      MXL_EAGLE_OPCODE_QAM_RESTART_SET,
++					      NULL, 0, NULL, 0);
++		if(status != 0)
++			goto err;
++		break;
 +	default:
 +		break;
 +	}
++
++//	dev_dbg(&dev->i2c_client->dev, "%s() Line %d\n", __func__, __LINE__);
 +
 +	dev->demodType = demodType;
 +	dev->current_frequency = p->frequency;
@@ -1082,58 +1146,37 @@ index 000000000..e95ffb8f3
 +	return 0;
 +}
 +
-+static int mxl692_read_status(struct dvb_frontend *fe,
-+				 enum fe_status *status)
++static int mxl692_get_frontend(struct dvb_frontend *fe,
++				  struct dtv_frontend_properties *p)
 +{
-+	struct mxl692_dev *dev = fe->demodulator_priv;
-+	u8 rxBuffer[MXL_EAGLE_MAX_I2C_PACKET_SIZE] = {};
-+	struct MXL_EAGLE_ATSC_DEMOD_STATUS_T *atscStatusStruct;
-+//	struct MXL_EAGLE_QAM_DEMOD_STATUS_T *qamStatusStruct;
-+	int mxl_status = 0;
-+	enum MXL_EAGLE_DEMOD_TYPE_E demodType = dev->demodType;
-+	int ret = 0;
-+	*status = 0;
++//	struct mxl692_dev *dev = fe->demodulator_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +
-+	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
-+	atscStatusStruct = (struct MXL_EAGLE_ATSC_DEMOD_STATUS_T*)&rxBuffer;
-+
-+	switch(demodType)
-+	{
-+	case MXL_EAGLE_DEMOD_TYPE_ATSC:
-+		mxl_status = mxl692_i2c_writeread(dev,
-+						  MXL_EAGLE_OPCODE_ATSC_STATUS_GET,
-+						  NULL,
-+						  0,
-+						  (u8*)atscStatusStruct,
-+						  sizeof(struct MXL_EAGLE_ATSC_DEMOD_STATUS_T));
-+		if(!mxl_status && atscStatusStruct->isAtscLock) {
-+			*status |= FE_HAS_SIGNAL;
-+			*status |= FE_HAS_CARRIER;
-+			*status |= FE_HAS_VITERBI;
-+			*status |= FE_HAS_SYNC;
-+			*status |= FE_HAS_LOCK;
-+		}
-+		break;
-+	case MXL_EAGLE_DEMOD_TYPE_QAM:
-+	case MXL_EAGLE_DEMOD_TYPE_OOB:
-+	default:
-+		break;
-+	}
-+
-+	return ret;
++	p->modulation = c->modulation;
++	p->frequency = c->frequency;
++/*
++	p->cnr = c->cnr;
++	p->post_bit_count = c->post_bit_count;
++	p->post_bit_error = c->post_bit_error;
++	p->block_error = c->block_error;
++*/
++	return 0;
 +}
 +
 +static int mxl692_read_snr(struct dvb_frontend *fe, u16 *snr)
 +{
 +	struct mxl692_dev *dev = fe->demodulator_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	u8 rxBuffer[MXL_EAGLE_MAX_I2C_PACKET_SIZE] = {};
 +	struct MXL_EAGLE_ATSC_DEMOD_STATUS_T *atscStatusStruct;
-+//	struct MXL_EAGLE_QAM_DEMOD_STATUS_T *qamStatusStruct = &rxBuffer;
-+	int mxl_status = 0;
++	struct MXL_EAGLE_QAM_DEMOD_STATUS_T *qamStatusStruct;
 +	enum MXL_EAGLE_DEMOD_TYPE_E demodType = dev->demodType;
++	int mxl_status = 0;
++	*snr = 0;
 +
-+	dev_dbg(&dev->i2c_client->dev, "%s()\n", __func__);
++	pr_debug("%s()\n", __func__);
 +	atscStatusStruct = (struct MXL_EAGLE_ATSC_DEMOD_STATUS_T*)&rxBuffer;
++	qamStatusStruct = (struct MXL_EAGLE_QAM_DEMOD_STATUS_T*)&rxBuffer;
 +
 +	switch(demodType)
 +	{
@@ -1142,10 +1185,73 @@ index 000000000..e95ffb8f3
 +						  MXL_EAGLE_OPCODE_ATSC_STATUS_GET,
 +						  NULL,
 +						  0,
-+						  (u8*)atscStatusStruct,
++						  rxBuffer,
 +						  sizeof(struct MXL_EAGLE_ATSC_DEMOD_STATUS_T));
-+		if(!mxl_status)
++		if(!mxl_status) {
 +			*snr = (u16)(atscStatusStruct->snrDbTenths / 10);
++			c->cnr.stat[0].scale = FE_SCALE_DECIBEL;
++			c->cnr.stat[0].svalue = *snr;
++		}
++		break;
++	case MXL_EAGLE_DEMOD_TYPE_QAM:
++		mxl_status = mxl692_i2c_writeread(dev,
++					    MXL_EAGLE_OPCODE_QAM_STATUS_GET,
++					    NULL,
++					    0,
++					    rxBuffer,
++					    sizeof(struct MXL_EAGLE_QAM_DEMOD_STATUS_T));
++		if(!mxl_status)
++			*snr = (u16)(qamStatusStruct->snrDbTenth / 10);
++		break;
++	case MXL_EAGLE_DEMOD_TYPE_OOB:
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mxl692_read_ber_ucb(struct dvb_frontend *fe)
++{
++	struct mxl692_dev *dev = fe->demodulator_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	u8 rxBuffer[MXL_EAGLE_MAX_I2C_PACKET_SIZE] = {};
++	struct MXL_EAGLE_QAM_DEMOD_ERROR_COUNTERS_T *qamErrCounts;
++	struct MXL_EAGLE_ATSC_DEMOD_ERROR_COUNTERS_T *atscErrCounts;
++	enum MXL_EAGLE_DEMOD_TYPE_E demodType = dev->demodType;
++	int mxl_status = 0;
++	u32 utmp;
++
++	pr_debug("%s()\n", __func__);
++	qamErrCounts = (struct MXL_EAGLE_QAM_DEMOD_ERROR_COUNTERS_T*)&rxBuffer;
++	atscErrCounts = (struct MXL_EAGLE_ATSC_DEMOD_ERROR_COUNTERS_T*)&rxBuffer;
++
++	switch(demodType)
++	{
++	case MXL_EAGLE_DEMOD_TYPE_ATSC:
++		mxl_status = mxl692_i2c_writeread(dev,
++						  MXL_EAGLE_OPCODE_ATSC_ERROR_COUNTERS_GET,
++						  NULL,
++						  0,
++						  rxBuffer,
++						  sizeof(struct MXL_EAGLE_ATSC_DEMOD_ERROR_COUNTERS_T));
++		if(!mxl_status) {
++			if (atscErrCounts->errorPackets == 0)
++				utmp = 0;
++			else
++				utmp = ((atscErrCounts->errorBytes / atscErrCounts->errorPackets) *
++					atscErrCounts->totalPackets);
++			/* ber */
++			c->post_bit_error.stat[0].scale = FE_SCALE_COUNTER;
++			c->post_bit_error.stat[0].uvalue += atscErrCounts->errorBytes;
++			c->post_bit_count.stat[0].scale = FE_SCALE_COUNTER;
++			c->post_bit_count.stat[0].uvalue += utmp;
++			/* ucb */
++			c->block_error.stat[0].scale = FE_SCALE_COUNTER;
++			c->block_error.stat[0].uvalue += atscErrCounts->errorPackets;
++
++			dev_dbg(&dev->i2c_client->dev, "%llu   %llu\n",
++				c->post_bit_count.stat[0].uvalue, c->block_error.stat[0].uvalue);
++		}
 +		break;
 +	case MXL_EAGLE_DEMOD_TYPE_QAM:
 +	case MXL_EAGLE_DEMOD_TYPE_OOB:
@@ -1155,21 +1261,103 @@ index 000000000..e95ffb8f3
 +	return 0;
 +}
 +
++static int mxl692_read_status(struct dvb_frontend *fe,
++				 enum fe_status *status)
++{
++	struct mxl692_dev *dev = fe->demodulator_priv;
++	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	u8 rxBuffer[MXL_EAGLE_MAX_I2C_PACKET_SIZE] = {};
++	struct MXL_EAGLE_ATSC_DEMOD_STATUS_T *atscStatusStruct;
++	struct MXL_EAGLE_QAM_DEMOD_STATUS_T *qamStatusStruct;
++	enum MXL_EAGLE_DEMOD_TYPE_E demodType = dev->demodType;
++	int mxl_status = 0;
++	u16 snr = 0;
++	u32 ber = 0, ucb = 0;
++	*status = 0;
++
++	pr_debug("%s()\n", __func__);
++	atscStatusStruct = (struct MXL_EAGLE_ATSC_DEMOD_STATUS_T*)&rxBuffer;
++	qamStatusStruct = (struct MXL_EAGLE_QAM_DEMOD_STATUS_T*)&rxBuffer;
++
++	switch(demodType)
++	{
++	case MXL_EAGLE_DEMOD_TYPE_ATSC:
++		mxl_status = mxl692_i2c_writeread(dev,
++						  MXL_EAGLE_OPCODE_ATSC_STATUS_GET,
++						  NULL,
++						  0,
++						  rxBuffer,
++						  sizeof(struct MXL_EAGLE_ATSC_DEMOD_STATUS_T));
++		if(!mxl_status && atscStatusStruct->isAtscLock) {
++			*status |= FE_HAS_SIGNAL;
++			*status |= FE_HAS_CARRIER;
++			*status |= FE_HAS_VITERBI;
++			*status |= FE_HAS_SYNC;
++			*status |= FE_HAS_LOCK;
++
++			c->cnr.stat[0].scale = FE_SCALE_DECIBEL;
++			c->cnr.stat[0].svalue = atscStatusStruct->snrDbTenths / 10;
++		}
++		break;
++	case MXL_EAGLE_DEMOD_TYPE_QAM:
++		mxl_status = mxl692_i2c_writeread(dev,
++					    MXL_EAGLE_OPCODE_QAM_STATUS_GET,
++					    NULL,
++					    0,
++					    rxBuffer,
++					    sizeof(struct MXL_EAGLE_QAM_DEMOD_STATUS_T));
++		if(!mxl_status && qamStatusStruct->isQamLocked) {
++			*status |= FE_HAS_SIGNAL;
++			*status |= FE_HAS_CARRIER;
++			*status |= FE_HAS_VITERBI;
++			*status |= FE_HAS_SYNC;
++			*status |= FE_HAS_LOCK;
++
++			c->cnr.stat[0].scale = FE_SCALE_DECIBEL;
++			c->cnr.stat[0].svalue = qamStatusStruct->snrDbTenth / 10;
++		}
++		break;
++	case MXL_EAGLE_DEMOD_TYPE_OOB:
++	default:
++		break;
++	}
++
++	if ((*status & FE_HAS_LOCK) == 0) {
++		/* No lock, reset all statistics */
++		c->cnr.len = 1;
++		c->cnr.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->block_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->post_bit_error.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
++		return 0;
++	} else
++		mxl_status = mxl692_read_ber_ucb(fe);
++
++err:
++	if (mxl_status != 0)
++		dev_err(&dev->i2c_client->dev, "FAIL! %d\n", mxl_status);
++	return mxl_status;
++}
++
 +static const struct dvb_frontend_ops mxl692_ops = {
++//	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
 +	.delsys = { SYS_ATSC },
 +	.info = {
 +		.name = "MaxLinear mxl692 VSB Frontend",
 +		.frequency_min_hz      = 54000000,
 +		.frequency_max_hz      = 858000000,
 +		.frequency_stepsize_hz = 62500,
++//		.caps = FE_CAN_QAM_AUTO | FE_CAN_QAM_64 | FE_CAN_QAM_256 | FE_CAN_8VSB
 +		.caps = FE_CAN_8VSB
 +	},
 +
-+	.init = mxl692_init,
-+	.sleep = mxl692_sleep,
++	.init         = mxl692_init,
++	.sleep        = mxl692_sleep,
 +	.set_frontend = mxl692_set_frontend,
-+	.read_status = mxl692_read_status,
-+	.read_snr = mxl692_read_snr,
++	.get_frontend = mxl692_get_frontend,
++
++	.read_status          = mxl692_read_status,
++	.read_snr             = mxl692_read_snr,
 +};
 +
 +static int mxl692_probe(struct i2c_client *client,
@@ -1198,7 +1386,7 @@ index 000000000..e95ffb8f3
 +
 +	return 0;
 +err:
-+	dev_dbg(&client->dev, "mxl692_probe failed\n");
++	dev_err(&client->dev, "mxl692_probe failed\n");
 +	return -ENODEV;
 +}
 +
@@ -1231,13 +1419,13 @@ index 000000000..e95ffb8f3
 +
 +module_i2c_driver(mxl692_driver);
 +
-+MODULE_AUTHOR("Brad Love <brad@nextdimension.cc");
++MODULE_AUTHOR("Brad Love <brad@nextdimension.cc>");
 +MODULE_DESCRIPTION("MaxLinear mxl692 demodulator/tuner driver");
 +MODULE_FIRMWARE(MXL692_FIRMWARE);
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/dvb-frontends/mxl692.h b/drivers/media/dvb-frontends/mxl692.h
 new file mode 100644
-index 000000000..08a9ba27f
+index 0000000..08a9ba2
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692.h
 @@ -0,0 +1,38 @@
@@ -1281,7 +1469,7 @@ index 000000000..08a9ba27f
 +#endif /* _MXL692_H_ */
 diff --git a/drivers/media/dvb-frontends/mxl692_defs.h b/drivers/media/dvb-frontends/mxl692_defs.h
 new file mode 100644
-index 000000000..b4505c81e
+index 0000000..b4505c8
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692_defs.h
 @@ -0,0 +1,540 @@
@@ -1826,5 +2014,5 @@ index 000000000..b4505c81e
 +};
 +
 -- 
-2.20.1
+2.7.4
 
