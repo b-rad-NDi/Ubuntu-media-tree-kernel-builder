@@ -1,4 +1,4 @@
-From f84b0216fa638c704a98ded02fe1df8125c1ee48 Mon Sep 17 00:00:00 2001
+From cef730deaf5b66cf5ab3195dd9665d689c2c3040 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 21 Feb 2020 14:48:21 -0600
 Subject: [PATCH 2/3] em28xx-core: Fix TS2 active led
@@ -27,5 +27,5 @@ index e6088b5d1..299cd38a8 100644
  	if (led)
  		em28xx_write_reg_bits(dev, led->gpio_reg,
 -- 
-2.20.1
+2.25.1
 

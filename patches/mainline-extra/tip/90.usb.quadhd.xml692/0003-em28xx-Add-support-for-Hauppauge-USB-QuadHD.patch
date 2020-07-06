@@ -1,4 +1,4 @@
-From 58ea34ae14e83f152557d1bb5af4069459e282bc Mon Sep 17 00:00:00 2001
+From 8eba4365203d9fefe6e1398da6c970909cc282ef Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 24 Feb 2020 11:08:49 -0600
 Subject: [PATCH 3/3] em28xx: Add support for Hauppauge USB QuadHD
@@ -92,7 +92,7 @@ index a8c321d11..d9d53056c 100644
  			.driver_info = EM2880_BOARD_AMD_ATI_TV_WONDER_HD_600 },
  	{ USB_DEVICE(0x2001, 0xf112),
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 09c336975..a3c4cab7e 100644
+index a57a7cae1..b960dbb1e 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -62,6 +62,7 @@
@@ -103,7 +103,7 @@ index 09c336975..a3c4cab7e 100644
  
  MODULE_AUTHOR("Mauro Carvalho Chehab <mchehab@kernel.org>");
  MODULE_LICENSE("GPL v2");
-@@ -1463,6 +1464,26 @@ static int em28174_dvb_init_hauppauge_wintv_dualhd_01595(struct em28xx *dev)
+@@ -1459,6 +1460,26 @@ static int em28174_dvb_init_hauppauge_wintv_dualhd_01595(struct em28xx *dev)
  	return 0;
  }
  
@@ -130,7 +130,7 @@ index 09c336975..a3c4cab7e 100644
  static int em28xx_dvb_init(struct em28xx *dev)
  {
  	int result = 0, dvb_alt = 0;
-@@ -1949,6 +1970,11 @@ static int em28xx_dvb_init(struct em28xx *dev)
+@@ -1945,6 +1966,11 @@ static int em28xx_dvb_init(struct em28xx *dev)
  		if (result)
  			goto out_free;
  		break;
@@ -155,5 +155,5 @@ index acbb62397..1782bfaf0 100644
  /* Limits minimum and default number of buffers */
  #define EM28XX_MIN_BUF 4
 -- 
-2.20.1
+2.25.1
 
