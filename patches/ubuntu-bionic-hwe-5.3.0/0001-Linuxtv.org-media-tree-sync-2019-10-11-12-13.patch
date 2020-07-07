@@ -1,11 +1,11 @@
-From 17d68c17e5053b2fd4f033915303be2cb304f6f7 Mon Sep 17 00:00:00 2001
+From e5eb4c357088254f072d1f3b3f00e8f9f0a24ad4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 20 Apr 2020 11:08:21 -0500
+Date: Mon, 6 Jul 2020 12:16:42 -0500
 Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
 
 ---
  drivers/media/Kconfig                         |    7 +-
- drivers/media/cec/cec-adap.c                  |   55 +-
+ drivers/media/cec/cec-adap.c                  |   63 +-
  drivers/media/cec/cec-api.c                   |   22 +-
  drivers/media/cec/cec-core.c                  |    5 -
  drivers/media/common/saa7146/saa7146_core.c   |    1 +
@@ -84,11 +84,11 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/ov2640.c                    |    7 +-
  drivers/media/i2c/ov2659.c                    |  132 +-
  drivers/media/i2c/ov2680.c                    |    9 +-
- drivers/media/i2c/ov5640.c                    |   16 +-
+ drivers/media/i2c/ov5640.c                    |   20 +-
  drivers/media/i2c/ov5645.c                    |  125 +-
  drivers/media/i2c/ov5647.c                    |    5 +-
  drivers/media/i2c/ov5675.c                    | 1183 +++++++
- drivers/media/i2c/ov5695.c                    |    7 +-
+ drivers/media/i2c/ov5695.c                    |   56 +-
  drivers/media/i2c/ov6650.c                    |   25 +-
  drivers/media/i2c/ov7670.c                    |    6 +-
  drivers/media/i2c/ov772x.c                    |    5 +-
@@ -104,6 +104,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/i2c/ths8200.c                   |    5 +-
  drivers/media/i2c/tvp5150.c                   |    9 +-
  drivers/media/i2c/tvp7002.c                   |    4 +-
+ drivers/media/i2c/video-i2c.c                 |    2 +-
  drivers/media/mc/mc-device.c                  |   67 +-
  drivers/media/mc/mc-devnode.c                 |    1 +
  drivers/media/mc/mc-entity.c                  |    4 +-
@@ -242,19 +243,22 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/platform/qcom/camss/camss.c     |    2 +-
  drivers/media/platform/qcom/venus/core.c      |   49 +-
  drivers/media/platform/qcom/venus/core.h      |   63 +-
+ drivers/media/platform/qcom/venus/firmware.c  |   10 +-
  drivers/media/platform/qcom/venus/helpers.c   |  440 ++-
  drivers/media/platform/qcom/venus/helpers.h   |   12 +
  drivers/media/platform/qcom/venus/hfi.c       |   11 +-
  drivers/media/platform/qcom/venus/hfi.h       |    2 +-
+ .../media/platform/qcom/venus/hfi_parser.c    |    1 -
  drivers/media/platform/qcom/venus/vdec.c      |  549 +++-
  .../media/platform/qcom/venus/vdec_ctrls.c    |    7 +-
  drivers/media/platform/qcom/venus/venc.c      |   20 +-
+ drivers/media/platform/rcar-fcp.c             |    5 -
  drivers/media/platform/rcar-vin/rcar-core.c   |   60 +-
  drivers/media/platform/rcar-vin/rcar-dma.c    |  114 +-
  drivers/media/platform/rcar-vin/rcar-v4l2.c   |  162 +-
  drivers/media/platform/rcar-vin/rcar-vin.h    |   13 +-
  drivers/media/platform/rcar_drif.c            |    1 -
- drivers/media/platform/rcar_fdp1.c            |    1 +
+ drivers/media/platform/rcar_fdp1.c            |    3 +-
  drivers/media/platform/renesas-ceu.c          |    4 +-
  drivers/media/platform/rockchip/rga/rga.c     |    1 -
  .../media/platform/s3c-camif/camif-capture.c  |   17 +-
@@ -294,7 +298,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  .../platform/sunxi/sun6i-csi/sun6i_csi.c      |    7 +-
  drivers/media/platform/tegra-cec/tegra_cec.c  |   35 +-
  drivers/media/platform/tegra-cec/tegra_cec.h  |   82 +-
- drivers/media/platform/ti-vpe/cal.c           |    6 +-
+ drivers/media/platform/ti-vpe/cal.c           |   35 +-
  drivers/media/platform/ti-vpe/csc.c           |  254 +-
  drivers/media/platform/ti-vpe/csc.h           |    4 +-
  drivers/media/platform/ti-vpe/vpdma.c         |   21 +-
@@ -369,7 +373,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/spi/cxd2880-spi.c               |    1 +
  drivers/media/tuners/Kconfig                  |    6 +-
  drivers/media/tuners/r820t.c                  |    1 +
- drivers/media/tuners/si2157.c                 |    6 +
+ drivers/media/tuners/si2157.c                 |   21 +-
  drivers/media/tuners/si2157.h                 |   33 +-
  drivers/media/tuners/si2157_priv.h            |    5 +-
  drivers/media/tuners/tda18271-priv.h          |    1 +
@@ -399,6 +403,8 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/dvb-usb-v2/rtl28xxu.c       |    6 +-
  drivers/media/usb/dvb-usb/af9005.c            |    7 +-
  drivers/media/usb/dvb-usb/cxusb.c             |  164 +-
+ drivers/media/usb/dvb-usb/dib0700_core.c      |    4 +-
+ drivers/media/usb/dvb-usb/dibusb-mb.c         |    2 +-
  drivers/media/usb/dvb-usb/digitv.c            |   10 +-
  drivers/media/usb/dvb-usb/dvb-usb-urb.c       |    2 +-
  drivers/media/usb/dvb-usb/vp7045.c            |   21 +-
@@ -410,7 +416,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/go7007/go7007-usb.c         |    1 +
  drivers/media/usb/go7007/go7007-v4l2.c        |   11 -
  drivers/media/usb/go7007/s2250-board.c        |    6 +-
- drivers/media/usb/go7007/snd-go7007.c         |    2 +-
+ drivers/media/usb/go7007/snd-go7007.c         |   37 +-
  drivers/media/usb/gspca/benq.c                |    1 +
  drivers/media/usb/gspca/conex.c               |    1 +
  drivers/media/usb/gspca/cpia1.c               |    1 +
@@ -432,7 +438,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/gspca/mars.c                |    1 +
  drivers/media/usb/gspca/mr97310a.c            |    1 +
  drivers/media/usb/gspca/nw80x.c               |    1 +
- drivers/media/usb/gspca/ov519.c               |    1 +
+ drivers/media/usb/gspca/ov519.c               |   21 +-
  drivers/media/usb/gspca/ov534.c               |    1 +
  drivers/media/usb/gspca/ov534_9.c             |    1 +
  drivers/media/usb/gspca/pac207.c              |    1 +
@@ -454,9 +460,9 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/gspca/stk014.c              |    1 +
  drivers/media/usb/gspca/stk1135.c             |    1 +
  drivers/media/usb/gspca/stv0680.c             |    1 +
- drivers/media/usb/gspca/stv06xx/stv06xx.c     |    1 +
+ drivers/media/usb/gspca/stv06xx/stv06xx.c     |   20 +-
  .../media/usb/gspca/stv06xx/stv06xx_hdcs.c    |    1 +
- .../media/usb/gspca/stv06xx/stv06xx_pb0100.c  |    1 +
+ .../media/usb/gspca/stv06xx/stv06xx_pb0100.c  |    5 +-
  .../media/usb/gspca/stv06xx/stv06xx_st6422.c  |    3 +-
  .../media/usb/gspca/stv06xx/stv06xx_vv6410.c  |    1 +
  drivers/media/usb/gspca/sunplus.c             |    1 +
@@ -465,7 +471,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/gspca/vc032x.c              |    1 +
  drivers/media/usb/gspca/vicam.c               |    1 +
  drivers/media/usb/gspca/w996Xcf.c             |    1 +
- drivers/media/usb/gspca/xirlink_cit.c         |    1 +
+ drivers/media/usb/gspca/xirlink_cit.c         |   19 +-
  drivers/media/usb/gspca/zc3xx.c               |    1 +
  drivers/media/usb/hdpvr/hdpvr-i2c.c           |    6 +-
  drivers/media/usb/hdpvr/hdpvr-video.c         |    3 -
@@ -485,7 +491,8 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/usb/tm6000/tm6000-usb-isoc.h    |    2 +-
  drivers/media/usb/tm6000/tm6000-video.c       |    4 -
  drivers/media/usb/tm6000/tm6000.h             |    3 +-
- drivers/media/usb/usbtv/usbtv-video.c         |    2 -
+ drivers/media/usb/usbtv/usbtv-core.c          |    2 +-
+ drivers/media/usb/usbtv/usbtv-video.c         |    7 +-
  drivers/media/usb/usbvision/usbvision-video.c |   28 +-
  drivers/media/usb/usbvision/usbvision.h       |    1 -
  drivers/media/usb/uvc/uvc_driver.c            |   65 +-
@@ -499,7 +506,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |  148 +-
  drivers/media/v4l2-core/v4l2-ctrls.c          |  389 ++-
  drivers/media/v4l2-core/v4l2-dev.c            |    9 +-
- drivers/media/v4l2-core/v4l2-device.c         |   39 +-
+ drivers/media/v4l2-core/v4l2-device.c         |   40 +-
  drivers/media/v4l2-core/v4l2-dv-timings.c     |    2 +-
  drivers/media/v4l2-core/v4l2-fwnode.c         |   32 +-
  drivers/media/v4l2-core/v4l2-i2c.c            |  184 ++
@@ -509,9 +516,10 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/media/v4l2-core/v4l2-subdev.c         |    6 +-
  drivers/media/v4l2-core/videobuf-dma-contig.c |    9 +-
  drivers/media/v4l2-core/videobuf-dma-sg.c     |    5 +-
+ drivers/misc/altera-stapl/altera.c            |   12 +-
  drivers/staging/media/Kconfig                 |    4 -
  drivers/staging/media/Makefile                |    2 -
- .../staging/media/allegro-dvt/allegro-core.c  |    4 +-
+ .../staging/media/allegro-dvt/allegro-core.c  |    9 +-
  drivers/staging/media/hantro/Kconfig          |    2 +-
  drivers/staging/media/hantro/Makefile         |    7 +-
  drivers/staging/media/hantro/hantro.h         |   55 +-
@@ -519,14 +527,14 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  .../staging/media/hantro/hantro_g1_h264_dec.c |  291 ++
  .../media/hantro/hantro_g1_mpeg2_dec.c        |   25 +-
  .../staging/media/hantro/hantro_g1_vp8_dec.c  |  502 +++
- .../staging/media/hantro/hantro_h1_jpeg_enc.c |   15 +-
+ .../staging/media/hantro/hantro_h1_jpeg_enc.c |   24 +-
  drivers/staging/media/hantro/hantro_h264.c    |  664 ++++
  drivers/staging/media/hantro/hantro_hw.h      |   80 +
  drivers/staging/media/hantro/hantro_v4l2.c    |   39 +-
  drivers/staging/media/hantro/hantro_vp8.c     |  201 ++
  drivers/staging/media/hantro/rk3288_vpu_hw.c  |   49 +-
  drivers/staging/media/hantro/rk3399_vpu_hw.c  |   47 +-
- .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   16 +-
+ .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   25 +-
  .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   25 +-
  .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  593 ++++
  drivers/staging/media/imx/Kconfig             |    5 +-
@@ -542,9 +550,9 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  drivers/staging/media/imx/imx-media-vdic.c    |   27 +-
  drivers/staging/media/imx/imx-media.h         |   12 +
  drivers/staging/media/imx/imx6-mipi-csi2.c    |   27 +-
- drivers/staging/media/imx/imx7-media-csi.c    |   72 +-
- drivers/staging/media/imx/imx7-mipi-csis.c    |   38 +-
- .../staging/media/ipu3/include/intel-ipu3.h   |    2 +-
+ drivers/staging/media/imx/imx7-media-csi.c    |   76 +-
+ drivers/staging/media/imx/imx7-mipi-csis.c    |   40 +-
+ .../staging/media/ipu3/include/intel-ipu3.h   |    9 +-
  drivers/staging/media/ipu3/ipu3-tables.h      |    4 +-
  drivers/staging/media/ipu3/ipu3.c             |    3 +-
  drivers/staging/media/meson/vdec/esparser.c   |    4 +-
@@ -565,7 +573,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/linux/dma-fence.h                     |   34 +-
  include/linux/kernel_version.h                |    1 +
  include/linux/mmc/sdio_ids.h                  |    2 -
- include/linux/pci_ids.h                       |   10 +-
+ include/linux/pci_ids.h                       |   15 -
  include/media/cec.h                           |   31 -
  include/media/compat.h                        | 2762 +++++++++++++++++
  include/media/config-compat.h                 |   45 +
@@ -590,7 +598,7 @@ Subject: [PATCH] Linuxtv.org media tree sync - 2019-10-11-12-13
  include/uapi/linux/media-bus-format.h         |    3 +-
  include/uapi/linux/v4l2-controls.h            |    1 +
  include/uapi/linux/videodev2.h                |   12 +-
- 586 files changed, 18726 insertions(+), 9271 deletions(-)
+ 594 files changed, 18809 insertions(+), 9476 deletions(-)
  create mode 100644 drivers/media/i2c/ov5675.c
  create mode 100644 drivers/media/platform/sunxi/Kconfig
  create mode 100644 drivers/media/platform/sunxi/Makefile
@@ -647,7 +655,7 @@ index 21cd9c02960b..b36a41332867 100644
  	bool
  	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_RADIO_SUPPORT
 diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
-index e3688997df0d..9340435a94a0 100644
+index a8734a53a041..9340435a94a0 100644
 --- a/drivers/media/cec/cec-adap.c
 +++ b/drivers/media/cec/cec-adap.c
 @@ -319,6 +319,8 @@ static void cec_post_state_event(struct cec_adapter *adap)
@@ -762,6 +770,28 @@ index e3688997df0d..9340435a94a0 100644
  	if (!(adap->capabilities & CEC_CAP_CONNECTOR_INFO))
  		return;
  
+@@ -1729,10 +1720,6 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
+ 		unsigned j;
+ 
+ 		log_addrs->log_addr[i] = CEC_LOG_ADDR_INVALID;
+-		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
+-			dprintk(1, "unknown logical address type\n");
+-			return -EINVAL;
+-		}
+ 		if (type_mask & (1 << log_addrs->log_addr_type[i])) {
+ 			dprintk(1, "duplicate logical address type\n");
+ 			return -EINVAL;
+@@ -1753,6 +1740,10 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
+ 			dprintk(1, "invalid primary device type\n");
+ 			return -EINVAL;
+ 		}
++		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
++			dprintk(1, "unknown logical address type\n");
++			return -EINVAL;
++		}
+ 		for (j = 0; j < feature_sz; j++) {
+ 			if ((features[j] & 0x80) == 0) {
+ 				if (op_is_dev_features)
 @@ -1987,7 +1978,7 @@ static int cec_receive_notify(struct cec_adapter *adap, struct cec_msg *msg,
  		 * Play function, this message can have variable length
  		 * depending on the specific play function that is used.
@@ -3800,7 +3830,7 @@ index b10bcfabaeeb..59cdbc33658c 100644
  		return -EINVAL;
  
 diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-index 2312412dcc51..500d9bbff10b 100644
+index 7fb8cd22101e..500d9bbff10b 100644
 --- a/drivers/media/i2c/ov5640.c
 +++ b/drivers/media/i2c/ov5640.c
 @@ -158,8 +158,8 @@ static const int ov5640_framerates[] = {
@@ -3853,6 +3883,27 @@ index 2312412dcc51..500d9bbff10b 100644
  	if (ret)
  		goto free_ctrls;
  
+@@ -3069,8 +3063,8 @@ static int ov5640_probe(struct i2c_client *client,
+ free_ctrls:
+ 	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
+ entity_cleanup:
+-	media_entity_cleanup(&sensor->sd.entity);
+ 	mutex_destroy(&sensor->lock);
++	media_entity_cleanup(&sensor->sd.entity);
+ 	return ret;
+ }
+ 
+@@ -3080,9 +3074,9 @@ static int ov5640_remove(struct i2c_client *client)
+ 	struct ov5640_dev *sensor = to_ov5640_dev(sd);
+ 
+ 	v4l2_async_unregister_subdev(&sensor->sd);
++	mutex_destroy(&sensor->lock);
+ 	media_entity_cleanup(&sensor->sd.entity);
+ 	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
+-	mutex_destroy(&sensor->lock);
+ 
+ 	return 0;
+ }
 @@ -3105,7 +3099,7 @@ static struct i2c_driver ov5640_i2c_driver = {
  		.of_match_table	= ov5640_dt_ids,
  	},
@@ -5279,7 +5330,7 @@ index 000000000000..1ae252378799
 +MODULE_DESCRIPTION("OmniVision OV5675 sensor driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/media/i2c/ov5695.c b/drivers/media/i2c/ov5695.c
-index e65a94353175..d6cd15bb699a 100644
+index 3a0f064993eb..d6cd15bb699a 100644
 --- a/drivers/media/i2c/ov5695.c
 +++ b/drivers/media/i2c/ov5695.c
 @@ -823,9 +823,6 @@ static int ov5695_set_fmt(struct v4l2_subdev *sd,
@@ -5301,7 +5352,95 @@ index e65a94353175..d6cd15bb699a 100644
  #endif
  	} else {
  		fmt->format.width = mode->width;
-@@ -1328,7 +1325,7 @@ static int ov5695_probe(struct i2c_client *client,
+@@ -974,9 +971,16 @@ static int ov5695_s_stream(struct v4l2_subdev *sd, int on)
+ 	return ret;
+ }
+ 
++/* Calculate the delay in us by clock rate and clock cycles */
++static inline u32 ov5695_cal_delay(u32 cycles)
++{
++	return DIV_ROUND_UP(cycles, OV5695_XVCLK_FREQ / 1000 / 1000);
++}
++
+ static int __ov5695_power_on(struct ov5695 *ov5695)
+ {
+-	int i, ret;
++	int ret;
++	u32 delay_us;
+ 	struct device *dev = &ov5695->client->dev;
+ 
+ 	ret = clk_prepare_enable(ov5695->xvclk);
+@@ -987,28 +991,21 @@ static int __ov5695_power_on(struct ov5695 *ov5695)
+ 
+ 	gpiod_set_value_cansleep(ov5695->reset_gpio, 1);
+ 
+-	/*
+-	 * The hardware requires the regulators to be powered on in order,
+-	 * so enable them one by one.
+-	 */
+-	for (i = 0; i < OV5695_NUM_SUPPLIES; i++) {
+-		ret = regulator_enable(ov5695->supplies[i].consumer);
+-		if (ret) {
+-			dev_err(dev, "Failed to enable %s: %d\n",
+-				ov5695->supplies[i].supply, ret);
+-			goto disable_reg_clk;
+-		}
++	ret = regulator_bulk_enable(OV5695_NUM_SUPPLIES, ov5695->supplies);
++	if (ret < 0) {
++		dev_err(dev, "Failed to enable regulators\n");
++		goto disable_clk;
+ 	}
+ 
+ 	gpiod_set_value_cansleep(ov5695->reset_gpio, 0);
+ 
+-	usleep_range(1000, 1200);
++	/* 8192 cycles prior to first SCCB transaction */
++	delay_us = ov5695_cal_delay(8192);
++	usleep_range(delay_us, delay_us * 2);
+ 
+ 	return 0;
+ 
+-disable_reg_clk:
+-	for (--i; i >= 0; i--)
+-		regulator_disable(ov5695->supplies[i].consumer);
++disable_clk:
+ 	clk_disable_unprepare(ov5695->xvclk);
+ 
+ 	return ret;
+@@ -1016,22 +1013,9 @@ static int __ov5695_power_on(struct ov5695 *ov5695)
+ 
+ static void __ov5695_power_off(struct ov5695 *ov5695)
+ {
+-	struct device *dev = &ov5695->client->dev;
+-	int i, ret;
+-
+ 	clk_disable_unprepare(ov5695->xvclk);
+ 	gpiod_set_value_cansleep(ov5695->reset_gpio, 1);
+-
+-	/*
+-	 * The hardware requires the regulators to be powered off in order,
+-	 * so disable them one by one.
+-	 */
+-	for (i = OV5695_NUM_SUPPLIES - 1; i >= 0; i--) {
+-		ret = regulator_disable(ov5695->supplies[i].consumer);
+-		if (ret)
+-			dev_err(dev, "Failed to disable %s: %d\n",
+-				ov5695->supplies[i].supply, ret);
+-	}
++	regulator_bulk_disable(OV5695_NUM_SUPPLIES, ov5695->supplies);
+ }
+ 
+ static int __maybe_unused ov5695_runtime_resume(struct device *dev)
+@@ -1301,7 +1285,7 @@ static int ov5695_probe(struct i2c_client *client,
+ 	if (clk_get_rate(ov5695->xvclk) != OV5695_XVCLK_FREQ)
+ 		dev_warn(dev, "xvclk mismatched, modes are based on 24MHz\n");
+ 
+-	ov5695->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	ov5695->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(ov5695->reset_gpio)) {
+ 		dev_err(dev, "Failed to get reset-gpios\n");
+ 		return -EINVAL;
+@@ -1341,7 +1325,7 @@ static int ov5695_probe(struct i2c_client *client,
  		goto err_power_off;
  #endif
  
@@ -5760,6 +5899,19 @@ index 1b8175cab017..de313b1306da 100644
  	.remove = tvp7002_remove,
  	.id_table = tvp7002_id,
  };
+diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
+index 0b977e73ceb2..078141712c88 100644
+--- a/drivers/media/i2c/video-i2c.c
++++ b/drivers/media/i2c/video-i2c.c
+@@ -255,7 +255,7 @@ static int amg88xx_set_power(struct video_i2c_data *data, bool on)
+ 	return amg88xx_set_power_off(data);
+ }
+ 
+-#if IS_REACHABLE(CONFIG_HWMON)
++#if IS_ENABLED(CONFIG_HWMON)
+ 
+ static const u32 amg88xx_temp_config[] = {
+ 	HWMON_T_INPUT,
 diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
 index e19df5165e78..6f941dd9e21e 100644
 --- a/drivers/media/mc/mc-device.c
@@ -17403,6 +17555,27 @@ index 9ab95fd57760..11585fb3cae3 100644
  	u32 hfi_codec;
  	u32 sequence_cap;
  	u32 sequence_out;
+diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+index 33f70e1def94..d3d1748a7ef6 100644
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ b/drivers/media/platform/qcom/venus/firmware.c
+@@ -44,14 +44,8 @@ static void venus_reset_cpu(struct venus_core *core)
+ 
+ int venus_set_hw_state(struct venus_core *core, bool resume)
+ {
+-	int ret;
+-
+-	if (core->use_tz) {
+-		ret = qcom_scm_set_remote_state(resume, 0);
+-		if (resume && ret == -EINVAL)
+-			ret = 0;
+-		return ret;
+-	}
++	if (core->use_tz)
++		return qcom_scm_set_remote_state(resume, 0);
+ 
+ 	if (resume)
+ 		venus_reset_cpu(core);
 diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
 index 71b06dfc6dc4..a172f1ac0b35 100644
 --- a/drivers/media/platform/qcom/venus/helpers.c
@@ -18119,6 +18292,18 @@ index b121cb1427ac..855822c9f39b 100644
  int hfi_session_set_buffers(struct venus_inst *inst,
  			    struct hfi_buffer_desc *bd);
  int hfi_session_unset_buffers(struct venus_inst *inst,
+diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
+index 7f515a4b9bd1..2293d936e49c 100644
+--- a/drivers/media/platform/qcom/venus/hfi_parser.c
++++ b/drivers/media/platform/qcom/venus/hfi_parser.c
+@@ -181,7 +181,6 @@ static void parse_codecs(struct venus_core *core, void *data)
+ 	if (IS_V1(core)) {
+ 		core->dec_codecs &= ~HFI_VIDEO_CODEC_HEVC;
+ 		core->dec_codecs &= ~HFI_VIDEO_CODEC_SPARK;
+-		core->enc_codecs &= ~HFI_VIDEO_CODEC_HEVC;
+ 	}
+ }
+ 
 diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
 index fb399586a3ec..3bd6d5030598 100644
 --- a/drivers/media/platform/qcom/venus/vdec.c
@@ -19095,6 +19280,36 @@ index 114e14e4e41c..501fb8ca55fb 100644
  };
  
  static int venc_probe(struct platform_device *pdev)
+diff --git a/drivers/media/platform/rcar-fcp.c b/drivers/media/platform/rcar-fcp.c
+index 5c6b00737fe7..43c78620c9d8 100644
+--- a/drivers/media/platform/rcar-fcp.c
++++ b/drivers/media/platform/rcar-fcp.c
+@@ -8,7 +8,6 @@
+  */
+ 
+ #include <linux/device.h>
+-#include <linux/dma-mapping.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -22,7 +21,6 @@
+ struct rcar_fcp_device {
+ 	struct list_head list;
+ 	struct device *dev;
+-	struct device_dma_parameters dma_parms;
+ };
+ 
+ static LIST_HEAD(fcp_devices);
+@@ -138,9 +136,6 @@ static int rcar_fcp_probe(struct platform_device *pdev)
+ 
+ 	fcp->dev = &pdev->dev;
+ 
+-	fcp->dev->dma_parms = &fcp->dma_parms;
+-	dma_set_max_seg_size(fcp->dev, DMA_BIT_MASK(32));
+-
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	mutex_lock(&fcp_lock);
 diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
 index a6efe1a8099a..334c62805959 100644
 --- a/drivers/media/platform/rcar-vin/rcar-core.c
@@ -19811,7 +20026,7 @@ index 0f267a237b42..608e5217ccd5 100644
  	f->fmt.sdr.buffersize = sdr->fmt->buffersize;
  
 diff --git a/drivers/media/platform/rcar_fdp1.c b/drivers/media/platform/rcar_fdp1.c
-index c23ec127c277..cb93a13e1777 100644
+index 1b6ed97f685b..cb93a13e1777 100644
 --- a/drivers/media/platform/rcar_fdp1.c
 +++ b/drivers/media/platform/rcar_fdp1.c
 @@ -2122,6 +2122,7 @@ static int fdp1_open(struct file *file)
@@ -19822,6 +20037,15 @@ index c23ec127c277..cb93a13e1777 100644
  		goto done;
  	}
  
+@@ -2368,7 +2369,7 @@ static int fdp1_probe(struct platform_device *pdev)
+ 		dprintk(fdp1, "FDP1 Version R-Car H3\n");
+ 		break;
+ 	case FD1_IP_M3N:
+-		dprintk(fdp1, "FDP1 Version R-Car M3-N\n");
++		dprintk(fdp1, "FDP1 Version R-Car M3N\n");
+ 		break;
+ 	case FD1_IP_E3:
+ 		dprintk(fdp1, "FDP1 Version R-Car E3\n");
 diff --git a/drivers/media/platform/renesas-ceu.c b/drivers/media/platform/renesas-ceu.c
 index 57d0c0f9fa4b..197b3991330d 100644
 --- a/drivers/media/platform/renesas-ceu.c
@@ -23631,10 +23855,44 @@ index 32d7d69f9491..8c370be38e1e 100644
  
  #endif /* TEGRA_CEC_H */
 diff --git a/drivers/media/platform/ti-vpe/cal.c b/drivers/media/platform/ti-vpe/cal.c
-index 9e86d761546b..223161f9c403 100644
+index 92311461cc59..223161f9c403 100644
 --- a/drivers/media/platform/ti-vpe/cal.c
 +++ b/drivers/media/platform/ti-vpe/cal.c
-@@ -913,9 +913,6 @@ static int cal_querycap(struct file *file, void *priv,
+@@ -266,6 +266,8 @@ struct cal_ctx {
+ 	struct v4l2_subdev	*sensor;
+ 	struct v4l2_fwnode_endpoint	endpoint;
+ 
++	struct v4l2_async_subdev asd;
++
+ 	struct v4l2_fh		fh;
+ 	struct cal_dev		*dev;
+ 	struct cc_data		*cc;
+@@ -535,16 +537,16 @@ static void enable_irqs(struct cal_ctx *ctx)
+ 
+ static void disable_irqs(struct cal_ctx *ctx)
+ {
+-	u32 val;
+-
+ 	/* Disable IRQ_WDMA_END 0/1 */
+-	val = 0;
+-	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
+-	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(2), val);
++	reg_write_field(ctx->dev,
++			CAL_HL_IRQENABLE_CLR(2),
++			CAL_HL_IRQ_CLEAR,
++			CAL_HL_IRQ_MASK(ctx->csi2_port));
+ 	/* Disable IRQ_WDMA_START 0/1 */
+-	val = 0;
+-	set_field(&val, CAL_HL_IRQ_CLEAR, CAL_HL_IRQ_MASK(ctx->csi2_port));
+-	reg_write(ctx->dev, CAL_HL_IRQENABLE_CLR(3), val);
++	reg_write_field(ctx->dev,
++			CAL_HL_IRQENABLE_CLR(3),
++			CAL_HL_IRQ_CLEAR,
++			CAL_HL_IRQ_MASK(ctx->csi2_port));
+ 	/* Todo: Add VC_IRQ and CSI2_COMPLEXIO_IRQ handling */
+ 	reg_write(ctx->dev, CAL_CSI2_VC_IRQENABLE(1), 0);
+ }
+@@ -911,9 +913,6 @@ static int cal_querycap(struct file *file, void *priv,
  
  	snprintf(cap->bus_info, sizeof(cap->bus_info),
  		 "platform:%s", ctx->v4l2_dev.name);
@@ -23644,7 +23902,7 @@ index 9e86d761546b..223161f9c403 100644
  	return 0;
  }
  
-@@ -1419,6 +1416,8 @@ static const struct video_device cal_videodev = {
+@@ -1417,6 +1416,8 @@ static const struct video_device cal_videodev = {
  	.ioctl_ops	= &cal_ioctl_ops,
  	.minor		= -1,
  	.release	= video_device_release_empty,
@@ -23653,7 +23911,7 @@ index 9e86d761546b..223161f9c403 100644
  };
  
  /* -----------------------------------------------------------------
-@@ -1613,6 +1612,7 @@ of_get_next_port(const struct device_node *parent,
+@@ -1611,6 +1612,7 @@ of_get_next_port(const struct device_node *parent,
  			}
  			prev = port;
  		} while (!of_node_name_eq(port, "port"));
@@ -23661,6 +23919,41 @@ index 9e86d761546b..223161f9c403 100644
  	}
  
  	return port;
+@@ -1646,6 +1648,7 @@ static int of_cal_create_instance(struct cal_ctx *ctx, int inst)
+ 
+ 	parent = pdev->dev.of_node;
+ 
++	asd = &ctx->asd;
+ 	endpoint = &ctx->endpoint;
+ 
+ 	ep_node = NULL;
+@@ -1692,6 +1695,8 @@ static int of_cal_create_instance(struct cal_ctx *ctx, int inst)
+ 		ctx_dbg(3, ctx, "can't get remote parent\n");
+ 		goto cleanup_exit;
+ 	}
++	asd->match_type = V4L2_ASYNC_MATCH_FWNODE;
++	asd->match.fwnode = of_fwnode_handle(sensor_node);
+ 
+ 	v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), endpoint);
+ 
+@@ -1721,17 +1726,9 @@ static int of_cal_create_instance(struct cal_ctx *ctx, int inst)
+ 
+ 	v4l2_async_notifier_init(&ctx->notifier);
+ 
+-	asd = kzalloc(sizeof(*asd), GFP_KERNEL);
+-	if (!asd)
+-		goto cleanup_exit;
+-
+-	asd->match_type = V4L2_ASYNC_MATCH_FWNODE;
+-	asd->match.fwnode = of_fwnode_handle(sensor_node);
+-
+ 	ret = v4l2_async_notifier_add_subdev(&ctx->notifier, asd);
+ 	if (ret) {
+ 		ctx_err(ctx, "Error adding asd\n");
+-		kfree(asd);
+ 		goto cleanup_exit;
+ 	}
+ 
 diff --git a/drivers/media/platform/ti-vpe/csc.c b/drivers/media/platform/ti-vpe/csc.c
 index eda2a5985da7..bd923bee4a31 100644
 --- a/drivers/media/platform/ti-vpe/csc.c
@@ -31220,10 +31513,42 @@ index aed2f130ec74..2b556606d815 100644
  
  #include <linux/videodev2.h>
 diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e87040d6eca7..898e0f9f8b70 100644
+index a39e1966816b..898e0f9f8b70 100644
 --- a/drivers/media/tuners/si2157.c
 +++ b/drivers/media/tuners/si2157.c
-@@ -118,6 +118,11 @@ static int si2157_init(struct dvb_frontend *fe)
+@@ -75,23 +75,24 @@ static int si2157_init(struct dvb_frontend *fe)
+ 	struct si2157_cmd cmd;
+ 	const struct firmware *fw;
+ 	const char *fw_name;
+-	unsigned int chip_id, xtal_trim;
++	unsigned int uitmp, chip_id;
+ 
+ 	dev_dbg(&client->dev, "\n");
+ 
+-	/* Try to get Xtal trim property, to verify tuner still running */
+-	memcpy(cmd.args, "\x15\x00\x04\x02", 4);
++	/* Returned IF frequency is garbage when firmware is not running */
++	memcpy(cmd.args, "\x15\x00\x06\x07", 4);
+ 	cmd.wlen = 4;
+ 	cmd.rlen = 4;
+ 	ret = si2157_cmd_execute(client, &cmd);
++	if (ret)
++		goto err;
+ 
+-	xtal_trim = cmd.args[2] | (cmd.args[3] << 8);
++	uitmp = cmd.args[2] << 0 | cmd.args[3] << 8;
++	dev_dbg(&client->dev, "if_frequency kHz=%u\n", uitmp);
+ 
+-	if (ret == 0 && xtal_trim < 16)
++	if (uitmp == dev->if_frequency / 1000)
+ 		goto warm;
+ 
+-	dev->if_frequency = 0; /* we no longer know current tuner state */
+-
+ 	/* power up */
+ 	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
+ 		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
+@@ -117,6 +118,11 @@ static int si2157_init(struct dvb_frontend *fe)
  			goto err;
  	}
  
@@ -31235,7 +31560,7 @@ index e87040d6eca7..898e0f9f8b70 100644
  	/* query chip revision */
  	memcpy(cmd.args, "\x02", 1);
  	cmd.wlen = 1;
-@@ -440,6 +445,7 @@ static int si2157_probe(struct i2c_client *client,
+@@ -439,6 +445,7 @@ static int si2157_probe(struct i2c_client *client,
  	i2c_set_clientdata(client, dev);
  	dev->fe = cfg->fe;
  	dev->inversion = cfg->inversion;
@@ -31450,7 +31775,7 @@ index 01a668b1b00c..bb73afa7ee6c 100644
  
  #include <linux/bitops.h>
 diff --git a/drivers/media/usb/b2c2/flexcop-usb.c b/drivers/media/usb/b2c2/flexcop-usb.c
-index 039963a7765b..4bf85e9b78b8 100644
+index 198ddfb8d2b1..4bf85e9b78b8 100644
 --- a/drivers/media/usb/b2c2/flexcop-usb.c
 +++ b/drivers/media/usb/b2c2/flexcop-usb.c
 @@ -295,7 +295,7 @@ static int flexcop_usb_i2c_req(struct flexcop_i2c_adapter *i2c,
@@ -31462,16 +31787,16 @@ index 039963a7765b..4bf85e9b78b8 100644
  }
  
  /* actual bus specific access functions,
-@@ -544,9 +544,6 @@ static int flexcop_usb_probe(struct usb_interface *intf,
- 	struct flexcop_device *fc = NULL;
- 	int ret;
+@@ -511,9 +511,6 @@ static int flexcop_usb_init(struct flexcop_usb *fc_usb)
+ 		return ret;
+ 	}
  
--	if (intf->cur_altsetting->desc.bNumEndpoints < 1)
+-	if (fc_usb->uintf->cur_altsetting->desc.bNumEndpoints < 1)
 -		return -ENODEV;
 -
- 	if ((fc = flexcop_device_kmalloc(sizeof(struct flexcop_usb))) == NULL) {
- 		err("out of memory\n");
- 		return -ENOMEM;
+ 	switch (fc_usb->udev->speed) {
+ 	case USB_SPEED_LOW:
+ 		err("cannot handle USB speed because it is too slow.");
 diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
 index 0feae825cebb..626264a56517 100644
 --- a/drivers/media/usb/cpia2/cpia2_v4l.c
@@ -34932,6 +35257,41 @@ index e3d58f5247ae..f02fa0a67aa4 100644
  static struct usb_driver cxusb_driver = {
  	.name		= "dvb_usb_cxusb",
  	.probe		= cxusb_probe,
+diff --git a/drivers/media/usb/dvb-usb/dib0700_core.c b/drivers/media/usb/dvb-usb/dib0700_core.c
+index ef62dd6c5ae4..e53c58ab6488 100644
+--- a/drivers/media/usb/dvb-usb/dib0700_core.c
++++ b/drivers/media/usb/dvb-usb/dib0700_core.c
+@@ -818,7 +818,7 @@ int dib0700_rc_setup(struct dvb_usb_device *d, struct usb_interface *intf)
+ 
+ 	/* Starting in firmware 1.20, the RC info is provided on a bulk pipe */
+ 
+-	if (intf->cur_altsetting->desc.bNumEndpoints < rc_ep + 1)
++	if (intf->altsetting[0].desc.bNumEndpoints < rc_ep + 1)
+ 		return -ENODEV;
+ 
+ 	purb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -838,7 +838,7 @@ int dib0700_rc_setup(struct dvb_usb_device *d, struct usb_interface *intf)
+ 	 * Some devices like the Hauppauge NovaTD model 52009 use an interrupt
+ 	 * endpoint, while others use a bulk one.
+ 	 */
+-	e = &intf->cur_altsetting->endpoint[rc_ep].desc;
++	e = &intf->altsetting[0].endpoint[rc_ep].desc;
+ 	if (usb_endpoint_dir_in(e)) {
+ 		if (usb_endpoint_xfer_bulk(e)) {
+ 			pipe = usb_rcvbulkpipe(d->udev, rc_ep);
+diff --git a/drivers/media/usb/dvb-usb/dibusb-mb.c b/drivers/media/usb/dvb-usb/dibusb-mb.c
+index 5131c8d4c632..d4ea72bf09c5 100644
+--- a/drivers/media/usb/dvb-usb/dibusb-mb.c
++++ b/drivers/media/usb/dvb-usb/dibusb-mb.c
+@@ -81,7 +81,7 @@ static int dibusb_tuner_probe_and_attach(struct dvb_usb_adapter *adap)
+ 
+ 	if (i2c_transfer(&adap->dev->i2c_adap, msg, 2) != 2) {
+ 		err("tuner i2c write failed.");
+-		return -EREMOTEIO;
++		ret = -EREMOTEIO;
+ 	}
+ 
+ 	if (adap->fe_adap[0].fe->ops.i2c_gate_ctrl)
 diff --git a/drivers/media/usb/dvb-usb/digitv.c b/drivers/media/usb/dvb-usb/digitv.c
 index 99a39339d45d..dd5bb230cec1 100644
 --- a/drivers/media/usb/dvb-usb/digitv.c
@@ -35396,17 +35756,70 @@ index 179d4d642dae..49e75a1a1f3f 100644
  	state = kzalloc(sizeof(struct s2250), GFP_KERNEL);
  	if (state == NULL) {
 diff --git a/drivers/media/usb/go7007/snd-go7007.c b/drivers/media/usb/go7007/snd-go7007.c
-index 4a449c62fc32..b05fa227ffb2 100644
+index e8de12372e25..b05fa227ffb2 100644
 --- a/drivers/media/usb/go7007/snd-go7007.c
 +++ b/drivers/media/usb/go7007/snd-go7007.c
-@@ -253,7 +253,7 @@ int go7007_snd_init(struct go7007 *go)
- 		return ret;
- 	}
+@@ -236,20 +236,24 @@ int go7007_snd_init(struct go7007 *go)
+ 	gosnd->capturing = 0;
+ 	ret = snd_card_new(go->dev, index[dev], id[dev], THIS_MODULE, 0,
+ 			   &gosnd->card);
+-	if (ret < 0)
+-		goto free_snd;
+-
++	if (ret < 0) {
++		kfree(gosnd);
++		return ret;
++	}
+ 	ret = snd_device_new(gosnd->card, SNDRV_DEV_LOWLEVEL, go,
+ 			&go7007_snd_device_ops);
+-	if (ret < 0)
+-		goto free_card;
+-
++	if (ret < 0) {
++		kfree(gosnd);
++		return ret;
++	}
+ 	ret = snd_pcm_new(gosnd->card, "go7007", 0, 0, 1, &gosnd->pcm);
+-	if (ret < 0)
+-		goto free_card;
+-
++	if (ret < 0) {
++		snd_card_free(gosnd->card);
++		kfree(gosnd);
++		return ret;
++	}
  	strscpy(gosnd->card->driver, "go7007", sizeof(gosnd->card->driver));
 -	strscpy(gosnd->card->shortname, go->name, sizeof(gosnd->card->driver));
 +	strscpy(gosnd->card->shortname, go->name, sizeof(gosnd->card->shortname));
  	strscpy(gosnd->card->longname, gosnd->card->shortname,
  		sizeof(gosnd->card->longname));
+ 
+@@ -258,8 +262,11 @@ int go7007_snd_init(struct go7007 *go)
+ 			&go7007_snd_capture_ops);
+ 
+ 	ret = snd_card_register(gosnd->card);
+-	if (ret < 0)
+-		goto free_card;
++	if (ret < 0) {
++		snd_card_free(gosnd->card);
++		kfree(gosnd);
++		return ret;
++	}
+ 
+ 	gosnd->substream = NULL;
+ 	go->snd_context = gosnd;
+@@ -267,12 +274,6 @@ int go7007_snd_init(struct go7007 *go)
+ 	++dev;
+ 
+ 	return 0;
+-
+-free_card:
+-	snd_card_free(gosnd->card);
+-free_snd:
+-	kfree(gosnd);
+-	return ret;
+ }
+ EXPORT_SYMBOL(go7007_snd_init);
  
 diff --git a/drivers/media/usb/gspca/benq.c b/drivers/media/usb/gspca/benq.c
 index 25c40fb1ba43..e38a0bfccb8d 100644
@@ -35748,7 +36161,7 @@ index 880f569bda30..29a4c2b4ae37 100644
  
  #define MODULE_NAME "nw80x"
 diff --git a/drivers/media/usb/gspca/ov519.c b/drivers/media/usb/gspca/ov519.c
-index f417dfc0b872..65e69f61fa2c 100644
+index f651413d9f0f..65e69f61fa2c 100644
 --- a/drivers/media/usb/gspca/ov519.c
 +++ b/drivers/media/usb/gspca/ov519.c
 @@ -23,6 +23,7 @@
@@ -35759,6 +36172,40 @@ index f417dfc0b872..65e69f61fa2c 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #define MODULE_NAME "ov519"
+@@ -3477,16 +3478,6 @@ static void ov511_mode_init_regs(struct sd *sd)
+ 		return;
+ 	}
+ 
+-	if (alt->desc.bNumEndpoints < 1) {
+-		sd->gspca_dev.usb_err = -ENODEV;
+-		return;
+-	}
+-
+-	if (alt->desc.bNumEndpoints < 1) {
+-		sd->gspca_dev.usb_err = -ENODEV;
+-		return;
+-	}
+-
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 	reg_w(sd, R51x_FIFO_PSIZE, packet_size >> 5);
+ 
+@@ -3613,16 +3604,6 @@ static void ov518_mode_init_regs(struct sd *sd)
+ 		return;
+ 	}
+ 
+-	if (alt->desc.bNumEndpoints < 1) {
+-		sd->gspca_dev.usb_err = -ENODEV;
+-		return;
+-	}
+-
+-	if (alt->desc.bNumEndpoints < 1) {
+-		sd->gspca_dev.usb_err = -ENODEV;
+-		return;
+-	}
+-
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 	ov518_reg_w32(sd, R51x_FIFO_PSIZE, packet_size & ~7, 2);
+ 
 diff --git a/drivers/media/usb/gspca/ov534.c b/drivers/media/usb/gspca/ov534.c
 index 185c1f10fb30..1fa5a1f8d4bc 100644
 --- a/drivers/media/usb/gspca/ov534.c
@@ -36032,7 +36479,7 @@ index f869eb6065ce..3a35ddedb31a 100644
  
  #define MODULE_NAME "stv0680"
 diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx.c b/drivers/media/usb/gspca/stv06xx/stv06xx.c
-index 79653d409951..59842d53cfa8 100644
+index 95673fc0a99c..59842d53cfa8 100644
 --- a/drivers/media/usb/gspca/stv06xx/stv06xx.c
 +++ b/drivers/media/usb/gspca/stv06xx/stv06xx.c
 @@ -14,6 +14,7 @@
@@ -36043,6 +36490,50 @@ index 79653d409951..59842d53cfa8 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/input.h>
+@@ -282,9 +283,6 @@ static int stv06xx_start(struct gspca_dev *gspca_dev)
+ 		return -EIO;
+ 	}
+ 
+-	if (alt->desc.bNumEndpoints < 1)
+-		return -ENODEV;
+-
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 	err = stv06xx_write_bridge(sd, STV_ISO_SIZE_L, packet_size);
+ 	if (err < 0)
+@@ -309,21 +307,11 @@ static int stv06xx_start(struct gspca_dev *gspca_dev)
+ 
+ static int stv06xx_isoc_init(struct gspca_dev *gspca_dev)
+ {
+-	struct usb_interface_cache *intfc;
+ 	struct usb_host_interface *alt;
+ 	struct sd *sd = (struct sd *) gspca_dev;
+ 
+-	intfc = gspca_dev->dev->actconfig->intf_cache[0];
+-
+-	if (intfc->num_altsetting < 2)
+-		return -ENODEV;
+-
+-	alt = &intfc->altsetting[1];
+-
+-	if (alt->desc.bNumEndpoints < 1)
+-		return -ENODEV;
+-
+ 	/* Start isoc bandwidth "negotiation" at max isoc bandwidth */
++	alt = &gspca_dev->dev->actconfig->intf_cache[0]->altsetting[1];
+ 	alt->endpoint[0].desc.wMaxPacketSize =
+ 		cpu_to_le16(sd->sensor->max_packet_size[gspca_dev->curr_mode]);
+ 
+@@ -336,10 +324,6 @@ static int stv06xx_isoc_nego(struct gspca_dev *gspca_dev)
+ 	struct usb_host_interface *alt;
+ 	struct sd *sd = (struct sd *) gspca_dev;
+ 
+-	/*
+-	 * Existence of altsetting and endpoint was verified in
+-	 * stv06xx_isoc_init()
+-	 */
+ 	alt = &gspca_dev->dev->actconfig->intf_cache[0]->altsetting[1];
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 	min_packet_size = sd->sensor->min_packet_size[gspca_dev->curr_mode];
 diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c b/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
 index 5a47dcbf1c8e..200fe74fc967 100644
 --- a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
@@ -36056,7 +36547,7 @@ index 5a47dcbf1c8e..200fe74fc967 100644
  
  #include "stv06xx_hdcs.h"
 diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx_pb0100.c b/drivers/media/usb/gspca/stv06xx/stv06xx_pb0100.c
-index 6d1007715ff7..66c16f54f406 100644
+index ae382b3b5f7f..66c16f54f406 100644
 --- a/drivers/media/usb/gspca/stv06xx/stv06xx_pb0100.c
 +++ b/drivers/media/usb/gspca/stv06xx/stv06xx_pb0100.c
 @@ -31,6 +31,7 @@
@@ -36067,6 +36558,17 @@ index 6d1007715ff7..66c16f54f406 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include "stv06xx_pb0100.h"
+@@ -185,10 +186,6 @@ static int pb0100_start(struct sd *sd)
+ 	alt = usb_altnum_to_altsetting(intf, sd->gspca_dev.alt);
+ 	if (!alt)
+ 		return -ENODEV;
+-
+-	if (alt->desc.bNumEndpoints < 1)
+-		return -ENODEV;
+-
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 
+ 	/* If we don't have enough bandwidth use a lower framerate */
 diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx_st6422.c b/drivers/media/usb/gspca/stv06xx/stv06xx_st6422.c
 index 7104a88b1e43..546898f9b2bc 100644
 --- a/drivers/media/usb/gspca/stv06xx/stv06xx_st6422.c
@@ -36173,7 +36675,7 @@ index a8350ee9712f..8c37a52b79e1 100644
  
  #define W9968CF_I2C_BUS_DELAY    4 /* delay in us for I2C bit r/w operations */
 diff --git a/drivers/media/usb/gspca/xirlink_cit.c b/drivers/media/usb/gspca/xirlink_cit.c
-index 934a90bd78c2..98c6440c4da7 100644
+index c579b100f066..98c6440c4da7 100644
 --- a/drivers/media/usb/gspca/xirlink_cit.c
 +++ b/drivers/media/usb/gspca/xirlink_cit.c
 @@ -13,6 +13,7 @@
@@ -36184,6 +36686,53 @@ index 934a90bd78c2..98c6440c4da7 100644
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #define MODULE_NAME "xirlink-cit"
+@@ -1442,9 +1443,6 @@ static int cit_get_packet_size(struct gspca_dev *gspca_dev)
+ 		return -EIO;
+ 	}
+ 
+-	if (alt->desc.bNumEndpoints < 1)
+-		return -ENODEV;
+-
+ 	return le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ }
+ 
+@@ -2629,7 +2627,6 @@ static int sd_start(struct gspca_dev *gspca_dev)
+ 
+ static int sd_isoc_init(struct gspca_dev *gspca_dev)
+ {
+-	struct usb_interface_cache *intfc;
+ 	struct usb_host_interface *alt;
+ 	int max_packet_size;
+ 
+@@ -2645,17 +2642,8 @@ static int sd_isoc_init(struct gspca_dev *gspca_dev)
+ 		break;
+ 	}
+ 
+-	intfc = gspca_dev->dev->actconfig->intf_cache[0];
+-
+-	if (intfc->num_altsetting < 2)
+-		return -ENODEV;
+-
+-	alt = &intfc->altsetting[1];
+-
+-	if (alt->desc.bNumEndpoints < 1)
+-		return -ENODEV;
+-
+ 	/* Start isoc bandwidth "negotiation" at max isoc bandwidth */
++	alt = &gspca_dev->dev->actconfig->intf_cache[0]->altsetting[1];
+ 	alt->endpoint[0].desc.wMaxPacketSize = cpu_to_le16(max_packet_size);
+ 
+ 	return 0;
+@@ -2678,9 +2666,6 @@ static int sd_isoc_nego(struct gspca_dev *gspca_dev)
+ 		break;
+ 	}
+ 
+-	/*
+-	 * Existence of altsetting and endpoint was verified in sd_isoc_init()
+-	 */
+ 	alt = &gspca_dev->dev->actconfig->intf_cache[0]->altsetting[1];
+ 	packet_size = le16_to_cpu(alt->endpoint[0].desc.wMaxPacketSize);
+ 	if (packet_size <= min_packet_size)
 diff --git a/drivers/media/usb/gspca/zc3xx.c b/drivers/media/usb/gspca/zc3xx.c
 index 15a2449d536f..0305eb0c83b2 100644
 --- a/drivers/media/usb/gspca/zc3xx.c
@@ -36756,8 +37305,21 @@ index 0864ed7314eb..c08c95312739 100644
  	u32   fourcc;          /* v4l2 format id */
  	int   depth;
  };
+diff --git a/drivers/media/usb/usbtv/usbtv-core.c b/drivers/media/usb/usbtv/usbtv-core.c
+index ee9c656d121f..5095c380b2c1 100644
+--- a/drivers/media/usb/usbtv/usbtv-core.c
++++ b/drivers/media/usb/usbtv/usbtv-core.c
+@@ -56,7 +56,7 @@ int usbtv_set_regs(struct usbtv *usbtv, const u16 regs[][2], int size)
+ 
+ 		ret = usb_control_msg(usbtv->udev, pipe, USBTV_REQUEST_REG,
+ 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			value, index, NULL, 0, USB_CTRL_GET_TIMEOUT);
++			value, index, NULL, 0, 0);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
 diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
-index 51f784479e91..3d9284a09ee5 100644
+index 8d874b94f3de..3d9284a09ee5 100644
 --- a/drivers/media/usb/usbtv/usbtv-video.c
 +++ b/drivers/media/usb/usbtv/usbtv-video.c
 @@ -633,8 +633,6 @@ static int usbtv_enum_fmt_vid_cap(struct file *file, void  *priv,
@@ -36769,6 +37331,25 @@ index 51f784479e91..3d9284a09ee5 100644
  	f->pixelformat = V4L2_PIX_FMT_YUYV;
  	return 0;
  }
+@@ -802,8 +800,7 @@ static int usbtv_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		ret = usb_control_msg(usbtv->udev,
+ 			usb_rcvctrlpipe(usbtv->udev, 0), USBTV_CONTROL_REG,
+ 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			0, USBTV_BASE + 0x0244, (void *)data, 3,
+-			USB_CTRL_GET_TIMEOUT);
++			0, USBTV_BASE + 0x0244, (void *)data, 3, 0);
+ 		if (ret < 0)
+ 			goto error;
+ 	}
+@@ -854,7 +851,7 @@ static int usbtv_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	ret = usb_control_msg(usbtv->udev, usb_sndctrlpipe(usbtv->udev, 0),
+ 			USBTV_CONTROL_REG,
+ 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			0, index, (void *)data, size, USB_CTRL_SET_TIMEOUT);
++			0, index, (void *)data, size, 0);
+ 
+ error:
+ 	if (ret < 0)
 diff --git a/drivers/media/usb/usbvision/usbvision-video.c b/drivers/media/usb/usbvision/usbvision-video.c
 index 044d18e9b7ec..93d36aab824f 100644
 --- a/drivers/media/usb/usbvision/usbvision-video.c
@@ -38612,7 +39193,7 @@ index cbb74f748555..7c7ebe56f7a6 100644
  MODULE_LICENSE("GPL");
  MODULE_ALIAS_CHARDEV_MAJOR(VIDEO_MAJOR);
 diff --git a/drivers/media/v4l2-core/v4l2-device.c b/drivers/media/v4l2-core/v4l2-device.c
-index aa277f5bc862..63d6b147b21e 100644
+index 7fd8f2facc94..63d6b147b21e 100644
 --- a/drivers/media/v4l2-core/v4l2-device.c
 +++ b/drivers/media/v4l2-core/v4l2-device.c
 @@ -9,11 +9,7 @@
@@ -38669,6 +39250,14 @@ index aa277f5bc862..63d6b147b21e 100644
  	}
  	/* Mark as unregistered, thus preventing duplicate unregistrations */
  	v4l2_dev->name[0] = '\0';
+@@ -210,7 +179,6 @@ static void v4l2_subdev_release(struct v4l2_subdev *sd)
+ 
+ 	if (sd->internal_ops && sd->internal_ops->release)
+ 		sd->internal_ops->release(sd);
+-	sd->devnode = NULL;
+ 	module_put(owner);
+ }
+ 
 diff --git a/drivers/media/v4l2-core/v4l2-dv-timings.c b/drivers/media/v4l2-core/v4l2-dv-timings.c
 index 4f23e939ead0..0607a5d0d051 100644
 --- a/drivers/media/v4l2-core/v4l2-dv-timings.c
@@ -39564,6 +40153,55 @@ index 28262190c3ab..66a6c6c236a7 100644
  		kfree(dma->pages);
  		dma->pages = NULL;
  	}
+diff --git a/drivers/misc/altera-stapl/altera.c b/drivers/misc/altera-stapl/altera.c
+index 5bdf57472314..25e5f24b3fec 100644
+--- a/drivers/misc/altera-stapl/altera.c
++++ b/drivers/misc/altera-stapl/altera.c
+@@ -2112,8 +2112,8 @@ static int altera_execute(struct altera_state *astate,
+ 	return status;
+ }
+ 
+-static int altera_get_note(u8 *p, s32 program_size, s32 *offset,
+-			   char *key, char *value, int keylen, int vallen)
++static int altera_get_note(u8 *p, s32 program_size,
++			s32 *offset, char *key, char *value, int length)
+ /*
+  * Gets key and value of NOTE fields in the JBC file.
+  * Can be called in two modes:  if offset pointer is NULL,
+@@ -2170,7 +2170,7 @@ static int altera_get_note(u8 *p, s32 program_size, s32 *offset,
+ 						&p[note_table + (8 * i) + 4])];
+ 
+ 				if (value != NULL)
+-					strlcpy(value, value_ptr, vallen);
++					strlcpy(value, value_ptr, length);
+ 
+ 			}
+ 		}
+@@ -2189,13 +2189,13 @@ static int altera_get_note(u8 *p, s32 program_size, s32 *offset,
+ 				strlcpy(key, &p[note_strings +
+ 						get_unaligned_be32(
+ 						&p[note_table + (8 * i)])],
+-					keylen);
++					length);
+ 
+ 			if (value != NULL)
+ 				strlcpy(value, &p[note_strings +
+ 						get_unaligned_be32(
+ 						&p[note_table + (8 * i) + 4])],
+-					vallen);
++					length);
+ 
+ 			*offset = i + 1;
+ 		}
+@@ -2449,7 +2449,7 @@ int altera_init(struct altera_config *config, const struct firmware *fw)
+ 			__func__, (format_version == 2) ? "Jam STAPL" :
+ 						"pre-standardized Jam 1.1");
+ 		while (altera_get_note((u8 *)fw->data, fw->size,
+-					&offset, key, value, 32, 256) == 0)
++					&offset, key, value, 256) == 0)
+ 			printk(KERN_INFO "%s: NOTE \"%s\" = \"%s\"\n",
+ 					__func__, key, value);
+ 	}
 diff --git a/drivers/staging/media/Kconfig b/drivers/staging/media/Kconfig
 index 534d85d6c5e3..642adc4c24d2 100644
 --- a/drivers/staging/media/Kconfig
@@ -39593,10 +40231,22 @@ index c486298194da..2f1711a8aeed 100644
  obj-$(CONFIG_VIDEO_OMAP4)	+= omap4iss/
  obj-$(CONFIG_VIDEO_SUNXI)	+= sunxi/
 diff --git a/drivers/staging/media/allegro-dvt/allegro-core.c b/drivers/staging/media/allegro-dvt/allegro-core.c
-index f050c7347fd5..6f0cd0784786 100644
+index c89dfd5679d8..6f0cd0784786 100644
 --- a/drivers/staging/media/allegro-dvt/allegro-core.c
 +++ b/drivers/staging/media/allegro-dvt/allegro-core.c
-@@ -2947,10 +2947,8 @@ static int allegro_probe(struct platform_device *pdev)
+@@ -393,10 +393,7 @@ struct mcu_msg_create_channel {
+ 	u32 freq_ird;
+ 	u32 freq_lt;
+ 	u32 gdr_mode;
+-	u16 gop_length;
+-	u8 num_b;
+-	u8 freq_golden_ref;
+-
++	u32 gop_length;
+ 	u32 unknown39;
+ 
+ 	u32 subframe_latency;
+@@ -2950,10 +2947,8 @@ static int allegro_probe(struct platform_device *pdev)
  	}
  
  	irq = platform_get_irq(pdev, 0);
@@ -40890,10 +41540,30 @@ index 000000000000..cad18094fee0
 +	vdpu_write(vpu, G1_REG_INTERRUPT_DEC_E, G1_REG_INTERRUPT);
 +}
 diff --git a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-index 0c1e3043dc7e..938b48d4d3d9 100644
+index c4df4dbf0621..938b48d4d3d9 100644
 --- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
 +++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-@@ -84,8 +84,10 @@ void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+@@ -67,17 +67,12 @@ hantro_h1_jpeg_enc_set_qtable(struct hantro_dev *vpu,
+ 			      unsigned char *chroma_qtable)
+ {
+ 	u32 reg, i;
+-	__be32 *luma_qtable_p;
+-	__be32 *chroma_qtable_p;
+-
+-	luma_qtable_p = (__be32 *)luma_qtable;
+-	chroma_qtable_p = (__be32 *)chroma_qtable;
+ 
+ 	for (i = 0; i < H1_JPEG_QUANT_TABLE_COUNT; i++) {
+-		reg = get_unaligned_be32(&luma_qtable_p[i]);
++		reg = get_unaligned_be32(&luma_qtable[i]);
+ 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_LUMA_QUAT(i));
+ 
+-		reg = get_unaligned_be32(&chroma_qtable_p[i]);
++		reg = get_unaligned_be32(&chroma_qtable[i]);
+ 		vepu_write_relaxed(vpu, reg, H1_REG_JPEG_CHROMA_QUAT(i));
+ 	}
+ }
+@@ -89,8 +84,10 @@ void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
  	struct hantro_jpeg_ctx jpeg_ctx;
  	u32 reg;
  
@@ -40906,7 +41576,7 @@ index 0c1e3043dc7e..938b48d4d3d9 100644
  
  	memset(&jpeg_ctx, 0, sizeof(jpeg_ctx));
  	jpeg_ctx.buffer = vb2_plane_vaddr(&dst_buf->vb2_buf, 0);
-@@ -114,12 +116,13 @@ void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+@@ -119,12 +116,13 @@ void hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
  	/* Make sure that all registers are written at this point. */
  	vepu_write(vpu, reg, H1_REG_AXI_CTRL);
  
@@ -42198,10 +42868,30 @@ index 5718f8063542..9ac1f2cb6a16 100644
 +	.num_clocks = ARRAY_SIZE(rk3399_clk_names),
 +};
 diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-index ae66354d2d93..067892345b5d 100644
+index 62fe126fe366..067892345b5d 100644
 --- a/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
 +++ b/drivers/staging/media/hantro/rk3399_vpu_hw_jpeg_enc.c
-@@ -113,14 +113,12 @@ void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
+@@ -98,17 +98,12 @@ rk3399_vpu_jpeg_enc_set_qtable(struct hantro_dev *vpu,
+ 			       unsigned char *chroma_qtable)
+ {
+ 	u32 reg, i;
+-	__be32 *luma_qtable_p;
+-	__be32 *chroma_qtable_p;
+-
+-	luma_qtable_p = (__be32 *)luma_qtable;
+-	chroma_qtable_p = (__be32 *)chroma_qtable;
+ 
+ 	for (i = 0; i < VEPU_JPEG_QUANT_TABLE_COUNT; i++) {
+-		reg = get_unaligned_be32(&luma_qtable_p[i]);
++		reg = get_unaligned_be32(&luma_qtable[i]);
+ 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_LUMA_QUAT(i));
+ 
+-		reg = get_unaligned_be32(&chroma_qtable_p[i]);
++		reg = get_unaligned_be32(&chroma_qtable[i]);
+ 		vepu_write_relaxed(vpu, reg, VEPU_REG_JPEG_CHROMA_QUAT(i));
+ 	}
+ }
+@@ -118,14 +113,12 @@ void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
  	struct hantro_dev *vpu = ctx->dev;
  	struct vb2_v4l2_buffer *src_buf, *dst_buf;
  	struct hantro_jpeg_ctx jpeg_ctx;
@@ -42219,7 +42909,7 @@ index ae66354d2d93..067892345b5d 100644
  
  	memset(&jpeg_ctx, 0, sizeof(jpeg_ctx));
  	jpeg_ctx.buffer = vb2_plane_vaddr(&dst_buf->vb2_buf, 0);
-@@ -151,15 +149,13 @@ void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
+@@ -156,15 +149,13 @@ void rk3399_vpu_jpeg_enc_run(struct hantro_ctx *ctx)
  	reg = VEPU_REG_AXI_CTRL_BURST_LEN(16);
  	vepu_write_relaxed(vpu, reg, VEPU_REG_AXI_CTRL);
  
@@ -44482,7 +45172,7 @@ index bfa4b254c4e4..cd3dd6e33ef0 100644
  	if (IS_ERR(csi2->pllref_clk)) {
  		v4l2_err(&csi2->sd, "failed to get pll reference clock\n");
 diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
-index 500b4c08d967..db30e2c70f2f 100644
+index 43325db70f14..db30e2c70f2f 100644
 --- a/drivers/staging/media/imx/imx7-media-csi.c
 +++ b/drivers/staging/media/imx/imx7-media-csi.c
 @@ -1,6 +1,6 @@
@@ -44547,7 +45237,25 @@ index 500b4c08d967..db30e2c70f2f 100644
  }
  
  static void imx7_csi_disable(struct imx7_csi *csi)
-@@ -1089,9 +1100,6 @@ static int imx7_csi_registered(struct v4l2_subdev *sd)
+@@ -998,7 +1009,6 @@ static int imx7_csi_try_fmt(struct imx7_csi *csi,
+ 		sdformat->format.width = in_fmt->width;
+ 		sdformat->format.height = in_fmt->height;
+ 		sdformat->format.code = in_fmt->code;
+-		sdformat->format.field = in_fmt->field;
+ 		*cc = in_cc;
+ 
+ 		sdformat->format.colorspace = in_fmt->colorspace;
+@@ -1013,9 +1023,6 @@ static int imx7_csi_try_fmt(struct imx7_csi *csi,
+ 							 false);
+ 			sdformat->format.code = (*cc)->codes[0];
+ 		}
+-
+-		if (sdformat->format.field != V4L2_FIELD_INTERLACED)
+-			sdformat->format.field = V4L2_FIELD_NONE;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -1093,9 +1100,6 @@ static int imx7_csi_registered(struct v4l2_subdev *sd)
  	int i;
  
  	for (i = 0; i < IMX7_CSI_PADS_NUM; i++) {
@@ -44557,7 +45265,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  		/* set a default mbus format  */
  		ret = imx_media_init_mbus_fmt(&csi->format_mbus[i],
  					      800, 600, 0, V4L2_FIELD_NONE,
-@@ -1104,11 +1112,16 @@ static int imx7_csi_registered(struct v4l2_subdev *sd)
+@@ -1108,11 +1112,16 @@ static int imx7_csi_registered(struct v4l2_subdev *sd)
  		csi->frame_interval[i].denominator = 30;
  	}
  
@@ -44568,17 +45276,17 @@ index 500b4c08d967..db30e2c70f2f 100644
 +						  IMX7_CSI_PAD_SRC);
 +	if (IS_ERR(csi->vdev))
 +		return PTR_ERR(csi->vdev);
-+
+ 
+-	return imx_media_capture_device_register(csi->vdev);
 +	ret = imx_media_capture_device_register(csi->vdev);
 +	if (ret)
 +		imx_media_capture_device_remove(csi->vdev);
- 
--	return imx_media_capture_device_register(csi->vdev);
++
 +	return ret;
  }
  
  static void imx7_csi_unregistered(struct v4l2_subdev *sd)
-@@ -1116,6 +1129,7 @@ static void imx7_csi_unregistered(struct v4l2_subdev *sd)
+@@ -1120,6 +1129,7 @@ static void imx7_csi_unregistered(struct v4l2_subdev *sd)
  	struct imx7_csi *csi = v4l2_get_subdevdata(sd);
  
  	imx_media_capture_device_unregister(csi->vdev);
@@ -44586,7 +45294,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  }
  
  static int imx7_csi_init_cfg(struct v4l2_subdev *sd,
-@@ -1178,7 +1192,7 @@ static int imx7_csi_probe(struct platform_device *pdev)
+@@ -1182,7 +1192,7 @@ static int imx7_csi_probe(struct platform_device *pdev)
  	struct device_node *node = dev->of_node;
  	struct imx_media_dev *imxmd;
  	struct imx7_csi *csi;
@@ -44595,7 +45303,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  
  	csi = devm_kzalloc(&pdev->dev, sizeof(*csi), GFP_KERNEL);
  	if (!csi)
-@@ -1194,10 +1208,8 @@ static int imx7_csi_probe(struct platform_device *pdev)
+@@ -1198,10 +1208,8 @@ static int imx7_csi_probe(struct platform_device *pdev)
  	}
  
  	csi->irq = platform_get_irq(pdev, 0);
@@ -44607,7 +45315,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  
  	csi->regbase = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(csi->regbase))
-@@ -1242,14 +1254,18 @@ static int imx7_csi_probe(struct platform_device *pdev)
+@@ -1246,14 +1254,18 @@ static int imx7_csi_probe(struct platform_device *pdev)
  	csi->sd.grp_id = IMX_MEDIA_GRP_ID_CSI;
  	snprintf(csi->sd.name, sizeof(csi->sd.name), "csi");
  
@@ -44631,7 +45339,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  	ret = v4l2_async_register_fwnode_subdev(&csi->sd,
  						sizeof(struct v4l2_async_subdev),
  						NULL, 0,
-@@ -1260,8 +1276,6 @@ static int imx7_csi_probe(struct platform_device *pdev)
+@@ -1264,8 +1276,6 @@ static int imx7_csi_probe(struct platform_device *pdev)
  	return 0;
  
  free:
@@ -44640,7 +45348,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  	v4l2_ctrl_handler_free(&csi->ctrl_hdlr);
  
  cleanup:
-@@ -1289,9 +1303,6 @@ static int imx7_csi_remove(struct platform_device *pdev)
+@@ -1293,9 +1303,6 @@ static int imx7_csi_remove(struct platform_device *pdev)
  	v4l2_device_unregister(&imxmd->v4l2_dev);
  	media_device_cleanup(&imxmd->md);
  
@@ -44650,7 +45358,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  	v4l2_async_unregister_subdev(sd);
  	v4l2_ctrl_handler_free(&csi->ctrl_hdlr);
  
-@@ -1302,6 +1313,7 @@ static int imx7_csi_remove(struct platform_device *pdev)
+@@ -1306,6 +1313,7 @@ static int imx7_csi_remove(struct platform_device *pdev)
  
  static const struct of_device_id imx7_csi_of_match[] = {
  	{ .compatible = "fsl,imx7-csi" },
@@ -44659,7 +45367,7 @@ index 500b4c08d967..db30e2c70f2f 100644
  };
  MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
 diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
-index b7f0354b1ea6..7477e58054b2 100644
+index bfa77d8bb956..7477e58054b2 100644
 --- a/drivers/staging/media/imx/imx7-mipi-csis.c
 +++ b/drivers/staging/media/imx/imx7-mipi-csis.c
 @@ -350,8 +350,6 @@ static void mipi_csis_sw_reset(struct csi_state *state)
@@ -44671,6 +45379,15 @@ index b7f0354b1ea6..7477e58054b2 100644
  
  	return regulator_set_voltage(state->mipi_phy_regulator, 1000000,
  				     1000000);
+@@ -579,7 +577,7 @@ static int mipi_csis_s_stream(struct v4l2_subdev *mipi_sd, int enable)
+ 		state->flags |= ST_STREAMING;
+ 	} else {
+ 		v4l2_subdev_call(state->src_sd, video, s_stream, 0);
+-		ret = v4l2_subdev_call(state->src_sd, core, s_power, 0);
++		ret = v4l2_subdev_call(state->src_sd, core, s_power, 1);
+ 		mipi_csis_stop_stream(state);
+ 		state->flags &= ~ST_STREAMING;
+ 		if (state->debug)
 @@ -782,17 +780,6 @@ static irqreturn_t mipi_csis_irq_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
@@ -44757,18 +45474,39 @@ index b7f0354b1ea6..7477e58054b2 100644
  	ret = mipi_csis_clk_get(state);
  	if (ret < 0)
 diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-index 0b1cb9f9cbd1..c7cd27efac8a 100644
+index 1bfa8c86132a..c7cd27efac8a 100644
 --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
 +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-@@ -449,7 +449,7 @@ struct ipu3_uapi_awb_fr_config_s {
+@@ -449,8 +449,8 @@ struct ipu3_uapi_awb_fr_config_s {
  	__u16 reserved1;
  	__u32 bayer_sign;
  	__u8 bayer_nf;
 -	__u8 reserved2[7];
+-} __packed;
 +	__u8 reserved2[3];
- } __attribute__((aligned(32))) __packed;
++} __attribute__((aligned(32))) __packed;
  
  /**
+  * struct ipu3_uapi_4a_config - 4A config
+@@ -466,8 +466,7 @@ struct ipu3_uapi_4a_config {
+ 	struct ipu3_uapi_ae_grid_config ae_grd_config;
+ 	__u8 padding[20];
+ 	struct ipu3_uapi_af_config_s af_config;
+-	struct ipu3_uapi_awb_fr_config_s awb_fr_config
+-		__attribute__((aligned(32)));
++	struct ipu3_uapi_awb_fr_config_s awb_fr_config;
+ } __packed;
+ 
+ /**
+@@ -2473,7 +2472,7 @@ struct ipu3_uapi_acc_param {
+ 	struct ipu3_uapi_yuvp1_yds_config yds2 __attribute__((aligned(32)));
+ 	struct ipu3_uapi_yuvp2_tcc_static_config tcc __attribute__((aligned(32)));
+ 	struct ipu3_uapi_anr_config anr;
+-	struct ipu3_uapi_awb_fr_config_s awb_fr;
++	struct ipu3_uapi_awb_fr_config_s awb_fr __attribute__((aligned(32)));
+ 	struct ipu3_uapi_ae_config ae;
+ 	struct ipu3_uapi_af_config_s af;
+ 	struct ipu3_uapi_awb_config awb;
 diff --git a/drivers/staging/media/ipu3/ipu3-tables.h b/drivers/staging/media/ipu3/ipu3-tables.h
 index a1bf3286f380..9f719c48b432 100644
 --- a/drivers/staging/media/ipu3/ipu3-tables.h
@@ -45629,10 +46367,27 @@ index 08b25c02b5a1..d1a5d5df02f5 100644
  #define SDIO_VENDOR_ID_STE			0x0020
  #define SDIO_DEVICE_ID_STE_CW1200		0x2280
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 290db814b735..21a572469a4e 100644
+index 51a503fc8d17..21a572469a4e 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1071,7 +1071,6 @@
+@@ -148,8 +148,6 @@
+ 
+ /* Vendors and devices.  Sort key: vendor first, device next. */
+ 
+-#define PCI_VENDOR_ID_LOONGSON		0x0014
+-
+ #define PCI_VENDOR_ID_TTTECH		0x0357
+ #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
+ 
+@@ -551,7 +549,6 @@
+ #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F3 0x15eb
+ #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F3 0x1493
+ #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
+-#define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
+ #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+ #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+ #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
+@@ -1074,7 +1071,6 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -45640,42 +46395,37 @@ index 290db814b735..21a572469a4e 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1952,6 +1951,8 @@
- #define PCI_VENDOR_ID_DIGIGRAM		0x1369
- #define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_SERIAL_SUBSYSTEM	0xc001
- #define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_CAE_SERIAL_SUBSYSTEM	0xc002
-+#define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_SERIAL_SUBSYSTEM		0xc021
-+#define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_CAE_SERIAL_SUBSYSTEM	0xc022
+@@ -1833,12 +1829,6 @@
+ #define PCI_VENDOR_ID_NVIDIA_SGS	0x12d2
+ #define PCI_DEVICE_ID_NVIDIA_SGS_RIVA128 0x0018
  
- #define PCI_VENDOR_ID_KAWASAKI		0x136b
- #define PCI_DEVICE_ID_MCHIP_KL5A72002	0xff01
-@@ -2133,6 +2134,7 @@
- #define PCI_VENDOR_ID_MYRICOM		0x14c1
+-#define PCI_VENDOR_ID_PERICOM			0x12D8
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
+-
+ #define PCI_SUBVENDOR_ID_CHASE_PCIFAST		0x12E0
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST4		0x0031
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST8		0x0021
+@@ -2592,8 +2582,6 @@
  
- #define PCI_VENDOR_ID_MEDIATEK		0x14c3
-+#define PCI_DEVICE_ID_MEDIATEK_7629	0x7629
+ #define PCI_VENDOR_ID_AMAZON		0x1d0f
  
- #define PCI_VENDOR_ID_TITAN		0x14D2
- #define PCI_DEVICE_ID_TITAN_010L	0x8001
-@@ -2406,6 +2408,8 @@
- #define PCI_DEVICE_ID_RDC_R6061		0x6061
- #define PCI_DEVICE_ID_RDC_D1010		0x1010
+-#define PCI_VENDOR_ID_ZHAOXIN		0x1d17
+-
+ #define PCI_VENDOR_ID_HYGON		0x1d94
  
-+#define PCI_VENDOR_ID_GLI		0x17a0
-+
- #define PCI_VENDOR_ID_LENOVO		0x17aa
+ #define PCI_VENDOR_ID_HXT		0x1dbf
+@@ -3018,7 +3006,6 @@
+ #define PCI_DEVICE_ID_INTEL_84460GX	0x84ea
+ #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
+ #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
+-#define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
+ #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
  
- #define PCI_VENDOR_ID_QCOM		0x17cb
-@@ -2571,6 +2575,8 @@
- 
- #define PCI_VENDOR_ID_ASMEDIA		0x1b21
- 
-+#define PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS	0x1c36
-+
- #define PCI_VENDOR_ID_CIRCUITCO		0x1cc8
- #define PCI_SUBSYSTEM_ID_CIRCUITCO_MINNOWBOARD	0x0001
- 
-@@ -3105,6 +3111,4 @@
+ #define PCI_VENDOR_ID_SCALEMP		0x8686
+@@ -3124,6 +3111,4 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
