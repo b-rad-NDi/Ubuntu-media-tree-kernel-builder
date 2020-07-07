@@ -1,0 +1,49 @@
+From 63bcc1780b04640dab57fcfff6962bbc4d52a54d Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 6 Jul 2020 16:20:00 -0500
+Subject: [PATCH 2/6] Changelog
+
+---
+ debian.master/changelog | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/debian.master/changelog b/debian.master/changelog
+index 1f21c6232..8c0b2cff0 100644
+--- a/debian.master/changelog
++++ b/debian.master/changelog
+@@ -1,3 +1,32 @@
++linux (5.4.0-392007061620.0+mediatree+hauppauge) focal; urgency=low
++
++  * Ubuntu-master kernel git clone
++    - 5.4.0-39.43 rev 4838bb77cca3494482db847cbaebe570649da1a7
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2020-05-21-04-20.patch
++    - 0002-Changelog.patch
++    - 0003-Apply-build-fixes-to-media-tree.patch
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++    - 0005-Add-new-media-tree-kernel-config.patch
++    - 0006-Packaging-updates.patch
++
++  * Additional patches
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
++    --- 0004-si2168-different-default-that-windows-driver.patch
++    --- 0008-dvbdev-Fix-tuner-demod-media-controller-link.patch
++    - 20.missing.stat.bits
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 90.usb.quadhd.xml692
++    --- 0001-mxl69x-MaxLinear-692-ATSC-demod-tuner-driver.patch
++    --- 0002-em28xx-core-Fix-TS2-active-led.patch
++    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
++
++ -- Fake User <hidden@email.co>  Mon, 06 Jul 2020 16:20:00 -0500
++
+ linux (5.4.0-39.43) focal; urgency=medium
+ 
+   * dkms-build: downloads fail in private PPAs (LP: #1883874)
+-- 
+2.25.1
+

@@ -1,0 +1,583 @@
+From 5a140e50d3570d19fb661f35efc0415067c5fa2f Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 28 May 2020 19:12:59 -0500
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ Documentation/media/kapi/v4l2-dev.rst                       | 4 ++--
+ .../translations/zh_CN/video4linux/v4l2-framework.txt       | 4 ++--
+ drivers/media/cec/cec-api.c                                 | 3 +++
+ drivers/media/cec/core/cec-api.c                            | 3 +++
+ drivers/media/dvb-core/dvbdev.c                             | 2 ++
+ drivers/media/dvb-frontends/cxd2820r_core.c                 | 3 ++-
+ drivers/media/dvb-frontends/lgdt330x.c                      | 3 +++
+ drivers/media/dvb-frontends/m88ds3103.c                     | 2 ++
+ drivers/media/dvb-frontends/ts2020.c                        | 2 ++
+ drivers/media/i2c/adv7604.c                                 | 2 ++
+ drivers/media/mc/mc-device.c                                | 2 ++
+ drivers/media/pci/bt8xx/bttv-input.c                        | 2 ++
+ drivers/media/pci/cx18/cx18-i2c.c                           | 2 ++
+ drivers/media/pci/cx23885/cx23885-dvb.c                     | 2 ++
+ drivers/media/pci/cx23885/cx23885-i2c.c                     | 2 ++
+ drivers/media/pci/ivtv/ivtv-i2c.c                           | 2 ++
+ drivers/media/pci/saa7134/saa7134-video.c                   | 2 ++
+ drivers/media/pci/saa7164/saa7164-dvb.c                     | 2 ++
+ drivers/media/pci/smipcie/smipcie-main.c                    | 2 ++
+ drivers/media/platform/sh_veu.c                             | 2 +-
+ drivers/media/platform/via-camera.c                         | 2 ++
+ drivers/media/platform/vicodec/vicodec-core.c               | 2 +-
+ drivers/media/platform/vim2m.c                              | 2 +-
+ drivers/media/platform/vimc/vimc-capture.c                  | 2 +-
+ drivers/media/platform/vivid/vivid-core.c                   | 6 +++---
+ drivers/media/usb/dvb-usb-v2/af9035.c                       | 2 ++
+ drivers/media/usb/dvb-usb-v2/anysee.c                       | 2 ++
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c                     | 2 ++
+ drivers/media/usb/dvb-usb-v2/zd1301.c                       | 2 ++
+ drivers/media/usb/dvb-usb/dib0700_devices.c                 | 1 +
+ drivers/media/usb/dvb-usb/dw2102.c                          | 2 ++
+ drivers/media/usb/em28xx/Makefile                           | 4 ++--
+ drivers/media/usb/em28xx/em28xx-dvb.c                       | 2 +-
+ drivers/media/usb/usbvision/usbvision-video.c               | 2 +-
+ drivers/media/v4l2-core/v4l2-fwnode.c                       | 2 ++
+ drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
+ samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
+ 38 files changed, 72 insertions(+), 17 deletions(-)
+
+diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
+index 4c5a15c53..61734697a 100644
+--- a/Documentation/media/kapi/v4l2-dev.rst
++++ b/Documentation/media/kapi/v4l2-dev.rst
+@@ -185,7 +185,7 @@ This will create the character device for you.
+ 
+ .. code-block:: c
+ 
+-	err = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
++	err = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (err) {
+ 		video_device_release(vdev); /* or kfree(my_vdev); */
+ 		return err;
+@@ -201,7 +201,7 @@ types exist:
+ ========================== ====================	 ==============================
+ :c:type:`vfl_devnode_type` Device name		 Usage
+ ========================== ====================	 ==============================
+-``VFL_TYPE_GRABBER``       ``/dev/videoX``       for video input/output devices
++``VFL_TYPE_VIDEO``       ``/dev/videoX``       for video input/output devices
+ ``VFL_TYPE_VBI``           ``/dev/vbiX``         for vertical blank data (i.e.
+ 						 closed captions, teletext)
+ ``VFL_TYPE_RADIO``         ``/dev/radioX``       for radio tuners
+diff --git a/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt b/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
+index 66c7c568b..9c39ee58e 100644
+--- a/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
++++ b/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
+@@ -649,7 +649,7 @@ video_device注册
+ 
+ 接下来你需要注册视频设备：这会为你创建一个字符设备。
+ 
+-	err = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
++	err = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (err) {
+ 		video_device_release(vdev); /* or kfree(my_vdev); */
+ 		return err;
+@@ -660,7 +660,7 @@ video_device注册
+ 
+ 注册哪种设备是根据类型（type）参数。存在以下类型：
+ 
+-VFL_TYPE_GRABBER: 用于视频输入/输出设备的 videoX
++VFL_TYPE_VIDEO: 用于视频输入/输出设备的 videoX
+ VFL_TYPE_VBI: 用于垂直消隐数据的 vbiX (例如，隐藏式字幕，图文电视)
+ VFL_TYPE_RADIO: 用于广播调谐器的 radioX
+ 
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index 12d676484..f52251e9b 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -19,6 +19,9 @@
+ #include <linux/version.h>
+ 
+ #include <media/cec-pin.h>
++
++#include <media/compat.h>
++
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+ 
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index 8c6a43323..35372a06c 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -19,6 +19,9 @@
+ #include <linux/version.h>
+ 
+ #include <media/cec-pin.h>
++
++#include <media/compat.h>
++
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+ 
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index df167e843..28485aaf3 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -37,6 +37,8 @@
+ /* Due to enum tuner_pad_index */
+ #include <media/tuner.h>
+ 
++#include <media/compat.h>
++
+ static DEFINE_MUTEX(dvbdev_mutex);
+ static int dvbdev_debug;
+ 
+diff --git a/drivers/media/dvb-frontends/cxd2820r_core.c b/drivers/media/dvb-frontends/cxd2820r_core.c
+index b1618339e..2fbfe46b7 100644
+--- a/drivers/media/dvb-frontends/cxd2820r_core.c
++++ b/drivers/media/dvb-frontends/cxd2820r_core.c
+@@ -5,9 +5,10 @@
+  * Copyright (C) 2010 Antti Palosaari <crope@iki.fi>
+  */
+ 
+-
+ #include "cxd2820r_priv.h"
+ 
++#include <media/compat.h>
++
+ /* Write register table */
+ int cxd2820r_wr_reg_val_mask_tab(struct cxd2820r_priv *priv,
+ 				 const struct reg_val_mask *tab, int tab_len)
+diff --git a/drivers/media/dvb-frontends/lgdt330x.c b/drivers/media/dvb-frontends/lgdt330x.c
+index da3a8c5e1..401db5342 100644
+--- a/drivers/media/dvb-frontends/lgdt330x.c
++++ b/drivers/media/dvb-frontends/lgdt330x.c
+@@ -29,6 +29,9 @@
+ 
+ #include <media/dvb_frontend.h>
+ #include <media/dvb_math.h>
++
++#include <media/compat.h>
++
+ #include "lgdt330x_priv.h"
+ #include "lgdt330x.h"
+ 
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index f204e715b..33a62109f 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2013 Antti Palosaari <crope@iki.fi>
+  */
+ 
++#include <media/compat.h>
++
+ #include "m88ds3103_priv.h"
+ 
+ static const struct dvb_frontend_ops m88ds3103_ops;
+diff --git a/drivers/media/dvb-frontends/ts2020.c b/drivers/media/dvb-frontends/ts2020.c
+index 234607b02..2c6a18a13 100644
+--- a/drivers/media/dvb-frontends/ts2020.c
++++ b/drivers/media/dvb-frontends/ts2020.c
+@@ -12,6 +12,8 @@
+ #include <linux/regmap.h>
+ #include <linux/math64.h>
+ 
++#include <media/compat.h>
++
+ #define TS2020_XTAL_FREQ   27000 /* in kHz */
+ #define FREQ_OFFSET_LOW_SYM_RATE 3000
+ 
+diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
+index 09004d928..cf5d7d7a7 100644
+--- a/drivers/media/i2c/adv7604.c
++++ b/drivers/media/i2c/adv7604.c
+@@ -37,6 +37,8 @@
+ #include <media/v4l2-dv-timings.h>
+ #include <media/v4l2-fwnode.h>
+ 
++#include <media/compat.h>
++
+ static int debug;
+ module_param(debug, int, 0644);
+ MODULE_PARM_DESC(debug, "debug level (0-2)");
+diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
+index 6f941dd9e..d26716c5e 100644
+--- a/drivers/media/mc/mc-device.c
++++ b/drivers/media/mc/mc-device.c
+@@ -24,6 +24,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/pci/bt8xx/bttv-input.c b/drivers/media/pci/bt8xx/bttv-input.c
+index 1bf8fe419..18b588801 100644
+--- a/drivers/media/pci/bt8xx/bttv-input.c
++++ b/drivers/media/pci/bt8xx/bttv-input.c
+@@ -15,6 +15,8 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ 
++#include <media/compat.h>
++
+ #include "bttv.h"
+ #include "bttvp.h"
+ 
+diff --git a/drivers/media/pci/cx18/cx18-i2c.c b/drivers/media/pci/cx18/cx18-i2c.c
+index a83435245..0fe3e2921 100644
+--- a/drivers/media/pci/cx18/cx18-i2c.c
++++ b/drivers/media/pci/cx18/cx18-i2c.c
+@@ -8,6 +8,8 @@
+  *  Copyright (C) 2008  Andy Walls <awalls@md.metrocast.net>
+  */
+ 
++#include <media/compat.h>
++
+ #include "cx18-driver.h"
+ #include "cx18-io.h"
+ #include "cx18-cards.h"
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index 45c2f4afc..94e0ec49a 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -17,6 +17,8 @@
+ 
+ #include <media/v4l2-common.h>
+ 
++#include <media/compat.h>
++
+ #include <media/dvb_ca_en50221.h>
+ #include "s5h1409.h"
+ #include "s5h1411.h"
+diff --git a/drivers/media/pci/cx23885/cx23885-i2c.c b/drivers/media/pci/cx23885/cx23885-i2c.c
+index f51fad33d..f9fa9e975 100644
+--- a/drivers/media/pci/cx23885/cx23885-i2c.c
++++ b/drivers/media/pci/cx23885/cx23885-i2c.c
+@@ -14,6 +14,8 @@
+ 
+ #include <media/v4l2-common.h>
+ 
++#include <media/compat.h>
++
+ static unsigned int i2c_debug;
+ module_param(i2c_debug, int, 0644);
+ MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+diff --git a/drivers/media/pci/ivtv/ivtv-i2c.c b/drivers/media/pci/ivtv/ivtv-i2c.c
+index 982045c4e..3002e441d 100644
+--- a/drivers/media/pci/ivtv/ivtv-i2c.c
++++ b/drivers/media/pci/ivtv/ivtv-i2c.c
+@@ -47,6 +47,8 @@
+     stop condition.  (Only the msp3400 chip uses this method of data transfer).
+  */
+ 
++#include <media/compat.h>
++
+ #include "ivtv-driver.h"
+ #include "ivtv-cards.h"
+ #include "ivtv-gpio.h"
+diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
+index a8ac94fad..cc7e2358f 100644
+--- a/drivers/media/pci/saa7134/saa7134-video.c
++++ b/drivers/media/pci/saa7134/saa7134-video.c
+@@ -21,6 +21,8 @@
+ #include <media/v4l2-event.h>
+ #include <media/i2c/saa6588.h>
+ 
++#include <media/compat.h>
++
+ /* ------------------------------------------------------------------ */
+ 
+ unsigned int video_debug;
+diff --git a/drivers/media/pci/saa7164/saa7164-dvb.c b/drivers/media/pci/saa7164/saa7164-dvb.c
+index bf8c2bb88..fe5b054af 100644
+--- a/drivers/media/pci/saa7164/saa7164-dvb.c
++++ b/drivers/media/pci/saa7164/saa7164-dvb.c
+@@ -7,6 +7,8 @@
+ 
+ #include "saa7164.h"
+ 
++#include <media/compat.h>
++
+ #include "tda10048.h"
+ #include "tda18271.h"
+ #include "s5h1411.h"
+diff --git a/drivers/media/pci/smipcie/smipcie-main.c b/drivers/media/pci/smipcie/smipcie-main.c
+index 9ca0fc3e6..04b9bd289 100644
+--- a/drivers/media/pci/smipcie/smipcie-main.c
++++ b/drivers/media/pci/smipcie/smipcie-main.c
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2014 Max nibble <nibble.max@gmail.com>
+  */
+ 
++#include <media/compat.h>
++
+ #include "smipcie.h"
+ #include "m88ds3103.h"
+ #include "ts2020.h"
+diff --git a/drivers/media/platform/sh_veu.c b/drivers/media/platform/sh_veu.c
+index 2b4c0d9d6..f08b8fc19 100644
+--- a/drivers/media/platform/sh_veu.c
++++ b/drivers/media/platform/sh_veu.c
+@@ -1160,7 +1160,7 @@ static int sh_veu_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_resume(&pdev->dev);
+ 
+-	ret = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
++	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	pm_runtime_suspend(&pdev->dev);
+ 	if (ret < 0)
+ 		goto evidreg;
+diff --git a/drivers/media/platform/via-camera.c b/drivers/media/platform/via-camera.c
+index ed0ad68c5..0afed8815 100644
+--- a/drivers/media/platform/via-camera.c
++++ b/drivers/media/platform/via-camera.c
+@@ -35,6 +35,8 @@
+ #define machine_is_olpc(x) 0
+ #endif
+ 
++#include <media/compat.h>
++
+ #include "via-camera.h"
+ 
+ MODULE_ALIAS("platform:viafb-camera");
+diff --git a/drivers/media/platform/vicodec/vicodec-core.c b/drivers/media/platform/vicodec/vicodec-core.c
+index 823500975..f78579b48 100644
+--- a/drivers/media/platform/vicodec/vicodec-core.c
++++ b/drivers/media/platform/vicodec/vicodec-core.c
+@@ -2120,7 +2120,7 @@ static int register_instance(struct vicodec_dev *dev,
+ 	}
+ 	video_set_drvdata(vfd, dev);
+ 
+-	ret = video_register_device(vfd, VFL_TYPE_GRABBER, 0);
++	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
+ 	if (ret) {
+ 		v4l2_err(&dev->v4l2_dev, "Failed to register video device '%s'\n", name);
+ 		v4l2_m2m_release(dev_instance->m2m_dev);
+diff --git a/drivers/media/platform/vim2m.c b/drivers/media/platform/vim2m.c
+index 8d6b09623..ac6717fbb 100644
+--- a/drivers/media/platform/vim2m.c
++++ b/drivers/media/platform/vim2m.c
+@@ -1333,7 +1333,7 @@ static int vim2m_probe(struct platform_device *pdev)
+ 	vfd->lock = &dev->dev_mutex;
+ 	vfd->v4l2_dev = &dev->v4l2_dev;
+ 
+-	ret = video_register_device(vfd, VFL_TYPE_GRABBER, 0);
++	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
+ 	if (ret) {
+ 		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
+ 		goto error_v4l2;
+diff --git a/drivers/media/platform/vimc/vimc-capture.c b/drivers/media/platform/vimc/vimc-capture.c
+index 1d56b9183..49956d562 100644
+--- a/drivers/media/platform/vimc/vimc-capture.c
++++ b/drivers/media/platform/vimc/vimc-capture.c
+@@ -478,7 +478,7 @@ static int vimc_cap_comp_bind(struct device *comp, struct device *master,
+ 	video_set_drvdata(vdev, &vcap->ved);
+ 
+ 	/* Register the video_device with the v4l2 and the media framework */
+-	ret = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
++	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+ 		dev_err(comp, "%s: video register failed (err=%d)\n",
+ 			vcap->vdev.name, ret);
+diff --git a/drivers/media/platform/vivid/vivid-core.c b/drivers/media/platform/vivid/vivid-core.c
+index f6a5cdbd7..5f16b16eb 100644
+--- a/drivers/media/platform/vivid/vivid-core.c
++++ b/drivers/media/platform/vivid/vivid-core.c
+@@ -380,7 +380,7 @@ static int vidioc_log_status(struct file *file, void *fh)
+ 	struct video_device *vdev = video_devdata(file);
+ 
+ 	v4l2_ctrl_log_status(file, fh);
+-	if (vdev->vfl_dir == VFL_DIR_RX && vdev->vfl_type == VFL_TYPE_GRABBER)
++	if (vdev->vfl_dir == VFL_DIR_RX && vdev->vfl_type == VFL_TYPE_VIDEO)
+ 		tpg_log_status(&dev->tpg);
+ 	return 0;
+ }
+@@ -1308,7 +1308,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+ 		}
+ #endif
+ 
+-		ret = video_register_device(vfd, VFL_TYPE_GRABBER, vid_cap_nr[inst]);
++		ret = video_register_device(vfd, VFL_TYPE_VIDEO, vid_cap_nr[inst]);
+ 		if (ret < 0)
+ 			goto unreg_dev;
+ 		v4l2_info(&dev->v4l2_dev, "V4L2 capture device registered as %s\n",
+@@ -1359,7 +1359,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+ 		}
+ #endif
+ 
+-		ret = video_register_device(vfd, VFL_TYPE_GRABBER, vid_out_nr[inst]);
++		ret = video_register_device(vfd, VFL_TYPE_VIDEO, vid_out_nr[inst]);
+ 		if (ret < 0)
+ 			goto unreg_dev;
+ 		v4l2_info(&dev->v4l2_dev, "V4L2 output device registered as %s\n",
+diff --git a/drivers/media/usb/dvb-usb-v2/af9035.c b/drivers/media/usb/dvb-usb-v2/af9035.c
+index b1f69c11c..fc40db712 100644
+--- a/drivers/media/usb/dvb-usb-v2/af9035.c
++++ b/drivers/media/usb/dvb-usb-v2/af9035.c
+@@ -8,6 +8,8 @@
+ 
+ #include "af9035.h"
+ 
++#include <media/compat.h>
++
+ /* Max transfer size done by I2C transfer functions */
+ #define MAX_XFER_SIZE  64
+ 
+diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
+index 89a1b204b..431891230 100644
+--- a/drivers/media/usb/dvb-usb-v2/anysee.c
++++ b/drivers/media/usb/dvb-usb-v2/anysee.c
+@@ -31,6 +31,8 @@
+ #include "isl6423.h"
+ #include "cxd2820r.h"
+ 
++#include <media/compat.h>
++
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+ 
+ static int anysee_ctrl_msg(struct dvb_usb_device *d,
+diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+index 2080f6ef4..6198f5fd1 100644
+--- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
++++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+@@ -9,6 +9,8 @@
+ 
+ #include "rtl28xxu.h"
+ 
++#include <media/compat.h>
++
+ static int rtl28xxu_disable_rc;
+ module_param_named(disable_rc, rtl28xxu_disable_rc, int, 0644);
+ MODULE_PARM_DESC(disable_rc, "disable RTL2832U remote controller");
+diff --git a/drivers/media/usb/dvb-usb-v2/zd1301.c b/drivers/media/usb/dvb-usb-v2/zd1301.c
+index ba2c1b0d3..f9538f607 100644
+--- a/drivers/media/usb/dvb-usb-v2/zd1301.c
++++ b/drivers/media/usb/dvb-usb-v2/zd1301.c
+@@ -11,6 +11,8 @@
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ 
++#include <media/compat.h>
++
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+ 
+ struct zd1301_dev {
+diff --git a/drivers/media/usb/dvb-usb/dib0700_devices.c b/drivers/media/usb/dvb-usb/dib0700_devices.c
+index 4ef3fa98d..efbe30f65 100644
+--- a/drivers/media/usb/dvb-usb/dib0700_devices.c
++++ b/drivers/media/usb/dvb-usb/dib0700_devices.c
+@@ -23,6 +23,7 @@
+ #include "mn88472.h"
+ #include "tda18250.h"
+ 
++#include <media/compat.h>
+ 
+ static int force_lna_activation;
+ module_param(force_lna_activation, int, 0644);
+diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
+index f6d2d2398..ad11a4713 100644
+--- a/drivers/media/usb/dvb-usb/dw2102.c
++++ b/drivers/media/usb/dvb-usb/dw2102.c
+@@ -33,6 +33,8 @@
+ #include "cxd2820r.h"
+ #include "m88ds3103.h"
+ 
++#include <media/compat.h>
++
+ /* Max transfer size done by I2C transfer functions */
+ #define MAX_XFER_SIZE  64
+ 
+diff --git a/drivers/media/usb/em28xx/Makefile b/drivers/media/usb/em28xx/Makefile
+index 8c2fc3104..07730d199 100644
+--- a/drivers/media/usb/em28xx/Makefile
++++ b/drivers/media/usb/em28xx/Makefile
+@@ -11,5 +11,5 @@ obj-$(CONFIG_VIDEO_EM28XX_ALSA) += em28xx-alsa.o
+ obj-$(CONFIG_VIDEO_EM28XX_DVB) += em28xx-dvb.o
+ obj-$(CONFIG_VIDEO_EM28XX_RC) += em28xx-rc.o
+ 
+-ccflags-y += -I $(srctree)/drivers/media/tuners
+-ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
++ccflags-y += -I$(srctree)/drivers/media/tuners
++ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index b9c1a9e72..a57a7cae1 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/usb/usbvision/usbvision-video.c b/drivers/media/usb/usbvision/usbvision-video.c
+index 93d36aab8..4c7978999 100644
+--- a/drivers/media/usb/usbvision/usbvision-video.c
++++ b/drivers/media/usb/usbvision/usbvision-video.c
+@@ -1271,7 +1271,7 @@ static int usbvision_register_video(struct usb_usbvision *usbvision)
+ 	if (usbvision->have_tuner)
+ 		usbvision->vdev.device_caps |= V4L2_CAP_TUNER;
+ 
+-	if (video_register_device(&usbvision->vdev, VFL_TYPE_GRABBER, video_nr) < 0)
++	if (video_register_device(&usbvision->vdev, VFL_TYPE_VIDEO, video_nr) < 0)
+ 		goto err_exit;
+ 	printk(KERN_INFO "USBVision[%d]: registered USBVision Video device %s [v4l2]\n",
+ 	       usbvision->nr, video_device_node_name(&usbvision->vdev));
+diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
+index 6cd52e1ef..4cec5971d 100644
+--- a/drivers/media/v4l2-core/v4l2-fwnode.c
++++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+@@ -28,6 +28,8 @@
+ #include <media/v4l2-fwnode.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ enum v4l2_fwnode_bus_type {
+ 	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
+ 	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+diff --git a/drivers/media/v4l2-core/v4l2-i2c.c b/drivers/media/v4l2-core/v4l2-i2c.c
+index b4acca756..2313a9ec9 100644
+--- a/drivers/media/v4l2-core/v4l2-i2c.c
++++ b/drivers/media/v4l2-core/v4l2-i2c.c
+@@ -8,6 +8,8 @@
+ #include <media/v4l2-common.h>
+ #include <media/v4l2-device.h>
+ 
++#include <media/compat.h>
++
+ void v4l2_i2c_subdev_unregister(struct v4l2_subdev *sd)
+ {
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 7ba51bea1..a954eaaaf 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -29,6 +29,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+index f6a551bd5..3fa6582b4 100644
+--- a/samples/v4l/v4l2-pci-skeleton.c
++++ b/samples/v4l/v4l2-pci-skeleton.c
+@@ -879,7 +879,7 @@ static int skeleton_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	vdev->tvnorms = SKEL_TVNORMS;
+ 	video_set_drvdata(vdev, skel);
+ 
+-	ret = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
++	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret)
+ 		goto free_hdl;
+ 
+-- 
+2.25.1
+

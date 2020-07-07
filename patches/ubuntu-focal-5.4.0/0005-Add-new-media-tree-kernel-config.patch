@@ -1,0 +1,40 @@
+From 3794bd451f6662bbf2e4e884a33705151633238f Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Sat, 23 May 2020 15:02:40 -0500
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.master/config/config.common.ubuntu | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
+index e51e3a6df..d616c2b79 100644
+--- a/debian.master/config/config.common.ubuntu
++++ b/debian.master/config/config.common.ubuntu
+@@ -2803,7 +2803,7 @@ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+ CONFIG_DVB_MANTIS=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ # CONFIG_DVB_MMAP is not set
+@@ -11632,3 +11632,14 @@ CONFIG_ZYNQMP_FIRMWARE=y
+ CONFIG_ZYNQMP_IPI_MBOX=y
+ CONFIG_ZYNQMP_PM_DOMAINS=y
+ CONFIG_ZYNQMP_POWER=y
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_VIDEO_OV5675=m
++CONFIG_DVB_MXL692=m
++# CONFIG_CEC_CROS_EC is not set
++CONFIG_CEC_SECO=m
++# CONFIG_CEC_SECO_RC is not set
++# CONFIG_MEDIA_SUPPORT_FILTER is not set
++CONFIG_VIDEO_HI556=m
++CONFIG_VIDEO_IMX219=m
++CONFIG_VIDEO_IMX290=m
++# CONFIG_INTEL_ATOMISP is not set
+-- 
+2.25.1
+
