@@ -1,21 +1,21 @@
-From 76ac9b66a86a996b294915a0e5cf5fb82383e583 Mon Sep 17 00:00:00 2001
+From 95ca8745ff125231ddc0c5ef6ffdce6554f8bdb6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 20 Apr 2020 04:20:00 -0500
+Date: Mon, 6 Jul 2020 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.hwe/changelog | 49 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 5b48ef936584..c2ef06fc96d7 100644
+index bfb4c7f558ed..1c09a08d6773 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
-@@ -1,3 +1,51 @@
-+linux-hwe (5.3.0-47202004200420.0+mediatree+hauppauge~hwe) bionic; urgency=low
+@@ -1,3 +1,52 @@
++linux-hwe (5.3.0-63202007061620.1+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 5.3.0-47.39 rev 4288bbf5ef1d0ec5446310dda59b2ad38d1a61ee
++    - 5.3.0-63.57 rev a4edec91dd64989762d7aed46388b2d4af56a58c
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -42,6 +42,7 @@ index 5b48ef936584..c2ef06fc96d7 100644
 +    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0004-si2168-different-default-that-windows-driver.patch
 +    --- 0005-Ignore-first-cold-command-error-for-si2141-in-_init.patch
++    --- 0008-dvbdev-Fix-tuner-demod-media-controller-link.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
@@ -58,11 +59,11 @@ index 5b48ef936584..c2ef06fc96d7 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Mon, 20 Apr 2020 04:20:00 -0500
++ -- Fake User <hidden@email.co>  Mon, 06 Jul 2020 16:20:00 -0500
 +
- linux-hwe (5.3.0-47.39~18.04.1) bionic; urgency=medium
+ linux-hwe (5.3.0-63.57~18.04.1) bionic; urgency=medium
  
-   * bionic/linux-hwe: 5.3.0-47.39~18.04.1 -proposed tracker (LP: #1870719)
+   * bionic/linux-hwe: 5.3.0-63.57~18.04.1 -proposed tracker (LP: #1885494)
 -- 
 2.17.1
 

@@ -1,21 +1,21 @@
-From 1a7c6e9bd7bfc892ba005d6560e5c69642851630 Mon Sep 17 00:00:00 2001
+From 3217613b5af64db63c08f98a85ccddf7450c5343 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 20 Apr 2020 04:20:00 -0500
+Date: Mon, 6 Jul 2020 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 48 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.master/changelog | 49 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 19db34047..fc319bae2 100644
+index 9179770f4..c5e8f7718 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,51 @@
-+linux (5.3.0-46202004200420.0+mediatree+hauppauge) eoan; urgency=low
+@@ -1,3 +1,52 @@
++linux (5.3.0-61202007061620.0+mediatree+hauppauge) eoan; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.3.0-46.38 rev 24f34e925e6a96c5f9e742c357dea7f71caeb6bf
++    - 5.3.0-61.55 rev cf3810244f90705e19009927c8ef1c3d384979d4
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -42,6 +42,7 @@ index 19db34047..fc319bae2 100644
 +    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0004-si2168-different-default-that-windows-driver.patch
 +    --- 0005-Ignore-first-cold-command-error-for-si2141-in-_init.patch
++    --- 0008-dvbdev-Fix-tuner-demod-media-controller-link.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
@@ -58,11 +59,11 @@ index 19db34047..fc319bae2 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Mon, 20 Apr 2020 04:20:00 -0500
++ -- Fake User <hidden@email.co>  Mon, 06 Jul 2020 16:20:00 -0500
 +
- linux (5.3.0-46.38) eoan; urgency=medium
+ linux (5.3.0-61.55) eoan; urgency=medium
  
-   * eoan/linux: 5.3.0-43.36 -proposed tracker (LP: #1867301)
+   * Packaging resync (LP: #1786013)
 -- 
 2.20.1
 

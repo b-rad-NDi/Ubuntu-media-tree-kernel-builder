@@ -1,21 +1,21 @@
-From f71b300d5f0d9867406f9a6f49c07b732b050d97 Mon Sep 17 00:00:00 2001
+From ecbf1a1056d6514dc074c3f3691c49d3a22b889e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 20 Apr 2020 04:20:00 -0500
+Date: Mon, 6 Jul 2020 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe/changelog | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ debian.hwe/changelog | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 75605e5..b622ed4 100644
+index 37c652e..8b78aa0 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
-@@ -1,3 +1,51 @@
-+linux-hwe (4.15.0-97202004200420.0+mediatree+hauppauge~hwe) xenial; urgency=low
+@@ -1,3 +1,52 @@
++linux-hwe (4.15.0-110202007061620.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 4.15.0-97.98 rev a3bd09221d08005ae2f9d18270db169d5f921927
++    - 4.15.0-110.111 rev 2d5b3a4a38cc87b3add231aea9e9e8146e4a24ff
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2019-10-11-12-13.patch
@@ -42,6 +42,7 @@ index 75605e5..b622ed4 100644
 +    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
 +    --- 0004-si2168-different-default-that-windows-driver.patch
 +    --- 0005-Ignore-first-cold-command-error-for-si2141-in-_init.patch
++    --- 0008-dvbdev-Fix-tuner-demod-media-controller-link.patch
 +    - 20.missing.stat.bits
 +    --- 0001-si2157-add-on-demand-rf-strength-func.patch
 +    --- 0002-lgdt3306a-Add-CNR-v5-stat.patch
@@ -58,11 +59,11 @@ index 75605e5..b622ed4 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Mon, 20 Apr 2020 04:20:00 -0500
++ -- Fake User <hidden@email.co>  Mon, 06 Jul 2020 16:20:00 -0500
 +
- linux-hwe (4.15.0-97.98~16.04.1) xenial; urgency=medium
+ linux-hwe (4.15.0-110.111~16.04.1) xenial; urgency=medium
  
-   * xenial/linux-hwe: 4.15.0-97.98~16.04.1 -proposed tracker (LP: #1870688)
+   * xenial/linux-hwe: 4.15.0-110.111~16.04.1 -proposed tracker (LP: #1885813)
 -- 
 2.7.4
 
