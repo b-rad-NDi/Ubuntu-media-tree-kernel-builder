@@ -1,13 +1,14 @@
-From f2496cd0021d7f209756de3042fffc243c778905 Mon Sep 17 00:00:00 2001
+From 2601063ed8bcf1667febbcbfc4ff9d73c570c668 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 1 Nov 2019 12:55:06 -0500
+Date: Mon, 6 Jul 2020 20:01:00 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- include/linux/dma-buf.h   |  4 ++--
- include/linux/dma-fence.h | 14 +++++++-------
- include/linux/pci_ids.h   |  4 ++++
- 3 files changed, 13 insertions(+), 9 deletions(-)
+ include/linux/dma-buf.h      |  4 ++--
+ include/linux/dma-fence.h    | 14 +++++++-------
+ include/linux/mmc/sdio_ids.h |  2 ++
+ include/linux/pci_ids.h      | 18 ++++++++++++++++++
+ 4 files changed, 29 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
 index ec212cb27fdc..bae060fae862 100644
@@ -68,19 +69,49 @@ index 3347c54f3a87..7108cda11150 100644
  	int error;
  };
  
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index d1a5d5df02f5..08b25c02b5a1 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -71,6 +71,8 @@
+ 
+ #define SDIO_VENDOR_ID_TI			0x0097
+ #define SDIO_DEVICE_ID_TI_WL1271		0x4076
++#define SDIO_VENDOR_ID_TI_WL1251		0x104c
++#define SDIO_DEVICE_ID_TI_WL1251		0x9066
+ 
+ #define SDIO_VENDOR_ID_STE			0x0020
+ #define SDIO_DEVICE_ID_STE_CW1200		0x2280
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 21a572469a4e..38fa15b2b9af 100644
+index 21a572469a4e..efe30a825e5f 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1071,6 +1071,7 @@
+@@ -148,6 +148,8 @@
+ 
+ /* Vendors and devices.  Sort key: vendor first, device next. */
+ 
++#define PCI_VENDOR_ID_LOONGSON		0x0014
++
+ #define PCI_VENDOR_ID_TTTECH		0x0357
+ #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
+ 
+@@ -549,6 +551,7 @@
+ #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F3 0x15eb
+ #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F3 0x1493
+ #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
++#define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
+ #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+ #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+ #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
+@@ -1071,6 +1074,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
-+#define PCI_DEVICE_ID_SGI_IOC4         0x100a
++#define PCI_DEVICE_ID_SGI_IOC4		0x100a
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1339,6 +1340,7 @@
+@@ -1339,6 +1343,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -88,10 +119,42 @@ index 21a572469a4e..38fa15b2b9af 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3111,4 +3113,6 @@
+@@ -1829,6 +1834,12 @@
+ #define PCI_VENDOR_ID_NVIDIA_SGS	0x12d2
+ #define PCI_DEVICE_ID_NVIDIA_SGS_RIVA128 0x0018
+ 
++#define PCI_VENDOR_ID_PERICOM			0x12D8
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
++
+ #define PCI_SUBVENDOR_ID_CHASE_PCIFAST		0x12E0
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST4		0x0031
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST8		0x0021
+@@ -2582,6 +2593,8 @@
+ 
+ #define PCI_VENDOR_ID_AMAZON		0x1d0f
+ 
++#define PCI_VENDOR_ID_ZHAOXIN		0x1d17
++
+ #define PCI_VENDOR_ID_HYGON		0x1d94
+ 
+ #define PCI_VENDOR_ID_HXT		0x1dbf
+@@ -3006,6 +3019,7 @@
+ #define PCI_DEVICE_ID_INTEL_84460GX	0x84ea
+ #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
+ #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
++#define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
+ #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
+ 
+ #define PCI_VENDOR_ID_SCALEMP		0x8686
+@@ -3111,4 +3125,8 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
 +#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
 +
  #endif /* _LINUX_PCI_IDS_H */
