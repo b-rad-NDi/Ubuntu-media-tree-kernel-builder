@@ -1,19 +1,44 @@
-From 6c2b467e836b2093287b353fec1cff1ec5ba41bc Mon Sep 17 00:00:00 2001
+From 5eeb2ea47ff47dba89331eb4121932bc2d28a817 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 30 Oct 2019 12:35:18 -0500
+Date: Thu, 9 Jul 2020 11:54:02 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-api.c           | 3 +++
- drivers/media/i2c/adv7604.c           | 2 ++
- drivers/media/mc/mc-device.c          | 2 ++
- drivers/media/usb/em28xx/Makefile     | 4 ++--
- drivers/media/usb/em28xx/em28xx-dvb.c | 2 +-
- drivers/media/v4l2-core/v4l2-ioctl.c  | 2 ++
- 6 files changed, 12 insertions(+), 3 deletions(-)
+ drivers/media/cec/cec-api.c                 | 3 +++
+ drivers/media/cec/core/cec-api.c            | 2 ++
+ drivers/media/dvb-core/dvbdev.c             | 2 ++
+ drivers/media/dvb-frontends/cxd2820r_core.c | 1 +
+ drivers/media/dvb-frontends/lgdt330x.c      | 3 +++
+ drivers/media/dvb-frontends/m88ds3103.c     | 2 ++
+ drivers/media/dvb-frontends/ts2020.c        | 2 ++
+ drivers/media/i2c/adv7604.c                 | 2 ++
+ drivers/media/mc/mc-device.c                | 2 ++
+ drivers/media/pci/bt8xx/bttv-input.c        | 2 ++
+ drivers/media/pci/cx18/cx18-i2c.c           | 2 ++
+ drivers/media/pci/cx23885/cx23885-dvb.c     | 2 ++
+ drivers/media/pci/cx23885/cx23885-i2c.c     | 2 ++
+ drivers/media/pci/ivtv/ivtv-i2c.c           | 2 ++
+ drivers/media/pci/saa7134/saa7134-video.c   | 2 ++
+ drivers/media/pci/saa7164/saa7164-dvb.c     | 2 ++
+ drivers/media/pci/smipcie/smipcie-main.c    | 2 ++
+ drivers/media/platform/via-camera.c         | 2 ++
+ drivers/media/rc/lirc_dev.c                 | 2 ++
+ drivers/media/usb/dvb-usb-v2/af9035.c       | 2 ++
+ drivers/media/usb/dvb-usb-v2/anysee.c       | 2 ++
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c     | 2 ++
+ drivers/media/usb/dvb-usb-v2/zd1301.c       | 2 ++
+ drivers/media/usb/dvb-usb/dib0700_devices.c | 2 ++
+ drivers/media/usb/dvb-usb/dw2102.c          | 3 +++
+ drivers/media/usb/em28xx/Makefile           | 4 ++--
+ drivers/media/usb/em28xx/em28xx-dvb.c       | 2 +-
+ drivers/media/v4l2-core/v4l2-fwnode.c       | 2 ++
+ drivers/media/v4l2-core/v4l2-i2c.c          | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c        | 2 ++
+ include/media/v4l2-dev.h                    | 3 ++-
+ 31 files changed, 63 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
-index 8c6a43323..35372a06c 100644
+index 12d676484..f52251e9b 100644
 --- a/drivers/media/cec/cec-api.c
 +++ b/drivers/media/cec/cec-api.c
 @@ -19,6 +19,9 @@
@@ -26,8 +51,86 @@ index 8c6a43323..35372a06c 100644
  #include "cec-priv.h"
  #include "cec-pin-priv.h"
  
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index 8c6a43323..24e0227c1 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -18,6 +18,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/version.h>
+ 
++#include <media/compat.h>
++
+ #include <media/cec-pin.h>
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index 9888303be..c622ab437 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -34,6 +34,8 @@
+ #include <linux/mutex.h>
+ #include <media/dvbdev.h>
+ 
++#include <media/compat.h>
++
+ /* Due to enum tuner_pad_index */
+ #include <media/tuner.h>
+ 
+diff --git a/drivers/media/dvb-frontends/cxd2820r_core.c b/drivers/media/dvb-frontends/cxd2820r_core.c
+index b1618339e..c8153edc7 100644
+--- a/drivers/media/dvb-frontends/cxd2820r_core.c
++++ b/drivers/media/dvb-frontends/cxd2820r_core.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2010 Antti Palosaari <crope@iki.fi>
+  */
+ 
++#include <media/compat.h>
+ 
+ #include "cxd2820r_priv.h"
+ 
+diff --git a/drivers/media/dvb-frontends/lgdt330x.c b/drivers/media/dvb-frontends/lgdt330x.c
+index da3a8c5e1..401db5342 100644
+--- a/drivers/media/dvb-frontends/lgdt330x.c
++++ b/drivers/media/dvb-frontends/lgdt330x.c
+@@ -29,6 +29,9 @@
+ 
+ #include <media/dvb_frontend.h>
+ #include <media/dvb_math.h>
++
++#include <media/compat.h>
++
+ #include "lgdt330x_priv.h"
+ #include "lgdt330x.h"
+ 
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index f204e715b..33a62109f 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2013 Antti Palosaari <crope@iki.fi>
+  */
+ 
++#include <media/compat.h>
++
+ #include "m88ds3103_priv.h"
+ 
+ static const struct dvb_frontend_ops m88ds3103_ops;
+diff --git a/drivers/media/dvb-frontends/ts2020.c b/drivers/media/dvb-frontends/ts2020.c
+index 234607b02..2c6a18a13 100644
+--- a/drivers/media/dvb-frontends/ts2020.c
++++ b/drivers/media/dvb-frontends/ts2020.c
+@@ -12,6 +12,8 @@
+ #include <linux/regmap.h>
+ #include <linux/math64.h>
+ 
++#include <media/compat.h>
++
+ #define TS2020_XTAL_FREQ   27000 /* in kHz */
+ #define FREQ_OFFSET_LOW_SYM_RATE 3000
+ 
 diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
-index 2dedd6ebb..b101f4e40 100644
+index 09004d928..cf5d7d7a7 100644
 --- a/drivers/media/i2c/adv7604.c
 +++ b/drivers/media/i2c/adv7604.c
 @@ -37,6 +37,8 @@
@@ -52,6 +155,215 @@ index 6f941dd9e..d26716c5e 100644
  #ifdef CONFIG_MEDIA_CONTROLLER
  
  /*
+diff --git a/drivers/media/pci/bt8xx/bttv-input.c b/drivers/media/pci/bt8xx/bttv-input.c
+index 1bf8fe419..18b588801 100644
+--- a/drivers/media/pci/bt8xx/bttv-input.c
++++ b/drivers/media/pci/bt8xx/bttv-input.c
+@@ -15,6 +15,8 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ 
++#include <media/compat.h>
++
+ #include "bttv.h"
+ #include "bttvp.h"
+ 
+diff --git a/drivers/media/pci/cx18/cx18-i2c.c b/drivers/media/pci/cx18/cx18-i2c.c
+index a83435245..0fe3e2921 100644
+--- a/drivers/media/pci/cx18/cx18-i2c.c
++++ b/drivers/media/pci/cx18/cx18-i2c.c
+@@ -8,6 +8,8 @@
+  *  Copyright (C) 2008  Andy Walls <awalls@md.metrocast.net>
+  */
+ 
++#include <media/compat.h>
++
+ #include "cx18-driver.h"
+ #include "cx18-io.h"
+ #include "cx18-cards.h"
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index 45c2f4afc..94e0ec49a 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -17,6 +17,8 @@
+ 
+ #include <media/v4l2-common.h>
+ 
++#include <media/compat.h>
++
+ #include <media/dvb_ca_en50221.h>
+ #include "s5h1409.h"
+ #include "s5h1411.h"
+diff --git a/drivers/media/pci/cx23885/cx23885-i2c.c b/drivers/media/pci/cx23885/cx23885-i2c.c
+index f51fad33d..f9fa9e975 100644
+--- a/drivers/media/pci/cx23885/cx23885-i2c.c
++++ b/drivers/media/pci/cx23885/cx23885-i2c.c
+@@ -14,6 +14,8 @@
+ 
+ #include <media/v4l2-common.h>
+ 
++#include <media/compat.h>
++
+ static unsigned int i2c_debug;
+ module_param(i2c_debug, int, 0644);
+ MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+diff --git a/drivers/media/pci/ivtv/ivtv-i2c.c b/drivers/media/pci/ivtv/ivtv-i2c.c
+index 982045c4e..4a66cb633 100644
+--- a/drivers/media/pci/ivtv/ivtv-i2c.c
++++ b/drivers/media/pci/ivtv/ivtv-i2c.c
+@@ -53,6 +53,8 @@
+ #include "ivtv-i2c.h"
+ #include <media/drv-intf/cx25840.h>
+ 
++#include <media/compat.h>
++
+ /* i2c implementation for cx23415/6 chip, ivtv project.
+  * Author: Kevin Thayer (nufan_wfk at yahoo.com)
+  */
+diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
+index a8ac94fad..cc7e2358f 100644
+--- a/drivers/media/pci/saa7134/saa7134-video.c
++++ b/drivers/media/pci/saa7134/saa7134-video.c
+@@ -21,6 +21,8 @@
+ #include <media/v4l2-event.h>
+ #include <media/i2c/saa6588.h>
+ 
++#include <media/compat.h>
++
+ /* ------------------------------------------------------------------ */
+ 
+ unsigned int video_debug;
+diff --git a/drivers/media/pci/saa7164/saa7164-dvb.c b/drivers/media/pci/saa7164/saa7164-dvb.c
+index bf8c2bb88..f5e1bb6e8 100644
+--- a/drivers/media/pci/saa7164/saa7164-dvb.c
++++ b/drivers/media/pci/saa7164/saa7164-dvb.c
+@@ -14,6 +14,8 @@
+ #include "si2168.h"
+ #include "lgdt3306a.h"
+ 
++#include <media/compat.h>
++
+ #define DRIVER_NAME "saa7164"
+ 
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+diff --git a/drivers/media/pci/smipcie/smipcie-main.c b/drivers/media/pci/smipcie/smipcie-main.c
+index 9ca0fc3e6..426adf939 100644
+--- a/drivers/media/pci/smipcie/smipcie-main.c
++++ b/drivers/media/pci/smipcie/smipcie-main.c
+@@ -12,6 +12,8 @@
+ #include "si2168.h"
+ #include "si2157.h"
+ 
++#include <media/compat.h>
++
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+ 
+ static int smi_hw_init(struct smi_dev *dev)
+diff --git a/drivers/media/platform/via-camera.c b/drivers/media/platform/via-camera.c
+index ed0ad68c5..0afed8815 100644
+--- a/drivers/media/platform/via-camera.c
++++ b/drivers/media/platform/via-camera.c
+@@ -35,6 +35,8 @@
+ #define machine_is_olpc(x) 0
+ #endif
+ 
++#include <media/compat.h>
++
+ #include "via-camera.h"
+ 
+ MODULE_ALIAS("platform:viafb-camera");
+diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
+index 3f26440bc..f6c8e4f43 100644
+--- a/drivers/media/rc/lirc_dev.c
++++ b/drivers/media/rc/lirc_dev.c
+@@ -20,6 +20,8 @@
+ #include "rc-core-priv.h"
+ #include <uapi/linux/lirc.h>
+ 
++#include <media/compat.h>
++
+ #define LIRCBUF_SIZE	1024
+ 
+ static dev_t lirc_base_dev;
+diff --git a/drivers/media/usb/dvb-usb-v2/af9035.c b/drivers/media/usb/dvb-usb-v2/af9035.c
+index b1f69c11c..741d8ff7f 100644
+--- a/drivers/media/usb/dvb-usb-v2/af9035.c
++++ b/drivers/media/usb/dvb-usb-v2/af9035.c
+@@ -6,6 +6,8 @@
+  * Copyright (C) 2012 Antti Palosaari <crope@iki.fi>
+  */
+ 
++#include <media/compat.h>
++
+ #include "af9035.h"
+ 
+ /* Max transfer size done by I2C transfer functions */
+diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
+index 89a1b204b..b8ab9e33c 100644
+--- a/drivers/media/usb/dvb-usb-v2/anysee.c
++++ b/drivers/media/usb/dvb-usb-v2/anysee.c
+@@ -18,6 +18,8 @@
+  * is highly welcome!
+  */
+ 
++#include <media/compat.h>
++
+ #include "anysee.h"
+ #include "dvb-pll.h"
+ #include "tda1002x.h"
+diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+index 2080f6ef4..e4ed03e78 100644
+--- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
++++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+@@ -7,6 +7,8 @@
+  * Copyright (C) 2012 Thomas Mair <thomas.mair86@googlemail.com>
+  */
+ 
++#include <media/compat.h>
++
+ #include "rtl28xxu.h"
+ 
+ static int rtl28xxu_disable_rc;
+diff --git a/drivers/media/usb/dvb-usb-v2/zd1301.c b/drivers/media/usb/dvb-usb-v2/zd1301.c
+index ba2c1b0d3..8fd7dd563 100644
+--- a/drivers/media/usb/dvb-usb-v2/zd1301.c
++++ b/drivers/media/usb/dvb-usb-v2/zd1301.c
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2015 Antti Palosaari <crope@iki.fi>
+  */
+ 
++#include <media/compat.h>
++
+ #include "dvb_usb.h"
+ #include "zd1301_demod.h"
+ #include "mt2060.h"
+diff --git a/drivers/media/usb/dvb-usb/dib0700_devices.c b/drivers/media/usb/dvb-usb/dib0700_devices.c
+index 4ef3fa98d..036f246ed 100644
+--- a/drivers/media/usb/dvb-usb/dib0700_devices.c
++++ b/drivers/media/usb/dvb-usb/dib0700_devices.c
+@@ -5,6 +5,8 @@
+  */
+ #include "dib0700.h"
+ 
++#include <media/compat.h>
++
+ #include "dib3000mc.h"
+ #include "dib7000m.h"
+ #include "dib7000p.h"
+diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
+index f96626fe2..6bd32d120 100644
+--- a/drivers/media/usb/dvb-usb/dw2102.c
++++ b/drivers/media/usb/dvb-usb/dw2102.c
+@@ -11,6 +11,9 @@
+  * see Documentation/driver-api/media/drivers/dvb-usb.rst for more information
+  */
+ #include <media/dvb-usb-ids.h>
++
++#include <media/compat.h>
++
+ #include "dw2102.h"
+ #include "si21xx.h"
+ #include "stv0299.h"
 diff --git a/drivers/media/usb/em28xx/Makefile b/drivers/media/usb/em28xx/Makefile
 index 8c2fc3104..07730d199 100644
 --- a/drivers/media/usb/em28xx/Makefile
@@ -65,7 +377,7 @@ index 8c2fc3104..07730d199 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 930cef902..d986ec719 100644
+index b9c1a9e72..a57a7cae1 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -77,8 +389,34 @@ index 930cef902..d986ec719 100644
  #include "tda18271.h"
  #include "s921.h"
  #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
+index a4c3c77c1..b2d7afaa5 100644
+--- a/drivers/media/v4l2-core/v4l2-fwnode.c
++++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+@@ -28,6 +28,8 @@
+ #include <media/v4l2-fwnode.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ enum v4l2_fwnode_bus_type {
+ 	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
+ 	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+diff --git a/drivers/media/v4l2-core/v4l2-i2c.c b/drivers/media/v4l2-core/v4l2-i2c.c
+index b4acca756..2313a9ec9 100644
+--- a/drivers/media/v4l2-core/v4l2-i2c.c
++++ b/drivers/media/v4l2-core/v4l2-i2c.c
+@@ -8,6 +8,8 @@
+ #include <media/v4l2-common.h>
+ #include <media/v4l2-device.h>
+ 
++#include <media/compat.h>
++
+ void v4l2_i2c_subdev_unregister(struct v4l2_subdev *sd)
+ {
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 92dea1ef0..eb5bb9ca8 100644
+index 1cb14c789..3cb5d4ab6 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -29,6 +29,8 @@
@@ -90,6 +428,20 @@ index 92dea1ef0..eb5bb9ca8 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
+index ad2d41952..f35b6e74b 100644
+--- a/include/media/v4l2-dev.h
++++ b/include/media/v4l2-dev.h
+@@ -39,7 +39,8 @@ enum vfl_devnode_type {
+ 	VFL_TYPE_SUBDEV,
+ 	VFL_TYPE_SDR,
+ 	VFL_TYPE_TOUCH,
+-	VFL_TYPE_MAX /* Shall be the last one */
++	VFL_TYPE_MAX, /* Shall be the last one */
++	VFL_TYPE_GRABBER = VFL_TYPE_VIDEO,
+ };
+ 
+ /**
 -- 
 2.20.1
 
