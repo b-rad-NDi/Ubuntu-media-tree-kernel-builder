@@ -1,17 +1,17 @@
-From 00fdf161e3d195fc675171cba9d7b992a6455d92 Mon Sep 17 00:00:00 2001
+From 8078b68754ef87ad55658ebb8a1131c65e69ad38 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 30 Oct 2019 12:38:01 -0500
+Date: Thu, 9 Jul 2020 12:21:26 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.hwe/config/config.common.ubuntu | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ debian.hwe/config/config.common.ubuntu | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 71b548108588..277dfc5f3d46 100644
+index 54e089831f0c..0ac0e93a6aa5 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
-@@ -2759,7 +2759,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2760,7 +2760,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,13 +20,24 @@ index 71b548108588..277dfc5f3d46 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11486,3 +11486,6 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11488,3 +11488,17 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
 +### LINUX MEDIA TREE EXTRA OPTIONS ###
 +CONFIG_VIDEO_OV5675=m
 +CONFIG_DVB_MXL692=m
++CONFIG_CEC_SECO=m
++# CONFIG_CEC_SECO_RC is not set
++# CONFIG_MEDIA_SUPPORT_FILTER is not set
++# CONFIG_VIDEO_HI556 is not set
++# CONFIG_VIDEO_IMX219 is not set
++# CONFIG_VIDEO_IMX290 is not set
++# CONFIG_INTEL_ATOMISP is not set
++CONFIG_IR_TOY=m
++CONFIG_CEC_CH7322=m
++# CONFIG_VIDEO_OV2740 is not set
++
 -- 
 2.17.1
 
