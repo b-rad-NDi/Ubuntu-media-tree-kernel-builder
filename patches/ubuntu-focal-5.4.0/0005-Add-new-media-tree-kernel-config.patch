@@ -1,14 +1,14 @@
-From 3794bd451f6662bbf2e4e884a33705151633238f Mon Sep 17 00:00:00 2001
+From 4ddae1c7fbbcae88e4b5557b605be0816af6f298 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 23 May 2020 15:02:40 -0500
+Date: Thu, 9 Jul 2020 11:35:44 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ debian.master/config/config.common.ubuntu | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index e51e3a6df..d616c2b79 100644
+index e51e3a6df..66b9a9809 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2803,7 +2803,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index e51e3a6df..d616c2b79 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11632,3 +11632,14 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11632,3 +11632,17 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -35,6 +35,9 @@ index e51e3a6df..d616c2b79 100644
 +CONFIG_VIDEO_IMX219=m
 +CONFIG_VIDEO_IMX290=m
 +# CONFIG_INTEL_ATOMISP is not set
++CONFIG_IR_TOY=m
++CONFIG_CEC_CH7322=m
++# CONFIG_VIDEO_OV2740 is not set
 -- 
 2.25.1
 
