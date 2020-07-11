@@ -1,14 +1,14 @@
-From 42bf166a6edf5f57db3a08b21cd4f6b3186ef52b Mon Sep 17 00:00:00 2001
+From 7db4e9c8ba17463e1083828615c679e7b3db17d7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 15 Oct 2019 11:33:16 -0500
+Date: Sat, 11 Jul 2020 12:22:17 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 158 +++++++++++++++++++++++++++---
- 1 file changed, 145 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 168 +++++++++++++++++++++++++++---
+ 1 file changed, 155 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 9ab1421..bee82d5 100644
+index 0494bb4..0ff8b9e 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2060,7 +2060,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -47,7 +47,7 @@ index 9ab1421..bee82d5 100644
  CONFIG_I2C_BCM_IPROC=m
  CONFIG_I2C_BOARDINFO=y
  CONFIG_I2C_CADENCE=m
-@@ -7075,7 +7075,7 @@ CONFIG_SKGE=m
+@@ -7076,7 +7076,7 @@ CONFIG_SKGE=m
  CONFIG_SKGE_GENESIS=y
  CONFIG_SKY2=m
  # CONFIG_SKY2_DEBUG is not set
@@ -56,7 +56,7 @@ index 9ab1421..bee82d5 100644
  CONFIG_SLABINFO=y
  CONFIG_SLHC=y
  CONFIG_SLICOSS=m
-@@ -8801,14 +8801,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -8802,14 +8802,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -72,7 +72,7 @@ index 9ab1421..bee82d5 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9143,3 +9136,142 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9144,3 +9137,152 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -215,6 +215,16 @@ index 9ab1421..bee82d5 100644
 +CONFIG_VIDEO_ADV7180=m
 +# CONFIG_VIDEO_OV5675 is not set
 +CONFIG_DVB_MXL692=m
++CONFIG_CEC_SECO=m
++# CONFIG_CEC_SECO_RC is not set
++# CONFIG_MEDIA_SUPPORT_FILTER is not set
++# CONFIG_VIDEO_HI556 is not set
++# CONFIG_VIDEO_IMX219 is not set
++# CONFIG_VIDEO_IMX290 is not set
++# CONFIG_INTEL_ATOMISP is not set
++CONFIG_IR_TOY=m
++# CONFIG_CEC_CH7322 is not set
++# CONFIG_VIDEO_OV2740 is not set
 -- 
 2.7.4
 

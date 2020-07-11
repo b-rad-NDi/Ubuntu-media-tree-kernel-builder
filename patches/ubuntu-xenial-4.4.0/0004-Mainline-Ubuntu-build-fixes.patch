@@ -1,4 +1,4 @@
-From 3c99e1a280b905ab8e5c6c0cf79d952bbcbedba0 Mon Sep 17 00:00:00 2001
+From 2443f0721cc322eb94e5dcf3b450b0dce2c7d870 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 15 Oct 2019 11:32:00 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -63,7 +63,7 @@ index 9628651..bf6f29c 100644
  	rdev->input_id.bustype = data->hdev->bus;
  	rdev->input_id.vendor  = data->hdev->vendor;
 diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-index 0146e2c..2aabe73 100644
+index 6178e28..612aa38 100644
 --- a/drivers/input/touchscreen/sur40.c
 +++ b/drivers/input/touchscreen/sur40.c
 @@ -151,7 +151,6 @@ struct sur40_state {
@@ -283,7 +283,7 @@ index 51d4a17..4089ae4 100644
  	vb2_set_plane_payload(&buf->buf.vb2_buf, 0, buf->bytesused);
  	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
 diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index b73520a..f1ce621 100644
+index 2e325fe..a6f63bc 100644
 --- a/drivers/video/hdmi.c
 +++ b/drivers/video/hdmi.c
 @@ -585,9 +585,9 @@ hdmi_extended_colorimetry_get_name(enum hdmi_extended_colorimetry ext_col)
@@ -409,10 +409,10 @@ index f98bd70..f8f0884 100644
  struct dma_buf;
  struct dma_buf_attachment;
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9918a6c..1bb237d 100644
+index 50c31f1..000bbb8 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -429,9 +429,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+@@ -431,9 +431,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
  ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
  				 void *buffer, size_t size);
  int hdmi_infoframe_check(union hdmi_infoframe *frame);
@@ -425,10 +425,10 @@ index 9918a6c..1bb237d 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index cc8fa10..7291175 100644
+index 9d12c97..ad362d2 100644
 --- a/include/linux/kconfig.h
 +++ b/include/linux/kconfig.h
-@@ -42,6 +42,13 @@
+@@ -44,6 +44,13 @@
  #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
  #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
  
@@ -443,10 +443,10 @@ index cc8fa10..7291175 100644
   * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
   * otherwise. For boolean options, this is equivalent to
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 21a5724..cb939f7 100644
+index 0ad5769..3f1ee0dd 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1071,6 +1071,7 @@
+@@ -1075,6 +1075,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -565,10 +565,10 @@ index 0000000..a685da2
 +						       unsigned long *flags);
 +#endif /* _LINUX_REFCOUNT_H */
 diff --git a/mm/slub.c b/mm/slub.c
-index c33b0e1..192d562 100644
+index af7e4e3..ac5b49c 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4041,6 +4041,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
+@@ -4060,6 +4060,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
  	return ret;
  }
  
