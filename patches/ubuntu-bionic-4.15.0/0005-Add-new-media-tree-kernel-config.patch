@@ -1,17 +1,17 @@
-From 039225ecb8e2a5787f684d81531561eb597c41bd Mon Sep 17 00:00:00 2001
+From b5e2d191734a8996736ce52c7eb0174d130af5c3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 14 Oct 2019 13:02:18 -0500
+Date: Fri, 10 Jul 2020 14:51:10 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 118 ++++++++++++++++++++--
- 1 file changed, 109 insertions(+), 9 deletions(-)
+ debian.master/config/config.common.ubuntu | 129 ++++++++++++++++++++--
+ 1 file changed, 120 insertions(+), 9 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 74e78717699e..0814bfce996a 100644
+index 4d302e768218..c386bed7f4bd 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2485,7 +2485,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2486,7 +2486,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,7 @@ index 74e78717699e..0814bfce996a 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10154,14 +10154,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10157,14 +10157,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index 74e78717699e..0814bfce996a 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10550,3 +10543,110 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10553,3 +10546,121 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -147,6 +147,17 @@ index 74e78717699e..0814bfce996a 100644
 +CONFIG_VIDEO_ADV7180=m
 +CONFIG_VIDEO_OV5675=m
 +CONFIG_DVB_MXL692=m
++CONFIG_CEC_SECO=m
++# CONFIG_CEC_SECO_RC is not set
++# CONFIG_MEDIA_SUPPORT_FILTER is not set
++# CONFIG_VIDEO_HI556 is not set
++# CONFIG_VIDEO_IMX219 is not set
++# CONFIG_VIDEO_IMX290 is not set
++# CONFIG_INTEL_ATOMISP is not set
++CONFIG_IR_TOY=m
++# CONFIG_CEC_CH7322 is not set
++# CONFIG_VIDEO_OV2740 is not set
++
 -- 
 2.17.1
 
