@@ -1,11 +1,10 @@
-From 33f43f1b1c2bee309b6d6fad74bbfbc9cfcad47b Mon Sep 17 00:00:00 2001
+From 726ed70ea7c3ab75bdff316ad3225a635cc83e52 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 10 Jul 2020 14:50:17 -0500
+Date: Thu, 3 Sep 2020 12:13:50 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/hid/hid-picolcd_cir.c           |   3 +-
- drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
  drivers/usb/gadget/function/uvc_queue.c |   2 +-
  fs/compat_ioctl.c                       |  42 +----
  include/linux/dma-buf.h                 | 194 ++++++------------------
@@ -14,7 +13,7 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/mmc/sdio_ids.h            |   7 +
  include/linux/pci_ids.h                 |   4 +
  sound/pci/bt87x.c                       |  31 ++--
- 10 files changed, 114 insertions(+), 224 deletions(-)
+ 9 files changed, 111 insertions(+), 221 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f917e..bf6f29ca3315 100644
@@ -37,24 +36,6 @@ index 32747b7f917e..bf6f29ca3315 100644
  		w = (raw_data[i] << 8) | (raw_data[i+1]);
  		rawir.pulse = !!(w & 0x8000);
  		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
-diff --git a/drivers/isdn/hardware/mISDN/w6692.c b/drivers/isdn/hardware/mISDN/w6692.c
-index 5acf6ab67cd3..5ac4a18256a6 100644
---- a/drivers/isdn/hardware/mISDN/w6692.c
-+++ b/drivers/isdn/hardware/mISDN/w6692.c
-@@ -52,10 +52,10 @@ static const struct w6692map  w6692_map[] =
- 	{W6692_USR, "USR W6692"}
- };
- 
--#ifndef PCI_VENDOR_ID_USR
--#define PCI_VENDOR_ID_USR	0x16ec
-+//#ifndef PCI_VENDOR_ID_USR
-+//#define PCI_VENDOR_ID_USR	0x16ec
- #define PCI_DEVICE_ID_USR_6692	0x3409
--#endif
-+//#endif
- 
- struct w6692_ch {
- 	struct bchannel		bch;
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
 index 278d50ff1eea..ac626fb808a6 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
