@@ -1,11 +1,11 @@
-From b3f22ff35f0ff5728caccb8c0fab0a4978349091 Mon Sep 17 00:00:00 2001
+From 087b260045d5f3953ad50868567782cf5ac6d6e2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 29 Jun 2020 13:15:18 -0500
+Date: Thu, 3 Sep 2020 11:46:27 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  8 +-
- debian.master/control.stub.in                | 85 +-------------------
+ debian.master/control.stub.in                | 89 +-------------------
  debian.master/copyright                      | 22 +++++
  debian.master/rules.d/amd64.mk               | 24 +++---
  debian.master/rules.d/arm64.mk               | 12 +--
@@ -18,7 +18,8 @@ Subject: [PATCH 6/6] Packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 19 +++--
  debian/rules.d/2-binary-arch.mk              |  4 +
- 14 files changed, 85 insertions(+), 131 deletions(-)
+ debian/scripts/config-check                  |  2 +-
+ 15 files changed, 86 insertions(+), 136 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 4ba31aa63..dc2cb1b04 100644
@@ -61,7 +62,7 @@ index 4ba31aa63..dc2cb1b04 100644
  Architecture: ARCH
  Section: devel
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index a422d8ef2..f71118859 100644
+index b1fadfec2..f71118859 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -105,7 +106,7 @@ index a422d8ef2..f71118859 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -90,61 +67,3 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -90,65 +67,3 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -116,6 +117,8 @@ index a422d8ef2..f71118859 100644
 -Section: kernel
 -Priority: optional
 -Depends: ${misc:Depends}, lsb-release
+-Conflicts: linux-oem-5.6-tools-common
+-Replaces: linux-oem-5.6-tools-common
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
 - version locked tools (such as perf and x86_energy_perf_policy) for
@@ -164,6 +167,8 @@ index a422d8ef2..f71118859 100644
 -Section: kernel
 -Priority: optional
 -Depends: ${misc:Depends}, python3
+-Conflicts: linux-oem-5.6-tools-host
+-Replaces: linux-oem-5.6-tools-host
 -Description: Linux kernel VM host tools
 - This package provides kernel tools useful for VM hosts.
 -
@@ -198,7 +203,7 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index b1f62a796..9961c731c 100644
+index d253402ae..57221d5a9 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -2,25 +2,25 @@ human_arch	= 64 bit x86
@@ -238,7 +243,7 @@ index b1f62a796..9961c731c 100644
 +do_tools_acpidbg = false
  do_zfs		= true
  do_dkms_nvidia  = true
- do_dkms_vbox    = true
+ do_dkms_nvidia_server = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
 index 4c3e08cd1..316e4f67c 100644
 --- a/debian.master/rules.d/arm64.mk
@@ -371,7 +376,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 8585c1c95..69e4194eb 100755
+index 60d9496fc..25bea4c06 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -382,7 +387,7 @@ index 8585c1c95..69e4194eb 100755
 +do_tools_common?=false
  do_tools_host?=false
  do_tools_perf_jvmti?=false
- 
+ do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
 index 5394b7c96..70f1ba6a5 100644
 --- a/debian/rules.d/0-common-vars.mk
@@ -445,10 +450,10 @@ index 5394b7c96..70f1ba6a5 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 2c82bb738..b0df7eccf 100644
+index 6aedd68e9..a9fb1b918 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -788,10 +788,14 @@ build-arch: $(build-arch-deps-true)
+@@ -793,10 +793,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
@@ -463,6 +468,19 @@ index 2c82bb738..b0df7eccf 100644
  binary-arch-deps-$(do_libc_dev_package) += binary-arch-headers
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
+diff --git a/debian/scripts/config-check b/debian/scripts/config-check
+index df0cd5206..7baa81c20 100755
+--- a/debian/scripts/config-check
++++ b/debian/scripts/config-check
+@@ -22,7 +22,7 @@ my %values = ();
+ # If we are in overridden then still perform the checks and emit the messages
+ # but do not return failure.  Those items marked FATAL will alway trigger
+ # failure.
+-my $fail_exit = 1;
++my $fail_exit = 0;
+ $fail_exit = 0 if ($warn_only eq 'true' || $warn_only eq '1');
+ my $exit_val = 0;
+ 
 -- 
 2.25.1
 
