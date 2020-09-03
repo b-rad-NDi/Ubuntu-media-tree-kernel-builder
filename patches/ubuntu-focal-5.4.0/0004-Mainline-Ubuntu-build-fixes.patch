@@ -1,6 +1,6 @@
-From fcea387c80c10aba46afb95c71e7e5d44f3348c0 Mon Sep 17 00:00:00 2001
+From f28cae3d83274f62663f9f69e4d5c9b4b88068cb Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 9 Jul 2020 11:33:28 -0500
+Date: Thu, 3 Sep 2020 11:45:51 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -10,13 +10,13 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/staging/most/video/video.c            |  4 +--
  .../bcm2835-camera/bcm2835-camera.c           |  2 +-
  drivers/usb/gadget/function/f_uvc.c           |  2 +-
- include/linux/dma-buf.h                       | 28 +++++++++++++++++
+ include/linux/dma-buf.h                       | 29 +++++++++++++++++
  include/linux/dma-fence.h                     | 14 ++++-----
  include/linux/hdmi.h                          |  2 +-
  include/linux/mmc/sdio_ids.h                  |  5 +++
  include/linux/pci_ids.h                       |  4 +++
  sound/pci/bt87x.c                             | 31 +++++++++++++------
- 12 files changed, 97 insertions(+), 32 deletions(-)
+ 12 files changed, 98 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -178,7 +178,7 @@ index fb0a89268..0b9712616 100644
  		return ret;
  
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ab0c156ab..0c4478475 100644
+index ab0c156ab..362f80c0d 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
 @@ -263,7 +263,33 @@ struct dma_buf_ops {
@@ -215,7 +215,15 @@ index ab0c156ab..0c4478475 100644
  
  	void *(*vmap)(struct dma_buf *);
  	void (*vunmap)(struct dma_buf *, void *vaddr);
-@@ -497,6 +523,8 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
+@@ -311,6 +337,7 @@ struct dma_buf {
+ 	void *vmap_ptr;
+ 	const char *exp_name;
+ 	const char *name;
++	spinlock_t name_lock; /* spinlock to protect name access */
+ 	struct module *owner;
+ 	struct list_head list_node;
+ 	void *priv;
+@@ -497,6 +524,8 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
  			     enum dma_data_direction dir);
  int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
  			   enum dma_data_direction dir);
