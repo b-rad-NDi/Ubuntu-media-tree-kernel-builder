@@ -1,6 +1,6 @@
-From 8078b68754ef87ad55658ebb8a1131c65e69ad38 Mon Sep 17 00:00:00 2001
+From 7f6b11bdae9b71e484fbc607377538d04f160c32 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 9 Jul 2020 12:21:26 -0500
+Date: Thu, 3 Sep 2020 12:33:26 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,10 +8,10 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 54e089831f0c..0ac0e93a6aa5 100644
+index 3942977713e8..23a68e56ebcd 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
-@@ -2760,7 +2760,7 @@ CONFIG_DVB_LNBP22=m
+@@ -1919,7 +1919,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,10 +20,10 @@ index 54e089831f0c..0ac0e93a6aa5 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11488,3 +11488,17 @@ CONFIG_ZYNQMP_FIRMWARE=y
- CONFIG_ZYNQMP_IPI_MBOX=y
- CONFIG_ZYNQMP_PM_DOMAINS=y
- CONFIG_ZYNQMP_POWER=y
+@@ -8982,3 +8982,17 @@ CONFIG_ZSTD_COMPRESS=m
+ CONFIG_ZSTD_DECOMPRESS=y
+ CONFIG_ZSWAP=y
+ CONFIG_ZX_TDM=m
 +### LINUX MEDIA TREE EXTRA OPTIONS ###
 +CONFIG_VIDEO_OV5675=m
 +CONFIG_DVB_MXL692=m

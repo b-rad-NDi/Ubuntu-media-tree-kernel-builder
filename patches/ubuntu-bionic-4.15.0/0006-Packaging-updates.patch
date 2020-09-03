@@ -1,6 +1,6 @@
-From 280d5e864822283384e8a40133504eeb742aeb62 Mon Sep 17 00:00:00 2001
+From 5dd2adc40b3652fe2a337dac7eab8e983b124469 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 20 Apr 2020 11:46:02 -0500
+Date: Thu, 3 Sep 2020 12:14:27 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -205,10 +205,10 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 3d248c270232..3bcd556b3d85 100644
+index 6515b13314ca..af5586dba943 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -2,24 +2,24 @@ human_arch	= 64 bit x86
+@@ -2,25 +2,25 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -245,8 +245,9 @@ index 3d248c270232..3bcd556b3d85 100644
 +do_tools_acpidbg = false
  do_zfs		= true
  do_dkms_nvidia  = true
+ do_dkms_nvidia_server = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index c49d25e752df..49e2954831e8 100644
+index e524e9ac9a22..53854118c47c 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
 @@ -12,11 +12,11 @@ loader		= grub
@@ -267,10 +268,10 @@ index c49d25e752df..49e2954831e8 100644
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
-index 085e8acdc8aa..5f37244feb69 100644
+index d0c2d7f29048..4a175fbba40d 100644
 --- a/debian.master/rules.d/armhf.mk
 +++ b/debian.master/rules.d/armhf.mk
-@@ -10,10 +10,10 @@ no_dumpfile	= true
+@@ -10,11 +10,11 @@ no_dumpfile	= true
  
  loader		= grub
  
@@ -286,11 +287,12 @@ index 085e8acdc8aa..5f37244feb69 100644
 +do_tools_bpftool = false
  
  do_dtbs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
-index 89ad2a6c26cf..336f0ddac910 100644
+index 61adfcbc7d3a..987c0c7daba1 100644
 --- a/debian.master/rules.d/i386.mk
 +++ b/debian.master/rules.d/i386.mk
-@@ -2,18 +2,18 @@ human_arch	= 32 bit x86
+@@ -2,19 +2,19 @@ human_arch	= 32 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -317,8 +319,9 @@ index 89ad2a6c26cf..336f0ddac910 100644
 +do_tools_x86	= false
 +do_tools_hyperv = false
  do_extras_package = true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index 3934ef482a57..7cf1efd64dfa 100644
+index a0bc38892cd8..c871e391a29e 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
 @@ -10,12 +10,12 @@ no_dumpfile	= true
@@ -341,10 +344,10 @@ index 3934ef482a57..7cf1efd64dfa 100644
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index cbc188507892..b6fb07b56a88 100644
+index 7eded44aadf1..86b7e5f763b1 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
-@@ -12,10 +12,10 @@ no_dumpfile	= true
+@@ -12,11 +12,11 @@ no_dumpfile	= true
  
  do_extras_package = true
  
@@ -360,6 +363,7 @@ index cbc188507892..b6fb07b56a88 100644
 +do_tools_bpftool  = false
  
  do_zfs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
 index e0ccff961f02..a2833d96ba17 100644
 --- a/debian.master/rules.d/x32.mk
@@ -384,7 +388,7 @@ index ed92b3d53ba5..18505efb1b11 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index f732ba6f698d..0de18301db48 100755
+index bebeb4e9f243..7c139ab77aa3 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -397,7 +401,7 @@ index f732ba6f698d..0de18301db48 100755
  do_tools_perf_jvmti?=false
  
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 44c1ba11908d..1250300af56d 100644
+index c9ffad08d40f..dcceee6e5517 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -454,10 +458,10 @@ index 44c1ba11908d..1250300af56d 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 0e2b48d4ce5b..8883a436a6e8 100644
+index b7d88126a3b7..eccd399d0dd5 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -770,10 +770,14 @@ build-arch: $(build-arch-deps-true)
+@@ -777,10 +777,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

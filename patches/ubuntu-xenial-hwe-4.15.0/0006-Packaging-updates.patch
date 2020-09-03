@@ -1,6 +1,6 @@
-From 3294b0d1f06c138682d74044a71255661ac15064 Mon Sep 17 00:00:00 2001
+From dc11acd1803aaeb9b428a21b6d92d6cd4691af84 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 24 Feb 2020 15:30:38 -0600
+Date: Thu, 3 Sep 2020 12:27:05 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,13 +14,11 @@ Subject: [PATCH 6/6] Packaging updates
  debian.hwe/rules.d/ppc64el.mk             | 12 +++++------
  debian.hwe/rules.d/s390x.mk               | 10 ++++-----
  debian.hwe/rules.d/x32.mk                 |  2 +-
- debian.master/rules.d/hooks.mk            |  5 +++++
  debian/control.d/flavour-buildinfo.stub   |  2 +-
  debian/rules                              |  2 +-
  debian/rules.d/0-common-vars.mk           | 17 ++++++++++++----
  debian/rules.d/2-binary-arch.mk           |  4 ++++
- 15 files changed, 100 insertions(+), 82 deletions(-)
- create mode 100644 debian.master/rules.d/hooks.mk
+ 14 files changed, 95 insertions(+), 82 deletions(-)
 
 diff --git a/debian.hwe/control.d/flavour-control.stub b/debian.hwe/control.d/flavour-control.stub
 index c172159..a35b355 100644
@@ -74,7 +72,7 @@ index c172159..a35b355 100644
   This package provides the architecture dependant parts for kernel
   version locked tools for cloud for version PKGVER-ABINUM on
 diff --git a/debian.hwe/control.stub.in b/debian.hwe/control.stub.in
-index fd7fa38..19bb723 100644
+index a3ccde2..03c2f50 100644
 --- a/debian.hwe/control.stub.in
 +++ b/debian.hwe/control.stub.in
 @@ -1,7 +1,8 @@
@@ -173,10 +171,10 @@ index d1d04a6..b6f183f 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe/rules.d/amd64.mk b/debian.hwe/rules.d/amd64.mk
-index 3d248c2..3bcd556 100644
+index 6515b13..af5586d 100644
 --- a/debian.hwe/rules.d/amd64.mk
 +++ b/debian.hwe/rules.d/amd64.mk
-@@ -2,24 +2,24 @@ human_arch	= 64 bit x86
+@@ -2,25 +2,25 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -213,8 +211,9 @@ index 3d248c2..3bcd556 100644
 +do_tools_acpidbg = false
  do_zfs		= true
  do_dkms_nvidia  = true
+ do_dkms_nvidia_server = true
 diff --git a/debian.hwe/rules.d/arm64.mk b/debian.hwe/rules.d/arm64.mk
-index c49d25e..49e2954 100644
+index e524e9a..5385411 100644
 --- a/debian.hwe/rules.d/arm64.mk
 +++ b/debian.hwe/rules.d/arm64.mk
 @@ -12,11 +12,11 @@ loader		= grub
@@ -235,10 +234,10 @@ index c49d25e..49e2954 100644
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/armhf.mk b/debian.hwe/rules.d/armhf.mk
-index 085e8ac..5f37244 100644
+index d0c2d7f..4a175fb 100644
 --- a/debian.hwe/rules.d/armhf.mk
 +++ b/debian.hwe/rules.d/armhf.mk
-@@ -10,10 +10,10 @@ no_dumpfile	= true
+@@ -10,11 +10,11 @@ no_dumpfile	= true
  
  loader		= grub
  
@@ -254,11 +253,12 @@ index 085e8ac..5f37244 100644
 +do_tools_bpftool = false
  
  do_dtbs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.hwe/rules.d/i386.mk b/debian.hwe/rules.d/i386.mk
-index 89ad2a6..336f0dd 100644
+index 61adfcb..987c0c7 100644
 --- a/debian.hwe/rules.d/i386.mk
 +++ b/debian.hwe/rules.d/i386.mk
-@@ -2,18 +2,18 @@ human_arch	= 32 bit x86
+@@ -2,19 +2,19 @@ human_arch	= 32 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -285,8 +285,9 @@ index 89ad2a6..336f0dd 100644
 +do_tools_x86	= false
 +do_tools_hyperv = false
  do_extras_package = true
+ do_dkms_wireguard = true
 diff --git a/debian.hwe/rules.d/ppc64el.mk b/debian.hwe/rules.d/ppc64el.mk
-index 3934ef4..7cf1efd 100644
+index a0bc388..c871e39 100644
 --- a/debian.hwe/rules.d/ppc64el.mk
 +++ b/debian.hwe/rules.d/ppc64el.mk
 @@ -10,12 +10,12 @@ no_dumpfile	= true
@@ -309,10 +310,10 @@ index 3934ef4..7cf1efd 100644
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.hwe/rules.d/s390x.mk b/debian.hwe/rules.d/s390x.mk
-index cbc1885..b6fb07b 100644
+index 7eded44..86b7e5f 100644
 --- a/debian.hwe/rules.d/s390x.mk
 +++ b/debian.hwe/rules.d/s390x.mk
-@@ -12,10 +12,10 @@ no_dumpfile	= true
+@@ -12,11 +12,11 @@ no_dumpfile	= true
  
  do_extras_package = true
  
@@ -328,6 +329,7 @@ index cbc1885..b6fb07b 100644
 +do_tools_bpftool  = false
  
  do_zfs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.hwe/rules.d/x32.mk b/debian.hwe/rules.d/x32.mk
 index e0ccff9..a2833d9 100644
 --- a/debian.hwe/rules.d/x32.mk
@@ -340,17 +342,6 @@ index e0ccff9..a2833d9 100644
 +uefi_signed     = false
  
  do_flavour_image_package = false
-diff --git a/debian.master/rules.d/hooks.mk b/debian.master/rules.d/hooks.mk
-new file mode 100644
-index 0000000..a78acef
---- /dev/null
-+++ b/debian.master/rules.d/hooks.mk
-@@ -0,0 +1,5 @@
-+do_libc_dev_package     = false
-+do_doc_package          = false
-+do_tools_common         = false
-+do_tools_host           = false
-+
 diff --git a/debian/control.d/flavour-buildinfo.stub b/debian/control.d/flavour-buildinfo.stub
 index ed92b3d..18505ef 100644
 --- a/debian/control.d/flavour-buildinfo.stub
@@ -363,7 +354,7 @@ index ed92b3d..18505ef 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 4a47076..376653e 100755
+index ae51054..c8298f0 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -376,7 +367,7 @@ index 4a47076..376653e 100755
  do_tools_perf_jvmti?=false
  
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index adde3b7..9cd46cc 100644
+index aaa967e..4f5cab2 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -425,10 +416,10 @@ index adde3b7..9cd46cc 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 2485a17..96be990 100644
+index 4f8caad..eea893c 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -768,10 +768,14 @@ build-arch: $(build-arch-deps-true)
+@@ -778,10 +778,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

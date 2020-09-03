@@ -1,4 +1,4 @@
-From 5a140e50d3570d19fb661f35efc0415067c5fa2f Mon Sep 17 00:00:00 2001
+From 85bae7a6fb8ddd34da3cb8a3a22acecf204827e7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 28 May 2020 19:12:59 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -117,7 +117,7 @@ index 8c6a43323..35372a06c 100644
  #include "cec-pin-priv.h"
  
 diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index df167e843..28485aaf3 100644
+index 9888303be..04bddbc0a 100644
 --- a/drivers/media/dvb-core/dvbdev.c
 +++ b/drivers/media/dvb-core/dvbdev.c
 @@ -37,6 +37,8 @@
@@ -342,7 +342,7 @@ index ed0ad68c5..0afed8815 100644
  
  MODULE_ALIAS("platform:viafb-camera");
 diff --git a/drivers/media/platform/vicodec/vicodec-core.c b/drivers/media/platform/vicodec/vicodec-core.c
-index 823500975..f78579b48 100644
+index 84ec36156..dc84e1070 100644
 --- a/drivers/media/platform/vicodec/vicodec-core.c
 +++ b/drivers/media/platform/vicodec/vicodec-core.c
 @@ -2120,7 +2120,7 @@ static int register_instance(struct vicodec_dev *dev,
@@ -476,7 +476,7 @@ index 4ef3fa98d..efbe30f65 100644
  static int force_lna_activation;
  module_param(force_lna_activation, int, 0644);
 diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
-index f6d2d2398..ad11a4713 100644
+index f96626fe2..f6e94d2ec 100644
 --- a/drivers/media/usb/dvb-usb/dw2102.c
 +++ b/drivers/media/usb/dvb-usb/dw2102.c
 @@ -33,6 +33,8 @@
@@ -527,7 +527,7 @@ index 93d36aab8..4c7978999 100644
  	printk(KERN_INFO "USBVision[%d]: registered USBVision Video device %s [v4l2]\n",
  	       usbvision->nr, video_device_node_name(&usbvision->vdev));
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 6cd52e1ef..4cec5971d 100644
+index a4c3c77c1..b2d7afaa5 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -28,6 +28,8 @@
@@ -553,7 +553,7 @@ index b4acca756..2313a9ec9 100644
  {
  	struct i2c_client *client = v4l2_get_subdevdata(sd);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 7ba51bea1..a954eaaaf 100644
+index 1cb14c789..3cb5d4ab6 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -29,6 +29,8 @@

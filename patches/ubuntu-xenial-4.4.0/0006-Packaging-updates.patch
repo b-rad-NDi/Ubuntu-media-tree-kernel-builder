@@ -1,4 +1,4 @@
-From 6f4b7cb5f07d7d6303668732c267fe440a5993e2 Mon Sep 17 00:00:00 2001
+From f193b56ff9ccec85e69d808bc4856ae4a0360ef9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 12 Aug 2019 16:43:06 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -62,7 +62,7 @@ index b0f92f4..5692b42 100644
  Architecture: ARCH
  Section: devel
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 1fcd6bf..0dafdd5 100644
+index 576631c..41d8039 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -75,7 +75,7 @@ index 1fcd6bf..0dafdd5 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 9),
-@@ -44,47 +45,11 @@ Build-Depends-Indep:
+@@ -46,47 +47,11 @@ Build-Depends-Indep:
   bzip2 <!stage1>,
   sharutils <!stage1>,
   asciidoc <!stage1>,
@@ -125,7 +125,7 @@ index 1fcd6bf..0dafdd5 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -111,28 +76,7 @@ Description: Linux Kernel Headers for development
+@@ -113,28 +78,7 @@ Description: Linux Kernel Headers for development
   libraries. They are NOT meant to be used to build third-party modules for
   your kernel. Use SRCPKGNAME-headers-* packages for that.
  
@@ -155,7 +155,7 @@ index 1fcd6bf..0dafdd5 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 powerpc ppc64el s390x
  Section: devel
-@@ -145,27 +89,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -147,27 +91,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -184,7 +184,7 @@ index 1fcd6bf..0dafdd5 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
  Section: devel
-@@ -177,13 +101,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -179,13 +103,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
  
@@ -229,10 +229,10 @@ index b24bd66..b6a0c04 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 3de7b6d..ace734e 100644
+index 3dcdff7..80cc3ea9 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -2,19 +2,19 @@ human_arch	= 64 bit x86
+@@ -2,20 +2,20 @@ human_arch	= 64 bit x86
  build_arch	= x86_64
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -260,8 +260,9 @@ index 3de7b6d..ace734e 100644
 -do_tools_common = true
 +do_tools_common = false
  do_zfs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index 670fa58..a165e0a7 100644
+index c05408c..707a7e7 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
 @@ -11,9 +11,9 @@ no_dumpfile = true
@@ -278,10 +279,10 @@ index 670fa58..a165e0a7 100644
  do_dtbs		= true
  do_zfs		= true
 diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
-index 6cabbf2..e8fcfbe 100644
+index 6a21098..89aad64 100644
 --- a/debian.master/rules.d/armhf.mk
 +++ b/debian.master/rules.d/armhf.mk
-@@ -10,8 +10,8 @@ no_dumpfile	= true
+@@ -10,9 +10,9 @@ no_dumpfile	= true
  
  loader		= grub
  
@@ -293,11 +294,12 @@ index 6cabbf2..e8fcfbe 100644
 +do_tools_perf	= false
  
  do_dtbs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
-index 95f22ba..8fa9933 100644
+index 1336fd6..d92201a 100644
 --- a/debian.master/rules.d/i386.mk
 +++ b/debian.master/rules.d/i386.mk
-@@ -2,16 +2,16 @@ human_arch	= 32 bit x86
+@@ -2,17 +2,17 @@ human_arch	= 32 bit x86
  build_arch	= i386
  header_arch	= x86_64
  defconfig	= defconfig
@@ -320,8 +322,9 @@ index 95f22ba..8fa9933 100644
 +do_tools_x86	= false
 +do_tools_hyperv = false
  do_extras_package = true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/powerpc.mk b/debian.master/rules.d/powerpc.mk
-index 6af9be6..fafe4f8 100644
+index 57e2652..b5850b2 100644
 --- a/debian.master/rules.d/powerpc.mk
 +++ b/debian.master/rules.d/powerpc.mk
 @@ -24,9 +24,9 @@ vdso		= vdso_install
@@ -338,7 +341,7 @@ index 6af9be6..fafe4f8 100644
  # Default to true and disable to ensure that the crossbuild
  # override still has priority.
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index 3f8c4a4..f46109b 100644
+index ee658c2..7757022 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
 @@ -11,9 +11,9 @@ vdso		= vdso_install
@@ -355,10 +358,10 @@ index 3f8c4a4..f46109b 100644
  #do_flavour_image_package = false
  do_zfs		= true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index 5b468ac..dfc7a15 100644
+index 6ee9400..1c5a8e7 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
-@@ -12,8 +12,8 @@ no_dumpfile	= true
+@@ -12,9 +12,9 @@ no_dumpfile	= true
  
  do_extras_package = true
  
@@ -370,6 +373,7 @@ index 5b468ac..dfc7a15 100644
 +do_tools_perf     = false
  
  do_zfs		= true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
 index 94d4c83..f407712 100644
 --- a/debian.master/rules.d/x32.mk
@@ -394,7 +398,7 @@ index ed92b3d..18505ef 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index de9cdda..ce19472 100755
+index c4a855f..bbbc48f 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -407,7 +411,7 @@ index de9cdda..ce19472 100755
  
  # Don't build tools or udebs in a cross compile environment.
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 44c1ba1..6e29bd6 100644
+index 87cbdcc..a400c0f 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -467,10 +471,10 @@ index 44c1ba1..6e29bd6 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 503ed26..99e6dd8 100644
+index a7721f8..3d8d100 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -736,10 +736,14 @@ build-arch: $(build-arch-deps-true)
+@@ -784,10 +784,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

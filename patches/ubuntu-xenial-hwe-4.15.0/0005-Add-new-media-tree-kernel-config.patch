@@ -1,6 +1,6 @@
-From 32ce9cea0e61952c42fd6263589e5c2bb283177f Mon Sep 17 00:00:00 2001
+From 9097ca14af86808cd57e1887796beea74f09b713 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 10 Jul 2020 15:09:51 -0500
+Date: Thu, 3 Sep 2020 12:26:51 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 120 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index f7e71dd..0e3bbb7 100644
+index 1c610e4..c664bd8 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2486,7 +2486,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index f7e71dd..0e3bbb7 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10157,14 +10157,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10158,14 +10158,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index f7e71dd..0e3bbb7 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10554,3 +10547,121 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10555,3 +10548,121 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
