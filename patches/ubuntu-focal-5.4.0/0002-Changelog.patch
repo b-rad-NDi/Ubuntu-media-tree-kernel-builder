@@ -1,6 +1,6 @@
-From 70dccc5491de13e2e483699c057818cecbf49e06 Mon Sep 17 00:00:00 2001
+From 27de0080e70156bde92bc39ca5b5ab76942b07d5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 11 Jul 2020 07:11:00 -0500
+Date: Fri, 4 Sep 2020 10:10:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 1f21c6232..24e6c4f82 100644
+index f9053a379..2bd0d3289 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (5.4.0-392007110711.0+mediatree+hauppauge) focal; urgency=low
++linux (5.4.0-452009041010.0+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-39.43 rev 4838bb77cca3494482db847cbaebe570649da1a7
++    - 5.4.0-45.49 rev b311b46c7d1ab21bf0a11a6fa5bad76f98fb77af
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -40,11 +40,11 @@ index 1f21c6232..24e6c4f82 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Sat, 11 Jul 2020 07:11:00 -0500
++ -- Fake User <hidden@email.co>  Fri, 04 Sep 2020 10:10:10 -0500
 +
- linux (5.4.0-39.43) focal; urgency=medium
+ linux (5.4.0-45.49) focal; urgency=medium
  
-   * dkms-build: downloads fail in private PPAs (LP: #1883874)
+   * focal/linux: 5.4.0-45.49 -proposed tracker (LP: #1893050)
 -- 
 2.25.1
 

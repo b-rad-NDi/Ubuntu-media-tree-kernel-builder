@@ -1,6 +1,6 @@
-From 9dcfb510f3b5c261126f0015f8436af3253b5c17 Mon Sep 17 00:00:00 2001
+From 7c5147723c0485a0d61188acf1482eecb8804729 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 11 Jul 2020 07:11:00 -0500
+Date: Fri, 4 Sep 2020 10:10:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index f00d88e..8f443f4 100644
+index 222e2ff..91b7200 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (4.4.0-184202007110711.0+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-189202009041010.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.4.0-184.214 rev f93eb42c09f9c2338fc0604b71b805398dd848f5
++    - 4.4.0-189.219 rev def589a8bcb18f63b7c2d73726e83a704e55c768
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -40,11 +40,11 @@ index f00d88e..8f443f4 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Sat, 11 Jul 2020 07:11:00 -0500
++ -- Fake User <hidden@email.co>  Fri, 04 Sep 2020 10:10:10 -0500
 +
- linux (4.4.0-184.214) xenial; urgency=medium
+ linux (4.4.0-189.219) xenial; urgency=medium
  
-   * CVE-2020-0543
+   * xenial/linux: 4.4.0-189.219 -proposed tracker (LP: #1891057)
 -- 
 2.7.4
 
