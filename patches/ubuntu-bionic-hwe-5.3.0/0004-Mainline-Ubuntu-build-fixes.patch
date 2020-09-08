@@ -1,9 +1,10 @@
-From 77a1c1c93d7acd271896795171b9b6794b92fb45 Mon Sep 17 00:00:00 2001
+From 8f901db5c05a6a00d9e8ea52b1435202fed383d3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 9 Jul 2020 14:16:15 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
+ debian/dkms-versions                      |  2 +-
  drivers/gpu/drm/i2c/tda9950.c             | 11 +++++---
  drivers/gpu/drm/i2c/tda998x_drv.c         |  9 ++++---
  drivers/gpu/drm/i915/display/intel_hdmi.c | 20 +++++++++++---
@@ -13,8 +14,20 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/mmc/sdio_ids.h              |  7 +++++
  include/linux/pci_ids.h                   |  3 +++
  sound/pci/bt87x.c                         | 31 +++++++++++++++-------
- 9 files changed, 99 insertions(+), 30 deletions(-)
+ 10 files changed, 100 insertions(+), 31 deletions(-)
 
+diff --git a/debian/dkms-versions b/debian/dkms-versions
+index 5d8aabf3df6b..72b77682929c 100644
+--- a/debian/dkms-versions
++++ b/debian/dkms-versions
+@@ -1,6 +1,6 @@
+ zfs-linux 0.8.1-1ubuntu14.4
+ nvidia-graphics-drivers-390 390.138-0ubuntu0.19.10.1
+ nvidia-graphics-drivers-435 435.21-0ubuntu2
+-nvidia-graphics-drivers-550 450.66-0ubuntu0.20.04.1
++nvidia-graphics-drivers-450 450.66-0ubuntu0.20.04.1
+ virtualbox 6.0.14-dfsg-1
+ wireguard-linux-compat 1.0.20200611-1ubuntu1~19.10.1
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d83db..8d6b071c8590 100644
 --- a/drivers/gpu/drm/i2c/tda9950.c
