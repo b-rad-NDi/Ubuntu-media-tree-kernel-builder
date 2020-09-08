@@ -1,0 +1,28 @@
+From 4ef6a0d303987f37d9fcb6b244a4af43d6f670ac Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 8 Sep 2020 16:04:20 -0500
+Subject: [PATCH] si2168: Include b 4.0-11 when checking firmware version
+
+Multiple reports of firmware B-4.0-11 being non functional after resuming from sleep
+---
+ drivers/media/dvb-frontends/si2168.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
+index f28e09c..348345f 100644
+--- a/drivers/media/dvb-frontends/si2168.c
++++ b/drivers/media/dvb-frontends/si2168.c
+@@ -661,8 +661,8 @@ static int si2168_sleep(struct dvb_frontend *fe)
+ 	if (ret)
+ 		goto err;
+ 
+-	/* Firmware later than B 4.0-11 loses warm state during sleep */
+-	if (dev->version > ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
++	/* Firmware B 4.0-11 and later lose warm state during sleep */
++	if (dev->version >= ('B' << 24 | 4 << 16 | 0 << 8 | 11 << 0))
+ 		dev->warm = false;
+ 
+ 	cmd_init(&cmd, "\x13", 1, 0);
+-- 
+2.7.4
+
