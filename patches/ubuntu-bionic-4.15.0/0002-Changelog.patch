@@ -1,21 +1,21 @@
-From ada5d572e04742917776d27480ddd1e4908e9895 Mon Sep 17 00:00:00 2001
+From a13a4db2040f6c6cdd4f56f2f529ccefa0c8bbb6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 4 Sep 2020 10:10:10 -0500
+Date: Wed, 7 Oct 2020 11:11:11 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ debian.master/changelog | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 4bccf26007ae..026b72ea2e0d 100644
+index 4db0b38cad51..10563151a1a4 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,33 @@
-+linux (4.15.0-115202009041010.0+mediatree+hauppauge) bionic; urgency=low
+@@ -1,3 +1,34 @@
++linux (4.15.0-118202010071111.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-115.116 rev e3b144f169330df5181e4fa159208536109b40ed
++    - 4.15.0-118.119 rev 874953f975500b068d55154200a8432a06f082d4
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -33,6 +33,7 @@ index 4bccf26007ae..026b72ea2e0d 100644
 +    --- 0004-si2168-different-default-that-windows-driver.patch
 +    --- 0005-dw2102-check-initialization-replies.patch
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
++    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +    - 90.usb.quadhd.xml692
@@ -40,11 +41,11 @@ index 4bccf26007ae..026b72ea2e0d 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Fri, 04 Sep 2020 10:10:10 -0500
++ -- Fake User <hidden@email.co>  Wed, 07 Oct 2020 11:11:11 -0500
 +
- linux (4.15.0-115.116) bionic; urgency=medium
+ linux (4.15.0-118.119) bionic; urgency=medium
  
-   * bionic/linux: 4.15.0-115.116 -proposed tracker (LP: #1893055)
+   * bionic/linux: 4.15.0-118.119 -proposed tracker (LP: #1894697)
 -- 
 2.17.1
 
