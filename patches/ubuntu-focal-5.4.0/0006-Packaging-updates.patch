@@ -1,28 +1,27 @@
-From 087b260045d5f3953ad50868567782cf5ac6d6e2 Mon Sep 17 00:00:00 2001
+From 5b94de62307ff259422606fc4bcc741908814995 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 11:46:27 -0500
+Date: Wed, 23 Sep 2020 21:23:05 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
- debian.master/control.d/flavour-control.stub |  8 +-
- debian.master/control.stub.in                | 89 +-------------------
- debian.master/copyright                      | 22 +++++
- debian.master/rules.d/amd64.mk               | 24 +++---
- debian.master/rules.d/arm64.mk               | 12 +--
- debian.master/rules.d/armhf.mk               | 10 +--
+ debian.master/control.d/flavour-control.stub |  4 +-
+ debian.master/control.stub.in                | 64 +-------------------
+ debian.master/copyright                      | 22 +++++++
+ debian.master/rules.d/amd64.mk               |  8 +--
+ debian.master/rules.d/arm64.mk               |  2 +-
  debian.master/rules.d/i386.mk                |  2 +-
- debian.master/rules.d/ppc64el.mk             | 12 +--
- debian.master/rules.d/s390x.mk               | 12 +--
+ debian.master/rules.d/ppc64el.mk             |  2 +-
+ debian.master/rules.d/s390x.mk               |  2 +-
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
  debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 19 +++--
- debian/rules.d/2-binary-arch.mk              |  4 +
+ debian/rules.d/0-common-vars.mk              | 19 ++++--
+ debian/rules.d/2-binary-arch.mk              |  4 ++
  debian/scripts/config-check                  |  2 +-
- 15 files changed, 86 insertions(+), 136 deletions(-)
+ 14 files changed, 56 insertions(+), 81 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index 4ba31aa63..dc2cb1b04 100644
+index 4ba31aa63..f0685937b 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
 @@ -31,7 +31,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.
@@ -30,7 +29,7 @@ index 4ba31aa63..dc2cb1b04 100644
  Breaks: flash-kernel (<< 3.90ubuntu2) [arm64 armhf], s390-tools (<< 2.3.0-0ubuntu3) [s390x]
  Conflicts: linux-image=SIGN-PEER-PKG=-PKGVER-ABINUM-FLAVOUR
 -Suggests: fdutils, linux-doc | SRCPKGNAME-source-PKGVER, SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR
-+Suggests: fdutils, linux-doc | SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR
++Suggests: fdutils, SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR
  Description: Linux kernel image for version PKGVER on DESC
   This package contains the=SIGN-ME-TXT= Linux kernel image for version PKGVER on
   DESC.
@@ -43,26 +42,8 @@ index 4ba31aa63..dc2cb1b04 100644
   This package contains the Linux kernel extra modules for version PKGVER on
   DESC.
   .
-@@ -117,7 +117,7 @@ Description: Linux kernel debug image for version PKGVER on DESC
-  is uncompressed, and unstripped. This package also includes the
-  unstripped modules.
- 
--Package: linux-tools-PKGVER-ABINUM-FLAVOUR
-+Package: linux-tools-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: devel
-@@ -129,7 +129,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
-  version PKGVER-ABINUM on
-  =HUMAN=.
- 
--Package: linux-cloud-tools-PKGVER-ABINUM-FLAVOUR
-+Package: linux-cloud-tools-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: devel
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index b1fadfec2..f71118859 100644
+index b1fadfec2..d3f1dc812 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -106,7 +87,7 @@ index b1fadfec2..f71118859 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -90,65 +67,3 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -90,20 +67,6 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -124,19 +105,13 @@ index b1fadfec2..f71118859 100644
 - version locked tools (such as perf and x86_energy_perf_policy) for
 - version PGKVER.
 -
--Package: SRCPKGNAME-tools-PKGVER-ABINUM
--Build-Profiles: <!stage1>
--Architecture: amd64 armhf arm64 ppc64el s390x
--Section: devel
--Priority: optional
--Depends: ${misc:Depends}, ${shlibs:Depends}, linux-tools-common
--Description: Linux kernel version specific tools for version PKGVER-ABINUM
-- This package provides the architecture dependant parts for kernel
-- version locked tools (such as perf and x86_energy_perf_policy) for
-- version PKGVER-ABINUM on
-- =HUMAN=.
-- You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
--
+ Package: SRCPKGNAME-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: amd64 armhf arm64 ppc64el s390x
+@@ -117,17 +80,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+  =HUMAN=.
+  You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
+ 
 -Package: SRCPKGNAME-cloud-tools-common
 -Build-Profiles: <!stage1>
 -Architecture: all
@@ -148,18 +123,13 @@ index b1fadfec2..f71118859 100644
 - This package provides the architecture independent parts for kernel
 - version locked tools for cloud tools for version PGKVER.
 -
--Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
--Build-Profiles: <!stage1>
--Architecture: amd64 armhf
--Section: devel
--Priority: optional
--Depends: ${misc:Depends}, ${shlibs:Depends}, linux-cloud-tools-common
--Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
-- This package provides the architecture dependant parts for kernel
-- version locked tools for cloud tools for version PKGVER-ABINUM on
-- =HUMAN=.
-- You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
--
+ Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
+ Build-Profiles: <!stage1>
+ Architecture: amd64 armhf
+@@ -140,15 +92,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+  =HUMAN=.
+  You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
+ 
 -Package: SRCPKGNAME-tools-host
 -Build-Profiles: <!stage1>
 -Architecture: all
@@ -203,10 +173,10 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index d253402ae..57221d5a9 100644
+index d253402ae..c88ec890a 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
-@@ -2,25 +2,25 @@ human_arch	= 64 bit x86
+@@ -2,14 +2,14 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -219,36 +189,27 @@ index d253402ae..57221d5a9 100644
  vdso		= vdso_install
  no_dumpfile	= true
 -uefi_signed     = true
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf   = true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
--do_tools_x86	= true
--do_tools_hyperv	= true
--do_tools_host = true
 +uefi_signed     = false
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf   = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
-+do_tools_x86	= false
-+do_tools_hyperv	= false
+ do_tools_usbip  = true
+ do_tools_cpupower = true
+ do_tools_perf   = true
+@@ -17,9 +17,9 @@ do_tools_perf_jvmti = true
+ do_tools_bpftool = true
+ do_tools_x86	= true
+ do_tools_hyperv	= true
+-do_tools_host = true
 +do_tools_host = false
  do_extras_package = true
 -do_tools_common = true
--do_tools_acpidbg = true
 +do_tools_common = false
-+do_tools_acpidbg = false
+ do_tools_acpidbg = true
  do_zfs		= true
  do_dkms_nvidia  = true
- do_dkms_nvidia_server = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index 4c3e08cd1..316e4f67c 100644
+index 4c3e08cd1..053b6da62 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
-@@ -7,17 +7,17 @@ build_image_generic	= Image.gz
+@@ -7,7 +7,7 @@ build_image_generic	= Image.gz
  kernel_file_generic	= arch/$(build_arch)/boot/Image.gz
  install_file	= vmlinuz
  no_dumpfile = true
@@ -257,42 +218,6 @@ index 4c3e08cd1..316e4f67c 100644
  
  loader		= grub
  vdso		= vdso_install
- 
- do_extras_package = true
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf   = true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf   = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
- 
- do_dtbs		= true
- do_zfs		= true
-diff --git a/debian.master/rules.d/armhf.mk b/debian.master/rules.d/armhf.mk
-index 881d6e13a..241724df2 100644
---- a/debian.master/rules.d/armhf.mk
-+++ b/debian.master/rules.d/armhf.mk
-@@ -10,11 +10,11 @@ no_dumpfile	= true
- 
- loader		= grub
- 
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf	= true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf	= false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
- 
- do_dtbs		= true
- 
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
 index a0c64b728..4280686ec 100644
 --- a/debian.master/rules.d/i386.mk
@@ -307,51 +232,31 @@ index a0c64b728..4280686ec 100644
  kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index a0bc38892..c871e391a 100644
+index a0bc38892..37b8bbf75 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
-@@ -10,12 +10,12 @@ no_dumpfile	= true
+@@ -10,7 +10,7 @@ no_dumpfile	= true
  vdso		= vdso_install
  loader		= grub
  do_extras_package = true
 -opal_signed       = true
--do_tools_usbip    = true
--do_tools_cpupower = true
--do_tools_perf	  = true
--do_tools_perf_jvmti = true
--do_tools_bpftool  = true
 +opal_signed       = false
-+do_tools_usbip    = false
-+do_tools_cpupower = false
-+do_tools_perf	  = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool  = false
- 
- #do_flavour_image_package = false
- do_zfs		= true
+ do_tools_usbip    = true
+ do_tools_cpupower = true
+ do_tools_perf	  = true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index f852ca656..8f2adacd9 100644
+index f852ca656..9c30b1fa0 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
-@@ -11,12 +11,12 @@ vdso		= vdso_install
+@@ -11,7 +11,7 @@ vdso		= vdso_install
  no_dumpfile	= true
  
  do_extras_package = true
 -sipl_signed       = true
--do_tools_usbip    = true
--do_tools_cpupower = true
--do_tools_perf     = true
--do_tools_perf_jvmti = true
--do_tools_bpftool  = true
 +sipl_signed       = false
-+do_tools_usbip    = false
-+do_tools_cpupower = false
-+do_tools_perf     = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool  = false
- 
- do_zfs		= true
- do_dkms_wireguard = true
+ do_tools_usbip    = true
+ do_tools_cpupower = true
+ do_tools_perf     = true
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
 index e0ccff961..a2833d96b 100644
 --- a/debian.master/rules.d/x32.mk
@@ -376,7 +281,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 60d9496fc..25bea4c06 100755
+index 4d79d4a22..e8a45b0dc 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -389,7 +294,7 @@ index 60d9496fc..25bea4c06 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 5394b7c96..70f1ba6a5 100644
+index 5394b7c96..11958e66f 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu
@@ -401,7 +306,7 @@ index 5394b7c96..70f1ba6a5 100644
 +skipdbg         ?= true
 +do_binary_udebs ?= false
 +do_tools_common ?= false
-+do_tools	?= false
++do_tools	?= true
 +do_linux_tools	?= false
 +skipretpoline	?= true
 +
@@ -450,10 +355,10 @@ index 5394b7c96..70f1ba6a5 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 6aedd68e9..a9fb1b918 100644
+index 35353a261..fc4d2898a 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -793,10 +793,14 @@ build-arch: $(build-arch-deps-true)
+@@ -795,10 +795,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

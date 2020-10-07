@@ -1,27 +1,24 @@
-From dc11acd1803aaeb9b428a21b6d92d6cd4691af84 Mon Sep 17 00:00:00 2001
+From 9b20dd5d9887eda662c0577c867b597821ec449a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 12:27:05 -0500
+Date: Wed, 23 Sep 2020 11:32:01 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
- debian.hwe/control.d/flavour-control.stub | 12 +++++------
- debian.hwe/control.stub.in                | 34 ++++++-------------------------
- debian.hwe/copyright                      | 22 ++++++++++++++++++++
- debian.hwe/rules.d/amd64.mk               | 24 +++++++++++-----------
- debian.hwe/rules.d/arm64.mk               | 10 ++++-----
- debian.hwe/rules.d/armhf.mk               | 10 ++++-----
- debian.hwe/rules.d/i386.mk                | 16 +++++++--------
- debian.hwe/rules.d/ppc64el.mk             | 12 +++++------
- debian.hwe/rules.d/s390x.mk               | 10 ++++-----
+ debian.hwe/control.d/flavour-control.stub |  4 ++--
+ debian.hwe/control.stub.in                | 30 ++++--------------------------
+ debian.hwe/copyright                      | 22 ++++++++++++++++++++++
+ debian.hwe/rules.d/amd64.mk               |  8 ++++----
+ debian.hwe/rules.d/i386.mk                |  2 +-
+ debian.hwe/rules.d/ppc64el.mk             |  2 +-
  debian.hwe/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub   |  2 +-
  debian/rules                              |  2 +-
- debian/rules.d/0-common-vars.mk           | 17 ++++++++++++----
+ debian/rules.d/0-common-vars.mk           | 17 +++++++++++++----
  debian/rules.d/2-binary-arch.mk           |  4 ++++
- 14 files changed, 95 insertions(+), 82 deletions(-)
+ 11 files changed, 54 insertions(+), 41 deletions(-)
 
 diff --git a/debian.hwe/control.d/flavour-control.stub b/debian.hwe/control.d/flavour-control.stub
-index c172159..a35b355 100644
+index c172159..6327273 100644
 --- a/debian.hwe/control.d/flavour-control.stub
 +++ b/debian.hwe/control.d/flavour-control.stub
 @@ -69,7 +69,7 @@ Architecture: ARCH
@@ -42,37 +39,8 @@ index c172159..a35b355 100644
   This package provides kernel header files for version PKGVER on
   DESC.
   .
-@@ -116,24 +116,24 @@ Description: Linux kernel debug image for version PKGVER on DESC
-  is uncompressed, and unstripped. This package also includes the
-  unstripped modules.
- 
--Package: linux-tools-PKGVER-ABINUM-FLAVOUR
-+Package: linux-tools-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: devel
- Priority: optional
--Depends: ${misc:Depends}, SRCPKGNAME-tools-PKGVER-ABINUM
-+Depends: ${misc:Depends}, SRCPKGNAME-tools-mediatree-PKGVER-ABINUM
- Description: Linux kernel version specific tools for version PKGVER-ABINUM
-  This package provides the architecture dependant parts for kernel
-  version locked tools (such as perf and x86_energy_perf_policy) for
-  version PKGVER-ABINUM on
-  =HUMAN=.
- 
--Package: linux-cloud-tools-PKGVER-ABINUM-FLAVOUR
-+Package: linux-cloud-tools-mediatree-PKGVER-ABINUM-FLAVOUR
- Build-Profiles: <!stage1>
- Architecture: ARCH
- Section: devel
- Priority: optional
--Depends: ${misc:Depends}, SRCPKGNAME-cloud-tools-PKGVER-ABINUM
-+Depends: ${misc:Depends}, SRCPKGNAME-cloud-tools-mediatree-PKGVER-ABINUM
- Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
-  This package provides the architecture dependant parts for kernel
-  version locked tools for cloud for version PKGVER-ABINUM on
 diff --git a/debian.hwe/control.stub.in b/debian.hwe/control.stub.in
-index a3ccde2..03c2f50 100644
+index a3ccde2..6be5c4a 100644
 --- a/debian.hwe/control.stub.in
 +++ b/debian.hwe/control.stub.in
 @@ -1,7 +1,8 @@
@@ -122,24 +90,6 @@ index a3ccde2..03c2f50 100644
  Package: linux-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -88,7 +66,7 @@ Description: Header files related to Linux kernel version PKGVER
-  that want the latest kernel headers. Please read
-  /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
- 
--Package: SRCPKGNAME-tools-PKGVER-ABINUM
-+Package: SRCPKGNAME-tools-mediatree-PKGVER-ABINUM
- Build-Profiles: <!stage1>
- Architecture: i386 amd64 armhf arm64 ppc64el s390x
- Section: devel
-@@ -101,7 +79,7 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
-  =HUMAN=.
-  You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
- 
--Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
-+Package: SRCPKGNAME-cloud-tools-mediatree-PKGVER-ABINUM
- Build-Profiles: <!stage1>
- Architecture: i386 amd64 armhf
- Section: devel
 diff --git a/debian.hwe/copyright b/debian.hwe/copyright
 index d1d04a6..b6f183f 100644
 --- a/debian.hwe/copyright
@@ -171,10 +121,10 @@ index d1d04a6..b6f183f 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe/rules.d/amd64.mk b/debian.hwe/rules.d/amd64.mk
-index 6515b13..af5586d 100644
+index 6515b13..3e9b51c 100644
 --- a/debian.hwe/rules.d/amd64.mk
 +++ b/debian.hwe/rules.d/amd64.mk
-@@ -2,25 +2,25 @@ human_arch	= 64 bit x86
+@@ -2,14 +2,14 @@ human_arch	= 64 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -187,78 +137,27 @@ index 6515b13..af5586d 100644
  vdso		= vdso_install
  no_dumpfile	= true
 -uefi_signed     = true
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf   = true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
--do_tools_x86	= true
--do_tools_hyperv	= true
--do_tools_host = true
 +uefi_signed     = false
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf   = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
-+do_tools_x86	= false
-+do_tools_hyperv	= false
+ do_tools_usbip  = true
+ do_tools_cpupower = true
+ do_tools_perf   = true
+@@ -17,9 +17,9 @@ do_tools_perf_jvmti = true
+ do_tools_bpftool = true
+ do_tools_x86	= true
+ do_tools_hyperv	= true
+-do_tools_host = true
 +do_tools_host = false
  do_extras_package = true
 -do_tools_common = true
--do_tools_acpidbg = true
 +do_tools_common = false
-+do_tools_acpidbg = false
+ do_tools_acpidbg = true
  do_zfs		= true
  do_dkms_nvidia  = true
- do_dkms_nvidia_server = true
-diff --git a/debian.hwe/rules.d/arm64.mk b/debian.hwe/rules.d/arm64.mk
-index e524e9a..5385411 100644
---- a/debian.hwe/rules.d/arm64.mk
-+++ b/debian.hwe/rules.d/arm64.mk
-@@ -12,11 +12,11 @@ loader		= grub
- vdso		= vdso_install
- 
- do_extras_package = true
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf   = true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf   = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
- 
- do_dtbs		= true
- do_zfs		= true
-diff --git a/debian.hwe/rules.d/armhf.mk b/debian.hwe/rules.d/armhf.mk
-index d0c2d7f..4a175fb 100644
---- a/debian.hwe/rules.d/armhf.mk
-+++ b/debian.hwe/rules.d/armhf.mk
-@@ -10,11 +10,11 @@ no_dumpfile	= true
- 
- loader		= grub
- 
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf	= true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf	= false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
- 
- do_dtbs		= true
- do_dkms_wireguard = true
 diff --git a/debian.hwe/rules.d/i386.mk b/debian.hwe/rules.d/i386.mk
-index 61adfcb..987c0c7 100644
+index 61adfcb..e3b0324 100644
 --- a/debian.hwe/rules.d/i386.mk
 +++ b/debian.hwe/rules.d/i386.mk
-@@ -2,19 +2,19 @@ human_arch	= 32 bit x86
+@@ -2,7 +2,7 @@ human_arch	= 32 bit x86
  build_arch	= x86
  header_arch	= $(build_arch)
  defconfig	= defconfig
@@ -267,69 +166,19 @@ index 61adfcb..987c0c7 100644
  build_image	= bzImage
  kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
- loader		= grub
- vdso		= vdso_install
- no_dumpfile	= true
--do_tools_usbip  = true
--do_tools_cpupower = true
--do_tools_perf   = true
--do_tools_perf_jvmti = true
--do_tools_bpftool = true
--do_tools_x86	= true
--do_tools_hyperv = true
-+do_tools_usbip  = false
-+do_tools_cpupower = false
-+do_tools_perf   = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool = false
-+do_tools_x86	= false
-+do_tools_hyperv = false
- do_extras_package = true
- do_dkms_wireguard = true
 diff --git a/debian.hwe/rules.d/ppc64el.mk b/debian.hwe/rules.d/ppc64el.mk
-index a0bc388..c871e39 100644
+index a0bc388..37b8bbf 100644
 --- a/debian.hwe/rules.d/ppc64el.mk
 +++ b/debian.hwe/rules.d/ppc64el.mk
-@@ -10,12 +10,12 @@ no_dumpfile	= true
+@@ -10,7 +10,7 @@ no_dumpfile	= true
  vdso		= vdso_install
  loader		= grub
  do_extras_package = true
 -opal_signed       = true
--do_tools_usbip    = true
--do_tools_cpupower = true
--do_tools_perf	  = true
--do_tools_perf_jvmti = true
--do_tools_bpftool  = true
 +opal_signed       = false
-+do_tools_usbip    = false
-+do_tools_cpupower = false
-+do_tools_perf	  = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool  = false
- 
- #do_flavour_image_package = false
- do_zfs		= true
-diff --git a/debian.hwe/rules.d/s390x.mk b/debian.hwe/rules.d/s390x.mk
-index 7eded44..86b7e5f 100644
---- a/debian.hwe/rules.d/s390x.mk
-+++ b/debian.hwe/rules.d/s390x.mk
-@@ -12,11 +12,11 @@ no_dumpfile	= true
- 
- do_extras_package = true
- 
--do_tools_usbip    = true
--do_tools_cpupower = true
--do_tools_perf     = true
--do_tools_perf_jvmti = true
--do_tools_bpftool  = true
-+do_tools_usbip    = false
-+do_tools_cpupower = false
-+do_tools_perf     = false
-+do_tools_perf_jvmti = false
-+do_tools_bpftool  = false
- 
- do_zfs		= true
- do_dkms_wireguard = true
+ do_tools_usbip    = true
+ do_tools_cpupower = true
+ do_tools_perf	  = true
 diff --git a/debian.hwe/rules.d/x32.mk b/debian.hwe/rules.d/x32.mk
 index e0ccff9..a2833d9 100644
 --- a/debian.hwe/rules.d/x32.mk
@@ -367,7 +216,7 @@ index ae51054..c8298f0 100755
  do_tools_perf_jvmti?=false
  
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index aaa967e..4f5cab2 100644
+index aaa967e..18afb91 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
@@ -379,7 +228,7 @@ index aaa967e..4f5cab2 100644
 +skipdbg         ?= true
 +do_binary_udebs ?= false
 +do_tools_common ?= false
-+do_tools	?= false
++do_tools	?= true
 +do_linux_tools	?= false
 +skipretpoline	?= true
 +
