@@ -1,6 +1,6 @@
-From c8976be3ba1b470c18774f5138328dd075b5f0b4 Mon Sep 17 00:00:00 2001
+From dca252ceb5d4a45becdbe12b5455bfd0a260a4fb Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 11:25:05 -0500
+Date: Tue, 22 Sep 2020 16:52:32 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -104,6 +104,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-ioctl.c                  |  2 ++
  drivers/media/v4l2-core/videobuf2-dma-sg.c            |  2 ++
  include/media/compat.h                                |  9 +++++++--
+ include/media/config-mycompat.h                       |  2 ++
  include/media/i2c/saa6588.h                           |  2 ++
  include/media/media-devnode.h                         |  2 ++
  include/media/media-entity.h                          |  2 ++
@@ -112,7 +113,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-dev.h                              |  5 ++++-
  include/media/v4l2-fwnode.h                           |  2 ++
  include/media/videobuf-core.h                         |  2 ++
- 108 files changed, 239 insertions(+), 71 deletions(-)
+ 109 files changed, 241 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
 index 8c6a433..35372a0 100644
@@ -1567,6 +1568,16 @@ index 04cc4f1..b8aed12 100644
  #endif
  
  #ifdef NEED_FWNODE_GRAPH_GET_ENDPOINT_BY_ID
+diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
+index 76aaa0b..7d3f369 100644
+--- a/include/media/config-mycompat.h
++++ b/include/media/config-mycompat.h
+@@ -2,3 +2,5 @@
+ 
+ 
+ #undef NEED_USB_SPEED_WIRELESS
++#undef NEED_PRANDOM_U32_MAX
++#undef NEED_NEXT_PSEUDO_RANDOM32
 diff --git a/include/media/i2c/saa6588.h b/include/media/i2c/saa6588.h
 index bbec05a..d1bb04d 100644
 --- a/include/media/i2c/saa6588.h

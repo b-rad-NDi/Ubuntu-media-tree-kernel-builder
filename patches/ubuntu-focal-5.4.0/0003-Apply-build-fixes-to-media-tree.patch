@@ -1,6 +1,6 @@
-From 85bae7a6fb8ddd34da3cb8a3a22acecf204827e7 Mon Sep 17 00:00:00 2001
+From ceed66eec58fde8a4e16cac48669ca5d9afc126f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 28 May 2020 19:12:59 -0500
+Date: Wed, 23 Sep 2020 14:07:43 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -41,8 +41,9 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-fwnode.c                       | 2 ++
  drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
+ include/media/config-mycompat.h                             | 2 ++
  samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
- 38 files changed, 72 insertions(+), 17 deletions(-)
+ 39 files changed, 74 insertions(+), 17 deletions(-)
 
 diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
 index 4c5a15c53..61734697a 100644
@@ -565,6 +566,16 @@ index 1cb14c789..3cb5d4ab6 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
+index 76aaa0b26..7d3f3691d 100644
+--- a/include/media/config-mycompat.h
++++ b/include/media/config-mycompat.h
+@@ -2,3 +2,5 @@
+ 
+ 
+ #undef NEED_USB_SPEED_WIRELESS
++#undef NEED_PRANDOM_U32_MAX
++#undef NEED_NEXT_PSEUDO_RANDOM32
 diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
 index f6a551bd5..3fa6582b4 100644
 --- a/samples/v4l/v4l2-pci-skeleton.c
