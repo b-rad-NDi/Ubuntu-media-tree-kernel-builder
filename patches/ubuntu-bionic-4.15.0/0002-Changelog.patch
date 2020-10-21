@@ -1,6 +1,6 @@
-From a13a4db2040f6c6cdd4f56f2f529ccefa0c8bbb6 Mon Sep 17 00:00:00 2001
+From 6b138da5642a7204b700d59b561c81b7c82e06cc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Oct 2020 11:11:11 -0500
+Date: Tue, 20 Oct 2020 10:20:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 4db0b38cad51..10563151a1a4 100644
+index ab4a95ce628d..98be901239a0 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,34 @@
-+linux (4.15.0-118202010071111.0+mediatree+hauppauge) bionic; urgency=low
++linux (4.15.0-121202010201020.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-118.119 rev 874953f975500b068d55154200a8432a06f082d4
++    - 4.15.0-121.123 rev 59c4ac7cff7e0267aed27bde64e8854e5a35cec6
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -41,11 +41,11 @@ index 4db0b38cad51..10563151a1a4 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 07 Oct 2020 11:11:11 -0500
++ -- Fake User <hidden@email.co>  Tue, 20 Oct 2020 10:20:10 -0500
 +
- linux (4.15.0-118.119) bionic; urgency=medium
+ linux (4.15.0-121.123) bionic; urgency=medium
  
-   * bionic/linux: 4.15.0-118.119 -proposed tracker (LP: #1894697)
+   * Packaging resync (LP: #1786013)
 -- 
 2.17.1
 

@@ -1,6 +1,6 @@
-From 8fe2074865884059186e9a54be691f332442d9b4 Mon Sep 17 00:00:00 2001
+From b02822c52f97ddeed881724844bfcbe300806553 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Oct 2020 11:11:11 -0500
+Date: Tue, 20 Oct 2020 10:20:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index aef8733ae..59d4f6967 100644
+index 3026cb8e5..0d38353b0 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,34 @@
-+linux (5.4.0-482010071111.0+mediatree+hauppauge) focal; urgency=low
++linux (5.4.0-512010201020.0+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-48.52 rev a06108efa9898cc7464d6fa150b34a73d84e3fd7
++    - 5.4.0-51.56 rev 9dd8245f23fb9bcd4c33490f787dba6496fced45
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -41,11 +41,11 @@ index aef8733ae..59d4f6967 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 07 Oct 2020 11:11:11 -0500
++ -- Fake User <hidden@email.co>  Tue, 20 Oct 2020 10:20:10 -0500
 +
- linux (5.4.0-48.52) focal; urgency=medium
+ linux (5.4.0-51.56) focal; urgency=medium
  
-   * focal/linux: 5.4.0-48.52 -proposed tracker (LP: #1894654)
+   * Packaging resync (LP: #1786013)
 -- 
 2.25.1
 

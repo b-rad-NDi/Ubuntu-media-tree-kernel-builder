@@ -1,6 +1,6 @@
-From a0688e1bbe7e66430939094121c515626d4794bf Mon Sep 17 00:00:00 2001
+From 001722b1989e0620a2db4e41048d17f4ca3bbd50 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Oct 2020 11:11:11 -0500
+Date: Tue, 20 Oct 2020 10:20:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 3531dc40d478..a3bd901f4261 100644
+index 86db20b7ccbc..20d816b73968 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,34 @@
-+linux-hwe (5.3.0-64202010071111.0+mediatree+hauppauge~hwe) bionic; urgency=low
++linux-hwe (5.3.0-64202010201020.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 5.3.0-64.58 rev 3af1876e75693660aba23a463b371f2f2cad9b13
++    - 5.3.0-64.58 rev 84ab026b0e13d88833e1d164ca9b79ae6fd019ba
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -41,11 +41,11 @@ index 3531dc40d478..a3bd901f4261 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 07 Oct 2020 11:11:11 -0500
++ -- Fake User <hidden@email.co>  Tue, 20 Oct 2020 10:20:10 -0500
 +
- linux-hwe (5.3.0-67.61) bionic; urgency=medium
+ linux-hwe (5.3.0-68.63) bionic; urgency=medium
  
-   * bionic/linux-hwe: 5.3.0-67.61 -proposed tracker (LP: #1894284)
+   * CVE-2020-16119
 -- 
 2.17.1
 

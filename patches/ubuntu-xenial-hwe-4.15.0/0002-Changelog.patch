@@ -1,6 +1,6 @@
-From 6c35b3cc036df377ce89d9d6e7062efc5d8d010a Mon Sep 17 00:00:00 2001
+From cff1329d673472e7ae19e63b5d0122773a12af21 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 7 Oct 2020 11:11:11 -0500
+Date: Tue, 20 Oct 2020 10:20:10 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index 3371aa9..1e47a9b 100644
+index a20c724..3eb1f7a 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
 @@ -1,3 +1,34 @@
-+linux-hwe (4.15.0-119202010071111.0+mediatree+hauppauge~hwe) xenial; urgency=low
++linux-hwe (4.15.0-122202010201020.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
-+    - 4.15.0-119.120 rev a66d30243e2de987873bba391ef90e853f3f72ba
++    - 4.15.0-122.124 rev 8fbea484d308573c5fc0d9361c13b6d50a14e89d
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-07-07-07-07.patch
@@ -41,11 +41,11 @@ index 3371aa9..1e47a9b 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 07 Oct 2020 11:11:11 -0500
++ -- Fake User <hidden@email.co>  Tue, 20 Oct 2020 10:20:10 -0500
 +
- linux-hwe (4.15.0-119.120~16.04.1) xenial; urgency=medium
+ linux-hwe (4.15.0-122.124~16.04.1) xenial; urgency=medium
  
-   * xenial/linux-hwe: 4.15.0-119.120~16.04.1 -proposed tracker (LP: #1896039)
+   * xenial/linux-hwe: 4.15.0-122.124~16.04.1 -proposed tracker (LP: #1899950)
 -- 
 2.7.4
 
