@@ -1,14 +1,14 @@
-From b21dbb6236b480bae328a9c0d5041fd98a4027f1 Mon Sep 17 00:00:00 2001
+From d4d634c085647a4621688a62986bfec52d0bf612 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 11 Jul 2020 12:22:17 -0500
+Date: Mon, 26 Oct 2020 14:19:47 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 168 +++++++++++++++++++++++++++---
- 1 file changed, 155 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 173 +++++++++++++++++++++++++++---
+ 1 file changed, 160 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 0494bb4..0ff8b9e 100644
+index 0494bb4..6085b8e 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2060,7 +2060,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -72,7 +72,7 @@ index 0494bb4..0ff8b9e 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9144,3 +9137,152 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9144,3 +9137,157 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -164,7 +164,7 @@ index 0494bb4..0ff8b9e 100644
 +CONFIG_VIDEO_OV5695=m
 +# CONFIG_VIDEO_OV7251 is not set
 +# CONFIG_VIDEO_OV772X is not set
-+CONFIG_VIDEO_OV7740=m
++# CONFIG_VIDEO_OV7740 is not set
 +# CONFIG_VIDEO_OV8856 is not set
 +CONFIG_VIDEO_OV9640=m
 +# CONFIG_VIDEO_OV9650 is not set
@@ -225,6 +225,11 @@ index 0494bb4..0ff8b9e 100644
 +CONFIG_IR_TOY=m
 +# CONFIG_CEC_CH7322 is not set
 +# CONFIG_VIDEO_OV2740 is not set
++CONFIG_DVB_TEST_DRIVERS=y
++CONFIG_DVB_VIDTV=m
++# CONFIG_VIDEO_RDACM20 is not set
++# CONFIG_VIDEO_DW9768 is not set
++
 -- 
 2.7.4
 

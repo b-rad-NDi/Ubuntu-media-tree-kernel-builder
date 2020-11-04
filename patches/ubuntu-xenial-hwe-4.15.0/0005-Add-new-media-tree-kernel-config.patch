@@ -1,14 +1,14 @@
-From 9097ca14af86808cd57e1887796beea74f09b713 Mon Sep 17 00:00:00 2001
+From f76ce03b1ea6ce0b791f2c0cbf4d36e623dac9ad Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 12:26:51 -0500
+Date: Wed, 28 Oct 2020 14:54:09 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.hwe/config/config.common.ubuntu | 129 ++++++++++++++++++++++++++++++---
- 1 file changed, 120 insertions(+), 9 deletions(-)
+ debian.hwe/config/config.common.ubuntu | 133 ++++++++++++++++++++++++++++++---
+ 1 file changed, 124 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 1c610e4..c664bd8 100644
+index 92c98ee..e154b47 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2486,7 +2486,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index 1c610e4..c664bd8 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10158,14 +10158,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10159,14 +10159,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index 1c610e4..c664bd8 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10555,3 +10548,121 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10556,3 +10549,125 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -97,7 +97,7 @@ index 1c610e4..c664bd8 100644
 +CONFIG_VIDEO_OV5695=m
 +# CONFIG_VIDEO_OV7251 is not set
 +# CONFIG_VIDEO_OV772X is not set
-+CONFIG_VIDEO_OV7740=m
++# CONFIG_VIDEO_OV7740 is not set
 +# CONFIG_VIDEO_OV8856 is not set
 +CONFIG_VIDEO_OV9640=m
 +# CONFIG_VIDEO_OV9650 is not set
@@ -157,6 +157,10 @@ index 1c610e4..c664bd8 100644
 +CONFIG_IR_TOY=m
 +# CONFIG_CEC_CH7322 is not set
 +# CONFIG_VIDEO_OV2740 is not set
++CONFIG_DVB_TEST_DRIVERS=y
++CONFIG_DVB_VIDTV=m
++# CONFIG_VIDEO_RDACM20 is not set
++# CONFIG_VIDEO_DW9768 is not set
 +
 -- 
 2.7.4

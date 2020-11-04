@@ -1,17 +1,17 @@
-From aec0c4d88d8323861d08ff48ad4e03c8ba3babb1 Mon Sep 17 00:00:00 2001
+From 9684c91c3ce233302111640ba550130a16ee62c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 11:46:12 -0500
+Date: Wed, 28 Oct 2020 15:19:44 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ debian.master/config/config.common.ubuntu | 30 +++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 30639be13..838fc785b 100644
+index 51bceb764..971a2bdbe 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2802,7 +2802,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2803,7 +2803,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,16 @@ index 30639be13..838fc785b 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11634,3 +11634,17 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11099,7 +11099,7 @@ CONFIG_VIDEO_OV7251=m
+ CONFIG_VIDEO_OV7640=m
+ CONFIG_VIDEO_OV7670=m
+ CONFIG_VIDEO_OV772X=m
+-CONFIG_VIDEO_OV7740=m
++# CONFIG_VIDEO_OV7740 is not set
+ CONFIG_VIDEO_OV8856=m
+ CONFIG_VIDEO_OV9640=m
+ CONFIG_VIDEO_OV9650=m
+@@ -11636,3 +11636,29 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -38,6 +47,18 @@ index 30639be13..838fc785b 100644
 +CONFIG_IR_TOY=m
 +CONFIG_CEC_CH7322=m
 +# CONFIG_VIDEO_OV2740 is not set
++CONFIG_DVB_TEST_DRIVERS=y
++CONFIG_DVB_VIDTV=m
++# CONFIG_VIDEO_RDACM20 is not set
++# CONFIG_VIDEO_DW9768 is not set
++CONFIG_VIDEO_ZORAN=m
++CONFIG_VIDEO_ZORAN_DC30=m
++CONFIG_VIDEO_ZORAN_ZR36060=m
++CONFIG_VIDEO_ZORAN_BUZ=m
++CONFIG_VIDEO_ZORAN_DC10=m
++CONFIG_VIDEO_ZORAN_LML33=m
++CONFIG_VIDEO_ZORAN_LML33R10=m
++CONFIG_VIDEO_ZORAN_AVS6EYES=m
 -- 
 2.25.1
 
