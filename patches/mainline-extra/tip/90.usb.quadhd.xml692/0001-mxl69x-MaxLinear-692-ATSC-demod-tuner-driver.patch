@@ -1,4 +1,4 @@
-From 83a7f50486bc95f4dc51509d719e999e719e038d Mon Sep 17 00:00:00 2001
+From 50bf336b4ac009c247eec0a3f69bcecfd5fa1084 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 2 Jul 2020 16:01:46 -0500
 Subject: [PATCH 1/3] mxl69x: MaxLinear 692 ATSC demod/tuner driver
@@ -10,16 +10,16 @@ Signed-off-by: Brad Love <hidden@email.co>
 ---
  drivers/media/dvb-frontends/Kconfig       |    7 +
  drivers/media/dvb-frontends/Makefile      |    1 +
- drivers/media/dvb-frontends/mxl692.c      | 1392 +++++++++++++++++++++
+ drivers/media/dvb-frontends/mxl692.c      | 1392 +++++++++++++++++++++++++++++
  drivers/media/dvb-frontends/mxl692.h      |   38 +
- drivers/media/dvb-frontends/mxl692_defs.h |  550 ++++++++
+ drivers/media/dvb-frontends/mxl692_defs.h |  550 ++++++++++++
  5 files changed, 1988 insertions(+)
  create mode 100644 drivers/media/dvb-frontends/mxl692.c
  create mode 100644 drivers/media/dvb-frontends/mxl692.h
  create mode 100644 drivers/media/dvb-frontends/mxl692_defs.h
 
 diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
-index 643b851a6..f9a4c087a 100644
+index 643b851..f9a4c08 100644
 --- a/drivers/media/dvb-frontends/Kconfig
 +++ b/drivers/media/dvb-frontends/Kconfig
 @@ -69,6 +69,13 @@ config DVB_MXL5XX
@@ -37,7 +37,7 @@ index 643b851a6..f9a4c087a 100644
  	tristate "Montage Technology M88DS3103"
  	depends on DVB_CORE && I2C && I2C_MUX
 diff --git a/drivers/media/dvb-frontends/Makefile b/drivers/media/dvb-frontends/Makefile
-index e91791626..b9f47d68e 100644
+index e917916..b9f47d6 100644
 --- a/drivers/media/dvb-frontends/Makefile
 +++ b/drivers/media/dvb-frontends/Makefile
 @@ -55,6 +55,7 @@ obj-$(CONFIG_DVB_S5H1420) += s5h1420.o
@@ -50,7 +50,7 @@ index e91791626..b9f47d68e 100644
  obj-$(CONFIG_DVB_LNBH25) += lnbh25.o
 diff --git a/drivers/media/dvb-frontends/mxl692.c b/drivers/media/dvb-frontends/mxl692.c
 new file mode 100644
-index 000000000..f01de0d9d
+index 0000000..f01de0d
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692.c
 @@ -0,0 +1,1392 @@
@@ -1448,7 +1448,7 @@ index 000000000..f01de0d9d
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/media/dvb-frontends/mxl692.h b/drivers/media/dvb-frontends/mxl692.h
 new file mode 100644
-index 000000000..45bc48f1f
+index 0000000..45bc48f
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692.h
 @@ -0,0 +1,38 @@
@@ -1492,7 +1492,7 @@ index 000000000..45bc48f1f
 +#endif /* _MXL692_H_ */
 diff --git a/drivers/media/dvb-frontends/mxl692_defs.h b/drivers/media/dvb-frontends/mxl692_defs.h
 new file mode 100644
-index 000000000..46ce6c4c5
+index 0000000..46ce6c4
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692_defs.h
 @@ -0,0 +1,550 @@
@@ -2047,5 +2047,5 @@ index 000000000..46ce6c4c5
 +};
 +
 -- 
-2.25.1
+2.7.4
 

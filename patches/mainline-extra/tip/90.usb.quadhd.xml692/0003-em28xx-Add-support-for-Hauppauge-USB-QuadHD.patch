@@ -1,20 +1,18 @@
-From 8eba4365203d9fefe6e1398da6c970909cc282ef Mon Sep 17 00:00:00 2001
+From 85981f1da951274ad96000a4c178388811128099 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 24 Feb 2020 11:08:49 -0600
+Date: Wed, 4 Nov 2020 16:21:05 -0600
 Subject: [PATCH 3/3] em28xx: Add support for Hauppauge USB QuadHD
 
 Hauppauge USB QuadHD contains two two-tuner em28xx devices behind a usb hub.
 Each of the four dvb adapters contains a MaxLinear 692 combo ATSC demod/tuner.
-
-Signed-off-by: Brad Love <hidden@email.co>
 ---
- drivers/media/usb/em28xx/em28xx-cards.c | 46 +++++++++++++++++++++++++
- drivers/media/usb/em28xx/em28xx-dvb.c   | 26 ++++++++++++++
+ drivers/media/usb/em28xx/em28xx-cards.c | 46 +++++++++++++++++++++++++++++++++
+ drivers/media/usb/em28xx/em28xx-dvb.c   | 26 +++++++++++++++++++
  drivers/media/usb/em28xx/em28xx.h       |  1 +
  3 files changed, 73 insertions(+)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index a8c321d11..d9d53056c 100644
+index 5144888..f16de75 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
 @@ -549,6 +549,21 @@ static const struct em28xx_reg_seq hauppauge_dualhd_dvb[] = {
@@ -62,7 +60,7 @@ index a8c321d11..d9d53056c 100644
  /*
   *  Board definitions
   */
-@@ -2519,6 +2550,19 @@ const struct em28xx_board em28xx_boards[] = {
+@@ -2539,6 +2570,19 @@ const struct em28xx_board em28xx_boards[] = {
  			.amux     = EM28XX_AMUX_LINE_IN,
  		} },
  	},
@@ -82,7 +80,7 @@ index a8c321d11..d9d53056c 100644
  };
  EXPORT_SYMBOL_GPL(em28xx_boards);
  
-@@ -2652,6 +2696,8 @@ struct usb_device_id em28xx_id_table[] = {
+@@ -2672,6 +2716,8 @@ struct usb_device_id em28xx_id_table[] = {
  			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 },
  	{ USB_DEVICE(0x2040, 0x826d),
  			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 },
@@ -92,7 +90,7 @@ index a8c321d11..d9d53056c 100644
  			.driver_info = EM2880_BOARD_AMD_ATI_TV_WONDER_HD_600 },
  	{ USB_DEVICE(0x2001, 0xf112),
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index a57a7cae1..b960dbb1e 100644
+index a57a7ca..b960dbb 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -62,6 +62,7 @@
@@ -143,17 +141,17 @@ index a57a7cae1..b960dbb1e 100644
  		dev_err(&dev->intf->dev,
  			"The frontend of your DVB/ATSC card isn't supported yet\n");
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index acbb62397..1782bfaf0 100644
+index 874c2f9..8f3b157 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
-@@ -151,6 +151,7 @@
- #define EM2882_BOARD_ZOLID_HYBRID_TV_STICK		102
+@@ -150,6 +150,7 @@
  #define EM2861_BOARD_MAGIX_VIDEOWANDLER2          103
  #define EM28178_BOARD_PCTV_461E_V2                104
-+#define EM2874S_BOARD_HAUPPAUGE_USB_QUADHD        105
+ #define EM2860_BOARD_MYGICA_IGRABBER              105
++#define EM2874S_BOARD_HAUPPAUGE_USB_QUADHD        106
  
  /* Limits minimum and default number of buffers */
  #define EM28XX_MIN_BUF 4
 -- 
-2.25.1
+2.7.4
 

@@ -1,4 +1,4 @@
-From cef730deaf5b66cf5ab3195dd9665d689c2c3040 Mon Sep 17 00:00:00 2001
+From 629aad978f3d6fc23c3082467e92080c845d7a58 Mon Sep 17 00:00:00 2001
 From: Brad Love <brad@nextdimension.cc>
 Date: Fri, 21 Feb 2020 14:48:21 -0600
 Subject: [PATCH 2/3] em28xx-core: Fix TS2 active led
@@ -11,7 +11,7 @@ Signed-off-by: Brad Love <brad@nextdimension.cc>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index e6088b5d1..299cd38a8 100644
+index e6088b5..299cd38 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
 @@ -698,8 +698,10 @@ int em28xx_capture_start(struct em28xx *dev, int start)
@@ -27,5 +27,5 @@ index e6088b5d1..299cd38a8 100644
  	if (led)
  		em28xx_write_reg_bits(dev, led->gpio_reg,
 -- 
-2.25.1
+2.7.4
 
