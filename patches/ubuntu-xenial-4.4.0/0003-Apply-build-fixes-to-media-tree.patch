@@ -1,9 +1,10 @@
-From dca252ceb5d4a45becdbe12b5455bfd0a260a4fb Mon Sep 17 00:00:00 2001
+From ea6d63168c3eb16a0588cff418754d710aa12c54 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 22 Sep 2020 16:52:32 -0500
+Date: Mon, 26 Oct 2020 14:17:38 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
+ drivers/media/cec/core/cec-adap.c                     |  2 ++
  drivers/media/cec/core/cec-api.c                      |  3 +++
  drivers/media/cec/core/cec-core.c                     |  2 ++
  drivers/media/cec/usb/pulse8/pulse8-cec.c             |  2 ++
@@ -13,8 +14,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/common/saa7146/saa7146_vbi.c            |  3 +++
  drivers/media/common/saa7146/saa7146_video.c          |  2 ++
  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c         |  2 ++
- drivers/media/common/videobuf2/videobuf2-core.c       | 14 ++++++++++++++
- drivers/media/common/videobuf2/videobuf2-dma-contig.c | 11 ++++++-----
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c |  7 ++++---
  drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 11 +++++++----
  drivers/media/common/videobuf2/videobuf2-vmalloc.c    |  1 +
  drivers/media/dvb-core/dmxdev.c                       |  2 ++
@@ -26,6 +26,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/i2c/adv7842.c                           |  2 +-
  drivers/media/i2c/ak7375.c                            |  2 ++
  drivers/media/i2c/ir-kbd-i2c.c                        |  2 ++
+ drivers/media/i2c/ov7740.c                            |  2 ++
  drivers/media/i2c/smiapp/Makefile                     |  2 +-
  drivers/media/i2c/smiapp/smiapp.h                     |  2 +-
  drivers/media/i2c/tc358743.c                          |  2 +-
@@ -62,17 +63,21 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/pci/smipcie/Makefile                    |  4 ++--
  drivers/media/pci/solo6x10/solo6x10-gpio.c            |  9 +++++++--
  drivers/media/pci/ttpci/Makefile                      |  4 ++--
+ drivers/media/pci/ttpci/av7110_ipack.c                |  1 +
  drivers/media/pci/ttpci/av7110_ir.c                   |  2 ++
  drivers/media/pci/tw686x/tw686x-core.c                |  2 ++
  drivers/media/platform/sti/c8sectpfe/Makefile         |  4 ++--
  drivers/media/platform/vim2m.c                        |  2 ++
  drivers/media/platform/vivid/vivid-rds-gen.c          |  2 ++
  drivers/media/platform/vivid/vivid-vbi-gen.c          |  2 ++
- drivers/media/radio/wl128x/fmdrv_common.c             |  5 ++++-
+ drivers/media/radio/wl128x/fmdrv_common.c             |  4 +++-
  drivers/media/rc/ene_ir.c                             |  2 ++
  drivers/media/rc/igorplugusb.c                        |  2 ++
+ drivers/media/rc/iguanair.c                           |  2 ++
  drivers/media/rc/imon.c                               |  2 ++
  drivers/media/rc/ir-mce_kbd-decoder.c                 |  2 ++
+ drivers/media/rc/ir-rc6-decoder.c                     |  2 ++
+ drivers/media/rc/ir-sony-decoder.c                    |  2 ++
  drivers/media/rc/keymaps/rc-cec.c                     |  2 ++
  drivers/media/rc/keymaps/rc-imon-rsc.c                |  2 ++
  drivers/media/rc/lirc_dev.c                           |  2 ++
@@ -81,6 +86,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/rc/serial_ir.c                          |  2 ++
  drivers/media/rc/sir_ir.c                             |  2 ++
  drivers/media/spi/Makefile                            |  2 +-
+ drivers/media/test-drivers/vidtv/vidtv_psi.c          |  2 ++
  drivers/media/test-drivers/vivid/vivid-rds-gen.c      |  2 ++
  drivers/media/test-drivers/vivid/vivid-vbi-gen.c      |  2 ++
  drivers/media/usb/as102/Makefile                      |  2 +-
@@ -113,10 +119,23 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-dev.h                              |  5 ++++-
  include/media/v4l2-fwnode.h                           |  2 ++
  include/media/videobuf-core.h                         |  2 ++
- 109 files changed, 241 insertions(+), 71 deletions(-)
+ 115 files changed, 237 insertions(+), 69 deletions(-)
 
+diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+index be6d0bd..3a6341c 100644
+--- a/drivers/media/cec/core/cec-adap.c
++++ b/drivers/media/cec/core/cec-adap.c
+@@ -20,6 +20,8 @@
+ #include <drm/drmP.h>
+ #include <drm/drm_edid.h>
+ 
++#include <media/compat.h>
++
+ #include "cec-priv.h"
+ 
+ static void cec_fill_msg_report_features(struct cec_adapter *adap,
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index 8c6a433..35372a0 100644
+index a9ecfee..15e802c 100644
 --- a/drivers/media/cec/core/cec-api.c
 +++ b/drivers/media/cec/core/cec-api.c
 @@ -19,6 +19,9 @@
@@ -130,7 +149,7 @@ index 8c6a433..35372a0 100644
  #include "cec-pin-priv.h"
  
 diff --git a/drivers/media/cec/core/cec-core.c b/drivers/media/cec/core/cec-core.c
-index c599cd9..c51d05c 100644
+index ece2362..6873d4d 100644
 --- a/drivers/media/cec/core/cec-core.c
 +++ b/drivers/media/cec/core/cec-core.c
 @@ -15,6 +15,8 @@
@@ -143,7 +162,7 @@ index c599cd9..c51d05c 100644
  
  #define CEC_NUM_DEVICES	256
 diff --git a/drivers/media/cec/usb/pulse8/pulse8-cec.c b/drivers/media/cec/usb/pulse8/pulse8-cec.c
-index beae6aa..6af637f 100644
+index e4d8446..4b64198 100644
 --- a/drivers/media/cec/usb/pulse8/pulse8-cec.c
 +++ b/drivers/media/cec/usb/pulse8/pulse8-cec.c
 @@ -41,6 +41,8 @@
@@ -219,7 +238,7 @@ index 39b8e53..0f9a0f8 100644
  
  module_param(max_memory, int, 0644);
 diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-index 50f1e0b..50e6d7e 100644
+index 7607b51..302a5e6 100644
 --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
 @@ -11,6 +11,8 @@
@@ -231,57 +250,11 @@ index 50f1e0b..50e6d7e 100644
  /* Must remain in sync with enum tpg_pattern */
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 187e0eb..f27b856 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -577,6 +577,10 @@ static int __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
- 	if (!q->num_buffers) {
- 		q->memory = VB2_MEMORY_UNKNOWN;
- 		INIT_LIST_HEAD(&q->queued_list);
-+		if (q->dma_attrs)
-+			kfree(q->dma_attrs);
-+
-+		q->dma_attrs = NULL;
- 	}
- 	return 0;
- }
-@@ -707,6 +711,9 @@ EXPORT_SYMBOL(vb2_verify_memory_type);
- 
- static void set_queue_consistency(struct vb2_queue *q, bool consistent_mem)
- {
-+	if (!q->dma_attrs)
-+		return;
-+
- 	__clear_bit(DMA_ATTR_NON_CONSISTENT, q->dma_attrs->flags);
- 
- 	if (!vb2_queue_allows_cache_hints(q))
-@@ -717,6 +724,9 @@ static void set_queue_consistency(struct vb2_queue *q, bool consistent_mem)
- 
- static bool verify_consistency_attr(struct vb2_queue *q, bool consistent_mem)
- {
-+	if (!q->dma_attrs)
-+		return !consistent_mem;
-+
- 	bool queue_is_consistent = !dma_get_attr(DMA_ATTR_NON_CONSISTENT, q->dma_attrs);
- 
- 	if (consistent_mem != queue_is_consistent) {
-@@ -787,6 +797,10 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
- 	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
- 	q->memory = memory;
-+	if (!q->dma_attrs) {
-+		q->dma_attrs = kcalloc(1, sizeof(struct dma_attrs), GFP_KERNEL);
-+		init_dma_attrs(q->dma_attrs);
-+	}
- 	set_queue_consistency(q, consistent_mem);
- 
- 	/*
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index f0f362b..dddc062 100644
+index 2fee9d4..4b4699f 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -224,6 +224,7 @@ struct vb2_dc_attachment {
+@@ -219,6 +219,7 @@ struct vb2_dc_attachment {
  };
  
  static int vb2_dc_dmabuf_ops_attach(struct dma_buf *dbuf,
@@ -289,7 +262,7 @@ index f0f362b..dddc062 100644
  	struct dma_buf_attachment *dbuf_attach)
  {
  	struct vb2_dc_attachment *attach;
-@@ -350,7 +351,7 @@ static void vb2_dc_dmabuf_ops_release(struct dma_buf *dbuf)
+@@ -345,14 +346,14 @@ static void vb2_dc_dmabuf_ops_release(struct dma_buf *dbuf)
  }
  
  static int
@@ -297,8 +270,6 @@ index f0f362b..dddc062 100644
 +vb2_dc_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf, size_t start, size_t len,
  				   enum dma_data_direction direction)
  {
- 	struct vb2_dc_buf *buf = dbuf->priv;
-@@ -363,18 +364,18 @@ vb2_dc_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf,
  	return 0;
  }
  
@@ -308,21 +279,9 @@ index f0f362b..dddc062 100644
 +vb2_dc_dmabuf_ops_end_cpu_access(struct dma_buf *dbuf, size_t start, size_t len,
  				 enum dma_data_direction direction)
  {
- 	struct vb2_dc_buf *buf = dbuf->priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
- 	if (vb2_dc_buffer_consistent(&buf->attrs))
--		return 0;
-+		return;
- 
- 	dma_sync_sg_for_device(buf->dev, sgt->sgl, sgt->nents, buf->dma_dir);
--	return 0;
-+//	return 0;
- }
- 
- static void *vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf)
+ 	return 0;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index eb3c9fc..05c95b4 100644
+index 86a5dc3..33bdc90 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -21,6 +21,8 @@
@@ -334,7 +293,7 @@ index eb3c9fc..05c95b4 100644
  static int debug;
  module_param(debug, int, 0644);
  
-@@ -379,6 +381,7 @@ struct vb2_dma_sg_attachment {
+@@ -378,6 +380,7 @@ struct vb2_dma_sg_attachment {
  };
  
  static int vb2_dma_sg_dmabuf_ops_attach(struct dma_buf *dbuf,
@@ -342,7 +301,7 @@ index eb3c9fc..05c95b4 100644
  	struct dma_buf_attachment *dbuf_attach)
  {
  	struct vb2_dma_sg_attachment *attach;
-@@ -489,7 +492,7 @@ static void vb2_dma_sg_dmabuf_ops_release(struct dma_buf *dbuf)
+@@ -488,7 +491,7 @@ static void vb2_dma_sg_dmabuf_ops_release(struct dma_buf *dbuf)
  }
  
  static int
@@ -351,7 +310,7 @@ index eb3c9fc..05c95b4 100644
  				       enum dma_data_direction direction)
  {
  	struct vb2_dma_sg_buf *buf = dbuf->priv;
-@@ -499,15 +502,15 @@ vb2_dma_sg_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf,
+@@ -498,15 +501,15 @@ vb2_dma_sg_dmabuf_ops_begin_cpu_access(struct dma_buf *dbuf,
  	return 0;
  }
  
@@ -409,7 +368,7 @@ index 1731bfb..5023e54 100644
  module_param(dvb_demux_tscheck, int, 0644);
  MODULE_PARM_DESC(dvb_demux_tscheck,
 diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
-index 574c47f..72b246c 100644
+index 9308289..777977f 100644
 --- a/drivers/media/dvb-core/dvb_net.c
 +++ b/drivers/media/dvb-core/dvb_net.c
 @@ -54,6 +54,8 @@
@@ -444,10 +403,10 @@ index e452878..c260869 100644
  
  /* ISDB-S registers */
 diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 6804ad5..be296c4 100644
+index 878f66e..3a670df 100644
 --- a/drivers/media/i2c/Kconfig
 +++ b/drivers/media/i2c/Kconfig
-@@ -674,7 +674,7 @@ config VIDEO_I2C
+@@ -687,7 +687,7 @@ config VIDEO_I2C
  	tristate "I2C transport video support"
  	depends on VIDEO_V4L2 && I2C
  	select VIDEOBUF2_VMALLOC
@@ -508,6 +467,19 @@ index e8119ad..2964e83 100644
  #define FLAG_TX		1
  #define FLAG_HDPVR	2
  
+diff --git a/drivers/media/i2c/ov7740.c b/drivers/media/i2c/ov7740.c
+index 2fa5be5..c1df810 100644
+--- a/drivers/media/i2c/ov7740.c
++++ b/drivers/media/i2c/ov7740.c
+@@ -13,6 +13,8 @@
+ #include <media/v4l2-image-sizes.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ #define REG_OUTSIZE_LSB 0x34
+ 
+ /* OV7740 register tables */
 diff --git a/drivers/media/i2c/smiapp/Makefile b/drivers/media/i2c/smiapp/Makefile
 index 86f57a4..6384648 100644
 --- a/drivers/media/i2c/smiapp/Makefile
@@ -532,7 +504,7 @@ index 6f46993..6d25692 100644
  #include "smiapp-regs.h"
  #include "smiapp-quirk.h"
 diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index bc2e35e..00dc930 100644
+index 80c90bc..508cb7f 100644
 --- a/drivers/media/i2c/tc358743.c
 +++ b/drivers/media/i2c/tc358743.c
 @@ -444,7 +444,7 @@ static void print_avi_infoframe(struct v4l2_subdev *sd)
@@ -545,7 +517,7 @@ index bc2e35e..00dc930 100644
  		return;
  	}
 diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index abbcf3a..d1b0512 100644
+index 527ad11..536c83f 100644
 --- a/drivers/media/i2c/tda1997x.c
 +++ b/drivers/media/i2c/tda1997x.c
 @@ -30,6 +30,8 @@
@@ -634,7 +606,7 @@ index 69bc0d9..2c290ff 100644
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-index 4ae7407..3e7cdea 100644
+index 6d8a5ad..19d03c7 100644
 --- a/drivers/media/pci/bt8xx/bttv-driver.c
 +++ b/drivers/media/pci/bt8xx/bttv-driver.c
 @@ -49,6 +49,8 @@
@@ -735,7 +707,7 @@ index 5e7eab8..ad9b7cf 100644
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends/
 +ccflags-y += -I$(srctree)/drivers/media/tuners/
 diff --git a/drivers/media/pci/ddbridge/ddbridge-core.c b/drivers/media/pci/ddbridge/ddbridge-core.c
-index 7cabb9e..8d484af 100644
+index 92fe051..2c6168f 100644
 --- a/drivers/media/pci/ddbridge/ddbridge-core.c
 +++ b/drivers/media/pci/ddbridge/ddbridge-core.c
 @@ -30,6 +30,8 @@
@@ -758,7 +730,7 @@ index bf80409..04a5801 100644
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -Idrivers/media/dvb-frontends
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index c6fc5ec..dfcbe6b 100644
+index a366370..49e13982 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -59,6 +59,8 @@
@@ -804,7 +776,7 @@ index 215bdaf..944c3e1 100644
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -Idrivers/media/dvb-frontends
 diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
-index 80a7c41..690388e 100644
+index 6f3125c..bd028c7 100644
 --- a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
 +++ b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
 @@ -28,6 +28,8 @@
@@ -863,7 +835,7 @@ index da6b265..de31f91 100644
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index e4623ed..8ccbc35 100644
+index 391572a..337b732 100644
 --- a/drivers/media/pci/saa7134/saa7134-core.c
 +++ b/drivers/media/pci/saa7134/saa7134-core.c
 @@ -23,6 +23,8 @@
@@ -915,7 +887,7 @@ index 3f0b093..a1f3cd4 100644
  
  static unsigned int vbi_debug;
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index a8ac94f..cc7e235 100644
+index 9a6a6b6..2229d8b 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -21,6 +21,8 @@
@@ -940,7 +912,7 @@ index 2426b75..bb474df 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/pci/solo6x10/solo6x10-gpio.c b/drivers/media/pci/solo6x10/solo6x10-gpio.c
-index 526d67c..8d60789 100644
+index 084c307..36f6054 100644
 --- a/drivers/media/pci/solo6x10/solo6x10-gpio.c
 +++ b/drivers/media/pci/solo6x10/solo6x10-gpio.c
 @@ -16,6 +16,10 @@
@@ -985,6 +957,18 @@ index 9b44c47..67ca60b 100644
 -ccflags-y += -I $(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends/
 +ccflags-y += -I$(srctree)/drivers/media/tuners
+diff --git a/drivers/media/pci/ttpci/av7110_ipack.c b/drivers/media/pci/ttpci/av7110_ipack.c
+index 30330ed..dbc5d77 100644
+--- a/drivers/media/pci/ttpci/av7110_ipack.c
++++ b/drivers/media/pci/ttpci/av7110_ipack.c
+@@ -4,6 +4,7 @@
+ #include <linux/string.h>	/* for memcpy() */
+ #include <linux/vmalloc.h>
+ 
++#include <media/compat.h>
+ 
+ void av7110_ipack_reset(struct ipack *p)
+ {
 diff --git a/drivers/media/pci/ttpci/av7110_ir.c b/drivers/media/pci/ttpci/av7110_ir.c
 index a851ba3..883c5d0 100644
 --- a/drivers/media/pci/ttpci/av7110_ir.c
@@ -1063,20 +1047,19 @@ index a2159de..13ef0b1 100644
  {
  	while (size--)
 diff --git a/drivers/media/radio/wl128x/fmdrv_common.c b/drivers/media/radio/wl128x/fmdrv_common.c
-index cce97c9..6a58998 100644
+index a67b976..7ec9795 100644
 --- a/drivers/media/radio/wl128x/fmdrv_common.c
 +++ b/drivers/media/radio/wl128x/fmdrv_common.c
-@@ -22,6 +22,9 @@
- #include <linux/module.h>
+@@ -23,6 +23,8 @@
  #include <linux/firmware.h>
- #include <linux/delay.h>
-+
+ #include <linux/module.h>
+ 
 +#include <media/compat.h>
 +
  #include "fmdrv.h"
  #include "fmdrv_v4l2.h"
  #include "fmdrv_common.h"
-@@ -407,7 +410,7 @@ static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
+@@ -408,7 +410,7 @@ static int fm_send_cmd(struct fmdev *fmdev, u8 fm_op, u16 type,	void *payload,
  	if (!test_bit(FM_FW_DW_INPROGRESS, &fmdev->flag) ||
  			test_bit(FM_INTTASK_RUNNING, &fmdev->flag)) {
  		/* Fill command header info */
@@ -1086,7 +1069,7 @@ index cce97c9..6a58998 100644
  
  		/* 3 (fm_opcode,rd_wr,dlen) + payload len) */
 diff --git a/drivers/media/rc/ene_ir.c b/drivers/media/rc/ene_ir.c
-index 75632e7..a8e12d4 100644
+index cda9c6f..edea9ba 100644
 --- a/drivers/media/rc/ene_ir.c
 +++ b/drivers/media/rc/ene_ir.c
 @@ -28,6 +28,8 @@
@@ -1099,7 +1082,7 @@ index 75632e7..a8e12d4 100644
  static bool learning_mode_force;
  static int debug;
 diff --git a/drivers/media/rc/igorplugusb.c b/drivers/media/rc/igorplugusb.c
-index b981f72..c262fc2 100644
+index effaa57..ed8e281 100644
 --- a/drivers/media/rc/igorplugusb.c
 +++ b/drivers/media/rc/igorplugusb.c
 @@ -18,6 +18,8 @@
@@ -1111,8 +1094,21 @@ index b981f72..c262fc2 100644
  #define DRIVER_DESC		"IgorPlug-USB IR Receiver"
  #define DRIVER_NAME		"igorplugusb"
  
+diff --git a/drivers/media/rc/iguanair.c b/drivers/media/rc/iguanair.c
+index 84949ba..e1d4244 100644
+--- a/drivers/media/rc/iguanair.c
++++ b/drivers/media/rc/iguanair.c
+@@ -14,6 +14,8 @@
+ #include <linux/completion.h>
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ #define BUF_SIZE 152
+ 
+ struct iguanair {
 diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index 5f1ca9b..0be57c6 100644
+index 892f204..209bd92 100644
 --- a/drivers/media/rc/imon.c
 +++ b/drivers/media/rc/imon.c
 @@ -32,6 +32,8 @@
@@ -1125,7 +1121,7 @@ index 5f1ca9b..0be57c6 100644
  #define MOD_DESC	"Driver for SoundGraph iMON MultiMedia IR/Display"
  #define MOD_NAME	"imon"
 diff --git a/drivers/media/rc/ir-mce_kbd-decoder.c b/drivers/media/rc/ir-mce_kbd-decoder.c
-index cfe837f..d4abc98 100644
+index be8f275..e150912 100644
 --- a/drivers/media/rc/ir-mce_kbd-decoder.c
 +++ b/drivers/media/rc/ir-mce_kbd-decoder.c
 @@ -10,6 +10,8 @@
@@ -1137,6 +1133,32 @@ index cfe837f..d4abc98 100644
  /*
   * This decoder currently supports:
   * - MCIR-2 29-bit IR signals used for mouse movement and buttons
+diff --git a/drivers/media/rc/ir-rc6-decoder.c b/drivers/media/rc/ir-rc6-decoder.c
+index 0657ad5..60afef4 100644
+--- a/drivers/media/rc/ir-rc6-decoder.c
++++ b/drivers/media/rc/ir-rc6-decoder.c
+@@ -7,6 +7,8 @@
+ #include "rc-core-priv.h"
+ #include <linux/module.h>
+ 
++#include <media/compat.h>
++
+ /*
+  * This decoder currently supports:
+  * RC6-0-16	(standard toggle bit in header)
+diff --git a/drivers/media/rc/ir-sony-decoder.c b/drivers/media/rc/ir-sony-decoder.c
+index d760d52..bdde2cf 100644
+--- a/drivers/media/rc/ir-sony-decoder.c
++++ b/drivers/media/rc/ir-sony-decoder.c
+@@ -8,6 +8,8 @@
+ #include <linux/module.h>
+ #include "rc-core-priv.h"
+ 
++#include <media/compat.h>
++
+ #define SONY_UNIT		600 /* us */
+ #define SONY_HEADER_PULSE	(4 * SONY_UNIT)
+ #define	SONY_HEADER_SPACE	(1 * SONY_UNIT)
 diff --git a/drivers/media/rc/keymaps/rc-cec.c b/drivers/media/rc/keymaps/rc-cec.c
 index 3e3bd11..fc49283 100644
 --- a/drivers/media/rc/keymaps/rc-cec.c
@@ -1164,7 +1186,7 @@ index 38787dd..4bb83ed 100644
  // Note that this remote has a stick which its own IR protocol,
  // with 16 directions. This is supported by the imon_rsc BPF decoder
 diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
-index 3f26440..5a7201f 100644
+index 1cab15f..740b28e 100644
 --- a/drivers/media/rc/lirc_dev.c
 +++ b/drivers/media/rc/lirc_dev.c
 @@ -17,6 +17,8 @@
@@ -1177,7 +1199,7 @@ index 3f26440..5a7201f 100644
  #include <uapi/linux/lirc.h>
  
 diff --git a/drivers/media/rc/rc-ir-raw.c b/drivers/media/rc/rc-ir-raw.c
-index 39dd46b..bd4685c 100644
+index c65bba4..d7d81a5 100644
 --- a/drivers/media/rc/rc-ir-raw.c
 +++ b/drivers/media/rc/rc-ir-raw.c
 @@ -10,6 +10,8 @@
@@ -1190,7 +1212,7 @@ index 39dd46b..bd4685c 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index 4845024..61cbe18 100644
+index a7e1537..9994a1a 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -1203,7 +1225,7 @@ index 4845024..61cbe18 100644
  #define IR_TAB_MIN_SIZE	256
  #define IR_TAB_MAX_SIZE	8192
 diff --git a/drivers/media/rc/serial_ir.c b/drivers/media/rc/serial_ir.c
-index ca03bc5..1ee11ec 100644
+index 66fab3c..3ef0c8b 100644
 --- a/drivers/media/rc/serial_ir.c
 +++ b/drivers/media/rc/serial_ir.c
 @@ -27,6 +27,8 @@
@@ -1216,7 +1238,7 @@ index ca03bc5..1ee11ec 100644
  	int signal_pin;
  	int signal_pin_change;
 diff --git a/drivers/media/rc/sir_ir.c b/drivers/media/rc/sir_ir.c
-index 5bcd157..fb9e270 100644
+index a13d560..1240b56 100644
 --- a/drivers/media/rc/sir_ir.c
 +++ b/drivers/media/rc/sir_ir.c
 @@ -19,6 +19,8 @@
@@ -1238,6 +1260,19 @@ index 9f45787..5b0c21d 100644
  
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends/cxd2880
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends/cxd2880
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+index 85d9319..9cc8279 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+@@ -30,6 +30,8 @@
+ #include "vidtv_common.h"
+ #include "vidtv_ts.h"
+ 
++#include <media/compat.h>
++
+ #define CRC_SIZE_IN_BYTES 4
+ #define MAX_VERSION_NUM 32
+ 
 diff --git a/drivers/media/test-drivers/vivid/vivid-rds-gen.c b/drivers/media/test-drivers/vivid/vivid-rds-gen.c
 index b5b104e..26bcea9 100644
 --- a/drivers/media/test-drivers/vivid/vivid-rds-gen.c
@@ -1252,7 +1287,7 @@ index b5b104e..26bcea9 100644
  
  static u8 vivid_get_di(const struct vivid_rds_gen *rds, unsigned grp)
 diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-index acc9844..3948108 100644
+index a141369..15f2f03 100644
 --- a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
 +++ b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
 @@ -11,6 +11,8 @@
@@ -1302,7 +1337,7 @@ index 2a8691a..e5d354c 100644
  module_param_named(preallocate_big_buffers, preallocate_big_buffers, int, 0644);
  MODULE_PARM_DESC(preallocate_big_buffers, "Preallocate the larger transfer buffers at module load time");
 diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
-index 51b8d14..d4ba29f 100644
+index aa5bc6a..677ba33 100644
 --- a/drivers/media/usb/au0828/au0828-video.c
 +++ b/drivers/media/usb/au0828/au0828-video.c
 @@ -27,6 +27,8 @@
@@ -1384,7 +1419,7 @@ index 2e71afc..e58c480 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index 1cfb7cf..36e9b0b 100644
+index f4a7279..df1c09f 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 @@ -28,6 +28,8 @@
@@ -1396,7 +1431,7 @@ index 1cfb7cf..36e9b0b 100644
  #define TV_MIN_FREQ     55250000L
  #define TV_MAX_FREQ    850000000L
  
-@@ -3659,12 +3661,14 @@ static int pvr2_send_request_ex(struct pvr2_hdw *hdw,
+@@ -3658,12 +3660,14 @@ static int pvr2_send_request_ex(struct pvr2_hdw *hdw,
  				  hdw);
  		hdw->ctl_write_urb->actual_length = 0;
  		hdw->ctl_write_pend_flag = !0;
@@ -1411,7 +1446,7 @@ index 1cfb7cf..36e9b0b 100644
  		status = usb_submit_urb(hdw->ctl_write_urb,GFP_KERNEL);
  		if (status < 0) {
  			pvr2_trace(PVR2_TRACE_ERROR_LEGS,
-@@ -3689,12 +3693,14 @@ status);
+@@ -3688,12 +3692,14 @@ status);
  				  hdw);
  		hdw->ctl_read_urb->actual_length = 0;
  		hdw->ctl_read_pend_flag = !0;
@@ -1474,7 +1509,7 @@ index 09e42bf..1217eec 100644
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 7b8a032..86c51bd 100644
+index 9da64b1..09b72e3 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -21,6 +21,8 @@
@@ -1500,7 +1535,7 @@ index 10ddcc4..85f3998 100644
  	(v4l2_flash && v4l2_flash->ops && v4l2_flash->ops->op)
  
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index c435d89..5036c86 100644
+index 0524882..5121bad 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -24,6 +24,8 @@
@@ -1513,7 +1548,7 @@ index c435d89..5036c86 100644
  #include <media/v4l2-fwnode.h>
  #include <media/v4l2-subdev.h>
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 77dc1db..1077e19 100644
+index 4b03e3f..53c29d4 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -29,6 +29,8 @@
@@ -1539,7 +1574,7 @@ index 9985c89..a99983b 100644
  module_param(debug, int, 0644);
  
 diff --git a/include/media/compat.h b/include/media/compat.h
-index 04cc4f1..b8aed12 100644
+index ac85049..5643b56 100644
 --- a/include/media/compat.h
 +++ b/include/media/compat.h
 @@ -42,6 +42,11 @@
@@ -1592,7 +1627,7 @@ index bbec05a..d1bb04d 100644
  	unsigned int  block_count;
  	bool          nonblocking;
 diff --git a/include/media/media-devnode.h b/include/media/media-devnode.h
-index 6393842..187c64e 100644
+index d27c1c6..93ba87d 100644
 --- a/include/media/media-devnode.h
 +++ b/include/media/media-devnode.h
 @@ -21,6 +21,8 @@
@@ -1605,7 +1640,7 @@ index 6393842..187c64e 100644
  
  /*
 diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index cde80ad..948d26c 100644
+index cbdfcb7..6404df1 100644
 --- a/include/media/media-entity.h
 +++ b/include/media/media-entity.h
 @@ -18,6 +18,8 @@
@@ -1631,7 +1666,7 @@ index a18cdbc..32c6bef 100644
   * enum media_request_state - media request state
   *
 diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index f40e2cb..c925b37 100644
+index cb25f34..459003c 100644
 --- a/include/media/v4l2-ctrls.h
 +++ b/include/media/v4l2-ctrls.h
 @@ -13,6 +13,8 @@
@@ -1667,7 +1702,7 @@ index ad2d419..32e713a 100644
  
  /**
 diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
-index c47b706..3ecb055 100644
+index c090742..9633d3b 100644
 --- a/include/media/v4l2-fwnode.h
 +++ b/include/media/v4l2-fwnode.h
 @@ -21,6 +21,8 @@
