@@ -1,25 +1,32 @@
-From 3dd2a658e749a17420fb41070298d2925819f98c Mon Sep 17 00:00:00 2001
+From aa930008df231aaece4ce73b9315201b4fa6ba59 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 3 Sep 2020 12:26:17 -0500
+Date: Wed, 28 Oct 2020 14:53:51 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |   3 +-
- drivers/usb/gadget/function/uvc_queue.c |   2 +-
- fs/compat_ioctl.c                       |  42 +------
- include/linux/dma-buf.h                 | 194 ++++++++------------------------
- include/linux/dma-fence.h               |  42 +++----
- include/linux/hdmi.h                    |   7 +-
- include/linux/mmc/sdio_ids.h            |   7 ++
- include/linux/pci_ids.h                 |   4 +
- sound/pci/bt87x.c                       |  31 +++--
- 9 files changed, 111 insertions(+), 221 deletions(-)
+ drivers/hid/hid-picolcd_cir.c           |  4 +--
+ drivers/usb/gadget/function/uvc_queue.c |  2 +-
+ fs/compat_ioctl.c                       | 42 ++-----------------------
+ include/linux/dma-buf.h                 | 55 ++++++++++++++++++++-------------
+ include/linux/dma-fence.h               | 42 +++++++++++++------------
+ include/linux/hdmi.h                    |  7 ++---
+ include/linux/mmc/sdio_ids.h            |  7 +++++
+ include/linux/pci_ids.h                 |  4 +++
+ sound/pci/bt87x.c                       | 31 +++++++++++++------
+ 9 files changed, 97 insertions(+), 97 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 32747b7..bf6f29c 100644
+index 32747b7..1d42112 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
-@@ -45,7 +45,7 @@ int picolcd_raw_cir(struct picolcd_data *data,
+@@ -39,13 +39,14 @@
+ 
+ #include "hid-picolcd.h"
+ 
++#define MS_TO_NS(msec)		((msec) * 1000 * 1000)
+ 
+ int picolcd_raw_cir(struct picolcd_data *data,
+ 		struct hid_report *report, u8 *raw_data, int size)
  {
  	unsigned long flags;
  	int i, w, sz;
@@ -28,7 +35,7 @@ index 32747b7..bf6f29c 100644
  
  	/* ignore if rc_dev is NULL or status is shunned */
  	spin_lock_irqsave(&data->lock, flags);
-@@ -67,7 +67,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
+@@ -67,7 +68,6 @@ int picolcd_raw_cir(struct picolcd_data *data,
  	 */
  	sz = size > 0 ? min((int)raw_data[0], size-1) : 0;
  	for (i = 0; i+1 < sz; i += 2) {
@@ -134,7 +141,7 @@ index c738ae5..283ef44 100644
  
  	/*
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ab0c156..8aacc05 100644
+index ec212cb..7622be3 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
 @@ -1,4 +1,3 @@
@@ -220,105 +227,16 @@ index ab0c156..8aacc05 100644
  
  	/**
  	 * @detach:
-@@ -82,42 +93,13 @@ struct dma_buf_ops {
- 	void (*detach)(struct dma_buf *, struct dma_buf_attachment *);
- 
- 	/**
--	 * @pin:
--	 *
--	 * This is called by dma_buf_pin and lets the exporter know that the
--	 * DMA-buf can't be moved any more.
--	 *
--	 * This is called with the dmabuf->resv object locked and is mutual
--	 * exclusive with @cache_sgt_mapping.
--	 *
--	 * This callback is optional and should only be used in limited use
--	 * cases like scanout and not for temporary pin operations.
--	 *
--	 * Returns:
--	 *
--	 * 0 on success, negative error code on failure.
--	 */
--	int (*pin)(struct dma_buf_attachment *attach);
--
--	/**
--	 * @unpin:
--	 *
--	 * This is called by dma_buf_unpin and lets the exporter know that the
--	 * DMA-buf can be moved again.
--	 *
--	 * This is called with the dmabuf->resv object locked and is mutual
--	 * exclusive with @cache_sgt_mapping.
--	 *
--	 * This callback is optional.
--	 */
--	void (*unpin)(struct dma_buf_attachment *attach);
--
--	/**
- 	 * @map_dma_buf:
- 	 *
- 	 * This is called by dma_buf_map_attachment() and is used to map a
- 	 * shared &dma_buf into device address space, and it is mandatory. It
--	 * can only be called if @attach has been called successfully.
-+	 * can only be called if @attach has been called successfully. This
-+	 * essentially pins the DMA buffer into place, and it cannot be moved
-+	 * any more
- 	 *
- 	 * This call may sleep, e.g. when the backing storage first needs to be
- 	 * allocated, or moved to a location suitable for all currently attached
-@@ -138,9 +120,6 @@ struct dma_buf_ops {
- 	 * any other kind of sharing that the exporter might wish to make
- 	 * available to buffer-users.
- 	 *
--	 * This is always called with the dmabuf->resv object locked when
--	 * the dynamic_mapping flag is true.
--	 *
- 	 * Returns:
- 	 *
- 	 * A &sg_table scatter list of or the backing storage of the DMA buffer,
-@@ -158,8 +137,9 @@ struct dma_buf_ops {
- 	 *
- 	 * This is called by dma_buf_unmap_attachment() and should unmap and
- 	 * release the &sg_table allocated in @map_dma_buf, and it is mandatory.
--	 * For static dma_buf handling this might also unpins the backing
--	 * storage if this is the last mapping of the DMA buffer.
-+	 * It should also unpin the backing storage if this is the last mapping
-+	 * of the DMA buffer, it the exporter supports backing storage
-+	 * migration.
- 	 */
- 	void (*unmap_dma_buf)(struct dma_buf_attachment *,
- 			      struct sg_table *,
-@@ -227,6 +207,10 @@ struct dma_buf_ops {
+@@ -196,6 +207,8 @@ struct dma_buf_ops {
  	 * to be restarted.
  	 */
  	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
 +	void *(*map_atomic)(struct dma_buf *, unsigned long);
 +	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
-+	void *(*map)(struct dma_buf *, unsigned long);
-+	void (*unmap)(struct dma_buf *, unsigned long, void *);
  
  	/**
  	 * @mmap:
-@@ -273,16 +257,12 @@ struct dma_buf_ops {
-  * struct dma_buf - shared buffer object
-  * @size: size of the buffer
-  * @file: file pointer used for sharing buffers across, and for refcounting.
-- * @attachments: list of dma_buf_attachment that denotes all devices attached,
-- *               protected by dma_resv lock.
-+ * @attachments: list of dma_buf_attachment that denotes all devices attached.
-  * @ops: dma_buf_ops associated with this buffer object.
-- * @lock: used internally to serialize list manipulation, attach/detach and
-- *        vmap/unmap
-+ * @lock: used internally to serialize list manipulation, attach/detach and vmap/unmap
-  * @vmapping_counter: used internally to refcnt the vmaps
-  * @vmap_ptr: the current vmap ptr if vmapping_counter > 0
-  * @exp_name: name of the exporter; useful for debugging.
-- * @name: userspace-provided name; useful for accounting and debugging,
-- *        protected by @resv.
-  * @owner: pointer to exporter module; used for refcounting when exporter is a
-  *         kernel module.
-  * @list_node: node for dma_buf accounting and debugging.
-@@ -314,7 +294,7 @@ struct dma_buf {
+@@ -306,7 +319,7 @@ struct dma_buf {
  	struct module *owner;
  	struct list_head list_node;
  	void *priv;
@@ -327,7 +245,7 @@ index ab0c156..8aacc05 100644
  
  	/* poll support */
  	wait_queue_head_t poll;
-@@ -323,57 +303,16 @@ struct dma_buf {
+@@ -315,7 +328,7 @@ struct dma_buf {
  		struct dma_fence_cb cb;
  		wait_queue_head_t *poll;
  
@@ -336,70 +254,16 @@ index ab0c156..8aacc05 100644
  	} cb_excl, cb_shared;
  };
  
- /**
-- * struct dma_buf_attach_ops - importer operations for an attachment
-- *
-- * Attachment operations implemented by the importer.
-- */
--struct dma_buf_attach_ops {
--	/**
--	 * @allow_peer2peer:
--	 *
--	 * If this is set to true the importer must be able to handle peer
--	 * resources without struct pages.
--	 */
--	bool allow_peer2peer;
--
--	/**
--	 * @move_notify: [optional] notification that the DMA-buf is moving
--	 *
--	 * If this callback is provided the framework can avoid pinning the
--	 * backing store while mappings exists.
--	 *
--	 * This callback is called with the lock of the reservation object
--	 * associated with the dma_buf held and the mapping function must be
--	 * called with this lock held as well. This makes sure that no mapping
--	 * is created concurrently with an ongoing move operation.
--	 *
--	 * Mappings stay valid and are not directly affected by this callback.
--	 * But the DMA-buf can now be in a different physical location, so all
--	 * mappings should be destroyed and re-created as soon as possible.
--	 *
--	 * New mappings can be created after this callback returns, and will
--	 * point to the new location of the DMA-buf.
--	 */
--	void (*move_notify)(struct dma_buf_attachment *attach);
--};
--
--/**
-  * struct dma_buf_attachment - holds device-buffer attachment data
-  * @dmabuf: buffer for this attachment.
-  * @dev: device attached to the buffer.
-- * @node: list of dma_buf_attachment, protected by dma_resv lock of the dmabuf.
-- * @sgt: cached mapping.
-- * @dir: direction of cached mapping.
-- * @peer2peer: true if the importer can handle peer resources without pages.
-+ * @node: list of dma_buf_attachment.
-  * @priv: exporter specific attachment data.
-- * @importer_ops: importer operations for this attachment, if provided
-- * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
-- * @importer_priv: importer specific attachment data.
-  *
-  * This structure holds the attachment information between the dma_buf buffer
-  * and its user device(s). The list contains one attachment struct per device
-@@ -388,11 +327,6 @@ struct dma_buf_attachment {
+@@ -341,8 +354,6 @@ struct dma_buf_attachment {
  	struct dma_buf *dmabuf;
  	struct device *dev;
  	struct list_head node;
 -	struct sg_table *sgt;
 -	enum dma_data_direction dir;
--	bool peer2peer;
--	const struct dma_buf_attach_ops *importer_ops;
--	void *importer_priv;
  	void *priv;
  };
  
-@@ -415,7 +349,7 @@ struct dma_buf_export_info {
+@@ -365,7 +376,7 @@ struct dma_buf_export_info {
  	const struct dma_buf_ops *ops;
  	size_t size;
  	int flags;
@@ -408,70 +272,17 @@ index ab0c156..8aacc05 100644
  	void *priv;
  };
  
-@@ -444,43 +378,10 @@ static inline void get_dma_buf(struct dma_buf *dmabuf)
- 	get_file(dmabuf->file);
- }
- 
--/**
-- * dma_buf_is_dynamic - check if a DMA-buf uses dynamic mappings.
-- * @dmabuf: the DMA-buf to check
-- *
-- * Returns true if a DMA-buf exporter wants to be called with the dma_resv
-- * locked for the map/unmap callbacks, false if it doesn't wants to be called
-- * with the lock held.
-- */
--static inline bool dma_buf_is_dynamic(struct dma_buf *dmabuf)
--{
--	return !!dmabuf->ops->pin;
--}
--
--/**
-- * dma_buf_attachment_is_dynamic - check if a DMA-buf attachment uses dynamic
-- * mappinsg
-- * @attach: the DMA-buf attachment to check
-- *
-- * Returns true if a DMA-buf importer wants to call the map/unmap functions with
-- * the dma_resv lock held.
-- */
--static inline bool
--dma_buf_attachment_is_dynamic(struct dma_buf_attachment *attach)
--{
--	return !!attach->importer_ops;
--}
--
- struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
--					  struct device *dev);
--struct dma_buf_attachment *
--dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
--		       const struct dma_buf_attach_ops *importer_ops,
--		       void *importer_priv);
-+							struct device *dev);
- void dma_buf_detach(struct dma_buf *dmabuf,
--		    struct dma_buf_attachment *attach);
--int dma_buf_pin(struct dma_buf_attachment *attach);
--void dma_buf_unpin(struct dma_buf_attachment *attach);
-+				struct dma_buf_attachment *dmabuf_attach);
- 
- struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info);
- 
-@@ -492,11 +393,14 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *,
- 					enum dma_data_direction);
- void dma_buf_unmap_attachment(struct dma_buf_attachment *, struct sg_table *,
- 				enum dma_data_direction);
--void dma_buf_move_notify(struct dma_buf *dma_buf);
- int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
+@@ -413,6 +424,8 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
  			     enum dma_data_direction dir);
  int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
  			   enum dma_data_direction dir);
 +void *dma_buf_kmap_atomic(struct dma_buf *, unsigned long);
 +void dma_buf_kunmap_atomic(struct dma_buf *, unsigned long, void *);
-+void *dma_buf_kmap(struct dma_buf *, unsigned long);
-+void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
+ void *dma_buf_kmap(struct dma_buf *, unsigned long);
+ void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
  
- int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
- 		 unsigned long);
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3347c54..894e0ec 100644
+index 09e23ad..38d5103 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
 @@ -63,8 +63,14 @@ struct dma_fence_cb;
@@ -531,7 +342,7 @@ index 3347c54..894e0ec 100644
  
  void dma_fence_release(struct kref *kref);
  void dma_fence_free(struct dma_fence *fence);
-@@ -435,15 +437,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
+@@ -448,15 +450,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
   * Returns true if f1 is chronologically later than f2. Both fences must be
   * from the same context, since a seqno is not common across contexts.
   */
@@ -551,7 +362,7 @@ index 3347c54..894e0ec 100644
  
  	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
  }
-@@ -462,7 +464,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
+@@ -475,7 +477,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
  	if (WARN_ON(f1->context != f2->context))
  		return false;
  
@@ -560,7 +371,7 @@ index 3347c54..894e0ec 100644
  }
  
  /**
-@@ -577,21 +579,21 @@ u64 dma_fence_context_alloc(unsigned num);
+@@ -590,21 +592,21 @@ u64 dma_fence_context_alloc(unsigned num);
  	do {								\
  		struct dma_fence *__ff = (f);				\
  		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
@@ -586,10 +397,10 @@ index 3347c54..894e0ec 100644
  	} while (0)
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 50c31f1..5bee6f6 100644
+index 9850d59..c6d5b79 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -207,7 +207,7 @@ struct hdmi_drm_infoframe {
+@@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
  	u16 max_fall;
  };
  
@@ -598,7 +409,7 @@ index 50c31f1..5bee6f6 100644
  ssize_t hdmi_avi_infoframe_pack(struct hdmi_avi_infoframe *frame, void *buffer,
  				size_t size);
  ssize_t hdmi_avi_infoframe_pack_only(const struct hdmi_avi_infoframe *frame,
-@@ -431,9 +431,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+@@ -432,9 +432,8 @@ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
  ssize_t hdmi_infoframe_pack_only(const union hdmi_infoframe *frame,
  				 void *buffer, size_t size);
  int hdmi_infoframe_check(union hdmi_infoframe *frame);
@@ -611,7 +422,7 @@ index 50c31f1..5bee6f6 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 15ed8ce..9a17fce 100644
+index 1203661..4b44f2a 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -41,6 +41,8 @@
@@ -650,7 +461,7 @@ index 15ed8ce..9a17fce 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 0ad5769..d574acc 100644
+index 1ab1e24..3fae6dc 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -1075,6 +1075,7 @@
@@ -669,7 +480,7 @@ index 0ad5769..d574acc 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3124,4 +3126,6 @@
+@@ -3132,4 +3134,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -677,7 +488,7 @@ index 0ad5769..d574acc 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 6567504..66a5a24 100644
+index 54cb223..255b90a 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {

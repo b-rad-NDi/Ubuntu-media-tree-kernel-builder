@@ -1,20 +1,21 @@
-From 8f901db5c05a6a00d9e8ea52b1435202fed383d3 Mon Sep 17 00:00:00 2001
+From 22b11b91a04a76c4e2843caf89fb0d1ed283fe14 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 9 Jul 2020 14:16:15 -0500
+Date: Thu, 29 Oct 2020 12:39:43 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  debian/dkms-versions                      |  2 +-
  drivers/gpu/drm/i2c/tda9950.c             | 11 +++++---
  drivers/gpu/drm/i2c/tda998x_drv.c         |  9 ++++---
- drivers/gpu/drm/i915/display/intel_hdmi.c | 20 +++++++++++---
- include/linux/dma-buf.h                   | 32 +++++++++++++++++++++--
+ drivers/gpu/drm/i915/display/intel_hdmi.c | 20 ++++++++++++---
+ drivers/hid/hid-picolcd_cir.c             |  1 +
+ include/linux/dma-buf.h                   |  4 +--
  include/linux/dma-fence.h                 | 14 +++++-----
  include/linux/hdmi.h                      |  2 +-
  include/linux/mmc/sdio_ids.h              |  7 +++++
  include/linux/pci_ids.h                   |  3 +++
- sound/pci/bt87x.c                         | 31 +++++++++++++++-------
- 10 files changed, 100 insertions(+), 31 deletions(-)
+ sound/pci/bt87x.c                         | 31 ++++++++++++++++-------
+ 11 files changed, 73 insertions(+), 31 deletions(-)
 
 diff --git a/debian/dkms-versions b/debian/dkms-versions
 index 5d8aabf3df6b..72b77682929c 100644
@@ -142,45 +143,23 @@ index 7ffdfaae7188..99ddd641a37b 100644
  	if (!intel_hdmi->cec_notifier)
  		DRM_DEBUG_KMS("CEC notifier get failed\n");
  }
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 34da38d5b0cd..1faf56c37e9b 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -29,6 +29,7 @@
+ 
+ #include "hid-picolcd.h"
+ 
++#define MS_TO_NS(msec)		((msec) * 1000 * 1000)
+ 
+ int picolcd_raw_cir(struct picolcd_data *data,
+ 		struct hid_report *report, u8 *raw_data, int size)
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ab0c156abee6..2ed89e3d4529 100644
+index ec212cb27fdc..bae060fae862 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
-@@ -263,7 +263,33 @@ struct dma_buf_ops {
- 	 *
- 	 * 0 on success or a negative error code on failure.
- 	 */
-+
- 	int (*mmap)(struct dma_buf *, struct vm_area_struct *vma);
-+	/**
-+	 * @map:
-+	 *
-+	 * Maps a page from the buffer into kernel address space. The page is
-+	 * specified by offset into the buffer in PAGE_SIZE units.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Returns:
-+	 *
-+	 * Virtual address pointer where requested page can be accessed. NULL
-+	 * on error or when this function is unimplemented by the exporter.
-+	 */
-+	void *(*map)(struct dma_buf *, unsigned long);
-+
-+	/**
-+	 * @unmap:
-+	 *
-+	 * Unmaps a page from the buffer. Page offset and address pointer should
-+	 * be the same as the one passed to and returned by matching call to map.
-+	 *
-+	 * This callback is optional.
-+	 */
-+	void (*unmap)(struct dma_buf *, unsigned long, void *);
-+
- 
- 	void *(*vmap)(struct dma_buf *);
- 	void (*vunmap)(struct dma_buf *, void *vaddr);
-@@ -314,7 +340,7 @@ struct dma_buf {
+@@ -306,7 +306,7 @@ struct dma_buf {
  	struct module *owner;
  	struct list_head list_node;
  	void *priv;
@@ -189,7 +168,7 @@ index ab0c156abee6..2ed89e3d4529 100644
  
  	/* poll support */
  	wait_queue_head_t poll;
-@@ -415,7 +441,7 @@ struct dma_buf_export_info {
+@@ -365,7 +365,7 @@ struct dma_buf_export_info {
  	const struct dma_buf_ops *ops;
  	size_t size;
  	int flags;
@@ -198,17 +177,8 @@ index ab0c156abee6..2ed89e3d4529 100644
  	void *priv;
  };
  
-@@ -497,6 +523,8 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
- 			     enum dma_data_direction dir);
- int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
- 			   enum dma_data_direction dir);
-+void *dma_buf_kmap(struct dma_buf *, unsigned long);
-+void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
- 
- int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
- 		 unsigned long);
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3347c54f3a87..7108cda11150 100644
+index 09e23adb351d..896ea5831125 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
 @@ -63,8 +63,12 @@ struct dma_fence_cb;
@@ -245,10 +215,10 @@ index 3347c54f3a87..7108cda11150 100644
  };
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 50c31f1a0a2d..afb43efc03e0 100644
+index 9850d59d6f1c..183e9e3690af 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
-@@ -207,7 +207,7 @@ struct hdmi_drm_infoframe {
+@@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
  	u16 max_fall;
  };
  
@@ -258,7 +228,7 @@ index 50c31f1a0a2d..afb43efc03e0 100644
  				size_t size);
  ssize_t hdmi_avi_infoframe_pack_only(const struct hdmi_avi_infoframe *frame,
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 15ed8ce9d394..12de9220d585 100644
+index 12036619346c..513655cf757d 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -41,6 +41,8 @@
@@ -297,7 +267,7 @@ index 15ed8ce9d394..12de9220d585 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 0ad57693f392..6c89429001a1 100644
+index 1ab1e24bcbce..1f9d6f27f3c9 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -1075,6 +1075,7 @@
@@ -308,7 +278,7 @@ index 0ad57693f392..6c89429001a1 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -3124,4 +3125,6 @@
+@@ -3132,4 +3133,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -316,7 +286,7 @@ index 0ad57693f392..6c89429001a1 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 6567504665b9..66a5a24e7558 100644
+index 54cb223caa2f..255b90aaaa20 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {
