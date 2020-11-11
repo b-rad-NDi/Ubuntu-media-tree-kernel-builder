@@ -1,0 +1,83 @@
+From 9be0d7e11e3dcbe6e603a99a9bac78c468e09308 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 10 Nov 2020 15:08:33 -0600
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ drivers/hid/hid-picolcd_cir.c | 1 +
+ include/linux/mmc/sdio_ids.h  | 5 +++++
+ include/linux/pci_ids.h       | 4 ++++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index 34da38d5b..c0826e118 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -29,6 +29,7 @@
+ 
+ #include "hid-picolcd.h"
+ 
++#define MS_TO_NS(msec)	((msec) * 1000 * 1000)
+ 
+ int picolcd_raw_cir(struct picolcd_data *data,
+ 		struct hid_report *report, u8 *raw_data, int size)
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index 120366193..26931135a 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -66,6 +66,8 @@
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_89359	0x4355
+ #define SDIO_DEVICE_ID_BROADCOM_4356		0x4356
+ #define SDIO_DEVICE_ID_BROADCOM_4359		0x4359
++#define SDIO_DEVICE_ID_CYPRESS_4373		0x4373
++#define SDIO_DEVICE_ID_CYPRESS_43012		43012
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373	0x4373
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_43012	0xa804
+ #define SDIO_DEVICE_ID_BROADCOM_43143		0xa887
+@@ -78,6 +80,8 @@
+ 
+ #define SDIO_VENDOR_ID_MARVELL			0x02df
+ #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
++#define SDIO_DEVICE_ID_MARVELL_8688WLAN		0x9104
++#define SDIO_DEVICE_ID_MARVELL_8688BT		0x9105
+ #define SDIO_DEVICE_ID_MARVELL_8688_WLAN	0x9104
+ #define SDIO_DEVICE_ID_MARVELL_8688_BT		0x9105
+ #define SDIO_DEVICE_ID_MARVELL_8786_WLAN	0x9116
+@@ -90,6 +94,7 @@
+ #define SDIO_DEVICE_ID_MARVELL_8897_WLAN	0x912d
+ #define SDIO_DEVICE_ID_MARVELL_8897_BT		0x912e
+ #define SDIO_DEVICE_ID_MARVELL_8887_F0		0x9134
++#define SDIO_DEVICE_ID_MARVELL_8887WLAN		0x9134
+ #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
+ #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
+ #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 1ab1e24bc..22cdbb4a7 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1075,6 +1075,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4         0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
+@@ -1343,6 +1344,7 @@
+ #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
++#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ 
+ #define PCI_VENDOR_ID_IMS		0x10e0
+ #define PCI_DEVICE_ID_IMS_TT128		0x9128
+@@ -3132,4 +3134,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
+-- 
+2.27.0
+
