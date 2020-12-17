@@ -37,6 +37,13 @@ fi
 
 [ -z "${U_EMAIL}" ] && U_EMAIL="`git config --global user.email`"
 
+if [ -z "${U_FULLNAME}" -o -z "${U_EMAIL}" ] ; then
+	echo 'You must set git global user name and email address:'
+	echo '    git config --global user.name "your name"'
+	echo '    git config --global user.email "your email address"'
+	exit 251
+fi
+
 if [ -z "${KERNEL_ABI_TAG}" ] ; then
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge"
