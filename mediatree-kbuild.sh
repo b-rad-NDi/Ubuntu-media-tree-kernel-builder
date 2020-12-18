@@ -139,7 +139,11 @@ function get_ubuntu()
 			fi
 		else
 			if [ "${DISTRO_NAME}" == "ubuntu" ] ; then
-				git clone --depth 1 --single-branch git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${DISTRO_CODENAME} -b "${DISTRO_BRANCH}" ${TARGET_DIR}
+				if [ "${DISTRO_BRANCH}" == "raspi" ] ; then
+					git clone --depth 1 --single-branch git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux-raspi/+git/${DISTRO_CODENAME} ${TARGET_DIR}
+				else
+					git clone --depth 1 --single-branch git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${DISTRO_CODENAME} -b "${DISTRO_BRANCH}" ${TARGET_DIR}
+				fi
 			fi
 		fi
 	fi
@@ -159,7 +163,7 @@ function get_ubuntu()
 #		git pull
 		if [ -z "${DISTRO_BRANCH}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
 			git pull
-		elif [ -z "${DISTRO_BRANCH}" ] ; then
+		elif [ -z "${DISTRO_BRANCH}" -o "${DISTRO_NAME}" == "ubuntu" -a "${DISTRO_BRANCH}" == "raspi" ] ; then
 			git pull
 		else
 			echo git fetch --all
@@ -177,7 +181,7 @@ function get_ubuntu()
 				git branch -D tmp_branch_cleanup_asdfghjkl
 #			fi
 		fi
-		if [ -z "${DISTRO_BRANCH}" ] ; then
+		if [ -z "${DISTRO_BRANCH}" -o "${DISTRO_NAME}" == "ubuntu" -a "${DISTRO_BRANCH}" == "raspi" ] ; then
 			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
 		else
 			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/${DISTRO_BRANCH}`
