@@ -686,7 +686,13 @@ function generate_virtual_package()
 		deb_branch="-${DISTRO_BRANCH}"
 	fi
 
-	LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '202[0-9][[:digit:]]{8}'`
+	if [ ${KVER} -eq 4 -a ${KMAJ} -lt 16 ] ; then
+		LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '202[0-9][[:digit:]]{8}\.[0-9]'`
+	else
+		LAST_KBUILD_VER=`head -n 1 ${DISTRO_NAME}-${DISTRO_CODENAME}/debian/changelog | egrep -o '2[0-9][[:digit:]]{8}\.[0-9]'`
+	fi
+
+	LAST_KBUILD_VER="${LAST_KBUILD_VER::-2}"
 
 	VPACKAGE_VER=`head -n 1 changelog`
 	cd .vpackage_tmp
