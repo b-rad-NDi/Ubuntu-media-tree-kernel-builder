@@ -168,18 +168,17 @@ function get_ubuntu()
 		else
 			echo git fetch --all
 			git fetch --all
-#			if [ "$?" -ne 0 ] ; then
-				echo git reset --hard HEAD
-				git reset --hard HEAD
-				echo git checkout -b tmp_branch_cleanup_asdfghjkl
-				git checkout -b tmp_branch_cleanup_asdfghjkl
-				echo git branch -D ${DISTRO_BRANCH}
-				git branch -D ${DISTRO_BRANCH}
-				echo git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
-				git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
-				echo git branch -D tmp_branch_cleanup_asdfghjkl
-				git branch -D tmp_branch_cleanup_asdfghjkl
-#			fi
+
+			echo git reset --hard HEAD
+			git reset --hard HEAD
+			echo git checkout -b tmp_branch_cleanup_asdfghjkl
+			git checkout -b tmp_branch_cleanup_asdfghjkl
+			echo git branch -D ${DISTRO_BRANCH}
+			git branch -D ${DISTRO_BRANCH}
+			echo git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
+			git checkout -b ${DISTRO_BRANCH} origin/${DISTRO_BRANCH}
+			echo git branch -D tmp_branch_cleanup_asdfghjkl
+			git branch -D tmp_branch_cleanup_asdfghjkl
 		fi
 		if [ -z "${DISTRO_BRANCH}" -o "${DISTRO_NAME}" == "ubuntu" -a "${DISTRO_BRANCH}" == "raspi" ] ; then
 			CUR_DISTRO_GIT_REVISION=`cat .git/refs/heads/master`
