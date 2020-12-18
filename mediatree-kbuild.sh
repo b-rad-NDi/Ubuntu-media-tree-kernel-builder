@@ -128,12 +128,10 @@ function get_ubuntu()
 	fi
 	if [ ! -d "${TARGET_DIR}" -a -d ".clean-master-repo" ] ; then
 		cd .clean-master-repo
-#		git pull
 		cd -
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
 	elif [ ! -d "${TARGET_DIR}" ] ; then
 		if [ -z "${DISTRO_BRANCH}" ] ; then
-#			git clone --depth 1 git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
 			if [ "${DISTRO_NAME}" == "ubuntu" ] ; then
 				git clone --depth 1 git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${DISTRO_CODENAME} ${TARGET_DIR}
 			fi
@@ -160,7 +158,6 @@ function get_ubuntu()
 		cd ..
 	else
 		cd ${TARGET_DIR}
-#		git pull
 		if [ -z "${DISTRO_BRANCH}" -a "${TARGET_DIR}" != ".clean-master-repo" ] ; then
 			git pull
 		elif [ -z "${DISTRO_BRANCH}" -o "${DISTRO_NAME}" == "ubuntu" -a "${DISTRO_BRANCH}" == "raspi" ] ; then
