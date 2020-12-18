@@ -88,6 +88,12 @@ if [ -f ".state_env_file" ] ; then
 	else
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH}-${KVER}.${KMAJ}.0"
 	fi
+
+	if [ ${KVER} -eq 4 -a ${KMAJ} -lt 16 ] ; then
+		DATE_STRING="+%Y%m%d%H%M"
+	else
+		DATE_STRING="+%y%m%d%H%M"
+	fi
 fi
 
 ## Set env var V4L_SYNC_DATE to a specific date to override latest tarball
@@ -488,9 +494,9 @@ function apply_patches()
 	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
 		if [ -n "${KBUILD_DATE_OVERRIDE}" ] ; then
-			regen_changelog "`date -d \"${KBUILD_DATE_OVERRIDE}\" +%Y%m%d%H%M`"
+			regen_changelog "`date -d \"${KBUILD_DATE_OVERRIDE}\" ${DATE_STRING}`"
 		else
-			regen_changelog "`date +%Y%m%d%H%M`"
+			regen_changelog "`date ${DATE_STRING}`"
 		fi
 		git add debian.${deb_branch}/changelog
 		git commit -m 'Changelog'
@@ -499,7 +505,7 @@ function apply_patches()
 		apply_patch_git_am 1 ${KB_PATCH_DIR}/0002-Changelog.patch
 		if [ $? != 0 ] ; then
 			echo "Changelog patch failure, regenerating..."
-			regen_changelog "`date +%Y%m%d%H%M`"
+			regen_changelog "`date ${DATE_STRING}`"
 			git add debian.${deb_branch}/changelog
 			git commit -m 'Changelog'
 		fi
@@ -654,7 +660,7 @@ function generate_new_kernel_version()
 {
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
-	regen_changelog "`date +%Y%m%d%H%M`"
+	regen_changelog "`date ${DATE_STRING}`"
 
 	update_identity
 
