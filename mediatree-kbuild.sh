@@ -133,9 +133,14 @@ function get_ubuntu()
 		git clone ${TOP_DEVDIR}/.clean-master-repo ${TARGET_DIR}
 	elif [ ! -d "${TARGET_DIR}" ] ; then
 		if [ -z "${DISTRO_BRANCH}" ] ; then
-			git clone --depth 1 git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+#			git clone --depth 1 git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+			if [ "${DISTRO_NAME}" == "ubuntu" ] ; then
+				git clone --depth 1 git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${DISTRO_CODENAME} ${TARGET_DIR}
+			fi
 		else
-			git clone --depth 1 --single-branch -b ${DISTRO_BRANCH} git://kernel.ubuntu.com/ubuntu/${DISTRO_NAME}-${DISTRO_CODENAME}.git ${TARGET_DIR}
+			if [ "${DISTRO_NAME}" == "ubuntu" ] ; then
+				git clone --depth 1 --single-branch git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${DISTRO_CODENAME} -b "${DISTRO_BRANCH}" ${TARGET_DIR}
+			fi
 		fi
 	fi
 
