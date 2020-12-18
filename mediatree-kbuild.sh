@@ -674,6 +674,8 @@ function generate_virtual_package()
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=""
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		deb_branch=hwe
 	else
 		deb_branch="-${DISTRO_BRANCH}"
 	fi
