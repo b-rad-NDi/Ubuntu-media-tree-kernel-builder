@@ -47,6 +47,8 @@ fi
 if [ -z "${KERNEL_ABI_TAG}" ] ; then
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge"
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		KERNEL_ABI_TAG="+mediatree+hauppauge~hwe"
 	else
 		KERNEL_ABI_TAG="+mediatree+hauppauge~${DISTRO_BRANCH}"
 	fi
@@ -580,6 +582,9 @@ function regen_changelog()
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=master
 		deb_package=linux
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		deb_branch=${DISTRO_BRANCH}
+		deb_package=linux-hwe
 	else
 		deb_branch=${DISTRO_BRANCH}
 		deb_package=linux-${deb_branch}
