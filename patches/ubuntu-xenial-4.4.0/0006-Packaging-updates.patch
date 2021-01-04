@@ -1,20 +1,20 @@
-From 775b2d91ea98e7deb1106a541ffc836f0f2feb3f Mon Sep 17 00:00:00 2001
+From 06931a70192f7a0086c36ecee983c47975c494e1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 23 Sep 2020 10:40:20 -0500
+Date: Fri, 18 Dec 2020 15:21:43 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
- debian.master/control.d/flavour-control.stub |  6 +-
- debian.master/control.stub.in                | 94 ++--------------------------
- debian.master/copyright                      | 22 +++++++
- debian.master/rules.d/amd64.mk               |  6 +-
- debian.master/rules.d/i386.mk                |  2 +-
- debian.master/rules.d/x32.mk                 |  2 +-
- debian/control.d/flavour-buildinfo.stub      |  2 +-
- debian/rules                                 |  2 +-
- debian/rules.d/0-common-vars.mk              | 21 +++++--
- debian/rules.d/2-binary-arch.mk              |  4 ++
- 10 files changed, 55 insertions(+), 106 deletions(-)
+ debian.master/control.d/flavour-control.stub |   6 +-
+ debian.master/control.stub.in                | 107 +--------------------------
+ debian.master/copyright                      |  22 ++++++
+ debian.master/rules.d/amd64.mk               |   6 +-
+ debian.master/rules.d/i386.mk                |   2 +-
+ debian.master/rules.d/x32.mk                 |   2 +-
+ debian/control.d/flavour-buildinfo.stub      |   2 +-
+ debian/rules                                 |   2 +-
+ debian/rules.d/0-common-vars.mk              |  21 ++++--
+ debian/rules.d/2-binary-arch.mk              |   4 +
+ 10 files changed, 55 insertions(+), 119 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index b0f92f4..f69d59c 100644
@@ -48,7 +48,7 @@ index b0f92f4..f69d59c 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 576631c..73a0b77 100644
+index 0e952dc..752f355 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -111,10 +111,23 @@ index 576631c..73a0b77 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -113,27 +78,6 @@ Description: Linux Kernel Headers for development
-  libraries. They are NOT meant to be used to build third-party modules for
-  your kernel. Use SRCPKGNAME-headers-* packages for that.
+@@ -100,40 +65,6 @@ Description: Header files related to Linux kernel version PKGVER
+  that want the latest kernel headers. Please read
+  /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
+-Package: SRCPKGNAME-libc-dev
+-Architecture: i386 amd64 armhf arm64 x32 powerpc ppc64el s390x
+-Depends: ${misc:Depends}
+-Conflicts: SRCPKGNAME-kernel-headers
+-Replaces: SRCPKGNAME-kernel-headers
+-Provides: SRCPKGNAME-kernel-headers
+-Multi-Arch: same
+-Description: Linux Kernel Headers for development
+- This package provides headers from the Linux kernel.  These headers
+- are used by the installed headers for GNU glibc and other system
+- libraries. They are NOT meant to be used to build third-party modules for
+- your kernel. Use SRCPKGNAME-headers-* packages for that.
+-
 -Package: SRCPKGNAME-tools-common
 -Build-Profiles: <!stage1>
 -Architecture: all
@@ -134,12 +147,12 @@ index 576631c..73a0b77 100644
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
 - version locked tools (such as perf and x86_energy_perf_policy) for
-- version PGKVER.
+- version PKGVER.
 -
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 powerpc ppc64el s390x
-@@ -147,26 +91,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -147,26 +78,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -161,12 +174,12 @@ index 576631c..73a0b77 100644
 -Depends: ${misc:Depends}
 -Description: Linux kernel version specific cloud tools for version PKGVER
 - This package provides the architecture independent parts for kernel
-- version locked tools for cloud tools for version PGKVER.
+- version locked tools for cloud tools for version PKGVER.
 -
  Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
-@@ -179,13 +103,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -179,13 +90,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
  

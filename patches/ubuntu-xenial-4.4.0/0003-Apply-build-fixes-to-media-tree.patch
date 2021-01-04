@@ -1,4 +1,4 @@
-From ea6d63168c3eb16a0588cff418754d710aa12c54 Mon Sep 17 00:00:00 2001
+From 33ad5c6f578da174bd1f7f4938efc6fad3360507 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 26 Oct 2020 14:17:38 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -548,7 +548,7 @@ index 527ad11..536c83f 100644
  		v4l_err(state->client,
  			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
 diff --git a/drivers/media/i2c/tvaudio.c b/drivers/media/i2c/tvaudio.c
-index e6796e9..fbc3be28 100644
+index e6796e9..fbc3be2 100644
 --- a/drivers/media/i2c/tvaudio.c
 +++ b/drivers/media/i2c/tvaudio.c
 @@ -40,6 +40,8 @@
@@ -730,7 +730,7 @@ index bf80409..04a5801 100644
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -Idrivers/media/dvb-frontends
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index a366370..49e13982 100644
+index a366370..49e1398 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -59,6 +59,8 @@
