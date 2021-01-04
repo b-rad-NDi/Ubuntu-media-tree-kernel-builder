@@ -1,21 +1,21 @@
-From 4b0623fd50e3bc9b60c2f6c5cf240fce0412cbf1 Mon Sep 17 00:00:00 2001
+From 4b643688be9c6147af675c201a91bac9df7d0c54 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 6 Nov 2020 13:21:30 -0600
+Date: Tue, 22 Dec 2020 13:13:13 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ debian.master/changelog | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index ae24e9d95..6139bf730 100644
+index e374e6371..9fe89be82 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,20 @@
-+linux (5.8.0-252011061321.0+mediatree+hauppauge) groovy; urgency=low
+@@ -1,3 +1,38 @@
++linux (5.8.0-312012221313.0+mediatree+hauppauge) groovy; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.8.0-25.26 rev 71cda6c56c6f808abaa4aaacc317eb24a9748a74
++    - 5.8.0-31.33 rev 1d77789461e847fc143d97b2c5427105300dcb29
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -26,12 +26,30 @@ index ae24e9d95..6139bf730 100644
 +    - 0006-Packaging-updates.patch
 +
 +  * Additional patches
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
++    --- 0004-si2168-different-default-that-windows-driver.patch
++    --- 0005-dw2102-check-initialization-replies.patch
++    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
++    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
++    - 11.cx23885.patches
++    --- 0001-cx2885-fix-analog-video-routings.patch
++    --- 0002-cx23885-module-option-to-disable-analog-video.patch
++    --- 0003-cx23885-add-more-ryzen-pci-id-to-dma-override-list.patch
++    - 20.missing.stat.bits
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 90.usb.quadhd.xml692
++    --- 0001-mxl69x-MaxLinear-692-ATSC-demod-tuner-driver.patch
++    --- 0002-em28xx-core-Fix-TS2-active-led.patch
++    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Fri, 06 Nov 2020 13:21:30 -0600
++ -- Fake User <hidden@email.co>  Tue, 22 Dec 2020 13:13:13 -0600
 +
- linux (5.8.0-25.26) groovy; urgency=medium
+ linux (5.8.0-31.33) groovy; urgency=medium
  
-   * groovy/linux: 5.8.0-25.26 -proposed tracker (LP: #1899940)
+   * groovy/linux: 5.8.0-31.33 -proposed tracker (LP: #1905299)
 -- 
 2.27.0
 
