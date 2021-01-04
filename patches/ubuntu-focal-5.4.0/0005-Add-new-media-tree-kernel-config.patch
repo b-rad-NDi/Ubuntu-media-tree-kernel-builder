@@ -1,4 +1,4 @@
-From 9684c91c3ce233302111640ba550130a16ee62c1 Mon Sep 17 00:00:00 2001
+From 8cff935f339eeee064fed393562c92517c7f1d71 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 28 Oct 2020 15:19:44 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 28 insertions(+), 2 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 51bceb764..971a2bdbe 100644
+index 164d26342..88c89ba31 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2803,7 +2803,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index 51bceb764..971a2bdbe 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11099,7 +11099,7 @@ CONFIG_VIDEO_OV7251=m
+@@ -11098,7 +11098,7 @@ CONFIG_VIDEO_OV7251=m
  CONFIG_VIDEO_OV7640=m
  CONFIG_VIDEO_OV7670=m
  CONFIG_VIDEO_OV772X=m
@@ -29,7 +29,7 @@ index 51bceb764..971a2bdbe 100644
  CONFIG_VIDEO_OV8856=m
  CONFIG_VIDEO_OV9640=m
  CONFIG_VIDEO_OV9650=m
-@@ -11636,3 +11636,29 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11635,3 +11635,29 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y

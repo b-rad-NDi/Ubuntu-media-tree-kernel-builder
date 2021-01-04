@@ -1,6 +1,6 @@
-From 2495d9e3de859d268cdfb58d423a48588ca5ac03 Mon Sep 17 00:00:00 2001
+From 5e130427af6263dc9796bfbda16538d3bbb1d251 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 15:10:23 -0500
+Date: Fri, 18 Dec 2020 15:39:21 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -43,7 +43,7 @@ index 4ba31aa63..f0685937b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index b1fadfec2..ffbc73e34 100644
+index 47ddd5418..ffbc73e34 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -54,30 +54,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
@@ -93,7 +93,7 @@ index b1fadfec2..ffbc73e34 100644
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
 - version locked tools (such as perf and x86_energy_perf_policy) for
-- version PGKVER.
+- version PKGVER.
 -
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
@@ -111,7 +111,7 @@ index b1fadfec2..ffbc73e34 100644
 -Depends: ${misc:Depends}
 -Description: Linux kernel version specific cloud tools for version PKGVER
 - This package provides the architecture independent parts for kernel
-- version locked tools for cloud tools for version PGKVER.
+- version locked tools for cloud tools for version PKGVER.
 -
  Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
@@ -271,7 +271,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 4d79d4a22..e8a45b0dc 100755
+index 38b9f3b34..6bf6f12fd 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -345,10 +345,10 @@ index 5394b7c96..11958e66f 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 35353a261..fc4d2898a 100644
+index fe1345d21..d88cc6020 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -795,10 +795,14 @@ build-arch: $(build-arch-deps-true)
+@@ -796,10 +796,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
