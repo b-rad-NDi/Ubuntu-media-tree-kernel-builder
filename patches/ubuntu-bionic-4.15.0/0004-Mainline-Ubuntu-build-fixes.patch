@@ -1,4 +1,4 @@
-From eb93657342c5fd704dfd7ac59057355ddf1a615f Mon Sep 17 00:00:00 2001
+From d70c70fc0824ca354d5a2680bc80e2b410aa4a23 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 28 Oct 2020 15:05:12 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -16,7 +16,7 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  9 files changed, 94 insertions(+), 94 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 32747b7f917e..1d42112d360c 100644
+index 32747b7f9..1d42112d3 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
 @@ -39,13 +39,14 @@
@@ -44,7 +44,7 @@ index 32747b7f917e..1d42112d360c 100644
  		rawir.pulse = !!(w & 0x8000);
  		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
-index 278d50ff1eea..ac626fb808a6 100644
+index 278d50ff1..ac626fb80 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
 +++ b/drivers/usb/gadget/function/uvc_queue.c
 @@ -166,7 +166,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)
@@ -57,7 +57,7 @@ index 278d50ff1eea..ac626fb808a6 100644
  		return ret;
  
 diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index c738ae525893..283ef4483a0a 100644
+index c738ae525..283ef4483 100644
 --- a/fs/compat_ioctl.c
 +++ b/fs/compat_ioctl.c
 @@ -117,6 +117,8 @@
@@ -141,7 +141,7 @@ index c738ae525893..283ef4483a0a 100644
  
  	/*
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ec212cb27fdc..7c5237ab9a67 100644
+index ec212cb27..7c5237ab9 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
 @@ -1,4 +1,3 @@
@@ -255,7 +255,7 @@ index ec212cb27fdc..7c5237ab9a67 100644
  };
  
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 09e23adb351d..38d51033484b 100644
+index 09e23adb3..38d510334 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
 @@ -63,8 +63,14 @@ struct dma_fence_cb;
@@ -370,7 +370,7 @@ index 09e23adb351d..38d51033484b 100644
  	} while (0)
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59d6f1c..c6d5b79ecb8b 100644
+index 9850d59d6..c6d5b79ec 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -395,7 +395,7 @@ index 9850d59d6f1c..c6d5b79ecb8b 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 12036619346c..4b44f2a9beac 100644
+index 120366193..4b44f2a9b 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -41,6 +41,8 @@
@@ -434,7 +434,7 @@ index 12036619346c..4b44f2a9beac 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24bcbce..3fae6dccdfe0 100644
+index 1ab1e24bc..3fae6dccd 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -1075,6 +1075,7 @@
@@ -461,7 +461,7 @@ index 1ab1e24bcbce..3fae6dccdfe0 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 54cb223caa2f..255b90aaaa20 100644
+index 54cb223ca..255b90aaa 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {
