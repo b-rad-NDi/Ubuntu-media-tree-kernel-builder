@@ -1,6 +1,6 @@
-From 631537e9b8029c250dac844dd96a54167c84fd6c Mon Sep 17 00:00:00 2001
+From aa6a3b9c5019667b7d43d8f797b5f87da2c16dfa Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 11 Nov 2020 13:07:52 -0600
+Date: Wed, 6 Jan 2021 15:28:58 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -11,15 +11,16 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/hid/hid-picolcd_cir.c                 |  1 +
  drivers/staging/most/video/video.c            |  4 +--
  .../bcm2835-camera/bcm2835-camera.c           |  2 +-
+ .../bcm2835-codec/bcm2835-v4l2-codec.c        |  4 +++
+ .../bcm2835-isp/bcm2835_isp_fmts.h            |  2 ++
  drivers/usb/gadget/function/f_uvc.c           |  2 +-
  include/linux/dma-buf.h                       |  1 +
  include/linux/dma-fence.h                     | 14 ++++-----
  include/linux/hdmi.h                          |  2 +-
  include/linux/mmc/sdio_ids.h                  |  5 +++
  include/linux/pci_ids.h                       |  4 +++
- samples/v4l/v4l2-pci-skeleton.c               |  2 +-
  sound/pci/bt87x.c                             | 31 +++++++++++++------
- 15 files changed, 74 insertions(+), 35 deletions(-)
+ 16 files changed, 79 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
 index ac1e001d0..70ab4fbdc 100644
@@ -189,10 +190,10 @@ index 250af9fb7..3178d77af 100644
  		v4l2_err(&mdev->v4l2_dev, "video_register_device failed (%d)\n",
  			 ret);
 diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-index 4317bf595..20f4159c6 100644
+index b7214741f..8d1ef67bc 100644
 --- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
 +++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-@@ -1816,7 +1816,7 @@ static int bm2835_mmal_init_device(struct bm2835_mmal_dev *dev,
+@@ -1822,7 +1822,7 @@ static int bm2835_mmal_init_device(struct bm2835_mmal_dev *dev,
  	video_set_drvdata(vfd, dev);
  
  	ret = video_register_device(vfd,
@@ -201,6 +202,55 @@ index 4317bf595..20f4159c6 100644
  				    video_nr[dev->camera_num]);
  	if (ret < 0)
  		return ret;
+diff --git a/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c b/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
+index 14c47e2ea..32c8cc9c1 100644
+--- a/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
++++ b/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
+@@ -36,6 +36,8 @@
+ #include <media/v4l2-event.h>
+ #include <media/videobuf2-dma-contig.h>
+ 
++#include <media/compat.h>
++
+ #include "vchiq-mmal/mmal-encodings.h"
+ #include "vchiq-mmal/mmal-msg.h"
+ #include "vchiq-mmal/mmal-parameters.h"
+@@ -395,6 +397,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
+ 		.mmal_fmt		= MMAL_ENCODING_Y10P,
+ 		.size_multiplier_x2	= 2,
+ 	}, {
++#if 0
+ 		/* 12 bit */
+ 		.fourcc			= V4L2_PIX_FMT_Y12P,
+ 		.depth			= 12,
+@@ -411,6 +414,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
+ 		.mmal_fmt		= MMAL_ENCODING_Y14P,
+ 		.size_multiplier_x2	= 2,
+ 	}, {
++#endif
+ 		/* 16 bit */
+ 		.fourcc			= V4L2_PIX_FMT_Y16,
+ 		.depth			= 16,
+diff --git a/drivers/staging/vc04_services/bcm2835-isp/bcm2835_isp_fmts.h b/drivers/staging/vc04_services/bcm2835-isp/bcm2835_isp_fmts.h
+index fc0f95a36..62ec6679b 100644
+--- a/drivers/staging/vc04_services/bcm2835-isp/bcm2835_isp_fmts.h
++++ b/drivers/staging/vc04_services/bcm2835-isp/bcm2835_isp_fmts.h
+@@ -349,6 +349,7 @@ static const struct bcm2835_isp_fmt supported_formats[] = {
+ 		.colorspace	    = V4L2_COLORSPACE_RAW,
+ 		.step_size	    = 2,
+ 	}, {
++#if 0
+ 		/* 12 bit */
+ 		.fourcc		    = V4L2_PIX_FMT_Y12P,
+ 		.depth		    = 12,
+@@ -369,6 +370,7 @@ static const struct bcm2835_isp_fmt supported_formats[] = {
+ 		.colorspace	    = V4L2_COLORSPACE_RAW,
+ 		.step_size	    = 2,
+ 	}, {
++#endif
+ 		/* 16 bit */
+ 		.fourcc		    = V4L2_PIX_FMT_Y16,
+ 		.depth		    = 16,
 diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
 index fb0a89268..0b9712616 100644
 --- a/drivers/usb/gadget/function/f_uvc.c
@@ -333,19 +383,6 @@ index 1ab1e24bc..22cdbb4a7 100644
 +#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
 +
  #endif /* _LINUX_PCI_IDS_H */
-diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
-index f6a551bd5..3fa6582b4 100644
---- a/samples/v4l/v4l2-pci-skeleton.c
-+++ b/samples/v4l/v4l2-pci-skeleton.c
-@@ -879,7 +879,7 @@ static int skeleton_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	vdev->tvnorms = SKEL_TVNORMS;
- 	video_set_drvdata(vdev, skel);
- 
--	ret = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
-+	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
- 	if (ret)
- 		goto free_hdl;
- 
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
 index 54cb223ca..255b90aaa 100644
 --- a/sound/pci/bt87x.c

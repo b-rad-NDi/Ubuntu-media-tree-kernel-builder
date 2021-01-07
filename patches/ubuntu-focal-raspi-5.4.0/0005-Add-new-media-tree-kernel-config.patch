@@ -1,4 +1,4 @@
-From 6e7ef5fb8f6ac4e5aacb03c26055c1dc8f5e9e1a Mon Sep 17 00:00:00 2001
+From 8ef1f5ac32bc2e46ae5b19558756fa6091952cd8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 11 Nov 2020 13:47:25 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
@@ -8,10 +8,10 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 29 insertions(+), 1 deletion(-)
 
 diff --git a/debian.raspi/config/config.common.ubuntu b/debian.raspi/config/config.common.ubuntu
-index b423525c1..a021d5a19 100644
+index 000ee79a9..376dc74dd 100644
 --- a/debian.raspi/config/config.common.ubuntu
 +++ b/debian.raspi/config/config.common.ubuntu
-@@ -1941,7 +1941,7 @@ CONFIG_DVB_LNBP21=m
+@@ -1921,7 +1921,7 @@ CONFIG_DVB_LNBP21=m
  CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
@@ -20,7 +20,7 @@ index b423525c1..a021d5a19 100644
  # CONFIG_DVB_MB86A16 is not set
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -8084,3 +8084,31 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -8058,3 +8058,31 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
