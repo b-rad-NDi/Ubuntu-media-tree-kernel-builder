@@ -1,6 +1,6 @@
-From 5e130427af6263dc9796bfbda16538d3bbb1d251 Mon Sep 17 00:00:00 2001
+From be133f629b67194f05d58c5e6183c15bc77b6b27 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 18 Dec 2020 15:39:21 -0600
+Date: Wed, 13 Jan 2021 15:35:37 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,11 +14,12 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/rules.d/s390x.mk               |  2 +-
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
+ debian/dkms-versions                         |  6 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 19 ++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
  debian/scripts/config-check                  |  2 +-
- 14 files changed, 54 insertions(+), 80 deletions(-)
+ 15 files changed, 57 insertions(+), 83 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 4ba31aa63..f0685937b 100644
@@ -270,8 +271,25 @@ index ed92b3d53..18505efb1 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
+diff --git a/debian/dkms-versions b/debian/dkms-versions
+index d1c35766c..82011c970 100644
+--- a/debian/dkms-versions
++++ b/debian/dkms-versions
+@@ -1,9 +1,9 @@
+ zfs-linux 0.8.3-1ubuntu12.5
+-nvidia-graphics-drivers-390 390.141-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-390 390.141-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-435 435.21-0ubuntu7
+-nvidia-graphics-drivers-450 450.102.04-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-455 455.45.01-0ubuntu0.20.04.1
+-nvidia-graphics-drivers-460 460.32.03-0ubuntu0~0.20.04.0.1
++nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-418-server 418.152.00-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-440-server 440.95.01-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-450-server 450.80.02-0ubuntu0.20.04.3
 diff --git a/debian/rules b/debian/rules
-index 38b9f3b34..6bf6f12fd 100755
+index 8c3c71a29..0c4855288 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -345,10 +363,10 @@ index 5394b7c96..11958e66f 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index fe1345d21..d88cc6020 100644
+index 703fd2ade..6b609bded 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -796,10 +796,14 @@ build-arch: $(build-arch-deps-true)
+@@ -797,10 +797,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

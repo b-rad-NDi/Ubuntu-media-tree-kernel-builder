@@ -1,6 +1,6 @@
-From 728fec99012184eb08cf85c967bd139a77a35598 Mon Sep 17 00:00:00 2001
+From bcc9aeb7354c7a5dfa11ee3a97655c76cadde4aa Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 18 Dec 2020 15:18:47 -0600
+Date: Wed, 13 Jan 2021 11:35:07 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -12,10 +12,11 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/rules.d/ppc64el.mk             |  2 +-
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
+ debian/dkms-versions                         |  6 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 19 +++--
  debian/rules.d/2-binary-arch.mk              |  4 +
- 11 files changed, 54 insertions(+), 102 deletions(-)
+ 12 files changed, 57 insertions(+), 105 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 918b41abc..81522e48c 100644
@@ -283,8 +284,26 @@ index ed92b3d53..18505efb1 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
+diff --git a/debian/dkms-versions b/debian/dkms-versions
+index 181c0bd7e..af8a076d0 100644
+--- a/debian/dkms-versions
++++ b/debian/dkms-versions
+@@ -1,10 +1,10 @@
+ spl-linux 0.7.5-1ubuntu2.2
+ zfs-linux 0.7.5-1ubuntu16.10
+-nvidia-graphics-drivers-390 390.141-0ubuntu0~0.18.04.1
++nvidia-graphics-drivers-390 390.141-0ubuntu0.18.04.1
+ nvidia-graphics-drivers-435 435.21-0ubuntu0.18.04.3
+-nvidia-graphics-drivers-450 450.102.04-0ubuntu0~0.18.04.1
++nvidia-graphics-drivers-450 450.102.04-0ubuntu0.18.04.1
+ nvidia-graphics-drivers-455 455.45.01-0ubuntu0.18.04.1
+-nvidia-graphics-drivers-460 460.32.03-0ubuntu0~0.18.04.1
++nvidia-graphics-drivers-460 460.32.03-0ubuntu0.18.04.1
+ nvidia-graphics-drivers-418-server 418.152.00-0ubuntu0.18.04.1
+ nvidia-graphics-drivers-440-server 440.95.01-0ubuntu0.18.04.1
+ nvidia-graphics-drivers-450-server 450.80.02-0ubuntu0.18.04.3
 diff --git a/debian/rules b/debian/rules
-index 81acb3c39..659466d37 100755
+index ae7eafb10..dab067831 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -354,10 +373,10 @@ index c9ffad08d..5d846aec3 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 5126d3610..fbacf80f2 100644
+index 1fb7c0aae..5743bcc28 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -779,10 +779,14 @@ build-arch: $(build-arch-deps-true)
+@@ -780,10 +780,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
