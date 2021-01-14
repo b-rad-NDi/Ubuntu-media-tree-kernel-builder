@@ -1,10 +1,13 @@
-From 85981f1da951274ad96000a4c178388811128099 Mon Sep 17 00:00:00 2001
+From 7951bd1837c892d7e265770a96d17b9958677395 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 4 Nov 2020 16:21:05 -0600
+Date: Thu, 14 Jan 2021 15:12:51 -0600
 Subject: [PATCH 3/3] em28xx: Add support for Hauppauge USB QuadHD
 
 Hauppauge USB QuadHD contains two two-tuner em28xx devices behind a usb hub.
 Each of the four dvb adapters contains a MaxLinear 692 combo ATSC demod/tuner.
+
+Bus 003 Device 006: ID 2040:846d Hauppauge
+Bus 003 Device 005: ID 2040:846d Hauppauge
 ---
  drivers/media/usb/em28xx/em28xx-cards.c | 46 +++++++++++++++++++++++++++++++++
  drivers/media/usb/em28xx/em28xx-dvb.c   | 26 +++++++++++++++++++

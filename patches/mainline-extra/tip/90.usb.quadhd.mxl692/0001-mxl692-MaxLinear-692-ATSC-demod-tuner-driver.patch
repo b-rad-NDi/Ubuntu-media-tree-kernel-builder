@@ -1,19 +1,21 @@
-From 50bf336b4ac009c247eec0a3f69bcecfd5fa1084 Mon Sep 17 00:00:00 2001
+From 8a8283d0a632a5866a72314cc78f33be358c3f48 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 2 Jul 2020 16:01:46 -0500
-Subject: [PATCH 1/3] mxl69x: MaxLinear 692 ATSC demod/tuner driver
+Date: Thu, 14 Jan 2021 15:10:48 -0600
+Subject: [PATCH 1/3] mxl692: MaxLinear 692 ATSC demod/tuner driver
 
-MaxLinear 692 is a combo demod/tuner which has ATSC and QAM capabilities.
-Only ATSC is currently implemented.
+MaxLinear 692 is a combo demod/tuner which has ATSC and QAM
+capabilities. Only ATSC is currently advertised via DVB
+properties. QAM still has issues.
 
-Signed-off-by: Brad Love <hidden@email.co>
+Confirmed working on both big and little endian. Big
+endian verified on PowerPC Mac mini.
 ---
  drivers/media/dvb-frontends/Kconfig       |    7 +
  drivers/media/dvb-frontends/Makefile      |    1 +
- drivers/media/dvb-frontends/mxl692.c      | 1392 +++++++++++++++++++++++++++++
+ drivers/media/dvb-frontends/mxl692.c      | 1378 +++++++++++++++++++++++++++++
  drivers/media/dvb-frontends/mxl692.h      |   38 +
- drivers/media/dvb-frontends/mxl692_defs.h |  550 ++++++++++++
- 5 files changed, 1988 insertions(+)
+ drivers/media/dvb-frontends/mxl692_defs.h |  548 ++++++++++++
+ 5 files changed, 1972 insertions(+)
  create mode 100644 drivers/media/dvb-frontends/mxl692.c
  create mode 100644 drivers/media/dvb-frontends/mxl692.h
  create mode 100644 drivers/media/dvb-frontends/mxl692_defs.h
@@ -50,10 +52,10 @@ index e917916..b9f47d6 100644
  obj-$(CONFIG_DVB_LNBH25) += lnbh25.o
 diff --git a/drivers/media/dvb-frontends/mxl692.c b/drivers/media/dvb-frontends/mxl692.c
 new file mode 100644
-index 0000000..f01de0d
+index 0000000..86af831
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692.c
-@@ -0,0 +1,1392 @@
+@@ -0,0 +1,1378 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Driver for the MaxLinear MxL69x family of combo tuners/demods
@@ -81,8 +83,6 @@ index 0000000..f01de0d
 +
 +#include "mxl692.h"
 +#include "mxl692_defs.h"
-+
-+static int g_big_endian = -1;
 +
 +static const struct dvb_frontend_ops mxl692_ops;
 +
@@ -132,19 +132,6 @@ index 0000000..f01de0d
 +	return ret;
 +}
 +
-+static void detect_endianness(void)
-+{
-+	u32 temp = 1;
-+	u8 *p_temp = (u8 *)&temp;
-+
-+	g_big_endian = (*p_temp == 0) ? 1 : 0;
-+
-+	if (g_big_endian)
-+		pr_debug("%s( BIG )\n", __func__);
-+	else
-+		pr_debug("%s( SMALL )\n", __func__);
-+}
-+
 +static int convert_endian(u32 size, u8 *d)
 +{
 +	u32 i;
@@ -190,9 +177,9 @@ index 0000000..f01de0d
 +
 +static void mxl692_tx_swap(enum MXL_EAGLE_OPCODE_E opcode, u8 *buffer)
 +{
-+	if (g_big_endian)
-+		return;
-+
++#ifdef __BIG_ENDIAN
++	return;
++#endif
 +	buffer += MXL_EAGLE_HOST_MSG_HEADER_SIZE; /* skip API header */
 +
 +	switch (opcode) {
@@ -214,9 +201,9 @@ index 0000000..f01de0d
 +
 +static void mxl692_rx_swap(enum MXL_EAGLE_OPCODE_E opcode, u8 *buffer)
 +{
-+	if (g_big_endian)
-+		return;
-+
++#ifdef __BIG_ENDIAN
++	return;
++#endif
 +	buffer += MXL_EAGLE_HOST_MSG_HEADER_SIZE; /* skip API header */
 +
 +	switch (opcode) {
@@ -273,51 +260,52 @@ index 0000000..f01de0d
 +
 +static u32 mxl692_checksum(u8 *buffer, u32 size)
 +{
-+	u32 ix, remainder = 0, cur_cksum = 0;
++	u32 ix, div_size;
++	u32 cur_cksum = 0;
++	__be32 *buf;
 +
-+	for (ix = 0; ix < size / 4; ix++)
-+		cur_cksum += cpu_to_be32(*(u32 *)(buffer +
-+					 (ix * sizeof(u32))));
-+	remainder = size % 4;
-+	if (remainder > 0)
-+		cur_cksum += cpu_to_be32(*((u32 *)&buffer[size - remainder]));
++	div_size = DIV_ROUND_UP(size, 4);
++
++	buf = (__be32 *)buffer;
++	for (ix = 0; ix < div_size; ix++)
++		cur_cksum += be32_to_cpu(buf[ix]);
 +
 +	cur_cksum ^= 0xDEADBEEF;
 +
-+	return be32_to_cpu(cur_cksum);
++	return cur_cksum;
 +}
 +
-+static int mxl692_validate_fw_header(const u8 *buffer, u32 buf_len)
++static int mxl692_validate_fw_header(struct mxl692_dev *dev,
++				     const u8 *buffer, u32 buf_len)
 +{
 +	int status = 0;
-+	u32 ix, temp = 0;
-+	u32 *local_buf = NULL;
++	u32 ix, temp;
++	__be32 *local_buf = NULL;
++	u8 temp_cksum = 0;
++	const u8 fw_hdr[] = { 0x4D, 0x31, 0x10, 0x02, 0x40, 0x00, 0x00, 0x80 };
 +
-+	if (buffer[0] != 0x4D || buffer[1] != 0x31 ||
-+	    buffer[2] != 0x10 || buffer[3] != 0x02 ||
-+	    buffer[4] != 0x40 || buffer[5] != 0x00 ||
-+	    buffer[6] != 0x00 || buffer[7] != 0x80) {
++	if (memcmp(buffer, fw_hdr, 8) != 0) {
 +		status = -EINVAL;
 +		goto err_finish;
 +	}
 +
-+	local_buf = (u32 *)(buffer + 8);
-+	temp = cpu_to_be32(*(u32 *)local_buf);
++	local_buf = (__be32 *)(buffer + 8);
++	temp = be32_to_cpu(*local_buf);
 +
-+	if ((buf_len - 16) != (temp >> 8)) {
++	if ((buf_len - 16) != temp >> 8) {
 +		status = -EINVAL;
 +		goto err_finish;
 +	}
 +
-+	temp = 0;
 +	for (ix = 16; ix < buf_len; ix++)
-+		temp += buffer[ix];
++		temp_cksum += buffer[ix];
 +
-+	if ((u8)temp != buffer[11])
++	if (temp_cksum != buffer[11])
 +		status = -EINVAL;
++
 +err_finish:
 +	if (status)
-+		pr_err("%s failed! %d\n", __func__, status);
++		dev_dbg(&dev->i2c_client->dev, "failed\n");
 +	return status;
 +}
 +
@@ -334,26 +322,27 @@ index 0000000..f01de0d
 +	if (buffer[ix] == 0x53) {
 +		total_len = buffer[ix + 1] << 16 | buffer[ix + 2] << 8 | buffer[ix + 3];
 +		total_len = (total_len + 3) & ~3;
-+		addr     = buffer[ix + 4] << 24 | buffer[ix + 5] << 16 |
-+			   buffer[ix + 6] << 8 | buffer[ix + 7];
-+		ix      += MXL_EAGLE_FW_SEGMENT_HEADER_SIZE;
++		addr      = buffer[ix + 4] << 24 | buffer[ix + 5] << 16 |
++			    buffer[ix + 6] << 8 | buffer[ix + 7];
++		ix       += MXL_EAGLE_FW_SEGMENT_HEADER_SIZE;
 +
 +		while ((total_len > 0) && (status == 0)) {
 +			plocal_buf = local_buf;
-+			chunk_len  = (total_len < payload_max) ?
-+					total_len : payload_max;
++			chunk_len  = (total_len < payload_max) ? total_len : payload_max;
 +
 +			*plocal_buf++ = 0xFC;
 +			*plocal_buf++ = chunk_len + sizeof(u32);
 +
-+			*(u32 *)plocal_buf = cpu_to_le32(addr + prevchunk_len);
++			*(u32 *)plocal_buf = addr + prevchunk_len;
++#ifdef __BIG_ENDIAN
++			convert_endian(sizeof(u32), plocal_buf);
++#endif
 +			plocal_buf += sizeof(u32);
 +
 +			memcpy(plocal_buf, &buffer[ix], chunk_len);
 +			convert_endian(chunk_len, plocal_buf);
-+
 +			if (mxl692_i2c_write(dev, local_buf,
-+			    (chunk_len + MXL_EAGLE_I2C_MHEADER_SIZE)) < 0) {
++					     (chunk_len + MXL_EAGLE_I2C_MHEADER_SIZE)) < 0) {
 +				status = -EREMOTEIO;
 +				break;
 +			}
@@ -394,11 +383,11 @@ index 0000000..f01de0d
 +	plocal_buf += sizeof(u32);
 +
 +	memcpy(plocal_buf, buffer, total_len);
-+	if (g_big_endian)
-+		convert_endian(sizeof(u32) + total_len, local_buf + 2);
-+
++#ifdef __BIG_ENDIAN
++	convert_endian(sizeof(u32) + total_len, local_buf + 2);
++#endif
 +	if (mxl692_i2c_write(dev, local_buf,
-+	    (total_len + MXL_EAGLE_I2C_MHEADER_SIZE)) < 0) {
++			     (total_len + MXL_EAGLE_I2C_MHEADER_SIZE)) < 0) {
 +		status = -EREMOTEIO;
 +		goto err_finish;
 +	}
@@ -420,19 +409,18 @@ index 0000000..f01de0d
 +	*plocal_buf++ = 0xFB;
 +	*plocal_buf++ = sizeof(u32);
 +	*(u32 *)plocal_buf = addr;
-+
-+	if (g_big_endian)
-+		convert_endian(sizeof(u32), plocal_buf);
-+
++#ifdef __BIG_ENDIAN
++	convert_endian(sizeof(u32), plocal_buf);
++#endif
 +	mutex_lock(&dev->i2c_lock);
 +
 +	if (mxl692_i2c_write(dev, local_buf, MXL_EAGLE_I2C_MHEADER_SIZE) > 0) {
 +		size = (size + 3) & ~3;  /* 4 byte alignment */
-+		status = mxl692_i2c_read(dev, buffer, (u16)size) < 0 ?
-+					 -EREMOTEIO : 0;
-+
-+		if (status == 0 && g_big_endian)
++		status = mxl692_i2c_read(dev, buffer, (u16)size) < 0 ? -EREMOTEIO : 0;
++#ifdef __BIG_ENDIAN
++		if (status == 0)
 +			convert_endian(size, buffer);
++#endif
 +	} else {
 +		status = -EREMOTEIO;
 +	}
@@ -445,13 +433,14 @@ index 0000000..f01de0d
 +	return status;
 +}
 +
-+static const char* mxl692_opcode_string(u8 opcode)
++static const char *mxl692_opcode_string(u8 opcode)
 +{
 +	if (opcode >= 0 && opcode <= MXL_EAGLE_OPCODE_INTERNAL)
 +		return MXL_EAGLE_OPCODE_STRING[opcode];
 +
 +	return "invalid opcode";
 +}
++
 +static int mxl692_opwrite(struct mxl692_dev *dev, u8 *buffer,
 +			  u32 size)
 +{
@@ -474,7 +463,7 @@ index 0000000..f01de0d
 +	convert_endian(total_len, plocal_buf);
 +
 +	if (mxl692_i2c_write(dev, local_buf,
-+	    (total_len + MXL_EAGLE_I2C_PHEADER_SIZE)) < 0) {
++			     (total_len + MXL_EAGLE_I2C_PHEADER_SIZE)) < 0) {
 +		status = -EREMOTEIO;
 +		goto err_finish;
 +	}
@@ -498,11 +487,10 @@ index 0000000..f01de0d
 +	if (mxl692_i2c_write(dev, local_buf, MXL_EAGLE_I2C_PHEADER_SIZE) > 0) {
 +		size = (size + 3) & ~3;  /* 4 byte alignment */
 +
-+		//read in 4 byte chunks
++		/* Read in 4 byte chunks */
 +		for (ix = 0; ix < size; ix += 4) {
 +			if (mxl692_i2c_read(dev, buffer + ix, 4) < 0) {
-+				dev_dbg(&dev->i2c_client->dev,
-+					"ix=%d   size=%d\n", ix, size);
++				dev_dbg(&dev->i2c_client->dev, "ix=%d   size=%d\n", ix, size);
 +				status = -EREMOTEIO;
 +				goto err_finish;
 +			}
@@ -540,24 +528,25 @@ index 0000000..f01de0d
 +	}
 +
 +	tx_header = (struct MXL_EAGLE_HOST_MSG_HEADER_T *)tx_buf;
-+	tx_header->checksum = 0;
 +	tx_header->opcode = opcode;
-+	tx_header->payload_size = tx_payload_size;
 +	tx_header->seqnum = dev->seqnum++;
++	tx_header->payload_size = tx_payload_size;
++	tx_header->checksum = 0;
 +
 +	if (dev->seqnum == 0)
 +		dev->seqnum = 1;
 +
 +	if (tx_payload && tx_payload_size > 0)
-+		memcpy(&tx_buf[MXL_EAGLE_HOST_MSG_HEADER_SIZE],
-+		       tx_payload, tx_payload_size);
++		memcpy(&tx_buf[MXL_EAGLE_HOST_MSG_HEADER_SIZE], tx_payload, tx_payload_size);
 +
 +	mxl692_tx_swap(opcode, tx_buf);
 +
 +	tx_header->checksum = 0;
 +	tx_header->checksum = mxl692_checksum(tx_buf,
-+				MXL_EAGLE_HOST_MSG_HEADER_SIZE + tx_payload_size);
-+
++					      MXL_EAGLE_HOST_MSG_HEADER_SIZE + tx_payload_size);
++#ifdef __LITTLE_ENDIAN
++	convert_endian(4, (u8 *)&tx_header->checksum); /* cksum is big endian */
++#endif
 +	/* send Tx message */
 +	status = mxl692_opwrite(dev, tx_buf,
 +				tx_payload_size + MXL_EAGLE_HOST_MSG_HEADER_SIZE);
@@ -571,7 +560,7 @@ index 0000000..f01de0d
 +
 +	do {
 +		status = mxl692_opread(dev, rx_buf,
-+				rx_payload_expected + MXL_EAGLE_HOST_MSG_HEADER_SIZE);
++				       rx_payload_expected + MXL_EAGLE_HOST_MSG_HEADER_SIZE);
 +		usleep_range(1000, 2000);
 +		timeout--;
 +	} while ((timeout > 0) && (status == 0) &&
@@ -599,7 +588,8 @@ index 0000000..f01de0d
 +			rx_header->opcode != tx_header->opcode ? "X" : "0",
 +			rx_header->payload_size != rx_payload_expected ? "X" : "0");
 +		if (rx_header->payload_size != rx_payload_expected)
-+			dev_dbg(&dev->i2c_client->dev, "rx_header->payloadSize=%d   rx_payload_expected=%d\n",
++			dev_dbg(&dev->i2c_client->dev,
++				"rx_header->payloadSize=%d   rx_payload_expected=%d\n",
 +				rx_header->payload_size, rx_payload_expected);
 +		status = -EREMOTEIO;
 +		goto err_finish;
@@ -607,9 +597,12 @@ index 0000000..f01de0d
 +
 +	resp_checksum = rx_header->checksum;
 +	rx_header->checksum = 0;
-+	resp_checksum_tmp = mxl692_checksum(rx_buf,
-+				MXL_EAGLE_HOST_MSG_HEADER_SIZE + rx_header->payload_size);
 +
++	resp_checksum_tmp = mxl692_checksum(rx_buf,
++					    MXL_EAGLE_HOST_MSG_HEADER_SIZE + rx_header->payload_size);
++#ifdef __LITTLE_ENDIAN
++	convert_endian(4, (u8 *)&resp_checksum_tmp); /* cksum is big endian */
++#endif
 +	if (resp_checksum != resp_checksum_tmp) {
 +		dev_dbg(&dev->i2c_client->dev, "rx checksum failure\n");
 +		status = -EREMOTEIO;
@@ -651,7 +644,7 @@ index 0000000..f01de0d
 +
 +	dev_dbg(&dev->i2c_client->dev, "\n");
 +
-+	status = mxl692_validate_fw_header(firmware_buf, buf_len);
++	status = mxl692_validate_fw_header(dev, firmware_buf, buf_len);
 +	if (status)
 +		goto err_finish;
 +
@@ -798,24 +791,21 @@ index 0000000..f01de0d
 +	reg_val |= dev_xtal->xtal_cap;
 +
 +	/* set CLK OUT */
-+	reg_val = dev_xtal->clk_out_enable ?
-+				(reg_val | 0x0100) : (reg_val & 0xFFFFFEFF);
++	reg_val = dev_xtal->clk_out_enable ? (reg_val | 0x0100) : (reg_val & 0xFFFFFEFF);
 +
 +	status = mxl692_memwrite(dev, 0x90000000, (u8 *)&reg_val, sizeof(u32));
 +	if (status)
 +		goto err_finish;
 +
 +	/* set CLK OUT divider */
-+	reg_val = dev_xtal->clk_out_div_enable ?
-+				(reg_val | 0x0200) : (reg_val & 0xFFFFFDFF);
++	reg_val = dev_xtal->clk_out_div_enable ? (reg_val | 0x0200) : (reg_val & 0xFFFFFDFF);
 +
 +	status = mxl692_memwrite(dev, 0x90000000, (u8 *)&reg_val, sizeof(u32));
 +	if (status)
 +		goto err_finish;
 +
 +	/* set XTAL sharing */
-+	reg_val = dev_xtal->xtal_sharing_enable ?
-+				(reg_val | 0x010400) : (reg_val & 0xFFFEFBFF);
++	reg_val = dev_xtal->xtal_sharing_enable ? (reg_val | 0x010400) : (reg_val & 0xFFFEFBFF);
 +
 +	status = mxl692_memwrite(dev, 0x90000000, (u8 *)&reg_val, sizeof(u32));
 +	if (status)
@@ -904,14 +894,14 @@ index 0000000..f01de0d
 +			    enum MXL_EAGLE_POWER_MODE_E power_mode)
 +{
 +	int status = 0;
++	u8 mode = power_mode;
 +
 +	dev_dbg(&dev->i2c_client->dev, "%s\n",
-+		power_mode == MXL_EAGLE_POWER_MODE_SLEEP ?
-+		"sleep" : "active");
++		power_mode == MXL_EAGLE_POWER_MODE_SLEEP ? "sleep" : "active");
 +
 +	status = mxl692_i2c_writeread(dev,
 +				      MXL_EAGLE_OPCODE_DEVICE_POWERMODE_SET,
-+				      (u8 *)&power_mode,
++				      &mode,
 +				      sizeof(u8),
 +				      NULL,
 +				      0);
@@ -973,14 +963,13 @@ index 0000000..f01de0d
 +
 +	release_firmware(firmware);
 +
-+//	usleep_range(500 * 1000, 510 * 1000); /* was 1000! */
 +	status = mxl692_get_versions(dev);
 +	if (status)
 +		goto err;
 +
 +	dev->power_mode = MXL_EAGLE_POWER_MODE_SLEEP;
 +warm:
-+	//Config Device Power Mode
++	/* Config Device Power Mode */
 +	if (dev->power_mode != MXL_EAGLE_POWER_MODE_ACTIVE) {
 +		status = mxl692_powermode(dev, MXL_EAGLE_POWER_MODE_ACTIVE);
 +		if (status)
@@ -1029,6 +1018,7 @@ index 0000000..f01de0d
 +	enum MXL_EAGLE_QAM_DEMOD_ANNEX_TYPE_E qam_annex = MXL_EAGLE_QAM_DEMOD_ANNEX_B;
 +	struct MXL_EAGLE_QAM_DEMOD_PARAMS_T qam_params = {};
 +	struct MXL_EAGLE_TUNER_CHANNEL_PARAMS_T tuner_params = {};
++	u8 op_param = 0;
 +
 +	dev_dbg(&dev->i2c_client->dev, "\n");
 +
@@ -1054,14 +1044,16 @@ index 0000000..f01de0d
 +	dev->current_frequency = -1;
 +	dev->demod_type = -1;
 +
++	op_param = demod_type;
 +	status = mxl692_i2c_writeread(dev,
 +				      MXL_EAGLE_OPCODE_DEVICE_DEMODULATOR_TYPE_SET,
-+				      (u8 *)&demod_type,
++				      &op_param,
 +				      sizeof(u8),
 +				      NULL,
 +				      0);
 +	if (status) {
-+		dev_dbg(&dev->i2c_client->dev, "DEVICE_DEMODULATOR_TYPE_SET...FAIL  err 0x%x\n", status);
++		dev_dbg(&dev->i2c_client->dev,
++			"DEVICE_DEMODULATOR_TYPE_SET...FAIL  err 0x%x\n", status);
 +		goto err;
 +	}
 +
@@ -1237,7 +1229,6 @@ index 0000000..f01de0d
 +	struct mxl692_dev *dev = fe->demodulator_priv;
 +	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
 +	u8 rx_buf[MXL_EAGLE_MAX_I2C_PACKET_SIZE] = {};
-+	struct MXL_EAGLE_QAM_DEMOD_ERROR_COUNTERS_T *qam_errors;
 +	struct MXL_EAGLE_ATSC_DEMOD_ERROR_COUNTERS_T *atsc_errors;
 +	enum MXL_EAGLE_DEMOD_TYPE_E demod_type = dev->demod_type;
 +	int mxl_status = 0;
@@ -1245,7 +1236,6 @@ index 0000000..f01de0d
 +
 +	dev_dbg(&dev->i2c_client->dev, "\n");
 +
-+	qam_errors = (struct MXL_EAGLE_QAM_DEMOD_ERROR_COUNTERS_T *)&rx_buf;
 +	atsc_errors = (struct MXL_EAGLE_ATSC_DEMOD_ERROR_COUNTERS_T *)&rx_buf;
 +
 +	switch (demod_type) {
@@ -1405,7 +1395,6 @@ index 0000000..f01de0d
 +	i2c_set_clientdata(client, dev);
 +
 +	dev_info(&client->dev, "MaxLinear mxl692 successfully attached\n");
-+	detect_endianness();
 +
 +	return 0;
 +err:
@@ -1432,7 +1421,6 @@ index 0000000..f01de0d
 +
 +static struct i2c_driver mxl692_driver = {
 +	.driver = {
-+		.owner	= THIS_MODULE,
 +		.name	= "mxl692",
 +	},
 +	.probe		= mxl692_probe,
@@ -1492,10 +1480,10 @@ index 0000000..45bc48f
 +#endif /* _MXL692_H_ */
 diff --git a/drivers/media/dvb-frontends/mxl692_defs.h b/drivers/media/dvb-frontends/mxl692_defs.h
 new file mode 100644
-index 0000000..46ce6c4
+index 0000000..776ac40
 --- /dev/null
 +++ b/drivers/media/dvb-frontends/mxl692_defs.h
-@@ -0,0 +1,550 @@
+@@ -0,0 +1,548 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Driver for the MaxLinear MxL69x family of combo tuners/demods
@@ -1515,8 +1503,6 @@ index 0000000..46ce6c4
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + */
-+
-+//#define __packed __attribute__((packed))
 +
 +/*****************************************************************************
 + *	Defines
@@ -1613,7 +1599,7 @@ index 0000000..46ce6c4
 +};
 +
 +/* Enum of Host to Eagle I2C protocol opcodes */
-+const char* const MXL_EAGLE_OPCODE_STRING[] = {
++static const char * const MXL_EAGLE_OPCODE_STRING[] = {
 +	/* DEVICE */
 +	"DEVICE_DEMODULATOR_TYPE_SET",
 +	"DEVICE_MPEG_OUT_PARAMS_SET",
