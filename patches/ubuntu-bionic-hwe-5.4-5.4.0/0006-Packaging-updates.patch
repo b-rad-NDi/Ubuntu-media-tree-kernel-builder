@@ -1,6 +1,6 @@
-From 0ac24ca4771f5a8c79c81058d961651ed0650a9a Mon Sep 17 00:00:00 2001
+From 6dd7c4a42d923416d60b49c3b5c93df20258079c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 18 Dec 2020 15:44:14 -0600
+Date: Fri, 22 Jan 2021 10:41:43 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,14 +14,15 @@ Subject: [PATCH 6/6] Packaging updates
  debian.hwe-5.4/rules.d/s390x.mk               |  2 +-
  debian.hwe-5.4/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub       |  2 +-
+ debian/dkms-versions                          |  4 +-
  debian/rules                                  |  2 +-
  debian/rules.d/0-common-vars.mk               | 19 ++++++--
  debian/rules.d/2-binary-arch.mk               |  4 ++
  debian/scripts/config-check                   |  2 +-
- 14 files changed, 54 insertions(+), 66 deletions(-)
+ 15 files changed, 56 insertions(+), 68 deletions(-)
 
 diff --git a/debian.hwe-5.4/control.d/flavour-control.stub b/debian.hwe-5.4/control.d/flavour-control.stub
-index bdad951bb..e3995d517 100644
+index bdad951bbd20..e3995d517c35 100644
 --- a/debian.hwe-5.4/control.d/flavour-control.stub
 +++ b/debian.hwe-5.4/control.d/flavour-control.stub
 @@ -31,7 +31,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.
@@ -43,7 +44,7 @@ index bdad951bb..e3995d517 100644
   DESC.
   .
 diff --git a/debian.hwe-5.4/control.stub.in b/debian.hwe-5.4/control.stub.in
-index 9f95a88e2..f072125ad 100644
+index 9f95a88e2796..f072125ad2ae 100644
 --- a/debian.hwe-5.4/control.stub.in
 +++ b/debian.hwe-5.4/control.stub.in
 @@ -53,30 +53,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
@@ -115,7 +116,7 @@ index 9f95a88e2..f072125ad 100644
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf
 diff --git a/debian.hwe-5.4/copyright b/debian.hwe-5.4/copyright
-index d1d04a6d6..b6f183f12 100644
+index d1d04a6d6697..b6f183f12da6 100644
 --- a/debian.hwe-5.4/copyright
 +++ b/debian.hwe-5.4/copyright
 @@ -1,3 +1,25 @@
@@ -145,7 +146,7 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe-5.4/rules.d/amd64.mk b/debian.hwe-5.4/rules.d/amd64.mk
-index d253402ae..c88ec890a 100644
+index d253402ae066..c88ec890a219 100644
 --- a/debian.hwe-5.4/rules.d/amd64.mk
 +++ b/debian.hwe-5.4/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -178,7 +179,7 @@ index d253402ae..c88ec890a 100644
  do_zfs		= true
  do_dkms_nvidia  = true
 diff --git a/debian.hwe-5.4/rules.d/arm64.mk b/debian.hwe-5.4/rules.d/arm64.mk
-index 4c3e08cd1..053b6da62 100644
+index 4c3e08cd1bd9..053b6da624ab 100644
 --- a/debian.hwe-5.4/rules.d/arm64.mk
 +++ b/debian.hwe-5.4/rules.d/arm64.mk
 @@ -7,7 +7,7 @@ build_image_generic	= Image.gz
@@ -191,7 +192,7 @@ index 4c3e08cd1..053b6da62 100644
  loader		= grub
  vdso		= vdso_install
 diff --git a/debian.hwe-5.4/rules.d/i386.mk b/debian.hwe-5.4/rules.d/i386.mk
-index 0610d431e..b2640547d 100644
+index 0610d431ee71..b2640547d3a7 100644
 --- a/debian.hwe-5.4/rules.d/i386.mk
 +++ b/debian.hwe-5.4/rules.d/i386.mk
 @@ -2,7 +2,7 @@ human_arch	= 32 bit x86
@@ -204,7 +205,7 @@ index 0610d431e..b2640547d 100644
  kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
 diff --git a/debian.hwe-5.4/rules.d/ppc64el.mk b/debian.hwe-5.4/rules.d/ppc64el.mk
-index a0bc38892..37b8bbf75 100644
+index a0bc38892cd8..37b8bbf751e4 100644
 --- a/debian.hwe-5.4/rules.d/ppc64el.mk
 +++ b/debian.hwe-5.4/rules.d/ppc64el.mk
 @@ -10,7 +10,7 @@ no_dumpfile	= true
@@ -217,7 +218,7 @@ index a0bc38892..37b8bbf75 100644
  do_tools_cpupower = true
  do_tools_perf	  = true
 diff --git a/debian.hwe-5.4/rules.d/s390x.mk b/debian.hwe-5.4/rules.d/s390x.mk
-index f852ca656..9c30b1fa0 100644
+index f852ca656559..9c30b1fa0be3 100644
 --- a/debian.hwe-5.4/rules.d/s390x.mk
 +++ b/debian.hwe-5.4/rules.d/s390x.mk
 @@ -11,7 +11,7 @@ vdso		= vdso_install
@@ -230,7 +231,7 @@ index f852ca656..9c30b1fa0 100644
  do_tools_cpupower = true
  do_tools_perf     = true
 diff --git a/debian.hwe-5.4/rules.d/x32.mk b/debian.hwe-5.4/rules.d/x32.mk
-index e0ccff961..a2833d96b 100644
+index e0ccff961f02..a2833d96ba17 100644
 --- a/debian.hwe-5.4/rules.d/x32.mk
 +++ b/debian.hwe-5.4/rules.d/x32.mk
 @@ -9,6 +9,6 @@ install_file	= vmlinuz
@@ -242,7 +243,7 @@ index e0ccff961..a2833d96b 100644
  
  do_flavour_image_package = false
 diff --git a/debian/control.d/flavour-buildinfo.stub b/debian/control.d/flavour-buildinfo.stub
-index ed92b3d53..18505efb1 100644
+index ed92b3d53ba5..18505efb1b11 100644
 --- a/debian/control.d/flavour-buildinfo.stub
 +++ b/debian/control.d/flavour-buildinfo.stub
 @@ -1,5 +1,5 @@
@@ -252,8 +253,23 @@ index ed92b3d53..18505efb1 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
+diff --git a/debian/dkms-versions b/debian/dkms-versions
+index 009170954d46..c366720848b6 100644
+--- a/debian/dkms-versions
++++ b/debian/dkms-versions
+@@ -4,8 +4,8 @@ nvidia-graphics-drivers-435 435.21-0ubuntu7
+ nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-455 455.45.01-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.04.1
+-nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-440-server 440.95.01-0ubuntu0.20.04.1
+-nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0.20.04.1
+ virtualbox 6.1.10-dfsg-1~ubuntu1.20.04.1
+ wireguard-linux-compat 1.0.20201112-1~20.04.1
 diff --git a/debian/rules b/debian/rules
-index 38b9f3b34..6bf6f12fd 100755
+index 8c3c71a298e7..0c4855288209 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -266,7 +282,7 @@ index 38b9f3b34..6bf6f12fd 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 5394b7c96..11958e66f 100644
+index 5394b7c96f82..11958e66fa35 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu
@@ -327,10 +343,10 @@ index 5394b7c96..11958e66f 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index fe1345d21..d88cc6020 100644
+index 703fd2ade338..6b609bdedf21 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -796,10 +796,14 @@ build-arch: $(build-arch-deps-true)
+@@ -797,10 +797,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
@@ -346,7 +362,7 @@ index fe1345d21..d88cc6020 100644
  ifneq ($(do_common_headers_indep),true)
  binary-arch-deps-$(do_flavour_header_package) += binary-headers
 diff --git a/debian/scripts/config-check b/debian/scripts/config-check
-index df0cd5206..7baa81c20 100755
+index df0cd52069b4..7baa81c20991 100755
 --- a/debian/scripts/config-check
 +++ b/debian/scripts/config-check
 @@ -22,7 +22,7 @@ my %values = ();

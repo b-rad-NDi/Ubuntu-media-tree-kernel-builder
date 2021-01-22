@@ -1,6 +1,6 @@
-From be133f629b67194f05d58c5e6183c15bc77b6b27 Mon Sep 17 00:00:00 2001
+From 843763e0176b460fa58884d5656d007b5fa10513 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 13 Jan 2021 15:35:37 -0600
+Date: Thu, 21 Jan 2021 14:47:05 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,12 +14,12 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/rules.d/s390x.mk               |  2 +-
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
- debian/dkms-versions                         |  6 +-
+ debian/dkms-versions                         |  4 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 19 ++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
  debian/scripts/config-check                  |  2 +-
- 15 files changed, 57 insertions(+), 83 deletions(-)
+ 15 files changed, 56 insertions(+), 82 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 4ba31aa63..f0685937b 100644
@@ -272,22 +272,20 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/dkms-versions b/debian/dkms-versions
-index d1c35766c..82011c970 100644
+index 009170954..c36672084 100644
 --- a/debian/dkms-versions
 +++ b/debian/dkms-versions
-@@ -1,9 +1,9 @@
- zfs-linux 0.8.3-1ubuntu12.5
--nvidia-graphics-drivers-390 390.141-0ubuntu0~0.20.04.1
-+nvidia-graphics-drivers-390 390.141-0ubuntu0.20.04.1
- nvidia-graphics-drivers-435 435.21-0ubuntu7
--nvidia-graphics-drivers-450 450.102.04-0ubuntu0~0.20.04.1
-+nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.04.1
+@@ -4,8 +4,8 @@ nvidia-graphics-drivers-435 435.21-0ubuntu7
+ nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.04.1
  nvidia-graphics-drivers-455 455.45.01-0ubuntu0.20.04.1
--nvidia-graphics-drivers-460 460.32.03-0ubuntu0~0.20.04.0.1
-+nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.04.1
- nvidia-graphics-drivers-418-server 418.152.00-0ubuntu0.20.04.1
+ nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.04.1
+-nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0.20.04.1
  nvidia-graphics-drivers-440-server 440.95.01-0ubuntu0.20.04.1
- nvidia-graphics-drivers-450-server 450.80.02-0ubuntu0.20.04.3
+-nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0~0.20.04.1
++nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0.20.04.1
+ virtualbox 6.1.10-dfsg-1~ubuntu1.20.04.1
+ wireguard-linux-compat 1.0.20201112-1~20.04.1
 diff --git a/debian/rules b/debian/rules
 index 8c3c71a29..0c4855288 100755
 --- a/debian/rules
