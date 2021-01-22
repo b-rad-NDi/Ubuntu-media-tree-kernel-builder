@@ -1,0 +1,95 @@
+From 8e9697997262927c9c5810fd1ac375c2639b51cb Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 10 Nov 2020 14:47:41 -0600
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ drivers/media/cec/core/cec-api.c      | 2 ++
+ drivers/media/mc/mc-device.c          | 2 ++
+ drivers/media/pci/ivtv/ivtv-driver.c  | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c | 2 +-
+ drivers/media/v4l2-core/v4l2-async.c  | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c  | 2 ++
+ 6 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index a9ecfee6e..3f2bcaa99 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -22,6 +22,8 @@
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+ 
++#include <media/compat.h>
++
+ static inline struct cec_devnode *cec_devnode_data(struct file *filp)
+ {
+ 	struct cec_fh *fh = filp->private_data;
+diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
+index 6f0369bc5..cd7b8eb59 100644
+--- a/drivers/media/mc/mc-device.c
++++ b/drivers/media/mc/mc-device.c
+@@ -24,6 +24,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
+index 28acb1449..8b9478cd8 100644
+--- a/drivers/media/pci/ivtv/ivtv-driver.c
++++ b/drivers/media/pci/ivtv/ivtv-driver.c
+@@ -60,6 +60,8 @@
+ #include "tuner-xc2028.h"
+ #include <uapi/linux/sched/types.h>
+ 
++#include <media/compat.h>
++
+ /* If you have already X v4l cards, then set this to X. This way
+    the device numbers stay matched. Example: you have a WinTV card
+    without radio and a PVR-350 with. Normally this would give a
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index b9c1a9e72..a57a7cae1 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+index e3ab003a6..079ddd520 100644
+--- a/drivers/media/v4l2-core/v4l2-async.c
++++ b/drivers/media/v4l2-core/v4l2-async.c
+@@ -22,6 +22,8 @@
+ #include <media/v4l2-fwnode.h>
+ #include <media/v4l2-subdev.h>
+ 
++#include <media/compat.h>
++
+ static int v4l2_async_notifier_call_bound(struct v4l2_async_notifier *n,
+ 					  struct v4l2_subdev *subdev,
+ 					  struct v4l2_async_subdev *asd)
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index ceb04bd0e..88b296264 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -29,6 +29,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+-- 
+2.27.0
+
