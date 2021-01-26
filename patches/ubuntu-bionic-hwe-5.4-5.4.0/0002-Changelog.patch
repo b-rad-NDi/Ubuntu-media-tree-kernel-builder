@@ -1,21 +1,21 @@
-From 62b51e584d0f46eb88171ee9dc489ad33a14146b Mon Sep 17 00:00:00 2001
+From ff2f6c0cd9b4fbf076f1d2165c7683f06ca9cfe8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 14 Jan 2021 15:16:17 -0600
+Date: Thu, 21 Jan 2021 20:21:01 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe-5.4/changelog | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ debian.hwe-5.4/changelog | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/debian.hwe-5.4/changelog b/debian.hwe-5.4/changelog
-index 6b2b8f952de1..1774854b77f0 100644
+index 1e38d7b16c5f..f6ff7a2d25e1 100644
 --- a/debian.hwe-5.4/changelog
 +++ b/debian.hwe-5.4/changelog
-@@ -1,3 +1,38 @@
-+linux-hwe (5.4.0-612101141516.0+mediatree+hauppauge~hwe) bionic; urgency=low
+@@ -1,3 +1,39 @@
++linux-hwe (5.4.0-652101212021.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe-5.4 kernel git clone
-+    - 5.4.0-61.69 rev 84f8d1cedf72c084c858f398a20da2eeda0f328b
++    - 5.4.0-65.73 rev 07c96f4aff7afb2c873417dcea87a12ed5ce3582
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -34,22 +34,23 @@ index 6b2b8f952de1..1774854b77f0 100644
 +    --- 0005-dw2102-check-initialization-replies.patch
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
++    --- 0008-Fix-saa7164-REV2-firmware.patch
 +    - 11.cx23885.patches
 +    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    --- 0003-cx23885-add-more-ryzen-pci-id-to-dma-override-list.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 90.usb.quadhd.xml692
-+    --- 0001-mxl69x-MaxLinear-692-ATSC-demod-tuner-driver.patch
++    - 90.usb.quadhd.mxl692
++    --- 0001-mxl692-MaxLinear-692-ATSC-demod-tuner-driver.patch
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 14 Jan 2021 15:16:17 -0600
++ -- Fake User <hidden@email.co>  Thu, 21 Jan 2021 20:21:01 -0600
 +
- linux-hwe-5.4 (5.4.0-61.69~18.04.1) bionic; urgency=medium
+ linux-hwe-5.4 (5.4.0-65.73~18.04.1) bionic; urgency=medium
  
-   * bionic/linux-hwe-5.4: 5.4.0-61.69~18.04.1 -proposed tracker (LP: #1910036)
+   * bionic/linux-hwe-5.4: 5.4.0-65.73~18.04.1 -proposed tracker (LP: #1912229)
 -- 
 2.17.1
 
