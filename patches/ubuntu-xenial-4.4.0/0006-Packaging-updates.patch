@@ -1,6 +1,6 @@
-From 06931a70192f7a0086c36ecee983c47975c494e1 Mon Sep 17 00:00:00 2001
+From a88fb78f6b2f49c11456dd1bed97e63e7444eca6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 18 Dec 2020 15:21:43 -0600
+Date: Thu, 21 Jan 2021 13:31:54 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -9,12 +9,13 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/copyright                      |  22 ++++++
  debian.master/rules.d/amd64.mk               |   6 +-
  debian.master/rules.d/i386.mk                |   2 +-
+ debian.master/rules.d/powerpc.mk             |   2 +-
  debian.master/rules.d/x32.mk                 |   2 +-
  debian/control.d/flavour-buildinfo.stub      |   2 +-
  debian/rules                                 |   2 +-
  debian/rules.d/0-common-vars.mk              |  21 ++++--
  debian/rules.d/2-binary-arch.mk              |   4 +
- 10 files changed, 55 insertions(+), 119 deletions(-)
+ 11 files changed, 56 insertions(+), 120 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index b0f92f4..f69d59c 100644
@@ -264,6 +265,19 @@ index 1336fd6..911646e 100644
  build_image	= bzImage
  kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
+diff --git a/debian.master/rules.d/powerpc.mk b/debian.master/rules.d/powerpc.mk
+index 57e2652..9f77dee 100644
+--- a/debian.master/rules.d/powerpc.mk
++++ b/debian.master/rules.d/powerpc.mk
+@@ -2,7 +2,7 @@ human_arch	= PowerPC (32 bit userspace)
+ build_arch	= powerpc
+ header_arch	= $(build_arch)
+ defconfig	= pmac32_defconfig
+-flavours	= powerpc-smp powerpc64-smp powerpc-e500mc powerpc64-emb
++flavours	= powerpc-smp powerpc64-smp
+ build_image	= zImage
+ kernel_file	= $(shell if [ ! -f $(builddir)/build-$*/vmlinux.strip ] && \
+ 		    [ -f $(builddir)/build-$*/vmlinux.strip.gz ]; then \
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
 index 94d4c83..f407712 100644
 --- a/debian.master/rules.d/x32.mk
