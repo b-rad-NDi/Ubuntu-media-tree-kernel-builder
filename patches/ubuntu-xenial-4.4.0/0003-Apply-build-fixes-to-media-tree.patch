@@ -1,6 +1,6 @@
-From 33ad5c6f578da174bd1f7f4938efc6fad3360507 Mon Sep 17 00:00:00 2001
+From 982ac65186cd9f5a8dc377cf564978075f0b1943 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 26 Oct 2020 14:17:38 -0500
+Date: Tue, 26 Jan 2021 14:30:40 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -21,7 +21,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/dvb-core/dvb_demux.c                    |  2 ++
  drivers/media/dvb-core/dvb_net.c                      |  2 ++
  drivers/media/dvb-frontends/mn88443x.c                |  4 +++-
- drivers/media/i2c/Kconfig                             |  2 +-
+ drivers/media/i2c/Kconfig                             |  7 ++++++-
  drivers/media/i2c/adv7604.c                           |  2 +-
  drivers/media/i2c/adv7842.c                           |  2 +-
  drivers/media/i2c/ak7375.c                            |  2 ++
@@ -32,6 +32,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/i2c/tc358743.c                          |  2 +-
  drivers/media/i2c/tda1997x.c                          |  6 ++++--
  drivers/media/i2c/tvaudio.c                           |  2 ++
+ drivers/media/i2c/tvp5150.c                           |  7 +++++++
  drivers/media/media-device.c                          |  2 ++
  drivers/media/mmc/siano/Makefile                      |  2 +-
  drivers/media/pci/b2c2/Makefile                       |  2 +-
@@ -66,12 +67,15 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/pci/ttpci/av7110_ipack.c                |  1 +
  drivers/media/pci/ttpci/av7110_ir.c                   |  2 ++
  drivers/media/pci/tw686x/tw686x-core.c                |  2 ++
+ drivers/media/platform/Kconfig                        |  1 +
  drivers/media/platform/sti/c8sectpfe/Makefile         |  4 ++--
  drivers/media/platform/vim2m.c                        |  2 ++
  drivers/media/platform/vivid/vivid-rds-gen.c          |  2 ++
  drivers/media/platform/vivid/vivid-vbi-gen.c          |  2 ++
+ drivers/media/platform/xilinx/Kconfig                 |  4 ++++
  drivers/media/radio/wl128x/fmdrv_common.c             |  4 +++-
  drivers/media/rc/ene_ir.c                             |  2 ++
+ drivers/media/rc/gpio-ir-recv.c                       |  2 ++
  drivers/media/rc/igorplugusb.c                        |  2 ++
  drivers/media/rc/iguanair.c                           |  2 ++
  drivers/media/rc/imon.c                               |  2 ++
@@ -86,6 +90,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/rc/serial_ir.c                          |  2 ++
  drivers/media/rc/sir_ir.c                             |  2 ++
  drivers/media/spi/Makefile                            |  2 +-
+ drivers/media/test-drivers/vidtv/vidtv_pes.c          |  2 ++
  drivers/media/test-drivers/vidtv/vidtv_psi.c          |  2 ++
  drivers/media/test-drivers/vivid/vivid-rds-gen.c      |  2 ++
  drivers/media/test-drivers/vivid/vivid-vbi-gen.c      |  2 ++
@@ -119,7 +124,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-dev.h                              |  5 ++++-
  include/media/v4l2-fwnode.h                           |  2 ++
  include/media/videobuf-core.h                         |  2 ++
- 115 files changed, 237 insertions(+), 69 deletions(-)
+ 120 files changed, 258 insertions(+), 69 deletions(-)
 
 diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
 index be6d0bd..3a6341c 100644
@@ -403,10 +408,34 @@ index e452878..c260869 100644
  
  /* ISDB-S registers */
 diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 878f66e..3a670df 100644
+index 878f66e..7cfe15f 100644
 --- a/drivers/media/i2c/Kconfig
 +++ b/drivers/media/i2c/Kconfig
-@@ -687,7 +687,7 @@ config VIDEO_I2C
+@@ -237,6 +237,7 @@ config VIDEO_ADV748X
+ 	tristate "Analog Devices ADV748x decoder"
+ 	depends on VIDEO_V4L2 && I2C
+ 	depends on OF
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select REGMAP_I2C
+@@ -399,6 +400,7 @@ config VIDEO_TVP514X
+ config VIDEO_TVP5150
+ 	tristate "Texas Instruments TVP5150 video decoder"
+ 	depends on VIDEO_V4L2 && I2C
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select V4L2_FWNODE
+ 	select REGMAP_I2C
+ 	help
+@@ -468,6 +470,7 @@ config VIDEO_MAX9286
+ 	tristate "Maxim MAX9286 GMSL deserializer support"
+ 	depends on I2C && I2C_MUX
+ 	depends on OF_GPIO
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select V4L2_FWNODE
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select MEDIA_CONTROLLER
+@@ -687,7 +690,7 @@ config VIDEO_I2C
  	tristate "I2C transport video support"
  	depends on VIDEO_V4L2 && I2C
  	select VIDEOBUF2_VMALLOC
@@ -415,6 +444,22 @@ index 878f66e..3a670df 100644
  	help
  	  Enable the I2C transport video support which supports the
  	  following:
+@@ -888,6 +891,7 @@ config VIDEO_OV5640
+ 	tristate "OmniVision OV5640 sensor support"
+ 	depends on OF
+ 	depends on GPIOLIB && VIDEO_V4L2 && I2C
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select V4L2_FWNODE
+@@ -899,6 +903,7 @@ config VIDEO_OV5645
+ 	tristate "OmniVision OV5645 sensor support"
+ 	depends on OF
+ 	depends on I2C && VIDEO_V4L2
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select V4L2_FWNODE
 diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
 index 09004d9..386124d 100644
 --- a/drivers/media/i2c/adv7604.c
@@ -560,6 +605,24 @@ index e6796e9..fbc3be2 100644
  /* ---------------------------------------------------------------------- */
  /* insmod args                                                            */
  
+diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
+index 78cee6d..62cf411 100644
+--- a/drivers/media/i2c/tvp5150.c
++++ b/drivers/media/i2c/tvp5150.c
+@@ -95,6 +95,13 @@ struct tvp5150 {
+ 	enum v4l2_mbus_type mbus_type;
+ };
+ 
++#ifdef __BIG_ENDIAN
++int of_graph_get_endpoint_count(const struct device_node *np)
++{
++	return 0;
++}
++#endif
++
+ static inline struct tvp5150 *to_tvp5150(struct v4l2_subdev *sd)
+ {
+ 	return container_of(sd, struct tvp5150, sd);
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
 index 0ca9506..b17c79e 100644
 --- a/drivers/media/media-device.c
@@ -995,6 +1058,18 @@ index 54e4d06..4a64d28 100644
  /*
   * This module parameter allows to control the DMA_TIMER_INTERVAL value.
   * The DMA_TIMER_INTERVAL register controls the minimum DMA interrupt
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index a3cb104..e7b5d87 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -64,6 +64,7 @@ config VIDEO_MUX
+ 	tristate "Video Multiplexer"
+ 	select MULTIPLEXER
+ 	depends on VIDEO_V4L2 && OF
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select REGMAP
 diff --git a/drivers/media/platform/sti/c8sectpfe/Makefile b/drivers/media/platform/sti/c8sectpfe/Makefile
 index aedfc72..fe2708a 100644
 --- a/drivers/media/platform/sti/c8sectpfe/Makefile
@@ -1046,6 +1121,42 @@ index a2159de..13ef0b1 100644
  static void wss_insert(u8 *wss, u32 val, unsigned size)
  {
  	while (size--)
+diff --git a/drivers/media/platform/xilinx/Kconfig b/drivers/media/platform/xilinx/Kconfig
+index 44587dc..3fd6f86 100644
+--- a/drivers/media/platform/xilinx/Kconfig
++++ b/drivers/media/platform/xilinx/Kconfig
+@@ -3,6 +3,7 @@
+ config VIDEO_XILINX
+ 	tristate "Xilinx Video IP (EXPERIMENTAL)"
+ 	depends on VIDEO_V4L2  && OF && HAS_DMA
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select VIDEOBUF2_DMA_CONTIG
+@@ -14,6 +15,7 @@ if VIDEO_XILINX
+ 
+ config VIDEO_XILINX_CSI2RXSS
+ 	tristate "Xilinx CSI-2 Rx Subsystem"
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	help
+ 	  Driver for Xilinx MIPI CSI-2 Rx Subsystem. This is a V4L sub-device
+ 	  based driver that takes input from CSI-2 Tx source and converts
+@@ -22,6 +24,7 @@ config VIDEO_XILINX_CSI2RXSS
+ config VIDEO_XILINX_TPG
+ 	tristate "Xilinx Video Test Pattern Generator"
+ 	depends on VIDEO_XILINX
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	select VIDEO_XILINX_VTC
+ 	help
+ 	   Driver for the Xilinx Video Test Pattern Generator
+@@ -29,6 +32,7 @@ config VIDEO_XILINX_TPG
+ config VIDEO_XILINX_VTC
+ 	tristate "Xilinx Video Timing Controller"
+ 	depends on VIDEO_XILINX
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	help
+ 	   Driver for the Xilinx Video Timing Controller
+ 
 diff --git a/drivers/media/radio/wl128x/fmdrv_common.c b/drivers/media/radio/wl128x/fmdrv_common.c
 index a67b976..7ec9795 100644
 --- a/drivers/media/radio/wl128x/fmdrv_common.c
@@ -1081,6 +1192,19 @@ index cda9c6f..edea9ba 100644
  static int sample_period;
  static bool learning_mode_force;
  static int debug;
+diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
+index 22e524b..147ec0f 100644
+--- a/drivers/media/rc/gpio-ir-recv.c
++++ b/drivers/media/rc/gpio-ir-recv.c
+@@ -16,6 +16,8 @@
+ #include <linux/irq.h>
+ #include <media/rc-core.h>
+ 
++#include <media/compat.h>
++
+ #define GPIO_IR_DEVICE_NAME	"gpio_ir_recv"
+ 
+ struct gpio_rc_dev {
 diff --git a/drivers/media/rc/igorplugusb.c b/drivers/media/rc/igorplugusb.c
 index effaa57..ed8e281 100644
 --- a/drivers/media/rc/igorplugusb.c
@@ -1260,6 +1384,19 @@ index 9f45787..5b0c21d 100644
  
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends/cxd2880
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends/cxd2880
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.c b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+index 586b6b4..3c08686 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_pes.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+@@ -24,6 +24,8 @@
+ #include "vidtv_encoder.h"
+ #include "vidtv_ts.h"
+ 
++#include <media/compat.h>
++
+ #define PRIVATE_STREAM_1_ID 0xbd /* private_stream_1. See SMPTE 302M-2007 p.6 */
+ #define PES_HEADER_MAX_STUFFING_BYTES 32
+ #define PES_TS_HEADER_MAX_STUFFING_BYTES 182
 diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
 index 85d9319..9cc8279 100644
 --- a/drivers/media/test-drivers/vidtv/vidtv_psi.c

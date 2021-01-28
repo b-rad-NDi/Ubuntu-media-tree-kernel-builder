@@ -1,12 +1,13 @@
-From 1172a0a74ab396a519d34185d023b11aca4ab0ff Mon Sep 17 00:00:00 2001
+From a786b390311608961b3f3c96effb560f14f878b3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 26 Oct 2020 14:18:47 -0500
+Date: Tue, 26 Jan 2021 14:32:50 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
  drivers/hid/hid-picolcd_cir.c           |  11 ++--
  drivers/input/touchscreen/sur40.c       |  48 +++++++--------
  drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
+ drivers/leds/Kconfig                    |   1 +
  drivers/net/ethernet/via/via-velocity.c |  10 +--
  drivers/usb/gadget/function/uvc_queue.c |   5 +-
  drivers/video/hdmi.c                    |   4 +-
@@ -21,7 +22,7 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  mm/slub.c                               |   2 +
  sound/pci/bt87x.c                       |  31 +++++++---
  ubuntu/i915/i915_gem_dmabuf.c           |  10 +--
- 17 files changed, 194 insertions(+), 104 deletions(-)
+ 18 files changed, 195 insertions(+), 104 deletions(-)
  create mode 100644 include/linux/refcount.h
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
@@ -227,6 +228,18 @@ index 7416755..6e2b825 100644
  
  struct w6692_ch {
  	struct bchannel		bch;
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index 8a64118..480bd87 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -509,6 +509,7 @@ config LEDS_MAX77693
+ 	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+ 	depends on MFD_MAX77693
+ 	depends on OF
++	depends on !CONFIG_CPU_BIG_ENDIAN
+ 	help
+ 	  This option enables support for the flash part of the MAX77693
+ 	  multifunction device. It has build in control for two leds in flash
 diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
 index f38696c..c841bba 100644
 --- a/drivers/net/ethernet/via/via-velocity.c
