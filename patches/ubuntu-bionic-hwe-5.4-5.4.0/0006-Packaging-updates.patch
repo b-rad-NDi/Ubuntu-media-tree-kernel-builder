@@ -1,6 +1,6 @@
-From 6dd7c4a42d923416d60b49c3b5c93df20258079c Mon Sep 17 00:00:00 2001
+From 776a581f1726b785fcb1bd110c3794d24337f5f4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 22 Jan 2021 10:41:43 -0600
+Date: Fri, 5 Feb 2021 09:53:24 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,12 +14,11 @@ Subject: [PATCH 6/6] Packaging updates
  debian.hwe-5.4/rules.d/s390x.mk               |  2 +-
  debian.hwe-5.4/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub       |  2 +-
- debian/dkms-versions                          |  4 +-
  debian/rules                                  |  2 +-
  debian/rules.d/0-common-vars.mk               | 19 ++++++--
  debian/rules.d/2-binary-arch.mk               |  4 ++
  debian/scripts/config-check                   |  2 +-
- 15 files changed, 56 insertions(+), 68 deletions(-)
+ 14 files changed, 54 insertions(+), 66 deletions(-)
 
 diff --git a/debian.hwe-5.4/control.d/flavour-control.stub b/debian.hwe-5.4/control.d/flavour-control.stub
 index bdad951bbd20..e3995d517c35 100644
@@ -146,7 +145,7 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe-5.4/rules.d/amd64.mk b/debian.hwe-5.4/rules.d/amd64.mk
-index d253402ae066..c88ec890a219 100644
+index c201b5da0b13..679e7c09a914 100644
 --- a/debian.hwe-5.4/rules.d/amd64.mk
 +++ b/debian.hwe-5.4/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -253,23 +252,8 @@ index ed92b3d53ba5..18505efb1b11 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
-diff --git a/debian/dkms-versions b/debian/dkms-versions
-index 009170954d46..c366720848b6 100644
---- a/debian/dkms-versions
-+++ b/debian/dkms-versions
-@@ -4,8 +4,8 @@ nvidia-graphics-drivers-435 435.21-0ubuntu7
- nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.04.1
- nvidia-graphics-drivers-455 455.45.01-0ubuntu0.20.04.1
- nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.04.1
--nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0~0.20.04.1
-+nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0.20.04.1
- nvidia-graphics-drivers-440-server 440.95.01-0ubuntu0.20.04.1
--nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0~0.20.04.1
-+nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0.20.04.1
- virtualbox 6.1.10-dfsg-1~ubuntu1.20.04.1
- wireguard-linux-compat 1.0.20201112-1~20.04.1
 diff --git a/debian/rules b/debian/rules
-index 8c3c71a298e7..0c4855288209 100755
+index e490836b813d..161b8339aa1d 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -282,7 +266,7 @@ index 8c3c71a298e7..0c4855288209 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 5394b7c96f82..11958e66fa35 100644
+index b71546ab03a0..171eff24c1e5 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu
@@ -343,10 +327,10 @@ index 5394b7c96f82..11958e66fa35 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 703fd2ade338..6b609bdedf21 100644
+index 0542c12a708b..8301d30b3c83 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -797,10 +797,14 @@ build-arch: $(build-arch-deps-true)
+@@ -804,10 +804,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
