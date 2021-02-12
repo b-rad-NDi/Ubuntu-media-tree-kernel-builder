@@ -1,21 +1,21 @@
-From f1a6524cc149762a4778769bb4daf37aa14a3a58 Mon Sep 17 00:00:00 2001
+From 1e716e1bc9420bfd03ff670e1e605e2e45c9e3e6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 21 Jan 2021 20:21:01 -0600
+Date: Wed, 3 Feb 2021 04:05:06 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe-5.8/changelog | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ debian.hwe-5.8/changelog | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/debian.hwe-5.8/changelog b/debian.hwe-5.8/changelog
-index cbbc1eaa3..93bc29d64 100644
+index 0452f2fa766d..1ca79de71503 100644
 --- a/debian.hwe-5.8/changelog
 +++ b/debian.hwe-5.8/changelog
-@@ -1,3 +1,39 @@
-+linux-hwe (5.8.0-412101212021.0+mediatree+hauppauge~hwe) focal; urgency=low
+@@ -1,3 +1,41 @@
++linux-hwe (5.8.0-432102030405.0+mediatree+hauppauge~hwe) focal; urgency=low
 +
 +  * Ubuntu-hwe-5.8 kernel git clone
-+    - 5.8.0-41.46 rev d3ee2fa56230167d47ba3ef1b8a919467f57ee5f
++    - 5.8.0-43.49 rev d1be521c0ac8877c5cbfbc8d304e0fc90593b7b7
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -35,6 +35,8 @@ index cbbc1eaa3..93bc29d64 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
++    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
++    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
 +    - 11.cx23885.patches
 +    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
@@ -46,11 +48,11 @@ index cbbc1eaa3..93bc29d64 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 21 Jan 2021 20:21:01 -0600
++ -- Fake User <hidden@email.co>  Wed, 03 Feb 2021 04:05:06 -0600
 +
- linux-hwe-5.8 (5.8.0-41.46~20.04.1) focal; urgency=medium
+ linux-hwe-5.8 (5.8.0-43.49~20.04.1) focal; urgency=medium
  
-   * focal/linux-hwe-5.8: 5.8.0-41.46~20.04.1 -proposed tracker (LP: #1912227)
+   * focal/linux-hwe-5.8: 5.8.0-43.49~20.04.1 -proposed tracker (LP: #1914688)
 -- 
 2.25.1
 
