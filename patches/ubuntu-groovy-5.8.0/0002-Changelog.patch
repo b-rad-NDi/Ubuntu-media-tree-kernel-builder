@@ -1,21 +1,21 @@
-From 680219deaef836bf4f1aaa8e05ba600c9965951b Mon Sep 17 00:00:00 2001
+From 41cecfa80edcf469aaac6778d26be864d83803b9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 3 Feb 2021 04:05:06 -0600
+Date: Tue, 6 Apr 2021 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 2520b8c80..95ba92dcb 100644
+index 4ed3ce753..0ec71f65e 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,41 @@
-+linux (5.8.0-412102030405.0+mediatree+hauppauge) groovy; urgency=low
+@@ -1,3 +1,42 @@
++linux (5.8.0-482104061620.1+mediatree+hauppauge) groovy; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.8.0-41.46 rev 5639486106644d7703887ca16739a831eec67fa1
++    - 5.8.0-48.54 rev dce7583fa75a7615bb6dc335386033294155a025
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -37,6 +37,7 @@ index 2520b8c80..95ba92dcb 100644
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
 +    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
 +    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
++    --- 0099-media-rc-ensure-that-uevent-can-be-read-directly-after-rc-device-register.patch
 +    - 11.cx23885.patches
 +    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
@@ -48,11 +49,11 @@ index 2520b8c80..95ba92dcb 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 03 Feb 2021 04:05:06 -0600
++ -- Fake User <hidden@email.co>  Tue, 06 Apr 2021 16:20:00 -0500
 +
- linux (5.8.0-41.46) groovy; urgency=medium
+ linux (5.8.0-48.54) groovy; urgency=medium
  
-   * groovy/linux: 5.8.0-41.46 -proposed tracker (LP: #1912219)
+   * CVE-2020-27170
 -- 
 2.27.0
 

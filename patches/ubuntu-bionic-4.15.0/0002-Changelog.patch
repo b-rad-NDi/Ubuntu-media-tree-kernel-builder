@@ -1,21 +1,21 @@
-From 191680c9ceb109bbee68bf309336254b0d6381c3 Mon Sep 17 00:00:00 2001
+From 54e5df5e62d51923882f9eb57560b8cca468e055 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 3 Feb 2021 04:05:06 -0600
+Date: Tue, 6 Apr 2021 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 7020125c3..1010fe255 100644
+index ee79413dc..b154f2d67 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,41 @@
-+linux (4.15.0-135202102030405.0+mediatree+hauppauge) bionic; urgency=low
+@@ -1,3 +1,42 @@
++linux (4.15.0-139202104061620.1+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-135.139 rev 674466d16c3fa21632914345ac12fa1a4f92c99c
++    - 4.15.0-139.143 rev 151ee7b9d74d1a4e13395774dccb4ad824636242
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -37,6 +37,7 @@ index 7020125c3..1010fe255 100644
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
 +    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
 +    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
++    --- 0099-media-rc-ensure-that-uevent-can-be-read-directly-after-rc-device-register.patch
 +    - 11.cx23885.patches
 +    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
@@ -48,11 +49,11 @@ index 7020125c3..1010fe255 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 03 Feb 2021 04:05:06 -0600
++ -- Fake User <hidden@email.co>  Tue, 06 Apr 2021 16:20:00 -0500
 +
- linux (4.15.0-135.139) bionic; urgency=medium
+ linux (4.15.0-139.143) bionic; urgency=medium
  
-   * bionic/linux: 4.15.0-135.139 -proposed tracker (LP: #1912223)
+   * bionic/linux: 4.15.0-139.143 -proposed tracker (LP: #1919218)
 -- 
 2.17.1
 

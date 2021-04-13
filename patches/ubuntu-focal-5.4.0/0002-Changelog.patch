@@ -1,21 +1,21 @@
-From 34828786bf5bf641b7a03e9240e5ccce668c4623 Mon Sep 17 00:00:00 2001
+From a8b17be935f1585d3705c0df9c5f10ddb4226cda Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 3 Feb 2021 04:05:06 -0600
+Date: Tue, 6 Apr 2021 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index ecea1280f..0af9a5441 100644
+index 19dd337ba..d628a8b19 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,41 @@
-+linux (5.4.0-652102030405.0+mediatree+hauppauge) focal; urgency=low
+@@ -1,3 +1,42 @@
++linux (5.4.0-702104061620.1+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-65.73 rev 884ccab891a1b87feaf1f1db24bba3353644d17b
++    - 5.4.0-70.78 rev 3178f7a2f88998a8ee33b20e8d75b8939dd927a8
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
@@ -37,6 +37,7 @@ index ecea1280f..0af9a5441 100644
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
 +    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
 +    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
++    --- 0099-media-rc-ensure-that-uevent-can-be-read-directly-after-rc-device-register.patch
 +    - 11.cx23885.patches
 +    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
@@ -48,11 +49,11 @@ index ecea1280f..0af9a5441 100644
 +    --- 0002-em28xx-core-Fix-TS2-active-led.patch
 +    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 03 Feb 2021 04:05:06 -0600
++ -- Fake User <hidden@email.co>  Tue, 06 Apr 2021 16:20:00 -0500
 +
- linux (5.4.0-65.73) focal; urgency=medium
+ linux (5.4.0-70.78) focal; urgency=medium
  
-   * focal/linux: 5.4.0-65.73 -proposed tracker (LP: #1912220)
+   * CVE-2020-27170
 -- 
 2.25.1
 
