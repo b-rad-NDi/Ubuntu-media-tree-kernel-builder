@@ -1,6 +1,6 @@
-From 1af59b765e15226f12b528e7d1227f5602c9023a Mon Sep 17 00:00:00 2001
+From bf784153783f89da96f332e00a2a008ab6e300dd Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 21 Jan 2021 14:47:41 -0600
+Date: Thu, 18 Mar 2021 16:23:06 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -14,12 +14,11 @@ Subject: [PATCH 6/6] Packaging updates
  debian.master/rules.d/s390x.mk               |  2 +-
  debian.master/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
- debian/dkms-versions                         |  4 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 19 +++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
  debian/scripts/config-check                  |  2 +-
- 15 files changed, 56 insertions(+), 79 deletions(-)
+ 14 files changed, 54 insertions(+), 77 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 395cb16d0..cb91cd4bc 100644
@@ -268,21 +267,8 @@ index ed92b3d53..18505efb1 100644
  Build-Profiles: <!stage1>
  Architecture: ARCH
  Section: kernel
-diff --git a/debian/dkms-versions b/debian/dkms-versions
-index 7d6bebbc6..f7dfc7c64 100644
---- a/debian/dkms-versions
-+++ b/debian/dkms-versions
-@@ -4,6 +4,6 @@ nvidia-graphics-drivers-435 435.21-0ubuntu8
- nvidia-graphics-drivers-450 450.102.04-0ubuntu0.20.10.1
- nvidia-graphics-drivers-455 455.45.01-0ubuntu0.20.10.1
- nvidia-graphics-drivers-460 460.32.03-0ubuntu0.20.10.1
--nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0~0.20.10.0.1
-+nvidia-graphics-drivers-418-server 418.181.07-0ubuntu0.20.10.1
- nvidia-graphics-drivers-440-server 440.95.01-0ubuntu2
--nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0~0.20.10.1
-+nvidia-graphics-drivers-450-server 450.102.04-0ubuntu0.20.10.1
 diff --git a/debian/rules b/debian/rules
-index 627ca3cb9..cbc7e75eb 100755
+index 33558795e..dcb82b6fc 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -295,7 +281,7 @@ index 627ca3cb9..cbc7e75eb 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 92597bf38..d4c417504 100644
+index 4a04c41ee..4325868cf 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu
@@ -356,10 +342,10 @@ index 92597bf38..d4c417504 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 70d1ef937..9b81f78a4 100644
+index ddcbe4110..ead9a88e7 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -789,10 +789,14 @@ build-arch: $(build-arch-deps-true)
+@@ -794,10 +794,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
