@@ -1,4 +1,4 @@
-From 9be0d7e11e3dcbe6e603a99a9bac78c468e09308 Mon Sep 17 00:00:00 2001
+From d2f4e03118f14d1f19089086353f0ada8e568eac Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 10 Nov 2020 15:08:33 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -52,10 +52,10 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24bc..22cdbb4a7 100644
+index a76ccb697..8efd14bc9 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1075,6 +1075,7 @@
+@@ -1078,6 +1078,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -63,7 +63,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1343,6 +1344,7 @@
+@@ -1346,6 +1347,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -71,7 +71,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3132,4 +3134,6 @@
+@@ -3137,4 +3139,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  

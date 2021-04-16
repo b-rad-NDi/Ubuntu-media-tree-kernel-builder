@@ -1,6 +1,6 @@
-From 0bc19236dcf77437530b81e2bb577fac174e65bc Mon Sep 17 00:00:00 2001
+From 0156fdd98e01eb1b80c567853c64a615e45147bf Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 15:18:07 -0500
+Date: Wed, 14 Apr 2021 15:40:00 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -11,16 +11,15 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/staging/most/video/video.c            |  4 +--
  .../bcm2835-camera/bcm2835-camera.c           |  2 +-
  drivers/usb/gadget/function/f_uvc.c           |  2 +-
- include/linux/dma-buf.h                       |  1 +
  include/linux/dma-fence.h                     | 14 ++++-----
  include/linux/hdmi.h                          |  2 +-
  include/linux/mmc/sdio_ids.h                  |  5 +++
  include/linux/pci_ids.h                       |  4 +++
  sound/pci/bt87x.c                             | 31 +++++++++++++------
- 13 files changed, 71 insertions(+), 32 deletions(-)
+ 12 files changed, 70 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
-index 8039fc0d8..8d6b071c8 100644
+index 8039fc0d83db..8d6b071c8590 100644
 --- a/drivers/gpu/drm/i2c/tda9950.c
 +++ b/drivers/gpu/drm/i2c/tda9950.c
 @@ -457,13 +457,15 @@ static int tda9950_probe(struct i2c_client *client,
@@ -62,7 +61,7 @@ index 8039fc0d8..8d6b071c8 100644
  	return 0;
  }
 diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-index 84c6d4c91..2260bb084 100644
+index 84c6d4c91c65..2260bb084a21 100644
 --- a/drivers/gpu/drm/i2c/tda998x_drv.c
 +++ b/drivers/gpu/drm/i2c/tda998x_drv.c
 @@ -1790,8 +1790,9 @@ static void tda998x_destroy(struct device *dev)
@@ -88,7 +87,7 @@ index 84c6d4c91..2260bb084 100644
  		ret = -ENOMEM;
  		goto fail;
 diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index d90990b4e..f58b61f97 100644
+index d90990b4eecd..f58b61f9748a 100644
 --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
 +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
 @@ -2762,8 +2762,12 @@ intel_hdmi_connector_register(struct drm_connector *connector)
@@ -131,7 +130,7 @@ index d90990b4e..f58b61f97 100644
  		DRM_DEBUG_KMS("CEC notifier get failed\n");
  }
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
-index 34da38d5b..1faf56c37 100644
+index 34da38d5b0cd..1faf56c37e9b 100644
 --- a/drivers/hid/hid-picolcd_cir.c
 +++ b/drivers/hid/hid-picolcd_cir.c
 @@ -29,6 +29,7 @@
@@ -143,7 +142,7 @@ index 34da38d5b..1faf56c37 100644
  int picolcd_raw_cir(struct picolcd_data *data,
  		struct hid_report *report, u8 *raw_data, int size)
 diff --git a/drivers/staging/most/video/video.c b/drivers/staging/most/video/video.c
-index 250af9fb7..3178d77af 100644
+index 250af9fb704d..3178d77af3b0 100644
 --- a/drivers/staging/most/video/video.c
 +++ b/drivers/staging/most/video/video.c
 @@ -74,7 +74,7 @@ static int comp_vdev_open(struct file *filp)
@@ -165,7 +164,7 @@ index 250af9fb7..3178d77af 100644
  		v4l2_err(&mdev->v4l2_dev, "video_register_device failed (%d)\n",
  			 ret);
 diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-index d4d1e44b1..c10c3b29c 100644
+index d4d1e44b16b2..c10c3b29cd86 100644
 --- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
 +++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
 @@ -1773,7 +1773,7 @@ static int bm2835_mmal_init_device(struct bm2835_mmal_dev *dev,
@@ -178,7 +177,7 @@ index d4d1e44b1..c10c3b29c 100644
  	if (ret < 0)
  		return ret;
 diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index fb0a89268..0b9712616 100644
+index fb0a892687c0..0b9712616455 100644
 --- a/drivers/usb/gadget/function/f_uvc.c
 +++ b/drivers/usb/gadget/function/f_uvc.c
 @@ -428,7 +428,7 @@ uvc_register_video(struct uvc_device *uvc)
@@ -190,20 +189,8 @@ index fb0a89268..0b9712616 100644
  	if (ret < 0)
  		return ret;
  
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ec212cb27..12eac4293 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -303,6 +303,7 @@ struct dma_buf {
- 	void *vmap_ptr;
- 	const char *exp_name;
- 	const char *name;
-+	spinlock_t name_lock; /* spinlock to protect name access */
- 	struct module *owner;
- 	struct list_head list_node;
- 	void *priv;
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 09e23adb3..896ea5831 100644
+index 3347c54f3a87..7108cda11150 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
 @@ -63,8 +63,12 @@ struct dma_fence_cb;
@@ -240,7 +227,7 @@ index 09e23adb3..896ea5831 100644
  };
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59d6..183e9e369 100644
+index 9850d59d6f1c..183e9e3690af 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -253,7 +240,7 @@ index 9850d59d6..183e9e369 100644
  				size_t size);
  ssize_t hdmi_avi_infoframe_pack_only(const struct hdmi_avi_infoframe *frame,
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 120366193..26931135a 100644
+index 12036619346c..26931135a78a 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -66,6 +66,8 @@
@@ -283,10 +270,10 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24bc..22cdbb4a7 100644
+index a76ccb697bef..8efd14bc9961 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1075,6 +1075,7 @@
+@@ -1078,6 +1078,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -294,7 +281,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1343,6 +1344,7 @@
+@@ -1346,6 +1347,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -302,7 +289,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3132,4 +3134,6 @@
+@@ -3137,4 +3139,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -310,7 +297,7 @@ index 1ab1e24bc..22cdbb4a7 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 54cb223ca..255b90aaa 100644
+index cf9f8d80a0b6..0d888d67e3cb 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {
@@ -346,7 +333,7 @@ index 54cb223ca..255b90aaa 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -447,7 +452,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -359,7 +346,7 @@ index 54cb223ca..255b90aaa 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -458,6 +468,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -367,7 +354,7 @@ index 54cb223ca..255b90aaa 100644
  	return 0;
  }
  
-@@ -528,11 +539,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -381,7 +368,7 @@ index 54cb223ca..255b90aaa 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -687,10 +700,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -396,7 +383,7 @@ index 54cb223ca..255b90aaa 100644
  	return 0;
  }
  
-@@ -700,7 +713,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -405,7 +392,7 @@ index 54cb223ca..255b90aaa 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;

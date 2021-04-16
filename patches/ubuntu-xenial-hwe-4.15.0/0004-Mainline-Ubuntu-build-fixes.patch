@@ -1,19 +1,17 @@
-From aa930008df231aaece4ce73b9315201b4fa6ba59 Mon Sep 17 00:00:00 2001
+From 54a4590b3875177c8db44a5ce5cbadd1d043031c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 14:53:51 -0500
+Date: Wed, 14 Apr 2021 12:58:15 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |  4 +--
+ drivers/hid/hid-picolcd_cir.c           |  4 ++--
  drivers/usb/gadget/function/uvc_queue.c |  2 +-
- fs/compat_ioctl.c                       | 42 ++-----------------------
- include/linux/dma-buf.h                 | 55 ++++++++++++++++++++-------------
- include/linux/dma-fence.h               | 42 +++++++++++++------------
- include/linux/hdmi.h                    |  7 ++---
- include/linux/mmc/sdio_ids.h            |  7 +++++
- include/linux/pci_ids.h                 |  4 +++
- sound/pci/bt87x.c                       | 31 +++++++++++++------
- 9 files changed, 97 insertions(+), 97 deletions(-)
+ fs/compat_ioctl.c                       | 42 ++-------------------------------
+ include/linux/hdmi.h                    |  7 +++---
+ include/linux/mmc/sdio_ids.h            |  7 ++++++
+ include/linux/pci_ids.h                 |  4 ++++
+ sound/pci/bt87x.c                       | 31 +++++++++++++++++-------
+ 7 files changed, 41 insertions(+), 56 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7..1d42112 100644
@@ -140,262 +138,6 @@ index c738ae5..283ef44 100644
  	}
  
  	/*
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ec212cb..7622be3 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -1,4 +1,3 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Header file for dma buffer sharing framework.
-  *
-@@ -9,6 +8,18 @@
-  * Arnd Bergmann <arnd@arndb.de>, Rob Clark <rob@ti.com> and
-  * Daniel Vetter <daniel@ffwll.ch> for their support in creation and
-  * refining of this idea.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- #ifndef __DMA_BUF_H__
- #define __DMA_BUF_H__
-@@ -22,35 +33,35 @@
- #include <linux/dma-fence.h>
- #include <linux/wait.h>
- 
-+#include <media/compat.h>
-+
- struct device;
- struct dma_buf;
- struct dma_buf_attachment;
- 
- /**
-  * struct dma_buf_ops - operations possible on struct dma_buf
-+ * @map_atomic: maps a page from the buffer into kernel address
-+ *		space, users may not block until the subsequent unmap call.
-+ *		This callback must not sleep.
-+ * @unmap_atomic: [optional] unmaps a atomically mapped page from the buffer.
-+ *		  This Callback must not sleep.
-+ * @map: maps a page from the buffer into kernel address space.
-+ * @unmap: [optional] unmaps a page from the buffer.
-  * @vmap: [optional] creates a virtual mapping for the buffer into kernel
-  *	  address space. Same restrictions as for vmap and friends apply.
-  * @vunmap: [optional] unmaps a vmap from the buffer
-  */
- struct dma_buf_ops {
- 	/**
--	  * @cache_sgt_mapping:
--	  *
--	  * If true the framework will cache the first mapping made for each
--	  * attachment. This avoids creating mappings for attachments multiple
--	  * times.
--	  */
--	bool cache_sgt_mapping;
--
--	/**
- 	 * @attach:
- 	 *
- 	 * This is called from dma_buf_attach() to make sure that a given
--	 * &dma_buf_attachment.dev can access the provided &dma_buf. Exporters
--	 * which support buffer objects in special locations like VRAM or
--	 * device-specific carveout areas should check whether the buffer could
--	 * be move to system memory (or directly accessed by the provided
--	 * device), and otherwise need to fail the attach operation.
-+	 * &device can access the provided &dma_buf. Exporters which support
-+	 * buffer objects in special locations like VRAM or device-specific
-+	 * carveout areas should check whether the buffer could be move to
-+	 * system memory (or directly accessed by the provided device), and
-+	 * otherwise need to fail the attach operation.
- 	 *
- 	 * The exporter should also in general check whether the current
- 	 * allocation fullfills the DMA constraints of the new device. If this
-@@ -68,7 +79,7 @@ struct dma_buf_ops {
- 	 * to signal that backing storage is already allocated and incompatible
- 	 * with the requirements of requesting device.
- 	 */
--	int (*attach)(struct dma_buf *, struct dma_buf_attachment *);
-+	int (*attach)(struct dma_buf *, struct device *, struct dma_buf_attachment *);
- 
- 	/**
- 	 * @detach:
-@@ -196,6 +207,8 @@ struct dma_buf_ops {
- 	 * to be restarted.
- 	 */
- 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
-+	void *(*map_atomic)(struct dma_buf *, unsigned long);
-+	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
- 
- 	/**
- 	 * @mmap:
-@@ -306,7 +319,7 @@ struct dma_buf {
- 	struct module *owner;
- 	struct list_head list_node;
- 	void *priv;
--	struct dma_resv *resv;
-+	struct reservation_object *resv;
- 
- 	/* poll support */
- 	wait_queue_head_t poll;
-@@ -315,7 +328,7 @@ struct dma_buf {
- 		struct dma_fence_cb cb;
- 		wait_queue_head_t *poll;
- 
--		__poll_t active;
-+		unsigned long active;
- 	} cb_excl, cb_shared;
- };
- 
-@@ -341,8 +354,6 @@ struct dma_buf_attachment {
- 	struct dma_buf *dmabuf;
- 	struct device *dev;
- 	struct list_head node;
--	struct sg_table *sgt;
--	enum dma_data_direction dir;
- 	void *priv;
- };
- 
-@@ -365,7 +376,7 @@ struct dma_buf_export_info {
- 	const struct dma_buf_ops *ops;
- 	size_t size;
- 	int flags;
--	struct dma_resv *resv;
-+	struct reservation_object *resv;
- 	void *priv;
- };
- 
-@@ -413,6 +424,8 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
- 			     enum dma_data_direction dir);
- int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
- 			   enum dma_data_direction dir);
-+void *dma_buf_kmap_atomic(struct dma_buf *, unsigned long);
-+void dma_buf_kunmap_atomic(struct dma_buf *, unsigned long, void *);
- void *dma_buf_kmap(struct dma_buf *, unsigned long);
- void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
- 
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 09e23ad..38d5103 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -63,8 +63,14 @@ struct dma_fence_cb;
-  * been completed, or never called at all.
-  */
- struct dma_fence {
--	spinlock_t *lock;
-+	struct kref refcount;
- 	const struct dma_fence_ops *ops;
-+	struct rcu_head rcu;
-+	struct list_head cb_list;
-+	/* @cb_list replaced by @timestamp on dma_fence_signal() */
-+
-+	spinlock_t *lock;
-+
- 	/*
- 	 * We clear the callback list on kref_put so that by the time we
- 	 * release the fence it is unused. No one should be adding to the
-@@ -81,17 +87,13 @@ struct dma_fence {
- 	 *
- 	 * Listed in chronological order.
- 	 */
--	union {
--		struct list_head cb_list;
--		/* @cb_list replaced by @timestamp on dma_fence_signal() */
--		ktime_t timestamp;
--		/* @timestamp replaced by @rcu on dma_fence_release() */
--		struct rcu_head rcu;
--	};
-+//	union {
-+//	};
- 	u64 context;
--	u64 seqno;
-+	unsigned seqno;
- 	unsigned long flags;
--	struct kref refcount;
-+	ktime_t timestamp;
-+	/* @timestamp replaced by @rcu on dma_fence_release() */
- 	int error;
- };
- 
-@@ -129,7 +131,7 @@ struct dma_fence_ops {
- 	 * True if this dma_fence implementation uses 64bit seqno, false
- 	 * otherwise.
- 	 */
--	bool use_64bit_seqno;
-+//	bool use_64bit_seqno;
- 
- 	/**
- 	 * @get_driver_name:
-@@ -264,7 +266,7 @@ struct dma_fence_ops {
- };
- 
- void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
--		    spinlock_t *lock, u64 context, u64 seqno);
-+		    spinlock_t *lock, u64 context, unsigned seqno);
- 
- void dma_fence_release(struct kref *kref);
- void dma_fence_free(struct dma_fence *fence);
-@@ -448,15 +450,15 @@ dma_fence_is_signaled(struct dma_fence *fence)
-  * Returns true if f1 is chronologically later than f2. Both fences must be
-  * from the same context, since a seqno is not common across contexts.
-  */
--static inline bool __dma_fence_is_later(u64 f1, u64 f2,
--					const struct dma_fence_ops *ops)
-+static inline bool __dma_fence_is_later(u64 f1, u64 f2)//,
-+//					const struct dma_fence_ops *ops)
- {
- 	/* This is for backward compatibility with drivers which can only handle
- 	 * 32bit sequence numbers. Use a 64bit compare when the driver says to
- 	 * do so.
- 	 */
--	if (ops->use_64bit_seqno)
--		return f1 > f2;
-+//	if (ops->use_64bit_seqno)
-+//		return f1 > f2;
- 
- 	return (int)(lower_32_bits(f1) - lower_32_bits(f2)) > 0;
- }
-@@ -475,7 +477,7 @@ static inline bool dma_fence_is_later(struct dma_fence *f1,
- 	if (WARN_ON(f1->context != f2->context))
- 		return false;
- 
--	return __dma_fence_is_later(f1->seqno, f2->seqno, f1->ops);
-+	return __dma_fence_is_later(f1->seqno, f2->seqno);//, f1->ops);
- }
- 
- /**
-@@ -590,21 +592,21 @@ u64 dma_fence_context_alloc(unsigned num);
- 	do {								\
- 		struct dma_fence *__ff = (f);				\
- 		if (IS_ENABLED(CONFIG_DMA_FENCE_TRACE))			\
--			pr_info("f %llu#%llu: " fmt,			\
-+			pr_info("f %llu#%u: " fmt,			\
- 				__ff->context, __ff->seqno, ##args);	\
- 	} while (0)
- 
- #define DMA_FENCE_WARN(f, fmt, args...) \
- 	do {								\
- 		struct dma_fence *__ff = (f);				\
--		pr_warn("f %llu#%llu: " fmt, __ff->context, __ff->seqno,\
-+		pr_warn("f %llu#%u: " fmt, __ff->context, __ff->seqno,\
- 			 ##args);					\
- 	} while (0)
- 
- #define DMA_FENCE_ERR(f, fmt, args...) \
- 	do {								\
- 		struct dma_fence *__ff = (f);				\
--		pr_err("f %llu#%llu: " fmt, __ff->context, __ff->seqno,	\
-+		pr_err("f %llu#%u: " fmt, __ff->context, __ff->seqno,	\
- 			##args);					\
- 	} while (0)
- 
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
 index 9850d59..c6d5b79 100644
 --- a/include/linux/hdmi.h
@@ -461,10 +203,10 @@ index 1203661..4b44f2a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24..3fae6dc 100644
+index a76ccb6..3446eb9 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1075,6 +1075,7 @@
+@@ -1078,6 +1078,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -472,7 +214,7 @@ index 1ab1e24..3fae6dc 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1343,6 +1344,7 @@
+@@ -1346,6 +1347,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -480,7 +222,7 @@ index 1ab1e24..3fae6dc 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3132,4 +3134,6 @@
+@@ -3137,4 +3139,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -488,7 +230,7 @@ index 1ab1e24..3fae6dc 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 54cb223..255b90a 100644
+index cf9f8d8..0d888d6 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {
@@ -524,7 +266,7 @@ index 54cb223..255b90a 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -447,7 +452,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -537,7 +279,7 @@ index 54cb223..255b90a 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -458,6 +468,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -545,7 +287,7 @@ index 54cb223..255b90a 100644
  	return 0;
  }
  
-@@ -528,11 +539,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -559,7 +301,7 @@ index 54cb223..255b90a 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -687,10 +700,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -574,7 +316,7 @@ index 54cb223..255b90a 100644
  	return 0;
  }
  
-@@ -700,7 +713,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -583,7 +325,7 @@ index 54cb223..255b90a 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;

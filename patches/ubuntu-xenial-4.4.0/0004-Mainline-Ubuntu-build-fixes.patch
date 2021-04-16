@@ -1,4 +1,4 @@
-From a786b390311608961b3f3c96effb560f14f878b3 Mon Sep 17 00:00:00 2001
+From e7c7321d4dd428f5b0b1eccd4b745bdb6590fdc0 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 26 Jan 2021 14:32:50 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -229,7 +229,7 @@ index 7416755..6e2b825 100644
  struct w6692_ch {
  	struct bchannel		bch;
 diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 8a64118..480bd87 100644
+index 8a64118..81a98b9 100644
 --- a/drivers/leds/Kconfig
 +++ b/drivers/leds/Kconfig
 @@ -509,6 +509,7 @@ config LEDS_MAX77693
@@ -405,7 +405,7 @@ index 5af9736..aa50a7c 100644
  
  	/*
 diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index af8b4a8..42ccfab 100644
+index 9485abe..7b6a114 100644
 --- a/include/linux/compiler-gcc.h
 +++ b/include/linux/compiler-gcc.h
 @@ -2,6 +2,9 @@
@@ -457,7 +457,7 @@ index 9850d59..c6d5b79 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index 9d12c97..ad362d2 100644
+index e78e17a..0e8a119 100644
 --- a/include/linux/kconfig.h
 +++ b/include/linux/kconfig.h
 @@ -44,6 +44,13 @@
@@ -505,10 +505,10 @@ index 1203661..57fe266 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24..ed37043 100644
+index a76ccb6..0a56c32 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1075,6 +1075,7 @@
+@@ -1078,6 +1078,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -627,7 +627,7 @@ index 0000000..a685da2
 +						       unsigned long *flags);
 +#endif /* _LINUX_REFCOUNT_H */
 diff --git a/mm/slub.c b/mm/slub.c
-index a387003..4b4d535 100644
+index 18d1622..555545e 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -4060,6 +4060,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
@@ -640,7 +640,7 @@ index a387003..4b4d535 100644
  void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
  					int node, unsigned long caller)
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 54cb223..255b90a 100644
+index cf9f8d8..0d888d6 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -150,7 +150,7 @@ struct snd_bt87x_board {
@@ -676,7 +676,7 @@ index 54cb223..255b90a 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -447,7 +452,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -689,7 +689,7 @@ index 54cb223..255b90a 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -458,6 +468,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -697,7 +697,7 @@ index 54cb223..255b90a 100644
  	return 0;
  }
  
-@@ -528,11 +539,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -711,7 +711,7 @@ index 54cb223..255b90a 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -687,10 +700,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -726,7 +726,7 @@ index 54cb223..255b90a 100644
  	return 0;
  }
  
-@@ -700,7 +713,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -735,7 +735,7 @@ index 54cb223..255b90a 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;
