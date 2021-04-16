@@ -1,4 +1,4 @@
-From 776a581f1726b785fcb1bd110c3794d24337f5f4 Mon Sep 17 00:00:00 2001
+From 6aeff65adf227c2f0f4d838453dc828a133277b3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 5 Feb 2021 09:53:24 -0600
 Subject: [PATCH 6/6] Packaging updates
@@ -253,7 +253,7 @@ index ed92b3d53ba5..18505efb1b11 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index e490836b813d..161b8339aa1d 100755
+index f8d53afa2890..92af72be0fd8 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
