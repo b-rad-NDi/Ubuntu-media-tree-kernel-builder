@@ -1,17 +1,17 @@
-From c28f2699282bf9775daa372226bea6c64df5f716 Mon Sep 17 00:00:00 2001
+From 8ca53383b93f8d79de5ab61da68d54817ee6db39 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 15:05:58 -0500
+Date: Wed, 14 Apr 2021 15:32:08 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 133 ++++++++++++++++++++--
- 1 file changed, 124 insertions(+), 9 deletions(-)
+ debian.master/config/config.common.ubuntu | 140 ++++++++++++++++++++--
+ 1 file changed, 131 insertions(+), 9 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 0f3ce594d..51260911c 100644
+index 3ef3d8d6a..432800a03 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -2486,7 +2486,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2487,7 +2487,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,7 @@ index 0f3ce594d..51260911c 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10158,14 +10158,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10159,14 +10159,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index 0f3ce594d..51260911c 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10555,3 +10548,125 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10556,3 +10549,132 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -85,7 +85,7 @@ index 0f3ce594d..51260911c 100644
 +CONFIG_VIDEO_THS8200=m
 +# CONFIG_VIDEO_IMX214 is not set
 +# CONFIG_VIDEO_IMX258 is not set
-+CONFIG_VIDEO_IMX274=m
++# CONFIG_VIDEO_IMX274 is not set
 +# CONFIG_VIDEO_IMX319 is not set
 +# CONFIG_VIDEO_IMX355 is not set
 +CONFIG_VIDEO_OV2640=m
@@ -161,6 +161,13 @@ index 0f3ce594d..51260911c 100644
 +CONFIG_DVB_VIDTV=m
 +# CONFIG_VIDEO_RDACM20 is not set
 +# CONFIG_VIDEO_DW9768 is not set
++# CONFIG_CIO2_BRIDGE is not set
++# CONFIG_VIDEO_OV02A10 is not set
++# CONFIG_VIDEO_OV5648 is not set
++# CONFIG_VIDEO_OV8865 is not set
++# CONFIG_VIDEO_OV9734 is not set
++# CONFIG_VIDEO_RDACM21 is not set
++# CONFIG_VIDEO_CCS is not set
 +
 -- 
 2.17.1

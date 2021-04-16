@@ -1,14 +1,14 @@
-From fe70ce3fd670ea6eab3f67dceaa13261540ed26a Mon Sep 17 00:00:00 2001
+From ffc73fea60cd72c88ad6115bc157b6803a5ff76b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 15:19:44 -0500
+Date: Wed, 14 Apr 2021 15:42:51 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.hwe-5.4/config/config.common.ubuntu | 30 +++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ debian.hwe-5.4/config/config.common.ubuntu | 40 ++++++++++++++++++++--
+ 1 file changed, 37 insertions(+), 3 deletions(-)
 
 diff --git a/debian.hwe-5.4/config/config.common.ubuntu b/debian.hwe-5.4/config/config.common.ubuntu
-index 75cc55c2d..55e777a65 100644
+index 6120d7cafec0..dcdd13d0d675 100644
 --- a/debian.hwe-5.4/config/config.common.ubuntu
 +++ b/debian.hwe-5.4/config/config.common.ubuntu
 @@ -2804,7 +2804,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,16 @@ index 75cc55c2d..55e777a65 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -11100,7 +11100,7 @@ CONFIG_VIDEO_OV7251=m
+@@ -4519,7 +4519,7 @@ CONFIG_INTEGRITY_AUDIT=y
+ CONFIG_INTEGRITY_PLATFORM_KEYRING=y
+ CONFIG_INTEGRITY_SIGNATURE=y
+ CONFIG_INTEGRITY_TRUSTED_KEYRING=y
+-CONFIG_INTEL_ATOMISP2_PM=m
++# CONFIG_INTEL_ATOMISP2_PM is not set
+ CONFIG_INTEL_BXTWC_PMIC_TMU=m
+ CONFIG_INTEL_BXT_PMIC_THERMAL=m
+ CONFIG_INTEL_CHTDC_TI_PWRBTN=m
+@@ -11099,7 +11099,7 @@ CONFIG_VIDEO_OV7251=m
  CONFIG_VIDEO_OV7640=m
  CONFIG_VIDEO_OV7670=m
  CONFIG_VIDEO_OV772X=m
@@ -29,7 +38,7 @@ index 75cc55c2d..55e777a65 100644
  CONFIG_VIDEO_OV8856=m
  CONFIG_VIDEO_OV9640=m
  CONFIG_VIDEO_OV9650=m
-@@ -11637,3 +11637,29 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11636,3 +11636,37 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -59,6 +68,14 @@ index 75cc55c2d..55e777a65 100644
 +CONFIG_VIDEO_ZORAN_LML33=m
 +CONFIG_VIDEO_ZORAN_LML33R10=m
 +CONFIG_VIDEO_ZORAN_AVS6EYES=m
++# CONFIG_CIO2_BRIDGE is not set
++# CONFIG_VIDEO_OV02A10 is not set
++# CONFIG_VIDEO_OV5648 is not set
++# CONFIG_VIDEO_OV8865 is not set
++# CONFIG_VIDEO_OV9734 is not set
++# CONFIG_VIDEO_RDACM21 is not set
++# CONFIG_VIDEO_CCS is not set
++
 -- 
 2.17.1
 

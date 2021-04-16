@@ -1,14 +1,14 @@
-From acaf4a7fa45f1d45be0f264cd1d2d74be25b9f9a Mon Sep 17 00:00:00 2001
+From 5b7051ae8de2cf2c510eaea546c863fc78cb3741 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 26 Oct 2020 14:19:47 -0500
+Date: Wed, 14 Apr 2021 11:55:22 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 173 +++++++++++++++++++++++++++---
- 1 file changed, 160 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 180 +++++++++++++++++++++++++++---
+ 1 file changed, 167 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 7f7cc8c..6dd3100 100644
+index 0d4ddef..e8e33f6 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2060,7 +2060,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -47,7 +47,7 @@ index 7f7cc8c..6dd3100 100644
  CONFIG_I2C_BCM_IPROC=m
  CONFIG_I2C_BOARDINFO=y
  CONFIG_I2C_CADENCE=m
-@@ -7076,7 +7076,7 @@ CONFIG_SKGE=m
+@@ -7077,7 +7077,7 @@ CONFIG_SKGE=m
  CONFIG_SKGE_GENESIS=y
  CONFIG_SKY2=m
  # CONFIG_SKY2_DEBUG is not set
@@ -72,7 +72,7 @@ index 7f7cc8c..6dd3100 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9143,3 +9136,157 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9143,3 +9136,164 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -152,7 +152,7 @@ index 7f7cc8c..6dd3100 100644
 +CONFIG_VIDEO_THS8200=m
 +# CONFIG_VIDEO_IMX214 is not set
 +# CONFIG_VIDEO_IMX258 is not set
-+CONFIG_VIDEO_IMX274=m
++# CONFIG_VIDEO_IMX274 is not set
 +# CONFIG_VIDEO_IMX319 is not set
 +# CONFIG_VIDEO_IMX355 is not set
 +CONFIG_VIDEO_OV2640=m
@@ -229,6 +229,13 @@ index 7f7cc8c..6dd3100 100644
 +CONFIG_DVB_VIDTV=m
 +# CONFIG_VIDEO_RDACM20 is not set
 +# CONFIG_VIDEO_DW9768 is not set
++# CONFIG_CIO2_BRIDGE is not set
++# CONFIG_VIDEO_OV02A10 is not set
++# CONFIG_VIDEO_OV5648 is not set
++# CONFIG_VIDEO_OV8865 is not set
++# CONFIG_VIDEO_OV9734 is not set
++# CONFIG_VIDEO_RDACM21 is not set
++# CONFIG_VIDEO_CCS is not set
 +
 -- 
 2.7.4

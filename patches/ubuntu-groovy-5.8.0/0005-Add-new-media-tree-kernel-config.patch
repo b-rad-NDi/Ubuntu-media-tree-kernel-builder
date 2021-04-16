@@ -1,17 +1,35 @@
-From 72eb961257c29b9b1c4440036f1802c0ae96144d Mon Sep 17 00:00:00 2001
+From 0e05e4a160f024c80d00a95f414577d634a23ddc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 10 Nov 2020 15:11:23 -0600
+Date: Thu, 15 Apr 2021 17:50:02 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ debian.master/config/config.common.ubuntu | 34 ++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index c20145760..890ee7cdc 100644
+index c0b0f8940..12b4a749c 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
-@@ -11948,3 +11948,19 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11286,16 +11286,7 @@ CONFIG_VIDEO_AK881X=m
+ CONFIG_VIDEO_ALLEGRO_DVT=m
+ CONFIG_VIDEO_APTINA_PLL=m
+ CONFIG_VIDEO_ASPEED=m
+-CONFIG_VIDEO_ATOMISP=m
+-CONFIG_VIDEO_ATOMISP_GC0310=m
+-CONFIG_VIDEO_ATOMISP_GC2235=m
+-# CONFIG_VIDEO_ATOMISP_ISP2401 is not set
+-CONFIG_VIDEO_ATOMISP_LM3554=m
+-CONFIG_VIDEO_ATOMISP_MSRLIST_HELPER=m
+-CONFIG_VIDEO_ATOMISP_MT9M114=m
+-CONFIG_VIDEO_ATOMISP_OV2680=m
+-CONFIG_VIDEO_ATOMISP_OV2722=m
+-CONFIG_VIDEO_ATOMISP_OV5693=m
++# CONFIG_VIDEO_ATOMISP is not set
+ CONFIG_VIDEO_AU0828=m
+ CONFIG_VIDEO_AU0828_RC=y
+ CONFIG_VIDEO_AU0828_V4L2=y
+@@ -11951,3 +11942,26 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -31,6 +49,13 @@ index c20145760..890ee7cdc 100644
 +CONFIG_VIDEO_ZORAN_LML33R10=m
 +CONFIG_VIDEO_ZORAN_AVS6EYES=m
 +CONFIG_DVB_MXL692=m
++# CONFIG_CIO2_BRIDGE is not set
++# CONFIG_VIDEO_OV02A10 is not set
++# CONFIG_VIDEO_OV5648 is not set
++# CONFIG_VIDEO_OV8865 is not set
++# CONFIG_VIDEO_OV9734 is not set
++# CONFIG_VIDEO_RDACM21 is not set
++# CONFIG_VIDEO_CCS is not set
 -- 
 2.27.0
 
