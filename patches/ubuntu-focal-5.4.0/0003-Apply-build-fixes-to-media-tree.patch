@@ -1,6 +1,6 @@
-From 7b7272dc58274eb9f12b1a48ac17765cc0a3fa36 Mon Sep 17 00:00:00 2001
+From 9b5b7ea95c09d2ea8ed2333bd2c8a115b1aa71e8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 28 Oct 2020 15:17:44 -0500
+Date: Thu, 15 Apr 2021 15:28:50 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -8,8 +8,10 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  .../translations/zh_CN/video4linux/v4l2-framework.txt       | 4 ++--
  drivers/media/cec/cec-api.c                                 | 3 +++
  drivers/media/cec/core/cec-api.c                            | 3 +++
+ drivers/media/common/videobuf2/Makefile                     | 2 +-
  drivers/media/common/videobuf2/videobuf2-dma-contig.c       | 2 ++
  drivers/media/common/videobuf2/videobuf2-dma-sg.c           | 2 ++
+ drivers/media/common/videobuf2/videobuf2-memops.c           | 3 ++-
  drivers/media/common/videobuf2/videobuf2-vmalloc.c          | 2 ++
  drivers/media/dvb-core/dvbdev.c                             | 2 ++
  drivers/media/dvb-frontends/cxd2820r_core.c                 | 3 ++-
@@ -17,6 +19,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/dvb-frontends/m88ds3103.c                     | 2 ++
  drivers/media/dvb-frontends/ts2020.c                        | 2 ++
  drivers/media/i2c/adv7604.c                                 | 2 ++
+ drivers/media/i2c/imx258.c                                  | 2 ++
  drivers/media/mc/mc-device.c                                | 2 ++
  drivers/media/pci/bt8xx/bttv-input.c                        | 2 ++
  drivers/media/pci/cx18/cx18-i2c.c                           | 2 ++
@@ -46,9 +49,10 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-fwnode.c                       | 2 ++
  drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
- include/media/config-mycompat.h                             | 2 ++
+ include/media/config-mycompat.h                             | 4 ++++
+ include/media/videobuf2-core.h                              | 4 +++-
  samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
- 44 files changed, 84 insertions(+), 17 deletions(-)
+ 48 files changed, 94 insertions(+), 20 deletions(-)
 
 diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
 index 4c5a15c53..61734697a 100644
@@ -109,7 +113,7 @@ index ed75636a6..681b30c5b 100644
  #include "cec-pin-priv.h"
  
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index a9ecfee6e..15e802ce1 100644
+index d7c3933b7..3c226d305 100644
 --- a/drivers/media/cec/core/cec-api.c
 +++ b/drivers/media/cec/core/cec-api.c
 @@ -19,6 +19,9 @@
@@ -122,8 +126,20 @@ index a9ecfee6e..15e802ce1 100644
  #include "cec-priv.h"
  #include "cec-pin-priv.h"
  
+diff --git a/drivers/media/common/videobuf2/Makefile b/drivers/media/common/videobuf2/Makefile
+index 54306f8d0..9edaeaca5 100644
+--- a/drivers/media/common/videobuf2/Makefile
++++ b/drivers/media/common/videobuf2/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ videobuf2-common-objs := videobuf2-core.o
+-videobuf2-common-objs += frame_vector.o
++#videobuf2-common-objs += frame_vector.o
+ 
+ ifeq ($(CONFIG_TRACEPOINTS),y)
+   videobuf2-common-objs += vb2-trace.o
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 2f3a5996d..1a6a83d78 100644
+index 5ac803f6a..99cc683e4 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -22,6 +22,8 @@
@@ -136,7 +152,7 @@ index 2f3a5996d..1a6a83d78 100644
  	struct device			*dev;
  	void				*vaddr;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index f6db8bfb6..35483bd8a 100644
+index 500ce130e..b8cc56315 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -22,6 +22,8 @@
@@ -148,8 +164,29 @@ index f6db8bfb6..35483bd8a 100644
  static int debug;
  module_param(debug, int, 0644);
  
+diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
+index 9dd6c2716..022f49169 100644
+--- a/drivers/media/common/videobuf2/videobuf2-memops.c
++++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+@@ -40,6 +40,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	unsigned long first, last;
+ 	unsigned long nr;
+ 	struct frame_vector *vec;
++	unsigned int flags = FOLL_FORCE;
+ 
+ 	first = start >> PAGE_SHIFT;
+ 	last = (start + length - 1) >> PAGE_SHIFT;
+@@ -47,7 +48,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	vec = frame_vector_create(nr);
+ 	if (!vec)
+ 		return ERR_PTR(-ENOMEM);
+-	ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
++	ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
+ 	if (ret < 0)
+ 		goto out_destroy;
+ 	/* We accept only complete set of PFNs */
 diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 66276a8d5..015f1f563 100644
+index 73521976b..7ccdae9bf 100644
 --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
 @@ -22,6 +22,8 @@
@@ -162,7 +199,7 @@ index 66276a8d5..015f1f563 100644
  	void				*vaddr;
  	struct frame_vector		*vec;
 diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 90d589a74..cb414b71e 100644
+index d0a2337db..5c2a47ed0 100644
 --- a/drivers/media/dvb-core/dvbdev.c
 +++ b/drivers/media/dvb-core/dvbdev.c
 @@ -37,6 +37,8 @@
@@ -205,7 +242,7 @@ index da3a8c5e1..401db5342 100644
  #include "lgdt330x.h"
  
 diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
-index ad6d9d564..4c2999527 100644
+index 02e8aa11e..b3d430f88 100644
 --- a/drivers/media/dvb-frontends/m88ds3103.c
 +++ b/drivers/media/dvb-frontends/m88ds3103.c
 @@ -5,6 +5,8 @@
@@ -218,7 +255,7 @@ index ad6d9d564..4c2999527 100644
  
  static const struct dvb_frontend_ops m88ds3103_ops;
 diff --git a/drivers/media/dvb-frontends/ts2020.c b/drivers/media/dvb-frontends/ts2020.c
-index 234607b02..2c6a18a13 100644
+index 3e383912b..f85fe3d94 100644
 --- a/drivers/media/dvb-frontends/ts2020.c
 +++ b/drivers/media/dvb-frontends/ts2020.c
 @@ -12,6 +12,8 @@
@@ -231,7 +268,7 @@ index 234607b02..2c6a18a13 100644
  #define FREQ_OFFSET_LOW_SYM_RATE 3000
  
 diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
-index 09004d928..cf5d7d7a7 100644
+index 3049aa2fd..bfa5a9d7b 100644
 --- a/drivers/media/i2c/adv7604.c
 +++ b/drivers/media/i2c/adv7604.c
 @@ -37,6 +37,8 @@
@@ -243,6 +280,19 @@ index 09004d928..cf5d7d7a7 100644
  static int debug;
  module_param(debug, int, 0644);
  MODULE_PARM_DESC(debug, "debug level (0-2)");
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index a017ec4e0..3f29db989 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -11,6 +11,8 @@
+ #include <media/v4l2-device.h>
+ #include <asm/unaligned.h>
+ 
++#include <media/compat.h>
++
+ #define IMX258_REG_VALUE_08BIT		1
+ #define IMX258_REG_VALUE_16BIT		2
+ 
 diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
 index 6f0369bc5..cd7b8eb59 100644
 --- a/drivers/media/mc/mc-device.c
@@ -309,7 +359,7 @@ index f51fad33d..f9fa9e975 100644
  module_param(i2c_debug, int, 0644);
  MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 28acb1449..8b9478cd8 100644
+index c4a069b3b..362d159da 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
@@ -335,7 +385,7 @@ index 982045c4e..3002e441d 100644
  #include "ivtv-cards.h"
  #include "ivtv-gpio.h"
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index 9a6a6b68f..2229d8b8b 100644
+index 0f9d6b9ed..184e48849 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -21,6 +21,8 @@
@@ -361,7 +411,7 @@ index 24421c116..1b20eb06f 100644
  #include "tda18271.h"
  #include "s5h1411.h"
 diff --git a/drivers/media/pci/smipcie/smipcie-main.c b/drivers/media/pci/smipcie/smipcie-main.c
-index 9ca0fc3e6..04b9bd289 100644
+index 7691f93cc..a0703a00c 100644
 --- a/drivers/media/pci/smipcie/smipcie-main.c
 +++ b/drivers/media/pci/smipcie/smipcie-main.c
 @@ -5,6 +5,8 @@
@@ -483,7 +533,7 @@ index b1f69c11c..fc40db712 100644
  #define MAX_XFER_SIZE  64
  
 diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
-index 89a1b204b..431891230 100644
+index aa45b5d26..e960885e2 100644
 --- a/drivers/media/usb/dvb-usb-v2/anysee.c
 +++ b/drivers/media/usb/dvb-usb-v2/anysee.c
 @@ -31,6 +31,8 @@
@@ -496,7 +546,7 @@ index 89a1b204b..431891230 100644
  
  static int anysee_ctrl_msg(struct dvb_usb_device *d,
 diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-index 91460e4d0..835c013a6 100644
+index 97ed17a14..ce16572c3 100644
 --- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
 +++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
 @@ -9,6 +9,8 @@
@@ -509,7 +559,7 @@ index 91460e4d0..835c013a6 100644
  module_param_named(disable_rc, rtl28xxu_disable_rc, int, 0644);
  MODULE_PARM_DESC(disable_rc, "disable RTL2832U remote controller");
 diff --git a/drivers/media/usb/dvb-usb-v2/zd1301.c b/drivers/media/usb/dvb-usb-v2/zd1301.c
-index ba2c1b0d3..f9538f607 100644
+index 72aa6a9a9..5e42ff105 100644
 --- a/drivers/media/usb/dvb-usb-v2/zd1301.c
 +++ b/drivers/media/usb/dvb-usb-v2/zd1301.c
 @@ -11,6 +11,8 @@
@@ -522,7 +572,7 @@ index ba2c1b0d3..f9538f607 100644
  
  struct zd1301_dev {
 diff --git a/drivers/media/usb/dvb-usb/dib0700_devices.c b/drivers/media/usb/dvb-usb/dib0700_devices.c
-index d3288c107..8c6c10ac6 100644
+index 710c1afe3..443baf98f 100644
 --- a/drivers/media/usb/dvb-usb/dib0700_devices.c
 +++ b/drivers/media/usb/dvb-usb/dib0700_devices.c
 @@ -23,6 +23,7 @@
@@ -534,7 +584,7 @@ index d3288c107..8c6c10ac6 100644
  static int force_lna_activation;
  module_param(force_lna_activation, int, 0644);
 diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
-index a27a68440..fe49a2140 100644
+index f0e686b05..6055e2217 100644
 --- a/drivers/media/usb/dvb-usb/dw2102.c
 +++ b/drivers/media/usb/dvb-usb/dw2102.c
 @@ -33,6 +33,8 @@
@@ -559,7 +609,7 @@ index 8c2fc3104..07730d199 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index b9c1a9e72..a57a7cae1 100644
+index 9530c41c4..fed16bcb2 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -585,10 +635,10 @@ index 93d36aab8..4c7978999 100644
  	printk(KERN_INFO "USBVision[%d]: registered USBVision Video device %s [v4l2]\n",
  	       usbvision->nr, video_device_node_name(&usbvision->vdev));
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index e3ab003a6..079ddd520 100644
+index ed41b159b..bcb686b07 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
-@@ -22,6 +22,8 @@
+@@ -24,6 +24,8 @@
  #include <media/v4l2-fwnode.h>
  #include <media/v4l2-subdev.h>
  
@@ -598,7 +648,7 @@ index e3ab003a6..079ddd520 100644
  					  struct v4l2_subdev *subdev,
  					  struct v4l2_async_subdev *asd)
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index d7bbe3384..af9d0374d 100644
+index 843259c30..fd6201718 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -28,6 +28,8 @@
@@ -607,9 +657,9 @@ index d7bbe3384..af9d0374d 100644
  
 +#include <media/compat.h>
 +
- enum v4l2_fwnode_bus_type {
- 	V4L2_FWNODE_BUS_TYPE_GUESS = 0,
- 	V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+ static const struct v4l2_fwnode_bus_conv {
+ 	enum v4l2_fwnode_bus_type fwnode_bus_type;
+ 	enum v4l2_mbus_type mbus_type;
 diff --git a/drivers/media/v4l2-core/v4l2-i2c.c b/drivers/media/v4l2-core/v4l2-i2c.c
 index b4acca756..2313a9ec9 100644
 --- a/drivers/media/v4l2-core/v4l2-i2c.c
@@ -624,10 +674,10 @@ index b4acca756..2313a9ec9 100644
  {
  	struct i2c_client *client = v4l2_get_subdevdata(sd);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index ceb04bd0e..88b296264 100644
+index 213cb475a..9bccbf0ba 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -29,6 +29,8 @@
+@@ -30,6 +30,8 @@
  
  #include <trace/events/v4l2.h>
  
@@ -637,15 +687,32 @@ index ceb04bd0e..88b296264 100644
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
-index 76aaa0b26..7d3f3691d 100644
+index 76aaa0b26..350289568 100644
 --- a/include/media/config-mycompat.h
 +++ b/include/media/config-mycompat.h
-@@ -2,3 +2,5 @@
+@@ -2,3 +2,7 @@
  
  
  #undef NEED_USB_SPEED_WIRELESS
 +#undef NEED_PRANDOM_U32_MAX
 +#undef NEED_NEXT_PSEUDO_RANDOM32
++#undef NEED_FRAME_VECTOR
++
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 12955cb46..34f476f15 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -18,7 +18,9 @@
+ #include <linux/dma-buf.h>
+ #include <linux/bitops.h>
+ #include <media/media-request.h>
+-#include <media/frame_vector.h>
++
++//#include <media/frame_vector.h>
++#include <media/compat.h>
+ 
+ #define VB2_MAX_FRAME	(32)
+ #define VB2_MAX_PLANES	(8)
 diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
 index f6a551bd5..3fa6582b4 100644
 --- a/samples/v4l/v4l2-pci-skeleton.c

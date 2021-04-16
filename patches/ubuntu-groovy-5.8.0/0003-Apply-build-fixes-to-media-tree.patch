@@ -1,19 +1,23 @@
-From 8e9697997262927c9c5810fd1ac375c2639b51cb Mon Sep 17 00:00:00 2001
+From f932a06d42556286bc59faa4fb9450daa3ce2ed6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 10 Nov 2020 14:47:41 -0600
+Date: Wed, 14 Apr 2021 13:35:05 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/core/cec-api.c      | 2 ++
- drivers/media/mc/mc-device.c          | 2 ++
- drivers/media/pci/ivtv/ivtv-driver.c  | 2 ++
- drivers/media/usb/em28xx/em28xx-dvb.c | 2 +-
- drivers/media/v4l2-core/v4l2-async.c  | 2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c  | 2 ++
- 6 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/media/cec/core/cec-api.c                  | 2 ++
+ drivers/media/common/videobuf2/Makefile           | 2 +-
+ drivers/media/common/videobuf2/videobuf2-memops.c | 3 ++-
+ drivers/media/i2c/imx258.c                        | 2 ++
+ drivers/media/mc/mc-device.c                      | 2 ++
+ drivers/media/pci/ivtv/ivtv-driver.c              | 2 ++
+ drivers/media/usb/em28xx/em28xx-dvb.c             | 2 +-
+ drivers/media/v4l2-core/v4l2-async.c              | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c              | 2 ++
+ include/media/videobuf2-core.h                    | 2 +-
+ 10 files changed, 17 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index a9ecfee6e..3f2bcaa99 100644
+index d7c3933b7..70c4120cd 100644
 --- a/drivers/media/cec/core/cec-api.c
 +++ b/drivers/media/cec/core/cec-api.c
 @@ -22,6 +22,8 @@
@@ -25,6 +29,52 @@ index a9ecfee6e..3f2bcaa99 100644
  static inline struct cec_devnode *cec_devnode_data(struct file *filp)
  {
  	struct cec_fh *fh = filp->private_data;
+diff --git a/drivers/media/common/videobuf2/Makefile b/drivers/media/common/videobuf2/Makefile
+index 54306f8d0..9edaeaca5 100644
+--- a/drivers/media/common/videobuf2/Makefile
++++ b/drivers/media/common/videobuf2/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ videobuf2-common-objs := videobuf2-core.o
+-videobuf2-common-objs += frame_vector.o
++#videobuf2-common-objs += frame_vector.o
+ 
+ ifeq ($(CONFIG_TRACEPOINTS),y)
+   videobuf2-common-objs += vb2-trace.o
+diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
+index 9dd6c2716..022f49169 100644
+--- a/drivers/media/common/videobuf2/videobuf2-memops.c
++++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+@@ -40,6 +40,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	unsigned long first, last;
+ 	unsigned long nr;
+ 	struct frame_vector *vec;
++	unsigned int flags = FOLL_FORCE;
+ 
+ 	first = start >> PAGE_SHIFT;
+ 	last = (start + length - 1) >> PAGE_SHIFT;
+@@ -47,7 +48,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	vec = frame_vector_create(nr);
+ 	if (!vec)
+ 		return ERR_PTR(-ENOMEM);
+-	ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
++	ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
+ 	if (ret < 0)
+ 		goto out_destroy;
+ 	/* We accept only complete set of PFNs */
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index a017ec4e0..3f29db989 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -11,6 +11,8 @@
+ #include <media/v4l2-device.h>
+ #include <asm/unaligned.h>
+ 
++#include <media/compat.h>
++
+ #define IMX258_REG_VALUE_08BIT		1
+ #define IMX258_REG_VALUE_16BIT		2
+ 
 diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
 index 6f0369bc5..cd7b8eb59 100644
 --- a/drivers/media/mc/mc-device.c
@@ -39,7 +89,7 @@ index 6f0369bc5..cd7b8eb59 100644
  
  /*
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 28acb1449..8b9478cd8 100644
+index c4a069b3b..362d159da 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
@@ -52,7 +102,7 @@ index 28acb1449..8b9478cd8 100644
     the device numbers stay matched. Example: you have a WinTV card
     without radio and a PVR-350 with. Normally this would give a
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index b9c1a9e72..a57a7cae1 100644
+index 9530c41c4..fed16bcb2 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -65,10 +115,10 @@ index b9c1a9e72..a57a7cae1 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index e3ab003a6..079ddd520 100644
+index e638aa8ae..4695490b2 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
-@@ -22,6 +22,8 @@
+@@ -24,6 +24,8 @@
  #include <media/v4l2-fwnode.h>
  #include <media/v4l2-subdev.h>
  
@@ -78,10 +128,10 @@ index e3ab003a6..079ddd520 100644
  					  struct v4l2_subdev *subdev,
  					  struct v4l2_async_subdev *asd)
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index ceb04bd0e..88b296264 100644
+index 213cb475a..9bccbf0ba 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -29,6 +29,8 @@
+@@ -30,6 +30,8 @@
  
  #include <trace/events/v4l2.h>
  
@@ -90,6 +140,19 @@ index ceb04bd0e..88b296264 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 12955cb46..be23405b3 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -18,7 +18,7 @@
+ #include <linux/dma-buf.h>
+ #include <linux/bitops.h>
+ #include <media/media-request.h>
+-#include <media/frame_vector.h>
++//#include <media/frame_vector.h>
+ 
+ #define VB2_MAX_FRAME	(32)
+ #define VB2_MAX_PLANES	(8)
 -- 
 2.27.0
 
