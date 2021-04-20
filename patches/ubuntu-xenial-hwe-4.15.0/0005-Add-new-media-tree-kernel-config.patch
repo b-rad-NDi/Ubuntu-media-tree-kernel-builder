@@ -1,6 +1,6 @@
-From cb44a95a1830b1ff35fb812bb372d5e301110fd9 Mon Sep 17 00:00:00 2001
+From 79351bbe66672376a59d8f1d48b80e54488e269e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 13:06:28 -0500
+Date: Fri, 16 Apr 2021 17:51:19 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 131 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 418817e..6456678 100644
+index 418817e..deb3b57 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2487,7 +2487,7 @@ CONFIG_DVB_LNBP22=m
@@ -85,7 +85,7 @@ index 418817e..6456678 100644
 +CONFIG_VIDEO_THS8200=m
 +# CONFIG_VIDEO_IMX214 is not set
 +# CONFIG_VIDEO_IMX258 is not set
-+CONFIG_VIDEO_IMX274=m
++# CONFIG_VIDEO_IMX274 is not set
 +# CONFIG_VIDEO_IMX319 is not set
 +# CONFIG_VIDEO_IMX355 is not set
 +CONFIG_VIDEO_OV2640=m
