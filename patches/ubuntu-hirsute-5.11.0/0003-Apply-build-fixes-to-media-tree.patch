@@ -1,0 +1,20 @@
+From f63a373469cfe1f9f46d4036411d9f54f18ee301 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 26 Aug 2021 09:47:32 -0500
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ debian/media-fixes.tmp | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 debian/media-fixes.tmp
+
+diff --git a/debian/media-fixes.tmp b/debian/media-fixes.tmp
+new file mode 100644
+index 000000000..d6459e005
+--- /dev/null
++++ b/debian/media-fixes.tmp
+@@ -0,0 +1 @@
++xxx
+-- 
+2.30.2
+
