@@ -1,24 +1,24 @@
-From a8b17be935f1585d3705c0df9c5f10ddb4226cda Mon Sep 17 00:00:00 2001
+From 3dfd83d03fa9c77bcf3fc60d1834b6b583ed80c9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 6 Apr 2021 16:20:00 -0500
+Date: Thu, 9 Sep 2021 09:09:09 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ debian.master/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 19dd337ba..d628a8b19 100644
+index 880c289d8..1b44329e9 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,42 @@
-+linux (5.4.0-702104061620.1+mediatree+hauppauge) focal; urgency=low
+@@ -1,3 +1,33 @@
++linux (5.4.0-802109090909.1+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-70.78 rev 3178f7a2f88998a8ee33b20e8d75b8939dd927a8
++    - 5.4.0-80.90 rev cb120794b6e994c230000e2744b4a8bc29689b89
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
++    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,25 +35,16 @@ index 19dd337ba..d628a8b19 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
-+    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
-+    --- 0099-media-rc-ensure-that-uevent-can-be-read-directly-after-rc-device-register.patch
 +    - 11.cx23885.patches
-+    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
-+    --- 0003-cx23885-add-more-ryzen-pci-id-to-dma-override-list.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 90.usb.quadhd.mxl692
-+    --- 0001-mxl692-MaxLinear-692-ATSC-demod-tuner-driver.patch
-+    --- 0002-em28xx-core-Fix-TS2-active-led.patch
-+    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 06 Apr 2021 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Thu, 09 Sep 2021 09:09:09 -0500
 +
- linux (5.4.0-70.78) focal; urgency=medium
+ linux (5.4.0-80.90) focal; urgency=medium
  
-   * CVE-2020-27170
+   * CVE-2021-33909
 -- 
 2.25.1
 

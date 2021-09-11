@@ -1,3 +1,15 @@
+0.2.0
+  * New Ubuntu revisions
+  * Fix 5.11 builds
+
+0.1.9
+  * New Ubuntu revisions
+  * Ubuntu 21.04 Hirsute support
+  * Ubuntu 20.04 HWE 5.11 support
+
+0.1.8
+  * New media tree sync
+
 0.1.7
   * New Ubuntu revisions
 

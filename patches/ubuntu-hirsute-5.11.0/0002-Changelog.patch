@@ -1,6 +1,6 @@
-From 9a2eb4fdba44708608f2cbb4e8517666b0f86040 Mon Sep 17 00:00:00 2001
+From 4ef8d575a3c8fa1a093eff2431ad8f2411f1e515 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 26 Aug 2021 04:20:00 -0500
+Date: Thu, 9 Sep 2021 09:09:09 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index bb1626ec9..6d757b09e 100644
+index bb1626ec9..890f64d55 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (5.11.0-252108260420.0+mediatree+hauppauge) hirsute; urgency=low
++linux (5.11.0-252109090909.0+mediatree+hauppauge) hirsute; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 5.11.0-25.27 rev 7b737a8f4500b183bbaffd28a879a6d344ab4741
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-xxxx-xx-xx-xx-xx.patch
++    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -40,7 +40,7 @@ index bb1626ec9..6d757b09e 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 26 Aug 2021 04:20:00 -0500
++ -- Fake User <hidden@email.co>  Thu, 09 Sep 2021 09:09:09 -0500
 +
  linux (5.11.0-25.27) hirsute; urgency=medium
  

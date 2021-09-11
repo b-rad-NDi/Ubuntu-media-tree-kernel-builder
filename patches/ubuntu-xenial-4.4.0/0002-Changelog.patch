@@ -1,24 +1,24 @@
-From 3ba7be30bfe89a309a17b4ee9da17b42ccb68a1e Mon Sep 17 00:00:00 2001
+From 8b30fb2f02a27b9c9444fb8740cab7f2518cb66a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 6 Apr 2021 16:20:00 -0500
+Date: Thu, 9 Sep 2021 09:09:09 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ debian.master/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index b980a6c..8edf18e 100644
+index 2ca48c7..f657572 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,42 @@
-+linux (4.4.0-206202104061620.0+mediatree+hauppauge) xenial; urgency=low
+@@ -1,3 +1,33 @@
++linux (4.4.0-209202109090909.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.4.0-206.238 rev c4c858a539eaefb9ff7a2433118653ad1cc78946
++    - 4.4.0-209.241 rev 56e454363d416acdc41c34b68c44fa6b9a207c3a
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2020-10-10-10-10.patch
++    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,25 +35,16 @@ index b980a6c..8edf18e 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461e.patch
-+    --- 0010-em28xx-Add-pid-for-bulk-revision-of-Hauppauge-461eV2.patch
-+    --- 0099-media-rc-ensure-that-uevent-can-be-read-directly-after-rc-device-register.patch
 +    - 11.cx23885.patches
-+    --- 0001-cx2885-fix-analog-video-routings.patch
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
-+    --- 0003-cx23885-add-more-ryzen-pci-id-to-dma-override-list.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
-+    - 90.usb.quadhd.mxl692
-+    --- 0001-mxl692-MaxLinear-692-ATSC-demod-tuner-driver.patch
-+    --- 0002-em28xx-core-Fix-TS2-active-led.patch
-+    --- 0003-em28xx-Add-support-for-Hauppauge-USB-QuadHD.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 06 Apr 2021 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Thu, 09 Sep 2021 09:09:09 -0500
 +
- linux (4.4.0-206.238) xenial; urgency=medium
+ linux (4.4.0-209.241) xenial; urgency=medium
  
-   * xenial/linux: 4.4.0-206.238 -proposed tracker (LP: #1919242)
+   * overlayfs calls vfs_setxattr without cap_convert_nscap
 -- 
 2.7.4
 
