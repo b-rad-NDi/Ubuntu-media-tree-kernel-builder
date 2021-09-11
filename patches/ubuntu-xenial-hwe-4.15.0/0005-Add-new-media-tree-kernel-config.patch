@@ -1,6 +1,6 @@
-From 79351bbe66672376a59d8f1d48b80e54488e269e Mon Sep 17 00:00:00 2001
+From 3e0f6480ca7a6b05b8ab40ce04df712edea812fc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 16 Apr 2021 17:51:19 -0500
+Date: Fri, 10 Sep 2021 15:50:20 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 131 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index 418817e..deb3b57 100644
+index a5cbe99..d9e1f30 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2487,7 +2487,7 @@ CONFIG_DVB_LNBP22=m
@@ -20,7 +20,7 @@ index 418817e..deb3b57 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  CONFIG_DVB_MN88472=m
-@@ -10159,14 +10159,7 @@ CONFIG_VIDEO_WM8775=m
+@@ -10158,14 +10158,7 @@ CONFIG_VIDEO_WM8775=m
  CONFIG_VIDEO_XILINX=m
  CONFIG_VIDEO_XILINX_TPG=m
  CONFIG_VIDEO_XILINX_VTC=m
@@ -36,7 +36,7 @@ index 418817e..deb3b57 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10556,3 +10549,132 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10555,3 +10548,132 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -168,7 +168,7 @@ index 418817e..deb3b57 100644
 +# CONFIG_VIDEO_OV9734 is not set
 +# CONFIG_VIDEO_RDACM21 is not set
 +# CONFIG_VIDEO_CCS is not set
-+
++CONFIG_VIDEO_IMX208=m
 -- 
 2.7.4
 

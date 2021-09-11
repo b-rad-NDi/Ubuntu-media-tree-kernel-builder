@@ -1,13 +1,13 @@
-From 6aeff65adf227c2f0f4d838453dc828a133277b3 Mon Sep 17 00:00:00 2001
+From e062a740d36a9d28607985477fe1b0a5923b8545 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 5 Feb 2021 09:53:24 -0600
+Date: Thu, 9 Sep 2021 13:31:53 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.hwe-5.4/control.d/flavour-control.stub |  4 +-
- debian.hwe-5.4/control.stub.in                | 47 -------------------
- debian.hwe-5.4/copyright                      | 22 +++++++++
- debian.hwe-5.4/rules.d/amd64.mk               |  8 ++--
+ debian.hwe-5.4/control.stub.in                | 50 +------------------
+ debian.hwe-5.4/copyright                      | 22 ++++++++
+ debian.hwe-5.4/rules.d/amd64.mk               |  8 +--
  debian.hwe-5.4/rules.d/arm64.mk               |  2 +-
  debian.hwe-5.4/rules.d/i386.mk                |  2 +-
  debian.hwe-5.4/rules.d/ppc64el.mk             |  2 +-
@@ -15,10 +15,10 @@ Subject: [PATCH 6/6] Packaging updates
  debian.hwe-5.4/rules.d/x32.mk                 |  2 +-
  debian/control.d/flavour-buildinfo.stub       |  2 +-
  debian/rules                                  |  2 +-
- debian/rules.d/0-common-vars.mk               | 19 ++++++--
+ debian/rules.d/0-common-vars.mk               | 19 +++++--
  debian/rules.d/2-binary-arch.mk               |  4 ++
  debian/scripts/config-check                   |  2 +-
- 14 files changed, 54 insertions(+), 66 deletions(-)
+ 14 files changed, 56 insertions(+), 67 deletions(-)
 
 diff --git a/debian.hwe-5.4/control.d/flavour-control.stub b/debian.hwe-5.4/control.d/flavour-control.stub
 index bdad951bbd20..e3995d517c35 100644
@@ -43,10 +43,20 @@ index bdad951bbd20..e3995d517c35 100644
   DESC.
   .
 diff --git a/debian.hwe-5.4/control.stub.in b/debian.hwe-5.4/control.stub.in
-index 9f95a88e2796..f072125ad2ae 100644
+index 9f95a88e2796..b980244b85b5 100644
 --- a/debian.hwe-5.4/control.stub.in
 +++ b/debian.hwe-5.4/control.stub.in
-@@ -53,30 +53,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
+@@ -1,7 +1,8 @@
+ Source: SRCPKGNAME
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Fake User <hidden@email.co>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper (>= 9),
+@@ -53,30 +54,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -77,7 +87,7 @@ index 9f95a88e2796..f072125ad2ae 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -89,18 +65,6 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -89,18 +66,6 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -96,7 +106,7 @@ index 9f95a88e2796..f072125ad2ae 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: i386 amd64 armhf arm64 ppc64el s390x
-@@ -114,17 +78,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -114,17 +79,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -145,7 +155,7 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe-5.4/rules.d/amd64.mk b/debian.hwe-5.4/rules.d/amd64.mk
-index c201b5da0b13..679e7c09a914 100644
+index 273332386d7c..3239de17ad69 100644
 --- a/debian.hwe-5.4/rules.d/amd64.mk
 +++ b/debian.hwe-5.4/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -176,7 +186,7 @@ index c201b5da0b13..679e7c09a914 100644
 +do_tools_common = false
  do_tools_acpidbg = true
  do_zfs		= true
- do_dkms_nvidia  = true
+ do_dkms_vbox    = false
 diff --git a/debian.hwe-5.4/rules.d/arm64.mk b/debian.hwe-5.4/rules.d/arm64.mk
 index 4c3e08cd1bd9..053b6da624ab 100644
 --- a/debian.hwe-5.4/rules.d/arm64.mk
@@ -191,7 +201,7 @@ index 4c3e08cd1bd9..053b6da624ab 100644
  loader		= grub
  vdso		= vdso_install
 diff --git a/debian.hwe-5.4/rules.d/i386.mk b/debian.hwe-5.4/rules.d/i386.mk
-index 0610d431ee71..b2640547d3a7 100644
+index e966c87cbc90..bddcf6728b59 100644
 --- a/debian.hwe-5.4/rules.d/i386.mk
 +++ b/debian.hwe-5.4/rules.d/i386.mk
 @@ -2,7 +2,7 @@ human_arch	= 32 bit x86

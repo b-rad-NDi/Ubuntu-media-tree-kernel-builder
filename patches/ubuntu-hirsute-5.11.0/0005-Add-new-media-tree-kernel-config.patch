@@ -1,14 +1,14 @@
-From d9805a2189fecd77baa99f1f8a872302940fa7d8 Mon Sep 17 00:00:00 2001
+From bb875d2de89db50ee9ecd5964cd915d251eef44d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 26 Aug 2021 10:07:36 -0500
+Date: Thu, 9 Sep 2021 12:45:53 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 36 ++++++++++++++++-------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+ debian.master/config/config.common.ubuntu | 37 ++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 11 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 7937c0b8c..1a694d595 100644
+index 7937c0b8c..85ee6f6f5 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -3046,7 +3046,7 @@ CONFIG_DVB_LNBP22=m
@@ -38,7 +38,7 @@ index 7937c0b8c..1a694d595 100644
  CONFIG_VIDEO_AU0828=m
  CONFIG_VIDEO_AU0828_RC=y
  CONFIG_VIDEO_AU0828_V4L2=y
-@@ -12367,3 +12358,26 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -12367,3 +12358,27 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -65,6 +65,7 @@ index 7937c0b8c..1a694d595 100644
 +# CONFIG_VIDEO_OV9734 is not set
 +# CONFIG_VIDEO_RDACM21 is not set
 +# CONFIG_VIDEO_CCS is not set
++CONFIG_VIDEO_IMX208=m
 -- 
 2.30.2
 

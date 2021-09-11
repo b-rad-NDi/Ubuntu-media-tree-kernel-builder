@@ -1,29 +1,27 @@
-From e7c7321d4dd428f5b0b1eccd4b745bdb6590fdc0 Mon Sep 17 00:00:00 2001
+From d0e13626a9bb56eb94fbaab3c3d45eb8f5ef9163 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 26 Jan 2021 14:32:50 -0600
+Date: Fri, 10 Sep 2021 18:17:41 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |  11 ++--
- drivers/input/touchscreen/sur40.c       |  48 +++++++--------
- drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
- drivers/leds/Kconfig                    |   1 +
- drivers/net/ethernet/via/via-velocity.c |  10 +--
- drivers/usb/gadget/function/uvc_queue.c |   5 +-
- drivers/video/hdmi.c                    |   4 +-
- fs/compat_ioctl.c                       |  42 -------------
- include/linux/compiler-gcc.h            |   3 +
- include/linux/dma-buf.h                 |   2 +
- include/linux/hdmi.h                    |   7 +--
- include/linux/kconfig.h                 |   7 +++
- include/linux/mmc/sdio_ids.h            |   5 ++
- include/linux/pci_ids.h                 |   1 +
- include/linux/refcount.h                | 104 ++++++++++++++++++++++++++++++++
- mm/slub.c                               |   2 +
- sound/pci/bt87x.c                       |  31 +++++++---
- ubuntu/i915/i915_gem_dmabuf.c           |  10 +--
- 18 files changed, 195 insertions(+), 104 deletions(-)
- create mode 100644 include/linux/refcount.h
+ drivers/hid/hid-picolcd_cir.c           | 11 ++++----
+ drivers/input/touchscreen/sur40.c       | 48 +++++++++++++++------------------
+ drivers/isdn/hardware/mISDN/w6692.c     |  6 ++---
+ drivers/leds/Kconfig                    |  1 +
+ drivers/net/ethernet/via/via-velocity.c | 10 +++----
+ drivers/usb/gadget/function/uvc_queue.c |  5 ++--
+ drivers/video/hdmi.c                    |  4 +--
+ fs/compat_ioctl.c                       | 42 -----------------------------
+ include/linux/compiler-gcc.h            |  3 +++
+ include/linux/dma-buf.h                 |  2 ++
+ include/linux/hdmi.h                    |  7 +++--
+ include/linux/kconfig.h                 |  7 +++++
+ include/linux/mmc/sdio_ids.h            |  5 ++++
+ include/linux/pci_ids.h                 | 14 ++++++++++
+ mm/slub.c                               |  2 ++
+ sound/pci/bt87x.c                       | 31 ++++++++++++++-------
+ ubuntu/i915/i915_gem_dmabuf.c           | 10 ++++---
+ 17 files changed, 104 insertions(+), 104 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..1d42112 100644
@@ -432,7 +430,7 @@ index f98bd70..f8f0884 100644
  struct dma_buf;
  struct dma_buf_attachment;
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59..c6d5b79 100644
+index c8ec982..a722fa6 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -457,10 +455,10 @@ index 9850d59..c6d5b79 100644
  
  #endif /* _DRM_HDMI_H */
 diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-index e78e17a..0e8a119 100644
+index 20d1079..750d140 100644
 --- a/include/linux/kconfig.h
 +++ b/include/linux/kconfig.h
-@@ -44,6 +44,13 @@
+@@ -42,6 +42,13 @@
  #define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
  #define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
  
@@ -505,10 +503,10 @@ index 1203661..57fe266 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index a76ccb6..0a56c32 100644
+index 4bac183..fb0bb1c 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1078,6 +1078,7 @@
+@@ -1081,6 +1081,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -516,118 +514,35 @@ index a76ccb6..0a56c32 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-diff --git a/include/linux/refcount.h b/include/linux/refcount.h
-new file mode 100644
-index 0000000..a685da2
---- /dev/null
-+++ b/include/linux/refcount.h
-@@ -0,0 +1,104 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_REFCOUNT_H
-+#define _LINUX_REFCOUNT_H
-+
-+#include <linux/atomic.h>
-+#include <linux/mutex.h>
-+#include <linux/spinlock.h>
-+#include <linux/kernel.h>
-+
-+/**
-+ * struct refcount_t - variant of atomic_t specialized for reference counts
-+ * @refs: atomic_t counter field
-+ *
-+ * The counter saturates at UINT_MAX and will not move once
-+ * there. This avoids wrapping the counter and causing 'spurious'
-+ * use-after-free bugs.
-+ */
-+typedef struct refcount_struct {
-+	atomic_t refs;
-+} refcount_t;
-+
-+#define REFCOUNT_INIT(n)	{ .refs = ATOMIC_INIT(n), }
-+
-+/**
-+ * refcount_set - set a refcount's value
-+ * @r: the refcount
-+ * @n: value to which the refcount will be set
-+ */
-+static inline void refcount_set(refcount_t *r, unsigned int n)
-+{
-+	atomic_set(&r->refs, n);
-+}
-+
-+/**
-+ * refcount_read - get a refcount's value
-+ * @r: the refcount
-+ *
-+ * Return: the refcount's value
-+ */
-+static inline unsigned int refcount_read(const refcount_t *r)
-+{
-+	return atomic_read(&r->refs);
-+}
-+
-+#ifdef CONFIG_REFCOUNT_FULL
-+extern __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r);
-+extern void refcount_add(unsigned int i, refcount_t *r);
-+
-+extern __must_check bool refcount_inc_not_zero(refcount_t *r);
-+extern void refcount_inc(refcount_t *r);
-+
-+extern __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r);
-+
-+extern __must_check bool refcount_dec_and_test(refcount_t *r);
-+extern void refcount_dec(refcount_t *r);
-+#else
-+# ifdef CONFIG_ARCH_HAS_REFCOUNT
-+#  include <asm/refcount.h>
-+# else
-+static inline __must_check bool refcount_add_not_zero(unsigned int i, refcount_t *r)
-+{
-+	return atomic_add_unless(&r->refs, i, 0);
-+}
-+
-+static inline void refcount_add(unsigned int i, refcount_t *r)
-+{
-+	atomic_add(i, &r->refs);
-+}
-+
-+static inline __must_check bool refcount_inc_not_zero(refcount_t *r)
-+{
-+	return atomic_add_unless(&r->refs, 1, 0);
-+}
-+
-+static inline void refcount_inc(refcount_t *r)
-+{
-+	atomic_inc(&r->refs);
-+}
-+
-+static inline __must_check bool refcount_sub_and_test(unsigned int i, refcount_t *r)
-+{
-+	return atomic_sub_and_test(i, &r->refs);
-+}
-+
-+static inline __must_check bool refcount_dec_and_test(refcount_t *r)
-+{
-+	return atomic_dec_and_test(&r->refs);
-+}
-+
-+static inline void refcount_dec(refcount_t *r)
-+{
-+	atomic_dec(&r->refs);
-+}
-+# endif /* !CONFIG_ARCH_HAS_REFCOUNT */
-+#endif /* CONFIG_REFCOUNT_FULL */
-+
-+extern __must_check bool refcount_dec_if_one(refcount_t *r);
-+extern __must_check bool refcount_dec_not_one(refcount_t *r);
-+extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock);
-+extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock);
-+extern __must_check bool refcount_dec_and_lock_irqsave(refcount_t *r,
-+						       spinlock_t *lock,
-+						       unsigned long *flags);
-+#endif /* _LINUX_REFCOUNT_H */
+@@ -1693,6 +1694,17 @@
+ #define PCI_VENDOR_ID_RP		0x11fe
+ 
+ #define PCI_VENDOR_ID_CYCLADES		0x120e
++#define PCI_DEVICE_ID_CYCLOM_Y_Lo      0x0100
++#define PCI_DEVICE_ID_CYCLOM_Y_Hi      0x0101
++#define PCI_DEVICE_ID_CYCLOM_4Y_Lo     0x0102
++#define PCI_DEVICE_ID_CYCLOM_4Y_Hi     0x0103
++#define PCI_DEVICE_ID_CYCLOM_8Y_Lo     0x0104
++#define PCI_DEVICE_ID_CYCLOM_8Y_Hi     0x0105
++#define PCI_DEVICE_ID_CYCLOM_Z_Lo      0x0200
++#define PCI_DEVICE_ID_CYCLOM_Z_Hi      0x0201
++#define PCI_DEVICE_ID_PC300_RX_2      0x0300
++#define PCI_DEVICE_ID_PC300_RX_1      0x0301
++#define PCI_DEVICE_ID_PC300_TE_2      0x0310
+ #define PCI_DEVICE_ID_PC300_RX_2	0x0300
+ #define PCI_DEVICE_ID_PC300_RX_1	0x0301
+ #define PCI_DEVICE_ID_PC300_TE_2	0x0310
+@@ -2039,6 +2051,8 @@
+ #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
+ 
+ #define PCI_VENDOR_ID_MICROGATE		0x13c0
++#define PCI_DEVICE_ID_MICROGATE_USC    0x0010
++#define PCI_DEVICE_ID_MICROGATE_SCA    0x0030
+ 
+ #define PCI_VENDOR_ID_3WARE		0x13C1
+ #define PCI_DEVICE_ID_3WARE_1000	0x1000
 diff --git a/mm/slub.c b/mm/slub.c
-index 18d1622..555545e 100644
+index 40c7a3f..ce561fd 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -4060,6 +4060,8 @@ void *__kmalloc_track_caller(size_t size, gfp_t gfpflags, unsigned long caller)
@@ -640,10 +555,10 @@ index 18d1622..555545e 100644
  void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
  					int node, unsigned long caller)
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index cf9f8d8..0d888d6 100644
+index 39bcfb8..c0dcd5a 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
-@@ -150,7 +150,7 @@ struct snd_bt87x_board {
+@@ -148,7 +148,7 @@ struct snd_bt87x_board {
  	unsigned no_digital:1;	/* No digital input */
  };
  
@@ -652,7 +567,7 @@ index cf9f8d8..0d888d6 100644
  	[SND_BT87X_BOARD_UNKNOWN] = {
  		.dig_rate = 32000, /* just a guess */
  	},
-@@ -217,7 +217,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
+@@ -215,7 +215,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
  	__le32 *risc;
  
  	if (chip->dma_risc.area == NULL) {
@@ -661,7 +576,7 @@ index cf9f8d8..0d888d6 100644
  					PAGE_ALIGN(MAX_RISC_SIZE), &chip->dma_risc) < 0)
  			return -ENOMEM;
  	}
-@@ -271,8 +271,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
+@@ -269,8 +269,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
  
  static void snd_bt87x_pci_error(struct snd_bt87x *chip, unsigned int status)
  {
@@ -676,7 +591,7 @@ index cf9f8d8..0d888d6 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -446,7 +451,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -689,7 +604,7 @@ index cf9f8d8..0d888d6 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -457,6 +467,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -697,7 +612,7 @@ index cf9f8d8..0d888d6 100644
  	return 0;
  }
  
-@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -527,11 +538,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -711,7 +626,7 @@ index cf9f8d8..0d888d6 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -686,10 +699,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -726,7 +641,7 @@ index cf9f8d8..0d888d6 100644
  	return 0;
  }
  
-@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -699,7 +712,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -735,7 +650,7 @@ index cf9f8d8..0d888d6 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;

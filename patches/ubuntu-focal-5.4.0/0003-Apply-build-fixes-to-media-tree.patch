@@ -1,4 +1,4 @@
-From 9b5b7ea95c09d2ea8ed2333bd2c8a115b1aa71e8 Mon Sep 17 00:00:00 2001
+From 1464c88f37c9f82a9b8444ab345cb19bf6b6ce14 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 15 Apr 2021 15:28:50 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
@@ -489,7 +489,7 @@ index 1d56b9183..49956d562 100644
  		dev_err(comp, "%s: video register failed (err=%d)\n",
  			vcap->vdev.name, ret);
 diff --git a/drivers/media/platform/vivid/vivid-core.c b/drivers/media/platform/vivid/vivid-core.c
-index f6a5cdbd7..5f16b16eb 100644
+index cc71aa425..1312f445d 100644
 --- a/drivers/media/platform/vivid/vivid-core.c
 +++ b/drivers/media/platform/vivid/vivid-core.c
 @@ -380,7 +380,7 @@ static int vidioc_log_status(struct file *file, void *fh)

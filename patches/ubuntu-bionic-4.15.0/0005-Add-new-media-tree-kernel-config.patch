@@ -1,6 +1,6 @@
-From 8ca53383b93f8d79de5ab61da68d54817ee6db39 Mon Sep 17 00:00:00 2001
+From 687121b51472c8bec065587dfebc2ddfc7d93796 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 15:32:08 -0500
+Date: Fri, 10 Sep 2021 11:07:49 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 131 insertions(+), 9 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 3ef3d8d6a..432800a03 100644
+index 418817e5b..59c2d1d5e 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2487,7 +2487,7 @@ CONFIG_DVB_LNBP22=m
@@ -168,7 +168,7 @@ index 3ef3d8d6a..432800a03 100644
 +# CONFIG_VIDEO_OV9734 is not set
 +# CONFIG_VIDEO_RDACM21 is not set
 +# CONFIG_VIDEO_CCS is not set
-+
++CONFIG_VIDEO_IMX208=m
 -- 
 2.17.1
 

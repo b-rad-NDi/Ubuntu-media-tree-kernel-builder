@@ -1,119 +1,124 @@
-From 320903e3cd3b1846252f36aa1e77033b1291cbcd Mon Sep 17 00:00:00 2001
+From fb336baa7573ce3253c34171bb509fafd76b8008 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 15 Apr 2021 13:28:36 -0500
+Date: Fri, 10 Sep 2021 11:06:44 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-api.c                        | 2 ++
- drivers/media/cec/core/cec-adap.c                  | 2 ++
- drivers/media/cec/core/cec-api.c                   | 3 +++
- drivers/media/cec/usb/pulse8/pulse8-cec.c          | 2 ++
- drivers/media/common/b2c2/Makefile                 | 4 ++--
- drivers/media/common/saa7146/saa7146_fops.c        | 2 ++
- drivers/media/common/saa7146/saa7146_vbi.c         | 3 +++
- drivers/media/common/saa7146/saa7146_video.c       | 2 ++
- drivers/media/common/v4l2-tpg/v4l2-tpg-core.c      | 2 ++
- drivers/media/common/videobuf2/frame_vector.c      | 5 +++--
- drivers/media/common/videobuf2/videobuf2-memops.c  | 3 ++-
- drivers/media/dvb-core/dmxdev.c                    | 2 ++
- drivers/media/dvb-core/dvb_demux.c                 | 2 ++
- drivers/media/dvb-core/dvb_net.c                   | 2 ++
- drivers/media/dvb-frontends/cxd2820r_core.c        | 1 +
- drivers/media/dvb-frontends/mn88443x.c             | 4 +++-
- drivers/media/dvb-frontends/mn88472.c              | 2 ++
- drivers/media/dvb-frontends/mn88473.c              | 2 ++
- drivers/media/i2c/ad9389b.c                        | 2 ++
- drivers/media/i2c/adv7180.c                        | 2 ++
- drivers/media/i2c/adv7511-v4l2.c                   | 4 +++-
- drivers/media/i2c/adv7604.c                        | 4 +++-
- drivers/media/i2c/adv7842.c                        | 4 +++-
- drivers/media/i2c/ak7375.c                         | 2 ++
- drivers/media/i2c/ir-kbd-i2c.c                     | 2 ++
- drivers/media/i2c/smiapp/smiapp.h                  | 2 +-
- drivers/media/i2c/tc358743.c                       | 2 +-
- drivers/media/i2c/tda1997x.c                       | 6 ++++--
- drivers/media/i2c/tvaudio.c                        | 2 ++
- drivers/media/media-device.c                       | 2 ++
- drivers/media/mmc/siano/Makefile                   | 2 +-
- drivers/media/pci/b2c2/Makefile                    | 2 +-
- drivers/media/pci/bt8xx/Makefile                   | 4 ++--
- drivers/media/pci/bt8xx/bttv-driver.c              | 2 ++
- drivers/media/pci/bt8xx/bttv-input.c               | 1 +
- drivers/media/pci/cx18/Makefile                    | 4 ++--
- drivers/media/pci/cx18/cx18-fileops.c              | 2 ++
- drivers/media/pci/cx18/cx18-streams.c              | 2 ++
- drivers/media/pci/cx23885/Makefile                 | 4 ++--
- drivers/media/pci/cx88/Makefile                    | 4 ++--
- drivers/media/pci/ddbridge/Makefile                | 4 ++--
- drivers/media/pci/ddbridge/ddbridge-core.c         | 2 ++
- drivers/media/pci/dm1105/Makefile                  | 2 +-
- drivers/media/pci/ivtv/ivtv-driver.c               | 2 ++
- drivers/media/pci/ivtv/ivtv-irq.c                  | 2 ++
- drivers/media/pci/mantis/Makefile                  | 2 +-
- drivers/media/pci/netup_unidvb/Makefile            | 2 +-
- drivers/media/pci/netup_unidvb/netup_unidvb_core.c | 2 ++
- drivers/media/pci/ngene/Makefile                   | 4 ++--
- drivers/media/pci/pluto2/Makefile                  | 2 +-
- drivers/media/pci/pt1/Makefile                     | 4 ++--
- drivers/media/pci/pt3/Makefile                     | 4 ++--
- drivers/media/pci/saa7134/saa7134-core.c           | 2 ++
- drivers/media/pci/saa7134/saa7134-input.c          | 2 ++
- drivers/media/pci/saa7134/saa7134-ts.c             | 2 ++
- drivers/media/pci/saa7134/saa7134-vbi.c            | 2 ++
- drivers/media/pci/saa7134/saa7134-video.c          | 2 ++
- drivers/media/pci/smipcie/Makefile                 | 4 ++--
- drivers/media/pci/ttpci/Makefile                   | 4 ++--
- drivers/media/pci/ttpci/av7110_ipack.c             | 1 +
- drivers/media/pci/ttpci/av7110_ir.c                | 2 ++
- drivers/media/pci/tw686x/tw686x-core.c             | 2 ++
- drivers/media/platform/sti/c8sectpfe/Makefile      | 4 ++--
- drivers/media/platform/vim2m.c                     | 2 ++
- drivers/media/radio/radio-cadet.c                  | 2 ++
- drivers/media/radio/wl128x/fmdrv_common.c          | 4 +++-
- drivers/media/rc/ene_ir.c                          | 2 ++
- drivers/media/rc/igorplugusb.c                     | 2 ++
- drivers/media/rc/iguanair.c                        | 2 ++
- drivers/media/rc/imon.c                            | 2 ++
- drivers/media/rc/ir-mce_kbd-decoder.c              | 2 ++
- drivers/media/rc/ir-rc6-decoder.c                  | 2 ++
- drivers/media/rc/ir-sony-decoder.c                 | 2 ++
- drivers/media/rc/keymaps/rc-imon-rsc.c             | 2 ++
- drivers/media/rc/lirc_dev.c                        | 2 ++
- drivers/media/rc/rc-ir-raw.c                       | 2 ++
- drivers/media/rc/rc-main.c                         | 2 ++
- drivers/media/rc/serial_ir.c                       | 2 ++
- drivers/media/rc/sir_ir.c                          | 2 ++
- drivers/media/spi/Makefile                         | 2 +-
- drivers/media/test-drivers/vidtv/vidtv_psi.c       | 2 ++
- drivers/media/test-drivers/vivid/vivid-vbi-gen.c   | 2 ++
- drivers/media/usb/as102/Makefile                   | 2 +-
- drivers/media/usb/au0828/Makefile                  | 4 ++--
- drivers/media/usb/au0828/au0828-dvb.c              | 2 ++
- drivers/media/usb/au0828/au0828-video.c            | 2 ++
- drivers/media/usb/b2c2/Makefile                    | 2 +-
- drivers/media/usb/cx231xx/Makefile                 | 4 ++--
- drivers/media/usb/em28xx/Makefile                  | 4 ++--
- drivers/media/usb/em28xx/em28xx-dvb.c              | 2 +-
- drivers/media/usb/go7007/Makefile                  | 2 +-
- drivers/media/usb/go7007/s2250-board.c             | 3 +++
- drivers/media/usb/pvrusb2/Makefile                 | 4 ++--
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c            | 6 ++++++
- drivers/media/usb/s2255/s2255drv.c                 | 2 ++
- drivers/media/usb/siano/Makefile                   | 2 +-
- drivers/media/usb/tm6000/Makefile                  | 4 ++--
- drivers/media/usb/ttusb-budget/Makefile            | 2 +-
- drivers/media/usb/uvc/uvc_driver.c                 | 2 ++
- drivers/media/v4l2-core/v4l2-fwnode.c              | 2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c               | 2 ++
- drivers/media/v4l2-core/videobuf-dma-sg.c          | 2 ++
- include/media/config-mycompat.h                    | 3 +++
- include/media/i2c/saa6588.h                        | 2 ++
- include/media/media-devnode.h                      | 2 ++
- include/media/v4l2-ctrls.h                         | 2 ++
- include/media/v4l2-dev.h                           | 5 ++++-
- include/media/videobuf-core.h                      | 2 ++
- include/media/videobuf2-core.h                     | 2 +-
- 109 files changed, 217 insertions(+), 61 deletions(-)
+ drivers/media/cec/cec-api.c                        |  2 ++
+ drivers/media/cec/core/cec-adap.c                  |  2 ++
+ drivers/media/cec/core/cec-api.c                   |  3 +++
+ drivers/media/cec/usb/pulse8/pulse8-cec.c          |  2 ++
+ drivers/media/common/b2c2/Makefile                 |  4 ++--
+ drivers/media/common/saa7146/saa7146_fops.c        |  2 ++
+ drivers/media/common/saa7146/saa7146_vbi.c         |  3 +++
+ drivers/media/common/saa7146/saa7146_video.c       |  2 ++
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c      |  2 ++
+ drivers/media/common/videobuf2/frame_vector.c      |  5 +++--
+ drivers/media/common/videobuf2/videobuf2-memops.c  |  3 ++-
+ drivers/media/dvb-core/dmxdev.c                    |  2 ++
+ drivers/media/dvb-core/dvb_demux.c                 |  2 ++
+ drivers/media/dvb-core/dvb_net.c                   |  2 ++
+ drivers/media/dvb-frontends/cxd2820r_core.c        |  1 +
+ drivers/media/dvb-frontends/mn88443x.c             |  4 +++-
+ drivers/media/dvb-frontends/mn88472.c              |  2 ++
+ drivers/media/dvb-frontends/mn88473.c              |  2 ++
+ drivers/media/i2c/ad9389b.c                        |  2 ++
+ drivers/media/i2c/adv7180.c                        |  2 ++
+ drivers/media/i2c/adv7511-v4l2.c                   |  4 +++-
+ drivers/media/i2c/adv7604.c                        |  4 +++-
+ drivers/media/i2c/adv7842.c                        |  4 +++-
+ drivers/media/i2c/ak7375.c                         |  2 ++
+ drivers/media/i2c/ir-kbd-i2c.c                     |  2 ++
+ drivers/media/i2c/smiapp/smiapp.h                  |  2 +-
+ drivers/media/i2c/tc358743.c                       |  2 +-
+ drivers/media/i2c/tda1997x.c                       |  6 ++++--
+ drivers/media/i2c/tvaudio.c                        |  2 ++
+ drivers/media/media-device.c                       |  2 ++
+ drivers/media/mmc/siano/Makefile                   |  2 +-
+ drivers/media/pci/b2c2/Makefile                    |  2 +-
+ drivers/media/pci/bt8xx/Makefile                   |  4 ++--
+ drivers/media/pci/bt8xx/bttv-driver.c              |  2 ++
+ drivers/media/pci/bt8xx/bttv-input.c               |  1 +
+ drivers/media/pci/cx18/Makefile                    |  4 ++--
+ drivers/media/pci/cx18/cx18-fileops.c              |  2 ++
+ drivers/media/pci/cx18/cx18-streams.c              |  2 ++
+ drivers/media/pci/cx23885/Makefile                 |  4 ++--
+ drivers/media/pci/cx88/Makefile                    |  4 ++--
+ drivers/media/pci/ddbridge/Makefile                |  4 ++--
+ drivers/media/pci/ddbridge/ddbridge-core.c         |  2 ++
+ drivers/media/pci/dm1105/Makefile                  |  2 +-
+ drivers/media/pci/ivtv/ivtv-driver.c               |  2 ++
+ drivers/media/pci/ivtv/ivtv-irq.c                  |  2 ++
+ drivers/media/pci/mantis/Makefile                  |  2 +-
+ drivers/media/pci/netup_unidvb/Makefile            |  2 +-
+ drivers/media/pci/netup_unidvb/netup_unidvb_core.c |  2 ++
+ drivers/media/pci/ngene/Makefile                   |  4 ++--
+ drivers/media/pci/pluto2/Makefile                  |  2 +-
+ drivers/media/pci/pt1/Makefile                     |  4 ++--
+ drivers/media/pci/pt3/Makefile                     |  4 ++--
+ drivers/media/pci/saa7134/saa7134-core.c           |  2 ++
+ drivers/media/pci/saa7134/saa7134-input.c          |  2 ++
+ drivers/media/pci/saa7134/saa7134-ts.c             |  2 ++
+ drivers/media/pci/saa7134/saa7134-vbi.c            |  2 ++
+ drivers/media/pci/saa7134/saa7134-video.c          |  2 ++
+ drivers/media/pci/smipcie/Makefile                 |  4 ++--
+ drivers/media/pci/ttpci/Makefile                   |  6 +++---
+ drivers/media/pci/ttpci/av7110_ipack.c             |  1 +
+ drivers/media/pci/ttpci/av7110_ir.c                |  2 ++
+ drivers/media/pci/tw686x/tw686x-core.c             |  2 ++
+ drivers/media/platform/sti/c8sectpfe/Makefile      |  4 ++--
+ drivers/media/platform/vim2m.c                     |  2 ++
+ drivers/media/radio/radio-cadet.c                  |  2 ++
+ drivers/media/radio/wl128x/fmdrv_common.c          |  4 +++-
+ drivers/media/rc/Makefile                          |  2 +-
+ drivers/media/rc/ene_ir.c                          |  2 ++
+ drivers/media/rc/igorplugusb.c                     |  2 ++
+ drivers/media/rc/iguanair.c                        |  2 ++
+ drivers/media/rc/imon.c                            |  2 ++
+ drivers/media/rc/ir-mce_kbd-decoder.c              |  2 ++
+ drivers/media/rc/ir-rc6-decoder.c                  |  2 ++
+ drivers/media/rc/ir-sony-decoder.c                 |  2 ++
+ drivers/media/rc/keymaps/rc-imon-rsc.c             |  2 ++
+ drivers/media/rc/lirc_dev.c                        |  2 ++
+ drivers/media/rc/rc-ir-raw.c                       |  2 ++
+ drivers/media/rc/rc-main.c                         |  2 ++
+ drivers/media/rc/serial_ir.c                       |  2 ++
+ drivers/media/rc/sir_ir.c                          |  2 ++
+ drivers/media/spi/Makefile                         |  2 +-
+ drivers/media/test-drivers/vidtv/vidtv_psi.c       |  2 ++
+ drivers/media/test-drivers/vivid/vivid-vbi-gen.c   |  2 ++
+ drivers/media/usb/as102/Makefile                   |  2 +-
+ drivers/media/usb/au0828/Makefile                  |  4 ++--
+ drivers/media/usb/au0828/au0828-dvb.c              |  2 ++
+ drivers/media/usb/au0828/au0828-video.c            |  2 ++
+ drivers/media/usb/b2c2/Makefile                    |  2 +-
+ drivers/media/usb/cx231xx/Makefile                 |  4 ++--
+ drivers/media/usb/em28xx/Makefile                  |  4 ++--
+ drivers/media/usb/em28xx/em28xx-dvb.c              |  2 +-
+ drivers/media/usb/go7007/Makefile                  |  2 +-
+ drivers/media/usb/go7007/s2250-board.c             |  3 +++
+ drivers/media/usb/pvrusb2/Makefile                 |  4 ++--
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c            |  6 ++++++
+ drivers/media/usb/s2255/s2255drv.c                 |  2 ++
+ drivers/media/usb/siano/Makefile                   |  2 +-
+ drivers/media/usb/tm6000/Makefile                  |  4 ++--
+ drivers/media/usb/ttusb-budget/Makefile            |  2 +-
+ drivers/media/usb/uvc/uvc_driver.c                 |  2 ++
+ drivers/media/v4l2-core/v4l2-fwnode.c              |  2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c               |  2 ++
+ drivers/media/v4l2-core/videobuf-dma-sg.c          |  2 ++
+ drivers/staging/media/av7110/av7110.c              |  8 ++++----
+ drivers/staging/media/av7110/av7110.h              | 12 ++++++------
+ drivers/staging/media/av7110/av7110_ipack.c        |  1 +
+ drivers/staging/media/av7110/budget-patch.c        | 10 +++++-----
+ include/media/config-mycompat.h                    |  3 +++
+ include/media/i2c/saa6588.h                        |  2 ++
+ include/media/media-devnode.h                      |  2 ++
+ include/media/v4l2-ctrls.h                         |  2 ++
+ include/media/v4l2-dev.h                           |  5 ++++-
+ include/media/videobuf-core.h                      |  2 ++
+ include/media/videobuf2-core.h                     |  2 +-
+ 114 files changed, 235 insertions(+), 78 deletions(-)
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index c9acf752f..a580d3830 100644
@@ -232,7 +237,7 @@ index 7607b516a..302a5e6e1 100644
  const char * const tpg_pattern_strings[] = {
  	"75% Colorbar",
 diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
-index 706c34a16..90bdcd3f2 100644
+index 475bda5a1..dd0ed637c 100644
 --- a/drivers/media/common/videobuf2/frame_vector.c
 +++ b/drivers/media/common/videobuf2/frame_vector.c
 @@ -8,7 +8,8 @@
@@ -276,7 +281,7 @@ index 9dd6c2716..022f49169 100644
  		goto out_destroy;
  	/* We accept only complete set of PFNs */
 diff --git a/drivers/media/dvb-core/dmxdev.c b/drivers/media/dvb-core/dmxdev.c
-index 72d00e5c6..52be208ed 100644
+index b17526101..3b169636d 100644
 --- a/drivers/media/dvb-core/dmxdev.c
 +++ b/drivers/media/dvb-core/dmxdev.c
 @@ -31,6 +31,8 @@
@@ -302,10 +307,10 @@ index b7792796a..d14ef5d42 100644
  module_param(dvb_demux_tscheck, int, 0644);
  MODULE_PARM_DESC(dvb_demux_tscheck,
 diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
-index 08021c216..daf7da1c5 100644
+index e294d6d70..ac58a2025 100644
 --- a/drivers/media/dvb-core/dvb_net.c
 +++ b/drivers/media/dvb-core/dvb_net.c
-@@ -57,6 +57,8 @@
+@@ -58,6 +58,8 @@
  #include <media/dvb_demux.h>
  #include <media/dvb_net.h>
  
@@ -388,7 +393,7 @@ index 8679a44e6..d1bab562f 100644
  module_param(debug, int, 0644);
  MODULE_PARM_DESC(debug, "debug level (0-2)");
 diff --git a/drivers/media/i2c/adv7180.c b/drivers/media/i2c/adv7180.c
-index 44bb6fe85..7663fff79 100644
+index d9a99fcfa..4bdecdc81 100644
 --- a/drivers/media/i2c/adv7180.c
 +++ b/drivers/media/i2c/adv7180.c
 @@ -22,6 +22,8 @@
@@ -401,7 +406,7 @@ index 44bb6fe85..7663fff79 100644
  #define ADV7180_STD_AD_PAL_BG_NTSC_J_SECAM_PED		0x1
  #define ADV7180_STD_AD_PAL_N_NTSC_J_SECAM		0x2
 diff --git a/drivers/media/i2c/adv7511-v4l2.c b/drivers/media/i2c/adv7511-v4l2.c
-index 5fc6c06ed..af6ac0339 100644
+index 41f4e749a..4381d8382 100644
 --- a/drivers/media/i2c/adv7511-v4l2.c
 +++ b/drivers/media/i2c/adv7511-v4l2.c
 @@ -28,6 +28,8 @@
@@ -423,7 +428,7 @@ index 5fc6c06ed..af6ac0339 100644
  		return;
  	}
 diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
-index 3049aa2fd..54b6ba0ee 100644
+index 122e1fdcc..4d3d81826 100644
 --- a/drivers/media/i2c/adv7604.c
 +++ b/drivers/media/i2c/adv7604.c
 @@ -37,6 +37,8 @@
@@ -445,7 +450,7 @@ index 3049aa2fd..54b6ba0ee 100644
  			 adv76xx_cri[index].desc);
  		return -ENOENT;
 diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
-index ff10af757..ad494eb00 100644
+index 7f8acbdf0..e1c294318 100644
 --- a/drivers/media/i2c/adv7842.c
 +++ b/drivers/media/i2c/adv7842.c
 @@ -33,6 +33,8 @@
@@ -457,7 +462,7 @@ index ff10af757..ad494eb00 100644
  static int debug;
  module_param(debug, int, 0644);
  MODULE_PARM_DESC(debug, "debug level (0-2)");
-@@ -2576,7 +2578,7 @@ static void log_infoframe(struct v4l2_subdev *sd, const struct adv7842_cfg_read_
+@@ -2593,7 +2595,7 @@ static void log_infoframe(struct v4l2_subdev *sd, const struct adv7842_cfg_read_
  	for (i = 0; i < len; i++)
  		buffer[i + 3] = infoframe_read(sd, cri->payload_addr + i);
  
@@ -467,7 +472,7 @@ index ff10af757..ad494eb00 100644
  		return;
  	}
 diff --git a/drivers/media/i2c/ak7375.c b/drivers/media/i2c/ak7375.c
-index e1f94ee0f..0bbfee6ca 100644
+index 40b1a4aa8..e2b4ab6a7 100644
 --- a/drivers/media/i2c/ak7375.c
 +++ b/drivers/media/i2c/ak7375.c
 @@ -9,6 +9,8 @@
@@ -480,7 +485,7 @@ index e1f94ee0f..0bbfee6ca 100644
  /*
   * This sets the minimum granularity for the focus positions.
 diff --git a/drivers/media/i2c/ir-kbd-i2c.c b/drivers/media/i2c/ir-kbd-i2c.c
-index e8119ad0b..2964e83ff 100644
+index 923765924..4b1d41f86 100644
 --- a/drivers/media/i2c/ir-kbd-i2c.c
 +++ b/drivers/media/i2c/ir-kbd-i2c.c
 @@ -50,6 +50,8 @@
@@ -506,7 +511,7 @@ index e6a5ab402..3fe779a95 100644
  #include "smiapp-regs.h"
  #include "smiapp-quirk.h"
 diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 1b309bb74..5eb5bfc06 100644
+index 3205cd829..74a639950 100644
 --- a/drivers/media/i2c/tc358743.c
 +++ b/drivers/media/i2c/tc358743.c
 @@ -444,7 +444,7 @@ static void print_avi_infoframe(struct v4l2_subdev *sd)
@@ -519,7 +524,7 @@ index 1b309bb74..5eb5bfc06 100644
  		return;
  	}
 diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 03c1272fc..014e84ec8 100644
+index 605a66422..7bd4f67b8 100644
 --- a/drivers/media/i2c/tda1997x.c
 +++ b/drivers/media/i2c/tda1997x.c
 @@ -30,6 +30,8 @@
@@ -531,7 +536,7 @@ index 03c1272fc..014e84ec8 100644
  #include "tda1997x_regs.h"
  
  #define TDA1997X_MBUS_CODES	5
-@@ -1253,7 +1255,7 @@ tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+@@ -1254,7 +1256,7 @@ tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
  
  	/* read data */
  	len = io_readn(sd, addr, sizeof(buffer), buffer);
@@ -540,7 +545,7 @@ index 03c1272fc..014e84ec8 100644
  	if (err) {
  		v4l_err(state->client,
  			"failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
-@@ -1932,7 +1934,7 @@ static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
+@@ -1934,7 +1936,7 @@ static int tda1997x_log_infoframe(struct v4l2_subdev *sd, int addr)
  	/* read data */
  	len = io_readn(sd, addr, sizeof(buffer), buffer);
  	v4l2_dbg(1, debug, sd, "infoframe: addr=%d len=%d\n", addr, len);
@@ -608,7 +613,7 @@ index 69bc0d9c4..2c290ff93 100644
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
-index 094bc654a..ebfaa9da6 100644
+index d47fa4e5f..7b8fd91a0 100644
 --- a/drivers/media/pci/bt8xx/bttv-driver.c
 +++ b/drivers/media/pci/bt8xx/bttv-driver.c
 @@ -49,6 +49,8 @@
@@ -732,7 +737,7 @@ index bf804098e..04a580181 100644
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -Idrivers/media/dvb-frontends
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index c4a069b3b..362d159da 100644
+index 8ebc97ebf..a882cb6cd 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
@@ -837,7 +842,7 @@ index da6b265f4..de31f914e 100644
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index efb757d51..6624aecc0 100644
+index 96328b0af..cb4e24929 100644
 --- a/drivers/media/pci/saa7134/saa7134-core.c
 +++ b/drivers/media/pci/saa7134/saa7134-core.c
 @@ -23,6 +23,8 @@
@@ -889,7 +894,7 @@ index 3f0b0933e..a1f3cd407 100644
  
  static unsigned int vbi_debug;
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index 0f9d6b9ed..184e48849 100644
+index 374c8e108..8fa5fc38b 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -21,6 +21,8 @@
@@ -914,19 +919,21 @@ index 2426b7566..bb474df6b 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/pci/ttpci/Makefile b/drivers/media/pci/ttpci/Makefile
-index 9b44c479f..67ca60be7 100644
+index b0708f6e4..014a7b23d 100644
 --- a/drivers/media/pci/ttpci/Makefile
 +++ b/drivers/media/pci/ttpci/Makefile
-@@ -18,5 +18,5 @@ obj-$(CONFIG_DVB_BUDGET_CI) += budget-ci.o
- obj-$(CONFIG_DVB_BUDGET_PATCH) += budget-patch.o
- obj-$(CONFIG_DVB_AV7110) += dvb-ttpci.o
+@@ -8,6 +8,6 @@ obj-$(CONFIG_DVB_BUDGET) += budget.o
+ obj-$(CONFIG_DVB_BUDGET_AV) += budget-av.o
+ obj-$(CONFIG_DVB_BUDGET_CI) += budget-ci.o
  
 -ccflags-y += -I $(srctree)/drivers/media/dvb-frontends/
 -ccflags-y += -I $(srctree)/drivers/media/tuners
+-ccflags-y += -I $(srctree)/drivers/media/common
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends/
 +ccflags-y += -I$(srctree)/drivers/media/tuners
++ccflags-y += -I$(srctree)/drivers/media/common
 diff --git a/drivers/media/pci/ttpci/av7110_ipack.c b/drivers/media/pci/ttpci/av7110_ipack.c
-index 30330ed01..dbc5d770e 100644
+index 5aff26574..d94a511c8 100644
 --- a/drivers/media/pci/ttpci/av7110_ipack.c
 +++ b/drivers/media/pci/ttpci/av7110_ipack.c
 @@ -4,6 +4,7 @@
@@ -938,12 +945,12 @@ index 30330ed01..dbc5d770e 100644
  void av7110_ipack_reset(struct ipack *p)
  {
 diff --git a/drivers/media/pci/ttpci/av7110_ir.c b/drivers/media/pci/ttpci/av7110_ir.c
-index a851ba328..883c5d051 100644
+index ee414803e..c8954cbb1 100644
 --- a/drivers/media/pci/ttpci/av7110_ir.c
 +++ b/drivers/media/pci/ttpci/av7110_ir.c
-@@ -10,6 +10,8 @@
+@@ -26,6 +26,8 @@
  #include <linux/kernel.h>
- #include <media/rc-core.h>
+ #include <linux/bitops.h>
  
 +#include <media/compat.h>
 +
@@ -1023,8 +1030,21 @@ index c25a2ea13..989b0661c 100644
  		hdr->hdr = FM_PKT_LOGICAL_CHAN_NUMBER;	/* 0x08 */
  
  		/* 3 (fm_opcode,rd_wr,dlen) + payload len) */
+diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
+index 178e449c2..0db51fad2 100644
+--- a/drivers/media/rc/Makefile
++++ b/drivers/media/rc/Makefile
+@@ -5,7 +5,7 @@ obj-y += keymaps/
+ obj-$(CONFIG_RC_CORE) += rc-core.o
+ rc-core-y := rc-main.o rc-ir-raw.o
+ rc-core-$(CONFIG_LIRC) += lirc_dev.o
+-rc-core-$(CONFIG_MEDIA_CEC_RC) += rc-cec.o
++rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
+ rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
+ obj-$(CONFIG_IR_NEC_DECODER) += ir-nec-decoder.o
+ obj-$(CONFIG_IR_RC5_DECODER) += ir-rc5-decoder.o
 diff --git a/drivers/media/rc/ene_ir.c b/drivers/media/rc/ene_ir.c
-index cda9c6fac..edea9babf 100644
+index 05da41afe..7b707e1e3 100644
 --- a/drivers/media/rc/ene_ir.c
 +++ b/drivers/media/rc/ene_ir.c
 @@ -28,6 +28,8 @@
@@ -1063,7 +1083,7 @@ index 84949baf9..e1d4244d9 100644
  
  struct iguanair {
 diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index 892f20430..209bd92d5 100644
+index ccf821f03..364d8606f 100644
 --- a/drivers/media/rc/imon.c
 +++ b/drivers/media/rc/imon.c
 @@ -32,6 +32,8 @@
@@ -1128,7 +1148,7 @@ index 38787dd0e..4bb83ed01 100644
  // Note that this remote has a stick which its own IR protocol,
  // with 16 directions. This is supported by the imon_rsc BPF decoder
 diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
-index 4d97614b7..6d2174cff 100644
+index 5eac6a783..1d9e21563 100644
 --- a/drivers/media/rc/lirc_dev.c
 +++ b/drivers/media/rc/lirc_dev.c
 @@ -17,6 +17,8 @@
@@ -1154,7 +1174,7 @@ index c65bba4ec..d7d81a5be 100644
  static LIST_HEAD(ir_raw_client_list);
  
 diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index f7f6d33f3..f375c70da 100644
+index deb7965f6..b8be7a3bf 100644
 --- a/drivers/media/rc/rc-main.c
 +++ b/drivers/media/rc/rc-main.c
 @@ -18,6 +18,8 @@
@@ -1336,7 +1356,7 @@ index 712a3507f..b5d6a4a30 100644
 -ccflags-$(CONFIG_VIDEO_GO7007_LOADER:m=y) += -I $(srctree)/drivers/media/common
 +ccflags-$(CONFIG_VIDEO_GO7007_LOADER:m=y) += -I$(srctree)/drivers/media/common
 diff --git a/drivers/media/usb/go7007/s2250-board.c b/drivers/media/usb/go7007/s2250-board.c
-index b9e451246..d85d370ff 100644
+index c742cc88f..63e5e70db 100644
 --- a/drivers/media/usb/go7007/s2250-board.c
 +++ b/drivers/media/usb/go7007/s2250-board.c
 @@ -11,6 +11,9 @@
@@ -1362,7 +1382,7 @@ index 2e71afc4f..e58c48039 100644
 +ccflags-y += -I$(srctree)/drivers/media/tuners
 +ccflags-y += -I$(srctree)/drivers/media/dvb-frontends
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index f4a727918..df1c09f7a 100644
+index d38dee179..22a15c39e 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
 @@ -28,6 +28,8 @@
@@ -1405,7 +1425,7 @@ index f4a727918..df1c09f7a 100644
  		if (status < 0) {
  			pvr2_trace(PVR2_TRACE_ERROR_LEGS,
 diff --git a/drivers/media/usb/s2255/s2255drv.c b/drivers/media/usb/s2255/s2255drv.c
-index 4af55e247..3aa518c87 100644
+index 3b0e4ed75..0257a54b8 100644
 --- a/drivers/media/usb/s2255/s2255drv.c
 +++ b/drivers/media/usb/s2255/s2255drv.c
 @@ -40,6 +40,8 @@
@@ -1478,7 +1498,7 @@ index 32e0165a8..e737d99d9 100644
  	enum v4l2_fwnode_bus_type fwnode_bus_type;
  	enum v4l2_mbus_type mbus_type;
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index fb578aad5..468618fda 100644
+index b36fd9e78..f8997a102 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -30,6 +30,8 @@
@@ -1491,7 +1511,7 @@ index fb578aad5..468618fda 100644
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
 diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-index 0a2c9b218..97a9dbc16 100644
+index 0af7dcffa..b4766282a 100644
 --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
 +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
 @@ -31,6 +31,8 @@
@@ -1502,6 +1522,89 @@ index 0a2c9b218..97a9dbc16 100644
 +
  #define MAGIC_DMABUF 0x19721112
  #define MAGIC_SG_MEM 0x17890714
+ 
+diff --git a/drivers/staging/media/av7110/av7110.c b/drivers/staging/media/av7110/av7110.c
+index 919397d23..e78b88c80 100644
+--- a/drivers/staging/media/av7110/av7110.c
++++ b/drivers/staging/media/av7110/av7110.c
+@@ -41,16 +41,16 @@
+ 
+ #include <media/dvb_frontend.h>
+ 
+-#include "ttpci-eeprom.h"
++#include "../../../media/common/ttpci-eeprom.h"
+ #include "av7110.h"
+ #include "av7110_hw.h"
+ #include "av7110_av.h"
+ #include "av7110_ca.h"
+ #include "av7110_ipack.h"
+ 
+-#include "bsbe1.h"
+-#include "lnbp21.h"
+-#include "bsru6.h"
++#include "../../../media/dvb-frontends/bsbe1.h"
++#include "../../../media/dvb-frontends/lnbp21.h"
++#include "../../../media/dvb-frontends/bsru6.h"
+ 
+ #define TS_WIDTH  376
+ #define TS_HEIGHT 512
+diff --git a/drivers/staging/media/av7110/av7110.h b/drivers/staging/media/av7110/av7110.h
+index b8e8fc8dd..8392107c7 100644
+--- a/drivers/staging/media/av7110/av7110.h
++++ b/drivers/staging/media/av7110/av7110.h
+@@ -26,13 +26,13 @@
+ #include <media/dvb_net.h>
+ #include <media/dvb_ringbuffer.h>
+ #include <media/dvb_frontend.h>
+-#include "ves1820.h"
+-#include "ves1x93.h"
+-#include "stv0299.h"
+-#include "tda8083.h"
++#include "../../../media/dvb-frontends/ves1820.h"
++#include "../../../media/dvb-frontends/ves1x93.h"
++#include "../../../media/dvb-frontends/stv0299.h"
++#include "../../../media/dvb-frontends/tda8083.h"
+ #include "sp8870.h"
+-#include "stv0297.h"
+-#include "l64781.h"
++#include "../../../media/dvb-frontends/stv0297.h"
++#include "../../../media/dvb-frontends/l64781.h"
+ 
+ #include <media/drv-intf/saa7146_vv.h>
+ 
+diff --git a/drivers/staging/media/av7110/av7110_ipack.c b/drivers/staging/media/av7110/av7110_ipack.c
+index 30330ed01..dbc5d770e 100644
+--- a/drivers/staging/media/av7110/av7110_ipack.c
++++ b/drivers/staging/media/av7110/av7110_ipack.c
+@@ -4,6 +4,7 @@
+ #include <linux/string.h>	/* for memcpy() */
+ #include <linux/vmalloc.h>
+ 
++#include <media/compat.h>
+ 
+ void av7110_ipack_reset(struct ipack *p)
+ {
+diff --git a/drivers/staging/media/av7110/budget-patch.c b/drivers/staging/media/av7110/budget-patch.c
+index d173c8ade..73fee2641 100644
+--- a/drivers/staging/media/av7110/budget-patch.c
++++ b/drivers/staging/media/av7110/budget-patch.c
+@@ -15,12 +15,12 @@
+ 
+ #include "av7110.h"
+ #include "av7110_hw.h"
+-#include "budget.h"
+-#include "stv0299.h"
+-#include "ves1x93.h"
+-#include "tda8083.h"
++#include "../../../media/pci/ttpci/budget.h"
++#include "../../../media/dvb-frontends/stv0299.h"
++#include "../../../media/dvb-frontends/ves1x93.h"
++#include "../../../media/dvb-frontends/tda8083.h"
+ 
+-#include "bsru6.h"
++#include "../../../media/dvb-frontends/bsru6.h"
+ 
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
  
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
 index 76aaa0b26..d56501afe 100644
@@ -1541,11 +1644,11 @@ index d27c1c646..93ba87d07 100644
  
  /*
 diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index c1d20bd8f..b739ca07d 100644
+index 575b59fba..49dd4acfe 100644
 --- a/include/media/v4l2-ctrls.h
 +++ b/include/media/v4l2-ctrls.h
-@@ -20,6 +20,8 @@
- #include <media/mpeg2-ctrls.h>
+@@ -19,6 +19,8 @@
+  */
  #include <media/hevc-ctrls.h>
  
 +#include <media/compat.h>

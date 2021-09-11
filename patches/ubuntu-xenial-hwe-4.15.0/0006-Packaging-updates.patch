@@ -1,6 +1,6 @@
-From dc4a1d7af2dfcc9879c9f1e9fdde6ce98dfbc1d4 Mon Sep 17 00:00:00 2001
+From 0dac3716781c4b79000b099de9e7448f77d71070 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 5 Feb 2021 09:49:30 -0600
+Date: Fri, 10 Sep 2021 15:50:35 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -40,7 +40,7 @@ index c172159..6327273 100644
   DESC.
   .
 diff --git a/debian.hwe/control.stub.in b/debian.hwe/control.stub.in
-index a3ccde2..6be5c4a 100644
+index a3ccde2..3347a36 100644
 --- a/debian.hwe/control.stub.in
 +++ b/debian.hwe/control.stub.in
 @@ -1,7 +1,8 @@
@@ -48,7 +48,7 @@ index a3ccde2..6be5c4a 100644
  Section: devel
  Priority: optional
 -Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
-+Maintainer: Fake User <hidden@email.co>
++Maintainer: Brad Love <brad@nextdimension.cc>
 +XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:

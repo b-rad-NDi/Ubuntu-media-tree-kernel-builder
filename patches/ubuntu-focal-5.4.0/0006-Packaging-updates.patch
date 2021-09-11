@@ -1,11 +1,11 @@
-From 1426aaccb4da1dce9769631783853394b688aafa Mon Sep 17 00:00:00 2001
+From d48a69cab43bd932b159314e20ac24eefc4c0f81 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 18 Mar 2021 19:09:50 -0500
+Date: Thu, 26 Aug 2021 19:57:09 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
- debian.master/control.stub.in                | 61 --------------------
+ debian.master/control.stub.in                | 64 +-------------------
  debian.master/copyright                      | 22 +++++++
  debian.master/rules.d/amd64.mk               |  8 +--
  debian.master/rules.d/arm64.mk               |  2 +-
@@ -18,7 +18,7 @@ Subject: [PATCH 6/6] Packaging updates
  debian/rules.d/0-common-vars.mk              | 19 ++++--
  debian/rules.d/2-binary-arch.mk              |  4 ++
  debian/scripts/config-check                  |  2 +-
- 14 files changed, 54 insertions(+), 80 deletions(-)
+ 14 files changed, 56 insertions(+), 81 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 4ba31aa63..f0685937b 100644
@@ -43,10 +43,20 @@ index 4ba31aa63..f0685937b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 47ddd5418..ffbc73e34 100644
+index 47ddd5418..d3f1dc812 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
-@@ -54,30 +54,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
+@@ -1,7 +1,8 @@
+ Source: SRCPKGNAME
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Fake User <hidden@email.co>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper (>= 9),
+@@ -54,30 +55,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -77,7 +87,7 @@ index 47ddd5418..ffbc73e34 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -90,20 +66,6 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -90,20 +67,6 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -98,7 +108,7 @@ index 47ddd5418..ffbc73e34 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf arm64 ppc64el s390x
-@@ -117,17 +79,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -117,17 +80,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -116,7 +126,7 @@ index 47ddd5418..ffbc73e34 100644
  Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf
-@@ -140,15 +91,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -140,15 +92,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
  
@@ -163,7 +173,7 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index c201b5da0..679e7c09a 100644
+index 4672be7e1..bfbbe7e49 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -194,7 +204,7 @@ index c201b5da0..679e7c09a 100644
 +do_tools_common = false
  do_tools_acpidbg = true
  do_zfs		= true
- do_dkms_nvidia  = true
+ do_dkms_vbox    = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
 index 4c3e08cd1..053b6da62 100644
 --- a/debian.master/rules.d/arm64.mk

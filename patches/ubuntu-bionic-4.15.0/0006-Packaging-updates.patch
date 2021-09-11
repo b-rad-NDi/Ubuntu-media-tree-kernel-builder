@@ -1,6 +1,6 @@
-From ad14c7ace89dbffd25007dc2904ee87c155d7978 Mon Sep 17 00:00:00 2001
+From 787a0e3becaf45d3ba2add50ec3f8e9c7d83ecc2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 15:32:21 -0500
+Date: Fri, 10 Sep 2021 11:08:05 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -202,7 +202,7 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 6515b1331..3e9b51c5c 100644
+index 237130147..cad240706 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -233,7 +233,7 @@ index 6515b1331..3e9b51c5c 100644
 +do_tools_common = false
  do_tools_acpidbg = true
  do_zfs		= true
- do_dkms_nvidia  = true
+ do_dkms_wireguard = true
 diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
 index 61adfcbc7..e3b032425 100644
 --- a/debian.master/rules.d/i386.mk
@@ -284,7 +284,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 00a5348f1..eaf80c68b 100755
+index 73c0ee19a..180f1b938 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -354,10 +354,10 @@ index c9ffad08d..5d846aec3 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index a8a1b9f59..6add04d74 100644
+index db990d5be..be6195ef3 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -785,10 +785,14 @@ build-arch: $(build-arch-deps-true)
+@@ -794,10 +794,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

@@ -1,6 +1,6 @@
-From bc3b460f6fbd197814c4bb7d73ce1e63b679d935 Mon Sep 17 00:00:00 2001
+From c9d2686cf5203de130bbd5390c68609e9f3090e8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 15:40:44 -0500
+Date: Sat, 11 Sep 2021 10:55:31 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -10,13 +10,14 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/hid/hid-picolcd_cir.c                 |  1 +
  drivers/staging/most/video/video.c            |  4 +--
  .../bcm2835-camera/bcm2835-camera.c           |  2 +-
- drivers/usb/gadget/function/f_uvc.c           |  2 +-
+ drivers/usb/gadget/function/f_uvc.c           |  4 +--
+ drivers/usb/gadget/legacy/webcam.c            |  2 +-
  include/linux/dma-fence.h                     | 14 ++++-----
  include/linux/hdmi.h                          |  2 +-
  include/linux/mmc/sdio_ids.h                  |  5 +++
- include/linux/pci_ids.h                       |  4 +++
+ include/linux/pci_ids.h                       | 14 +++++++++
  sound/pci/bt87x.c                             | 31 +++++++++++++------
- 12 files changed, 70 insertions(+), 32 deletions(-)
+ 13 files changed, 82 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -87,10 +88,10 @@ index 84c6d4c91..2260bb084 100644
  		ret = -ENOMEM;
  		goto fail;
 diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index d90990b4e..f58b61f97 100644
+index 3d2f6c68b..a24db66af 100644
 --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
 +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -2762,8 +2762,12 @@ intel_hdmi_connector_register(struct drm_connector *connector)
+@@ -2766,8 +2766,12 @@ intel_hdmi_connector_register(struct drm_connector *connector)
  
  static void intel_hdmi_destroy(struct drm_connector *connector)
  {
@@ -105,7 +106,7 @@ index d90990b4e..f58b61f97 100644
  
  	intel_connector_destroy(connector);
  }
-@@ -3078,6 +3082,7 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
+@@ -3082,6 +3086,7 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
  	struct drm_device *dev = intel_encoder->base.dev;
  	struct drm_i915_private *dev_priv = to_i915(dev);
  	enum port port = intel_encoder->port;
@@ -113,7 +114,7 @@ index d90990b4e..f58b61f97 100644
  
  	DRM_DEBUG_KMS("Adding HDMI connector on port %c\n",
  		      port_name(port));
-@@ -3130,8 +3135,13 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
+@@ -3134,8 +3139,13 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
  		I915_WRITE(PEG_BAND_GAP_DATA, (temp & ~0xf) | 0xd);
  	}
  
@@ -177,7 +178,7 @@ index d4d1e44b1..c10c3b29c 100644
  	if (ret < 0)
  		return ret;
 diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index fb0a89268..0b9712616 100644
+index c03b67aab..6f1be40c3 100644
 --- a/drivers/usb/gadget/function/f_uvc.c
 +++ b/drivers/usb/gadget/function/f_uvc.c
 @@ -428,7 +428,7 @@ uvc_register_video(struct uvc_device *uvc)
@@ -189,6 +190,28 @@ index fb0a89268..0b9712616 100644
  	if (ret < 0)
  		return ret;
  
+@@ -822,7 +822,7 @@ static struct usb_function_instance *uvc_alloc_inst(void)
+ 	pd->bmControls[0]		= 1;
+ 	pd->bmControls[1]		= 0;
+ 	pd->iProcessing			= 0;
+-	pd->bmVideoStandards		= 0;
++//	pd->bmVideoStandards		= 0;
+ 
+ 	od = &opts->uvc_output_terminal;
+ 	od->bLength			= UVC_DT_OUTPUT_TERMINAL_SIZE;
+diff --git a/drivers/usb/gadget/legacy/webcam.c b/drivers/usb/gadget/legacy/webcam.c
+index 2c9eab2b8..c4a5156bc 100644
+--- a/drivers/usb/gadget/legacy/webcam.c
++++ b/drivers/usb/gadget/legacy/webcam.c
+@@ -125,7 +125,7 @@ static const struct uvc_processing_unit_descriptor uvc_processing = {
+ 	.bmControls[0]		= 1,
+ 	.bmControls[1]		= 0,
+ 	.iProcessing		= 0,
+-	.bmVideoStandards	= 0,
++//	.bmVideoStandards	= 0,
+ };
+ 
+ static const struct uvc_output_terminal_descriptor uvc_output_terminal = {
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
 index 3347c54f3..7108cda11 100644
 --- a/include/linux/dma-fence.h
@@ -227,7 +250,7 @@ index 3347c54f3..7108cda11 100644
  };
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59d6..183e9e369 100644
+index c8ec982ff..dbb431db4 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -270,10 +293,10 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index a76ccb697..8efd14bc9 100644
+index 4bac1831d..d2fed3d94 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1078,6 +1078,7 @@
+@@ -1081,6 +1081,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -281,7 +304,7 @@ index a76ccb697..8efd14bc9 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1346,6 +1347,7 @@
+@@ -1349,6 +1350,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -289,7 +312,31 @@ index a76ccb697..8efd14bc9 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3137,4 +3139,6 @@
+@@ -1693,6 +1695,14 @@
+ #define PCI_VENDOR_ID_RP		0x11fe
+ 
+ #define PCI_VENDOR_ID_CYCLADES		0x120e
++#define PCI_DEVICE_ID_CYCLOM_Y_Lo      0x0100
++#define PCI_DEVICE_ID_CYCLOM_Y_Hi      0x0101
++#define PCI_DEVICE_ID_CYCLOM_4Y_Lo     0x0102
++#define PCI_DEVICE_ID_CYCLOM_4Y_Hi     0x0103
++#define PCI_DEVICE_ID_CYCLOM_8Y_Lo     0x0104
++#define PCI_DEVICE_ID_CYCLOM_8Y_Hi     0x0105
++#define PCI_DEVICE_ID_CYCLOM_Z_Lo      0x0200
++#define PCI_DEVICE_ID_CYCLOM_Z_Hi      0x0201
+ #define PCI_DEVICE_ID_PC300_RX_2	0x0300
+ #define PCI_DEVICE_ID_PC300_RX_1	0x0301
+ #define PCI_DEVICE_ID_PC300_TE_2	0x0310
+@@ -2039,6 +2049,8 @@
+ #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
+ 
+ #define PCI_VENDOR_ID_MICROGATE		0x13c0
++#define PCI_DEVICE_ID_MICROGATE_USC    0x0010
++#define PCI_DEVICE_ID_MICROGATE_SCA    0x0030
+ 
+ #define PCI_VENDOR_ID_3WARE		0x13C1
+ #define PCI_DEVICE_ID_3WARE_1000	0x1000
+@@ -3109,4 +3121,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -297,10 +344,10 @@ index a76ccb697..8efd14bc9 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index cf9f8d80a..0d888d67e 100644
+index 39bcfb81e..c0dcd5a87 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
-@@ -150,7 +150,7 @@ struct snd_bt87x_board {
+@@ -148,7 +148,7 @@ struct snd_bt87x_board {
  	unsigned no_digital:1;	/* No digital input */
  };
  
@@ -309,7 +356,7 @@ index cf9f8d80a..0d888d67e 100644
  	[SND_BT87X_BOARD_UNKNOWN] = {
  		.dig_rate = 32000, /* just a guess */
  	},
-@@ -217,7 +217,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
+@@ -215,7 +215,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
  	__le32 *risc;
  
  	if (chip->dma_risc.area == NULL) {
@@ -318,7 +365,7 @@ index cf9f8d80a..0d888d67e 100644
  					PAGE_ALIGN(MAX_RISC_SIZE), &chip->dma_risc) < 0)
  			return -ENOMEM;
  	}
-@@ -271,8 +271,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
+@@ -269,8 +269,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
  
  static void snd_bt87x_pci_error(struct snd_bt87x *chip, unsigned int status)
  {
@@ -333,7 +380,7 @@ index cf9f8d80a..0d888d67e 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -446,7 +451,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -346,7 +393,7 @@ index cf9f8d80a..0d888d67e 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -457,6 +467,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -354,7 +401,7 @@ index cf9f8d80a..0d888d67e 100644
  	return 0;
  }
  
-@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -527,11 +538,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -368,7 +415,7 @@ index cf9f8d80a..0d888d67e 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -686,10 +699,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -383,7 +430,7 @@ index cf9f8d80a..0d888d67e 100644
  	return 0;
  }
  
-@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -699,7 +712,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -392,7 +439,7 @@ index cf9f8d80a..0d888d67e 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;

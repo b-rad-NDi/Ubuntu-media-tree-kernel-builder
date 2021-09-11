@@ -1,6 +1,6 @@
-From ffc73fea60cd72c88ad6115bc157b6803a5ff76b Mon Sep 17 00:00:00 2001
+From 31d1697fccd54191fe593f274f3daac002073d47 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 15:42:51 -0500
+Date: Thu, 9 Sep 2021 13:31:46 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH 5/6] Add new media tree kernel config
  1 file changed, 37 insertions(+), 3 deletions(-)
 
 diff --git a/debian.hwe-5.4/config/config.common.ubuntu b/debian.hwe-5.4/config/config.common.ubuntu
-index 6120d7cafec0..dcdd13d0d675 100644
+index 02c109864fec..83436931f312 100644
 --- a/debian.hwe-5.4/config/config.common.ubuntu
 +++ b/debian.hwe-5.4/config/config.common.ubuntu
 @@ -2804,7 +2804,7 @@ CONFIG_DVB_LNBP22=m
@@ -29,7 +29,7 @@ index 6120d7cafec0..dcdd13d0d675 100644
  CONFIG_INTEL_BXTWC_PMIC_TMU=m
  CONFIG_INTEL_BXT_PMIC_THERMAL=m
  CONFIG_INTEL_CHTDC_TI_PWRBTN=m
-@@ -11099,7 +11099,7 @@ CONFIG_VIDEO_OV7251=m
+@@ -11100,7 +11100,7 @@ CONFIG_VIDEO_OV7251=m
  CONFIG_VIDEO_OV7640=m
  CONFIG_VIDEO_OV7670=m
  CONFIG_VIDEO_OV772X=m
@@ -38,7 +38,7 @@ index 6120d7cafec0..dcdd13d0d675 100644
  CONFIG_VIDEO_OV8856=m
  CONFIG_VIDEO_OV9640=m
  CONFIG_VIDEO_OV9650=m
-@@ -11636,3 +11636,37 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11637,3 +11637,37 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -75,7 +75,7 @@ index 6120d7cafec0..dcdd13d0d675 100644
 +# CONFIG_VIDEO_OV9734 is not set
 +# CONFIG_VIDEO_RDACM21 is not set
 +# CONFIG_VIDEO_CCS is not set
-+
++CONFIG_VIDEO_IMX208=m
 -- 
 2.17.1
 

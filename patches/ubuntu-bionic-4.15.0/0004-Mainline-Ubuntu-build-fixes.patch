@@ -1,6 +1,6 @@
-From 6322a3fc25f8b722f5f6e63c3ff999bf474dfdac Mon Sep 17 00:00:00 2001
+From 3181f894130f9931208a7b2b9ccd04acead69331 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 14 Apr 2021 15:31:54 -0500
+Date: Fri, 10 Sep 2021 11:07:15 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -9,9 +9,9 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  fs/compat_ioctl.c                       | 42 ++-----------------------
  include/linux/hdmi.h                    |  7 ++---
  include/linux/mmc/sdio_ids.h            |  7 +++++
- include/linux/pci_ids.h                 |  4 +++
+ include/linux/pci_ids.h                 | 14 +++++++++
  sound/pci/bt87x.c                       | 31 ++++++++++++------
- 7 files changed, 41 insertions(+), 56 deletions(-)
+ 7 files changed, 51 insertions(+), 56 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 32747b7f9..1d42112d3 100644
@@ -139,7 +139,7 @@ index c738ae525..283ef4483 100644
  
  	/*
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59d6..c6d5b79ec 100644
+index c8ec982ff..a722fa6e1 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -203,10 +203,10 @@ index 120366193..4b44f2a9b 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index a76ccb697..3446eb92f 100644
+index 4bac1831d..22523a1be 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1078,6 +1078,7 @@
+@@ -1081,6 +1081,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -214,7 +214,7 @@ index a76ccb697..3446eb92f 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1346,6 +1347,7 @@
+@@ -1349,6 +1350,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -222,7 +222,31 @@ index a76ccb697..3446eb92f 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3137,4 +3139,6 @@
+@@ -1693,6 +1695,14 @@
+ #define PCI_VENDOR_ID_RP		0x11fe
+ 
+ #define PCI_VENDOR_ID_CYCLADES		0x120e
++#define PCI_DEVICE_ID_CYCLOM_Y_Lo      0x0100
++#define PCI_DEVICE_ID_CYCLOM_Y_Hi      0x0101
++#define PCI_DEVICE_ID_CYCLOM_4Y_Lo     0x0102
++#define PCI_DEVICE_ID_CYCLOM_4Y_Hi     0x0103
++#define PCI_DEVICE_ID_CYCLOM_8Y_Lo     0x0104
++#define PCI_DEVICE_ID_CYCLOM_8Y_Hi     0x0105
++#define PCI_DEVICE_ID_CYCLOM_Z_Lo      0x0200
++#define PCI_DEVICE_ID_CYCLOM_Z_Hi      0x0201
+ #define PCI_DEVICE_ID_PC300_RX_2	0x0300
+ #define PCI_DEVICE_ID_PC300_RX_1	0x0301
+ #define PCI_DEVICE_ID_PC300_TE_2	0x0310
+@@ -2039,6 +2049,8 @@
+ #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
+ 
+ #define PCI_VENDOR_ID_MICROGATE		0x13c0
++#define PCI_DEVICE_ID_MICROGATE_USC    0x0010
++#define PCI_DEVICE_ID_MICROGATE_SCA    0x0030
+ 
+ #define PCI_VENDOR_ID_3WARE		0x13C1
+ #define PCI_DEVICE_ID_3WARE_1000	0x1000
+@@ -3109,4 +3121,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -230,10 +254,10 @@ index a76ccb697..3446eb92f 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index cf9f8d80a..0d888d67e 100644
+index 39bcfb81e..c0dcd5a87 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
-@@ -150,7 +150,7 @@ struct snd_bt87x_board {
+@@ -148,7 +148,7 @@ struct snd_bt87x_board {
  	unsigned no_digital:1;	/* No digital input */
  };
  
@@ -242,7 +266,7 @@ index cf9f8d80a..0d888d67e 100644
  	[SND_BT87X_BOARD_UNKNOWN] = {
  		.dig_rate = 32000, /* just a guess */
  	},
-@@ -217,7 +217,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
+@@ -215,7 +215,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
  	__le32 *risc;
  
  	if (chip->dma_risc.area == NULL) {
@@ -251,7 +275,7 @@ index cf9f8d80a..0d888d67e 100644
  					PAGE_ALIGN(MAX_RISC_SIZE), &chip->dma_risc) < 0)
  			return -ENOMEM;
  	}
-@@ -271,8 +271,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
+@@ -269,8 +269,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
  
  static void snd_bt87x_pci_error(struct snd_bt87x *chip, unsigned int status)
  {
@@ -266,7 +290,7 @@ index cf9f8d80a..0d888d67e 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -448,7 +453,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -446,7 +451,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -279,7 +303,7 @@ index cf9f8d80a..0d888d67e 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -459,6 +469,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -457,6 +467,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -287,7 +311,7 @@ index cf9f8d80a..0d888d67e 100644
  	return 0;
  }
  
-@@ -529,11 +540,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -527,11 +538,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -301,7 +325,7 @@ index cf9f8d80a..0d888d67e 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -688,10 +701,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -686,10 +699,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -316,7 +340,7 @@ index cf9f8d80a..0d888d67e 100644
  	return 0;
  }
  
-@@ -701,7 +714,7 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -699,7 +712,7 @@ static int snd_bt87x_create(struct snd_card *card,
  {
  	struct snd_bt87x *chip;
  	int err;
@@ -325,7 +349,7 @@ index cf9f8d80a..0d888d67e 100644
  		.dev_free = snd_bt87x_dev_free
  	};
  
-@@ -747,8 +760,8 @@ static int snd_bt87x_create(struct snd_card *card,
+@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
  		goto fail;
  	}
  	chip->irq = pci->irq;
