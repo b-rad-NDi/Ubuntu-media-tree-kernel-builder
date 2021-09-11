@@ -1,0 +1,142 @@
+From ee84eefbe4d327c48f9681fb034ce6ac0fef0222 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Sat, 11 Sep 2021 10:40:28 -0500
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ drivers/media/cec/core/cec-api.c                               | 2 ++
+ drivers/media/common/videobuf2/Makefile                        | 2 +-
+ drivers/media/common/videobuf2/videobuf2-memops.c              | 3 ++-
+ drivers/media/mc/mc-device.c                                   | 2 ++
+ drivers/media/rc/Makefile                                      | 2 +-
+ drivers/media/usb/em28xx/em28xx-dvb.c                          | 2 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c                           | 2 ++
+ .../media/atomisp/pci/hive_isp_css_common/host/input_system.c  | 1 +
+ include/media/videobuf2-core.h                                 | 1 -
+ 9 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index d7c3933b7..70c4120cd 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -22,6 +22,8 @@
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+ 
++#include <media/compat.h>
++
+ static inline struct cec_devnode *cec_devnode_data(struct file *filp)
+ {
+ 	struct cec_fh *fh = filp->private_data;
+diff --git a/drivers/media/common/videobuf2/Makefile b/drivers/media/common/videobuf2/Makefile
+index 54306f8d0..9edaeaca5 100644
+--- a/drivers/media/common/videobuf2/Makefile
++++ b/drivers/media/common/videobuf2/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ videobuf2-common-objs := videobuf2-core.o
+-videobuf2-common-objs += frame_vector.o
++#videobuf2-common-objs += frame_vector.o
+ 
+ ifeq ($(CONFIG_TRACEPOINTS),y)
+   videobuf2-common-objs += vb2-trace.o
+diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
+index 9dd6c2716..022f49169 100644
+--- a/drivers/media/common/videobuf2/videobuf2-memops.c
++++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+@@ -40,6 +40,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	unsigned long first, last;
+ 	unsigned long nr;
+ 	struct frame_vector *vec;
++	unsigned int flags = FOLL_FORCE;
+ 
+ 	first = start >> PAGE_SHIFT;
+ 	last = (start + length - 1) >> PAGE_SHIFT;
+@@ -47,7 +48,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	vec = frame_vector_create(nr);
+ 	if (!vec)
+ 		return ERR_PTR(-ENOMEM);
+-	ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
++	ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
+ 	if (ret < 0)
+ 		goto out_destroy;
+ 	/* We accept only complete set of PFNs */
+diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
+index 8a30cfca3..979310632 100644
+--- a/drivers/media/mc/mc-device.c
++++ b/drivers/media/mc/mc-device.c
+@@ -24,6 +24,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
+index 178e449c2..0db51fad2 100644
+--- a/drivers/media/rc/Makefile
++++ b/drivers/media/rc/Makefile
+@@ -5,7 +5,7 @@ obj-y += keymaps/
+ obj-$(CONFIG_RC_CORE) += rc-core.o
+ rc-core-y := rc-main.o rc-ir-raw.o
+ rc-core-$(CONFIG_LIRC) += lirc_dev.o
+-rc-core-$(CONFIG_MEDIA_CEC_RC) += rc-cec.o
++rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
+ rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
+ obj-$(CONFIG_IR_NEC_DECODER) += ir-nec-decoder.o
+ obj-$(CONFIG_IR_RC5_DECODER) += ir-rc5-decoder.o
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 9530c41c4..fed16bcb2 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 73fdd1306..4dadf559f 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -30,6 +30,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+index 8e085dda0..5d088d6fb 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+@@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_channel_sensor(
+ 	default:
+ 		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+ 	}
++	return status;
+ }
+ 
+ // Test flags and set structure.
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 12955cb46..cc3b01bd4 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -18,7 +18,6 @@
+ #include <linux/dma-buf.h>
+ #include <linux/bitops.h>
+ #include <media/media-request.h>
+-#include <media/frame_vector.h>
+ 
+ #define VB2_MAX_FRAME	(32)
+ #define VB2_MAX_PLANES	(8)
+-- 
+2.25.1
+
