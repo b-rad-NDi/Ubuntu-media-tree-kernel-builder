@@ -1,4 +1,4 @@
-From 2f7d494e77ec6623ba2882ffe683f5084544d9b3 Mon Sep 17 00:00:00 2001
+From a9a09bf179f5631775b95d2e4e9108a3c4516626 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 28 Oct 2021 14:32:59 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -280,7 +280,7 @@ index 737da1063..af8b9f361 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 3f045aa4d..c1bc90d54 100644
+index 78f8a0f16..68fa1b464 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -43,6 +43,15 @@ family=ubuntu

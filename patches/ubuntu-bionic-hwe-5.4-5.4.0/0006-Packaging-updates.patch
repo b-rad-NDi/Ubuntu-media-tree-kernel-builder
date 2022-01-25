@@ -1,6 +1,6 @@
-From e062a740d36a9d28607985477fe1b0a5923b8545 Mon Sep 17 00:00:00 2001
+From 72f0680e09a11386610ceb828fb0073e8878a1a7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 9 Sep 2021 13:31:53 -0500
+Date: Mon, 1 Nov 2021 14:46:56 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -155,7 +155,7 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe-5.4/rules.d/amd64.mk b/debian.hwe-5.4/rules.d/amd64.mk
-index 273332386d7c..3239de17ad69 100644
+index 4672be7e15e5..bfbbe7e49471 100644
 --- a/debian.hwe-5.4/rules.d/amd64.mk
 +++ b/debian.hwe-5.4/rules.d/amd64.mk
 @@ -2,14 +2,14 @@ human_arch	= 64 bit x86
@@ -186,7 +186,7 @@ index 273332386d7c..3239de17ad69 100644
 +do_tools_common = false
  do_tools_acpidbg = true
  do_zfs		= true
- do_dkms_vbox    = false
+ do_dkms_vbox    = true
 diff --git a/debian.hwe-5.4/rules.d/arm64.mk b/debian.hwe-5.4/rules.d/arm64.mk
 index 4c3e08cd1bd9..053b6da624ab 100644
 --- a/debian.hwe-5.4/rules.d/arm64.mk
@@ -276,7 +276,7 @@ index f8d53afa2890..92af72be0fd8 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index b71546ab03a0..171eff24c1e5 100644
+index b53af89388d8..d62d17dbfb8c 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu

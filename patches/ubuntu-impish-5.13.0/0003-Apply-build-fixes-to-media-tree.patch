@@ -1,4 +1,4 @@
-From ddc9de791fd66657f77e4abf0b33a055e516cf6b Mon Sep 17 00:00:00 2001
+From b2d3d3728f569aefa9424c98aa7c012e852cf4fc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 28 Oct 2021 18:25:21 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree

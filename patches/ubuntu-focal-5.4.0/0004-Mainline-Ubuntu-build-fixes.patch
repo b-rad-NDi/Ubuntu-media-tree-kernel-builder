@@ -1,6 +1,6 @@
-From c9d2686cf5203de130bbd5390c68609e9f3090e8 Mon Sep 17 00:00:00 2001
+From 50098294783c367e1b9876ef5c5c1582941e69fe Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Sat, 11 Sep 2021 10:55:31 -0500
+Date: Fri, 21 Jan 2022 10:39:00 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -15,9 +15,9 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-fence.h                     | 14 ++++-----
  include/linux/hdmi.h                          |  2 +-
  include/linux/mmc/sdio_ids.h                  |  5 +++
- include/linux/pci_ids.h                       | 14 +++++++++
+ include/linux/pci_ids.h                       | 15 +++++++++
  sound/pci/bt87x.c                             | 31 +++++++++++++------
- 13 files changed, 82 insertions(+), 34 deletions(-)
+ 13 files changed, 83 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -293,7 +293,7 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 4bac1831d..d2fed3d94 100644
+index 4bac1831d..e3a41489f 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -1081,6 +1081,7 @@
@@ -336,7 +336,15 @@ index 4bac1831d..d2fed3d94 100644
  
  #define PCI_VENDOR_ID_3WARE		0x13C1
  #define PCI_DEVICE_ID_3WARE_1000	0x1000
-@@ -3109,4 +3121,6 @@
+@@ -2451,6 +2463,7 @@
+ #define PCI_VENDOR_ID_TDI               0x192E
+ #define PCI_DEVICE_ID_TDI_EHCI          0x0101
+ 
++#define PCI_VENDOR_ID_NXP		0x1957  /* duplicate: FREESCALE */
+ #define PCI_VENDOR_ID_FREESCALE		0x1957
+ #define PCI_DEVICE_ID_MPC8308		0xc006
+ #define PCI_DEVICE_ID_MPC8315E		0x00b4
+@@ -3109,4 +3122,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
