@@ -1,6 +1,6 @@
-From 3dfd83d03fa9c77bcf3fc60d1834b6b583ed80c9 Mon Sep 17 00:00:00 2001
+From e01ba667ce91320fff0eb8808d00d5313a41026c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 9 Sep 2021 09:09:09 -0500
+Date: Thu, 20 Jan 2022 12:50:37 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 880c289d8..1b44329e9 100644
+index 498727105..047b2f255 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (5.4.0-802109090909.1+mediatree+hauppauge) focal; urgency=low
++linux (5.4.0-962201191901.1+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-80.90 rev cb120794b6e994c230000e2744b4a8bc29689b89
++    - 5.4.0-96.109 rev cacce8b48341da4472b0e5d2d90e07befa1926db
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
@@ -40,11 +40,11 @@ index 880c289d8..1b44329e9 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 09 Sep 2021 09:09:09 -0500
++ -- Fake User <hidden@email.co>  Wed, 19 Jan 2022 19:01:00 -0600
 +
- linux (5.4.0-80.90) focal; urgency=medium
+ linux (5.4.0-96.109) focal; urgency=medium
  
-   * CVE-2021-33909
+   * Support builtin revoked certificates (LP: #1932029)
 -- 
 2.25.1
 
