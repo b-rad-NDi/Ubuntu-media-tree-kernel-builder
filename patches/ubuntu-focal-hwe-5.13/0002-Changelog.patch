@@ -1,0 +1,50 @@
+From 6653cd6b301e28d2c2914e0d1026dbad655e036d Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Thu, 20 Jan 2022 11:58:29 -0600
+Subject: [PATCH 2/6] Changelog
+
+---
+ debian.hwe-5.13/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/debian.hwe-5.13/changelog b/debian.hwe-5.13/changelog
+index bf96294bfdb5..d8c0f643b17a 100644
+--- a/debian.hwe-5.13/changelog
++++ b/debian.hwe-5.13/changelog
+@@ -1,3 +1,33 @@
++linux-hwe (5.13.0-272201191901.0+mediatree+hauppauge~hwe) focal; urgency=low
++
++  * Ubuntu-hwe-5.13 kernel git clone
++    - 5.13.0-27.29 rev d7f158c8d0885e5db4656e08c876f19ab0a737d2
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
++    - 0002-Changelog.patch
++    - 0003-Apply-build-fixes-to-media-tree.patch
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++    - 0005-Add-new-media-tree-kernel-config.patch
++    - 0006-Packaging-updates.patch
++
++  * Additional patches
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
++    --- 0004-si2168-different-default-that-windows-driver.patch
++    --- 0005-dw2102-check-initialization-replies.patch
++    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
++    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
++    --- 0008-Fix-saa7164-REV2-firmware.patch
++    - 11.cx23885.patches
++    --- 0002-cx23885-module-option-to-disable-analog-video.patch
++    - 20.missing.stat.bits
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++
++ -- Fake User <hidden@email.co>  Wed, 19 Jan 2022 19:01:00 -0600
++
+ linux-hwe-5.13 (5.13.0-27.29~20.04.1) focal; urgency=medium
+ 
+   * Packaging resync (LP: #1786013)
+-- 
+2.25.1
+
