@@ -1,3 +1,7 @@
+0.2.1
+  * Ubuntu 21.10 Impish support
+  * New Ubuntu revisions
+
 0.2.0
   * New Ubuntu revisions
   * Fix 5.11 builds
