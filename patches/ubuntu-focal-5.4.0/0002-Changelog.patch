@@ -1,6 +1,6 @@
-From e01ba667ce91320fff0eb8808d00d5313a41026c Mon Sep 17 00:00:00 2001
+From 492fd23cd23a198e3c7281e87222754e89c9e6be Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jan 2022 12:50:37 -0600
+Date: Wed, 2 Feb 2022 20:22:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 498727105..047b2f255 100644
+index 498727105..7d3314d94 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (5.4.0-962201191901.1+mediatree+hauppauge) focal; urgency=low
++linux (5.4.0-962202022022.0+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 5.4.0-96.109 rev cacce8b48341da4472b0e5d2d90e07befa1926db
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
++    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -40,7 +40,7 @@ index 498727105..047b2f255 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 19 Jan 2022 19:01:00 -0600
++ -- Fake User <hidden@email.co>  Wed, 02 Feb 2022 20:22:00 -0600
 +
  linux (5.4.0-96.109) focal; urgency=medium
  

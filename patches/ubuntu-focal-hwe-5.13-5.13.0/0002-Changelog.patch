@@ -1,6 +1,6 @@
-From 6653cd6b301e28d2c2914e0d1026dbad655e036d Mon Sep 17 00:00:00 2001
+From dd7507f732ffbaee0472225397497d1dcda8fd0e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 20 Jan 2022 11:58:29 -0600
+Date: Wed, 2 Feb 2022 20:22:00 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,17 +8,17 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.hwe-5.13/changelog b/debian.hwe-5.13/changelog
-index bf96294bfdb5..d8c0f643b17a 100644
+index bf96294bfdb5..16d92a19e067 100644
 --- a/debian.hwe-5.13/changelog
 +++ b/debian.hwe-5.13/changelog
 @@ -1,3 +1,33 @@
-+linux-hwe (5.13.0-272201191901.0+mediatree+hauppauge~hwe) focal; urgency=low
++linux-hwe (5.13.0-272202022022.0+mediatree+hauppauge~hwe) focal; urgency=low
 +
 +  * Ubuntu-hwe-5.13 kernel git clone
 +    - 5.13.0-27.29 rev d7f158c8d0885e5db4656e08c876f19ab0a737d2
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2021-09-09-09-09.patch
++    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -40,7 +40,7 @@ index bf96294bfdb5..d8c0f643b17a 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 19 Jan 2022 19:01:00 -0600
++ -- Fake User <hidden@email.co>  Wed, 02 Feb 2022 20:22:00 -0600
 +
  linux-hwe-5.13 (5.13.0-27.29~20.04.1) focal; urgency=medium
  
