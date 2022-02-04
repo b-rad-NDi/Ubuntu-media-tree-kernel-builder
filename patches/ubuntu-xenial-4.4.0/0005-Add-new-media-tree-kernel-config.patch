@@ -1,14 +1,14 @@
-From 6fdfa1f8dae27399515e96405a96929797acf410 Mon Sep 17 00:00:00 2001
+From e02188e00ef7c85f9947f4e130f26e13766f07d4 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 10 Sep 2021 18:18:37 -0500
+Date: Wed, 2 Feb 2022 12:04:36 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 180 +++++++++++++++++++++++++++---
- 1 file changed, 167 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 184 +++++++++++++++++++++++++++---
+ 1 file changed, 171 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 2f3c1a0..1610b2f 100644
+index 2f3c1a0..19e84d8 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2060,7 +2060,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -72,7 +72,7 @@ index 2f3c1a0..1610b2f 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9143,3 +9136,164 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9143,3 +9136,168 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -98,7 +98,7 @@ index 2f3c1a0..1610b2f 100644
 +CONFIG_VIDEO_VIVID_CEC=y
 +# CONFIG_INTEL_ATOMISP is not set
 +# CONFIG_VIDEO_ATOMISP is not set
-+CONFIG_VIDEO_OV5693=m
++# CONFIG_VIDEO_OV5693 is not set
 +CONFIG_VIDEO_OV2722=m
 +CONFIG_VIDEO_GC2235=m
 +CONFIG_VIDEO_OV8858=m
@@ -237,6 +237,10 @@ index 2f3c1a0..1610b2f 100644
 +# CONFIG_VIDEO_RDACM21 is not set
 +# CONFIG_VIDEO_CCS is not set
 +# CONFIG_VIDEO_IMX208 is not set
++# CONFIG_VIDEO_HI846 is not set
++# CONFIG_VIDEO_OV13B10 is not set
++# CONFIG_VIDEO_ZORAN_DC30 is not set
++# CONFIG_VIDEO_ZORAN_ZR36060 is not set
 -- 
 2.7.4
 
