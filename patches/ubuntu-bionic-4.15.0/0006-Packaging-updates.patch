@@ -1,4 +1,4 @@
-From 787a0e3becaf45d3ba2add50ec3f8e9c7d83ecc2 Mon Sep 17 00:00:00 2001
+From 949cc0b5fc09ae44eadd7329c6e7f58b0feff4c1 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 10 Sep 2021 11:08:05 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -284,7 +284,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 73c0ee19a..180f1b938 100755
+index ca87ccf8f..1ee630cd8 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -297,7 +297,7 @@ index 73c0ee19a..180f1b938 100755
  do_tools_perf_jvmti?=false
  
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index c9ffad08d..5d846aec3 100644
+index ed8a4a360..f91a93d94 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -33,6 +33,15 @@ family=ubuntu
