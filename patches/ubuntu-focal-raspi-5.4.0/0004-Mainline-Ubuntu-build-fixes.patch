@@ -1,26 +1,25 @@
-From aa6a3b9c5019667b7d43d8f797b5f87da2c16dfa Mon Sep 17 00:00:00 2001
+From dd5d440846765747ecdd31f8f293705dc8652878 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 6 Jan 2021 15:28:58 -0600
+Date: Mon, 7 Mar 2022 11:05:57 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c |  4 +--
- drivers/gpu/drm/i2c/tda9950.c                 | 11 ++++---
- drivers/gpu/drm/i2c/tda998x_drv.c             |  8 +++--
- drivers/gpu/drm/i915/display/intel_hdmi.c     | 18 ++++++++---
- drivers/hid/hid-picolcd_cir.c                 |  1 +
- drivers/staging/most/video/video.c            |  4 +--
- .../bcm2835-camera/bcm2835-camera.c           |  2 +-
- .../bcm2835-codec/bcm2835-v4l2-codec.c        |  4 +++
- .../bcm2835-isp/bcm2835_isp_fmts.h            |  2 ++
- drivers/usb/gadget/function/f_uvc.c           |  2 +-
- include/linux/dma-buf.h                       |  1 +
- include/linux/dma-fence.h                     | 14 ++++-----
- include/linux/hdmi.h                          |  2 +-
- include/linux/mmc/sdio_ids.h                  |  5 +++
- include/linux/pci_ids.h                       |  4 +++
- sound/pci/bt87x.c                             | 31 +++++++++++++------
- 16 files changed, 79 insertions(+), 34 deletions(-)
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c |   4 +-
+ drivers/gpu/drm/i2c/tda9950.c                 |  11 +-
+ drivers/gpu/drm/i2c/tda998x_drv.c             |   8 +-
+ drivers/gpu/drm/i915/display/intel_hdmi.c     |  18 ++-
+ drivers/hid/hid-picolcd_cir.c                 |   1 +
+ drivers/staging/most/video/video.c            |   4 +-
+ .../bcm2835-camera/bcm2835-camera.c           |   2 +-
+ .../bcm2835-codec/bcm2835-v4l2-codec.c        |   4 +
+ .../bcm2835-isp/bcm2835_isp_fmts.h            |   2 +
+ drivers/usb/gadget/function/f_uvc.c           |   2 +-
+ include/linux/dma-fence.h                     |  14 +-
+ include/linux/hdmi.h                          |   2 +-
+ include/linux/mmc/sdio_ids.h                  |   5 +
+ include/linux/pci_ids.h                       |   4 +
+ sound/pci/bt87x.c                             | 143 +++++++++++++-----
+ 15 files changed, 158 insertions(+), 66 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
 index ac1e001d0..70ab4fbdc 100644
@@ -113,10 +112,10 @@ index 84c6d4c91..2260bb084 100644
  		ret = -ENOMEM;
  		goto fail;
 diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index d90990b4e..f58b61f97 100644
+index 3d2f6c68b..a24db66af 100644
 --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
 +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -2762,8 +2762,12 @@ intel_hdmi_connector_register(struct drm_connector *connector)
+@@ -2766,8 +2766,12 @@ intel_hdmi_connector_register(struct drm_connector *connector)
  
  static void intel_hdmi_destroy(struct drm_connector *connector)
  {
@@ -131,7 +130,7 @@ index d90990b4e..f58b61f97 100644
  
  	intel_connector_destroy(connector);
  }
-@@ -3078,6 +3082,7 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
+@@ -3082,6 +3086,7 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
  	struct drm_device *dev = intel_encoder->base.dev;
  	struct drm_i915_private *dev_priv = to_i915(dev);
  	enum port port = intel_encoder->port;
@@ -139,7 +138,7 @@ index d90990b4e..f58b61f97 100644
  
  	DRM_DEBUG_KMS("Adding HDMI connector on port %c\n",
  		      port_name(port));
-@@ -3130,8 +3135,13 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
+@@ -3134,8 +3139,13 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
  		I915_WRITE(PEG_BAND_GAP_DATA, (temp & ~0xf) | 0xd);
  	}
  
@@ -190,7 +189,7 @@ index 250af9fb7..3178d77af 100644
  		v4l2_err(&mdev->v4l2_dev, "video_register_device failed (%d)\n",
  			 ret);
 diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-index b7214741f..8d1ef67bc 100644
+index da14f1fb8..582012950 100644
 --- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
 +++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
 @@ -1822,7 +1822,7 @@ static int bm2835_mmal_init_device(struct bm2835_mmal_dev *dev,
@@ -203,7 +202,7 @@ index b7214741f..8d1ef67bc 100644
  	if (ret < 0)
  		return ret;
 diff --git a/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c b/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
-index 14c47e2ea..32c8cc9c1 100644
+index eefe8e101..a9c28c678 100644
 --- a/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
 +++ b/drivers/staging/vc04_services/bcm2835-codec/bcm2835-v4l2-codec.c
 @@ -36,6 +36,8 @@
@@ -215,7 +214,7 @@ index 14c47e2ea..32c8cc9c1 100644
  #include "vchiq-mmal/mmal-encodings.h"
  #include "vchiq-mmal/mmal-msg.h"
  #include "vchiq-mmal/mmal-parameters.h"
-@@ -395,6 +397,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
+@@ -398,6 +400,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
  		.mmal_fmt		= MMAL_ENCODING_Y10P,
  		.size_multiplier_x2	= 2,
  	}, {
@@ -223,7 +222,7 @@ index 14c47e2ea..32c8cc9c1 100644
  		/* 12 bit */
  		.fourcc			= V4L2_PIX_FMT_Y12P,
  		.depth			= 12,
-@@ -411,6 +414,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
+@@ -414,6 +417,7 @@ static const struct bcm2835_codec_fmt supported_formats[] = {
  		.mmal_fmt		= MMAL_ENCODING_Y14P,
  		.size_multiplier_x2	= 2,
  	}, {
@@ -252,7 +251,7 @@ index fc0f95a36..62ec6679b 100644
  		.fourcc		    = V4L2_PIX_FMT_Y16,
  		.depth		    = 16,
 diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index fb0a89268..0b9712616 100644
+index c03b67aab..1337e8099 100644
 --- a/drivers/usb/gadget/function/f_uvc.c
 +++ b/drivers/usb/gadget/function/f_uvc.c
 @@ -428,7 +428,7 @@ uvc_register_video(struct uvc_device *uvc)
@@ -264,20 +263,8 @@ index fb0a89268..0b9712616 100644
  	if (ret < 0)
  		return ret;
  
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index ec212cb27..12eac4293 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -303,6 +303,7 @@ struct dma_buf {
- 	void *vmap_ptr;
- 	const char *exp_name;
- 	const char *name;
-+	spinlock_t name_lock; /* spinlock to protect name access */
- 	struct module *owner;
- 	struct list_head list_node;
- 	void *priv;
 diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 09e23adb3..896ea5831 100644
+index 3347c54f3..7108cda11 100644
 --- a/include/linux/dma-fence.h
 +++ b/include/linux/dma-fence.h
 @@ -63,8 +63,12 @@ struct dma_fence_cb;
@@ -314,7 +301,7 @@ index 09e23adb3..896ea5831 100644
  };
  
 diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9850d59d6..183e9e369 100644
+index c8ec982ff..dbb431db4 100644
 --- a/include/linux/hdmi.h
 +++ b/include/linux/hdmi.h
 @@ -208,7 +208,7 @@ struct hdmi_drm_infoframe {
@@ -327,7 +314,7 @@ index 9850d59d6..183e9e369 100644
  				size_t size);
  ssize_t hdmi_avi_infoframe_pack_only(const struct hdmi_avi_infoframe *frame,
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 120366193..26931135a 100644
+index 53f0efa0b..f8eea0191 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -66,6 +66,8 @@
@@ -339,7 +326,7 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373	0x4373
  #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_43012	0xa804
  #define SDIO_DEVICE_ID_BROADCOM_43143		0xa887
-@@ -78,6 +80,8 @@
+@@ -79,6 +81,8 @@
  
  #define SDIO_VENDOR_ID_MARVELL			0x02df
  #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
@@ -348,7 +335,7 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8688_WLAN	0x9104
  #define SDIO_DEVICE_ID_MARVELL_8688_BT		0x9105
  #define SDIO_DEVICE_ID_MARVELL_8786_WLAN	0x9116
-@@ -90,6 +94,7 @@
+@@ -91,6 +95,7 @@
  #define SDIO_DEVICE_ID_MARVELL_8897_WLAN	0x912d
  #define SDIO_DEVICE_ID_MARVELL_8897_BT		0x912e
  #define SDIO_DEVICE_ID_MARVELL_8887_F0		0x9134
@@ -357,10 +344,10 @@ index 120366193..26931135a 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 1ab1e24bc..22cdbb4a7 100644
+index aad54c666..24d7c2da7 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1075,6 +1075,7 @@
+@@ -1083,6 +1083,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -368,7 +355,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1343,6 +1344,7 @@
+@@ -1352,6 +1353,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -376,7 +363,7 @@ index 1ab1e24bc..22cdbb4a7 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3132,4 +3134,6 @@
+@@ -3096,4 +3098,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -384,10 +371,35 @@ index 1ab1e24bc..22cdbb4a7 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 54cb223ca..255b90aaa 100644
+index d23f93163..66a5a24e7 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
-@@ -150,7 +150,7 @@ struct snd_bt87x_board {
+@@ -23,12 +23,14 @@
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_DESCRIPTION("Brooktree Bt87x audio driver");
+ MODULE_LICENSE("GPL");
++MODULE_SUPPORTED_DEVICE("{{Brooktree,Bt878},"
++		"{Brooktree,Bt879}}");
+ 
+ static int index[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -2}; /* Exclude the first card */
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+ static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+ static int digital_rate[SNDRV_CARDS];	/* digital input rate */
+-static bool load_all;	/* allow to load cards not the allowlist */
++static bool load_all;	/* allow to load the non-whitelisted cards */
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for Bt87x soundcard");
+@@ -39,7 +41,7 @@ MODULE_PARM_DESC(enable, "Enable Bt87x soundcard");
+ module_param_array(digital_rate, int, NULL, 0444);
+ MODULE_PARM_DESC(digital_rate, "Digital input rate for Bt87x soundcard");
+ module_param(load_all, bool, 0444);
+-MODULE_PARM_DESC(load_all, "Allow to load cards not on the allowlist");
++MODULE_PARM_DESC(load_all, "Allow to load the non-whitelisted cards");
+ 
+ 
+ /* register offsets */
+@@ -148,7 +150,7 @@ struct snd_bt87x_board {
  	unsigned no_digital:1;	/* No digital input */
  };
  
@@ -396,7 +408,7 @@ index 54cb223ca..255b90aaa 100644
  	[SND_BT87X_BOARD_UNKNOWN] = {
  		.dig_rate = 32000, /* just a guess */
  	},
-@@ -217,7 +217,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
+@@ -215,7 +217,7 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
  	__le32 *risc;
  
  	if (chip->dma_risc.area == NULL) {
@@ -405,7 +417,7 @@ index 54cb223ca..255b90aaa 100644
  					PAGE_ALIGN(MAX_RISC_SIZE), &chip->dma_risc) < 0)
  			return -ENOMEM;
  	}
-@@ -271,8 +271,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
+@@ -269,8 +271,13 @@ static void snd_bt87x_free_risc(struct snd_bt87x *chip)
  
  static void snd_bt87x_pci_error(struct snd_bt87x *chip, unsigned int status)
  {
@@ -420,7 +432,17 @@ index 54cb223ca..255b90aaa 100644
  	if (pci_status != PCI_STATUS_DETECTED_PARITY)
  		dev_err(chip->card->dev,
  			"Aieee - PCI error! status %#08x, PCI status %#04x\n",
-@@ -447,7 +452,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
+@@ -325,8 +332,7 @@ static irqreturn_t snd_bt87x_interrupt(int irq, void *dev_id)
+ 		current_block = chip->current_line * 16 / chip->lines;
+ 		irq_block = status >> INT_RISCS_SHIFT;
+ 		if (current_block != irq_block)
+-			chip->current_line = DIV_ROUND_UP(irq_block * chip->lines,
+-							  16);
++			chip->current_line = (irq_block * chip->lines + 15) / 16;
+ 
+ 		snd_pcm_period_elapsed(chip->substream);
+ 	}
+@@ -446,7 +452,12 @@ static int snd_bt87x_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *hw_params)
  {
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
@@ -433,7 +455,7 @@ index 54cb223ca..255b90aaa 100644
  	return snd_bt87x_create_risc(chip, substream,
  				     params_periods(hw_params),
  				     params_period_bytes(hw_params));
-@@ -458,6 +468,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
+@@ -457,6 +468,7 @@ static int snd_bt87x_hw_free(struct snd_pcm_substream *substream)
  	struct snd_bt87x *chip = snd_pcm_substream_chip(substream);
  
  	snd_bt87x_free_risc(chip);
@@ -441,7 +463,7 @@ index 54cb223ca..255b90aaa 100644
  	return 0;
  }
  
-@@ -528,11 +539,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
+@@ -527,11 +539,13 @@ static snd_pcm_uframes_t snd_bt87x_pointer(struct snd_pcm_substream *substream)
  static const struct snd_pcm_ops snd_bt87x_pcm_ops = {
  	.open = snd_bt87x_pcm_open,
  	.close = snd_bt87x_close,
@@ -455,7 +477,34 @@ index 54cb223ca..255b90aaa 100644
  };
  
  static int snd_bt87x_capture_volume_info(struct snd_kcontrol *kcontrol,
-@@ -687,10 +700,10 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -656,11 +670,23 @@ static const struct snd_kcontrol_new snd_bt87x_capture_source = {
+ 	.put = snd_bt87x_capture_source_put,
+ };
+ 
+-static void snd_bt87x_free(struct snd_card *card)
++static int snd_bt87x_free(struct snd_bt87x *chip)
+ {
+-	struct snd_bt87x *chip = card->private_data;
++	if (chip->mmio)
++		snd_bt87x_stop(chip);
++	if (chip->irq >= 0)
++		free_irq(chip->irq, chip);
++	iounmap(chip->mmio);
++	pci_release_regions(chip->pci);
++	pci_disable_device(chip->pci);
++	kfree(chip);
++	return 0;
++}
+ 
+-	snd_bt87x_stop(chip);
++static int snd_bt87x_dev_free(struct snd_device *device)
++{
++	struct snd_bt87x *chip = device->device_data;
++	return snd_bt87x_free(chip);
+ }
+ 
+ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -674,32 +700,50 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
  	pcm->private_data = chip;
  	strcpy(pcm->name, name);
  	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_bt87x_pcm_ops);
@@ -470,25 +519,195 @@ index 54cb223ca..255b90aaa 100644
  	return 0;
  }
  
-@@ -700,7 +713,7 @@ static int snd_bt87x_create(struct snd_card *card,
+ static int snd_bt87x_create(struct snd_card *card,
+-			    struct pci_dev *pci)
++			    struct pci_dev *pci,
++			    struct snd_bt87x **rchip)
  {
- 	struct snd_bt87x *chip;
+-	struct snd_bt87x *chip = card->private_data;
++	struct snd_bt87x *chip;
  	int err;
--	static const struct snd_device_ops ops = {
 +	static struct snd_device_ops ops = {
- 		.dev_free = snd_bt87x_dev_free
- 	};
++		.dev_free = snd_bt87x_dev_free
++	};
++
++	*rchip = NULL;
  
-@@ -746,8 +759,8 @@ static int snd_bt87x_create(struct snd_card *card,
- 		goto fail;
+-	err = pcim_enable_device(pci);
++	err = pci_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
++	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (!chip) {
++		pci_disable_device(pci);
++		return -ENOMEM;
++	}
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+ 	spin_lock_init(&chip->reg_lock);
+ 
+-	err = pcim_iomap_regions(pci, 1 << 0, "Bt87x audio");
+-	if (err < 0)
++	if ((err = pci_request_regions(pci, "Bt87x audio")) < 0) {
++		kfree(chip);
++		pci_disable_device(pci);
+ 		return err;
+-	chip->mmio = pcim_iomap_table(pci)[0];
++	}
++	chip->mmio = pci_ioremap_bar(pci, 0);
++	if (!chip->mmio) {
++		dev_err(card->dev, "cannot remap io memory\n");
++		err = -ENOMEM;
++		goto fail;
++	}
+ 
+ 	chip->reg_control = CTL_A_PWRDN | CTL_DA_ES2 |
+ 			    CTL_PKTP_16 | (15 << CTL_DA_SDR_SHIFT);
+@@ -708,18 +752,26 @@ static int snd_bt87x_create(struct snd_card *card,
+ 	snd_bt87x_writel(chip, REG_INT_MASK, 0);
+ 	snd_bt87x_writel(chip, REG_INT_STAT, MY_INTERRUPTS);
+ 
+-	err = devm_request_irq(&pci->dev, pci->irq, snd_bt87x_interrupt,
+-			       IRQF_SHARED, KBUILD_MODNAME, chip);
++	err = request_irq(pci->irq, snd_bt87x_interrupt, IRQF_SHARED,
++			  KBUILD_MODNAME, chip);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "cannot grab irq %d\n", pci->irq);
+-		return err;
++		goto fail;
  	}
  	chip->irq = pci->irq;
 -	card->sync_irq = chip->irq;
+-	card->private_free = snd_bt87x_free;
  	pci_set_master(pci);
 +	synchronize_irq(chip->irq);
  
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0)
++		goto fail;
++
++	*rchip = chip;
+ 	return 0;
++
++fail:
++	snd_bt87x_free(chip);
++	return err;
+ }
+ 
+ #define BT_DEVICE(chip, subvend, subdev, id) \
+@@ -762,7 +814,7 @@ MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
+  * (DVB cards use the audio function to transfer MPEG data) */
+ static struct {
+ 	unsigned short subvendor, subdevice;
+-} denylist[] = {
++} blacklist[] = {
+ 	{0x0071, 0x0101}, /* Nebula Electronics DigiTV */
+ 	{0x11bd, 0x001c}, /* Pinnacle PCTV Sat */
+ 	{0x11bd, 0x0026}, /* Pinnacle PCTV SAT CI */
+@@ -778,7 +830,7 @@ static struct {
+ 
+ static struct pci_driver driver;
+ 
+-/* return the id of the card, or a negative value if it's on the denylist */
++/* return the id of the card, or a negative value if it's blacklisted */
+ static int snd_bt87x_detect_card(struct pci_dev *pci)
+ {
+ 	int i;
+@@ -788,9 +840,9 @@ static int snd_bt87x_detect_card(struct pci_dev *pci)
+ 	if (supported && supported->driver_data > 0)
+ 		return supported->driver_data;
+ 
+-	for (i = 0; i < ARRAY_SIZE(denylist); ++i)
+-		if (denylist[i].subvendor == pci->subsystem_vendor &&
+-		    denylist[i].subdevice == pci->subsystem_device) {
++	for (i = 0; i < ARRAY_SIZE(blacklist); ++i)
++		if (blacklist[i].subvendor == pci->subsystem_vendor &&
++		    blacklist[i].subdevice == pci->subsystem_device) {
+ 			dev_dbg(&pci->dev,
+ 				"card %#04x-%#04x:%#04x has no audio\n",
+ 				    pci->device, pci->subsystem_vendor, pci->subsystem_device);
+@@ -829,15 +881,14 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 		return -ENOENT;
+ 	}
+ 
+-	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-				sizeof(*chip), &card);
++	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
++			   0, &card);
  	if (err < 0)
+ 		return err;
+-	chip = card->private_data;
+ 
+-	err = snd_bt87x_create(card, pci);
++	err = snd_bt87x_create(card, pci, &chip);
+ 	if (err < 0)
+-		return err;
++		goto _error;
+ 
+ 	memcpy(&chip->board, &snd_bt87x_boards[boardid], sizeof(chip->board));
+ 
+@@ -849,24 +900,24 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 
+ 		err = snd_bt87x_pcm(chip, DEVICE_DIGITAL, "Bt87x Digital");
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 	}
+ 	if (!chip->board.no_analog) {
+ 		err = snd_bt87x_pcm(chip, DEVICE_ANALOG, "Bt87x Analog");
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_volume, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_boost, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_source, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 	}
+ 	dev_info(card->dev, "bt87x%d: Using board %d, %sanalog, %sdigital "
+ 		   "(rate %d Hz)\n", dev, boardid,
+@@ -882,11 +933,20 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		return err;
++		goto _error;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	++dev;
+ 	return 0;
++
++_error:
++	snd_card_free(card);
++	return err;
++}
++
++static void snd_bt87x_remove(struct pci_dev *pci)
++{
++	snd_card_free(pci_get_drvdata(pci));
+ }
+ 
+ /* default entries for all Bt87x cards - it's not exported */
+@@ -901,6 +961,7 @@ static struct pci_driver driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_bt87x_ids,
+ 	.probe = snd_bt87x_probe,
++	.remove = snd_bt87x_remove,
+ };
+ 
+ static int __init alsa_card_bt87x_init(void)
 -- 
 2.25.1
 

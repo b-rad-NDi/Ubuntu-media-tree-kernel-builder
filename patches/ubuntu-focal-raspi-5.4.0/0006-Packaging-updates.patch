@@ -1,17 +1,18 @@
-From a8f6203372b3633c1bdd84e9cf5cdc6ac4ef8cc3 Mon Sep 17 00:00:00 2001
+From 47110d7d11c688fd165d78bbba8524161e933cfa Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 6 Jan 2021 15:42:19 -0600
+Date: Mon, 7 Mar 2022 11:08:46 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.raspi/control.d/flavour-control.stub |  4 ++--
+ debian.raspi/control.stub.in                |  7 ++++---
  debian.raspi/copyright                      | 22 +++++++++++++++++++++
  debian/control.d/flavour-buildinfo.stub     |  2 +-
  debian/rules                                |  2 +-
  debian/rules.d/0-common-vars.mk             | 19 +++++++++++++-----
  debian/rules.d/2-binary-arch.mk             |  4 ++++
  debian/scripts/config-check                 |  2 +-
- 7 files changed, 45 insertions(+), 10 deletions(-)
+ 8 files changed, 49 insertions(+), 13 deletions(-)
 
 diff --git a/debian.raspi/control.d/flavour-control.stub b/debian.raspi/control.d/flavour-control.stub
 index 9f5d47e91..f8252567f 100644
@@ -28,6 +29,31 @@ index 9f5d47e91..f8252567f 100644
   This package contains the=SIGN-ME-TXT= Linux kernel image for version PKGVER on
   DESC.
   .
+diff --git a/debian.raspi/control.stub.in b/debian.raspi/control.stub.in
+index d94b568a4..270040b77 100644
+--- a/debian.raspi/control.stub.in
++++ b/debian.raspi/control.stub.in
+@@ -1,7 +1,8 @@
+ Source: SRCPKGNAME
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Fake User <hidden@email.co>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper (>= 9),
+@@ -47,8 +48,8 @@ Build-Depends-Indep:
+  python3-sphinx <!stage1>,
+  python3-sphinx-rtd-theme <!stage1>,
+  python3-docutils <!stage1>,
+-Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux-raspi/+git/=SERIES=
+-Vcs-Browser: https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux-raspi/+git/=SERIES=/log/
++Vcs-Git: git://github.com/~b-rad-NDi/Ubuntu-media-tree-kernel-builder.git
++Vcs-Browser: https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
+ XS-Testsuite: autopkgtest
+ #XS-Testsuite-Depends: gcc-4.7 binutils
+ 
 diff --git a/debian.raspi/copyright b/debian.raspi/copyright
 index d1d04a6d6..b6f183f12 100644
 --- a/debian.raspi/copyright
@@ -70,7 +96,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 38b9f3b34..6bf6f12fd 100755
+index b10128a11..dbebf167c 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -83,7 +109,7 @@ index 38b9f3b34..6bf6f12fd 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 5394b7c96..11958e66f 100644
+index b53af8938..d62d17dbf 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu
@@ -144,10 +170,10 @@ index 5394b7c96..11958e66f 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index fe1345d21..d88cc6020 100644
+index 0542c12a7..8301d30b3 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -796,10 +796,14 @@ build-arch: $(build-arch-deps-true)
+@@ -804,10 +804,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)
