@@ -1,0 +1,316 @@
+From 41f39a177317f99be855f5a618d54fbf02eb36d0 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Fri, 4 Mar 2022 11:32:26 -0600
+Subject: [PATCH 4/6] Mainline Ubuntu build fixes
+
+---
+ drivers/hid/hid-picolcd_cir.c |  1 +
+ include/linux/mmc/sdio_ids.h  |  5 ++
+ include/linux/pci_ids.h       | 30 +++++++++++
+ sound/pci/bt87x.c             | 97 ++++++++++++++++++++++++++---------
+ 4 files changed, 108 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
+index d6faa0e00..04671eef8 100644
+--- a/drivers/hid/hid-picolcd_cir.c
++++ b/drivers/hid/hid-picolcd_cir.c
+@@ -29,6 +29,7 @@
+ 
+ #include "hid-picolcd.h"
+ 
++#define MS_TO_NS(msec)	((msec) * 1000 * 1000)
+ 
+ int picolcd_raw_cir(struct picolcd_data *data,
+ 		struct hid_report *report, u8 *raw_data, int size)
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index 53f0efa0b..f8eea0191 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -66,6 +66,8 @@
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_89359	0x4355
+ #define SDIO_DEVICE_ID_BROADCOM_4356		0x4356
+ #define SDIO_DEVICE_ID_BROADCOM_4359		0x4359
++#define SDIO_DEVICE_ID_CYPRESS_4373		0x4373
++#define SDIO_DEVICE_ID_CYPRESS_43012		43012
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373	0x4373
+ #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_43012	0xa804
+ #define SDIO_DEVICE_ID_BROADCOM_43143		0xa887
+@@ -79,6 +81,8 @@
+ 
+ #define SDIO_VENDOR_ID_MARVELL			0x02df
+ #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
++#define SDIO_DEVICE_ID_MARVELL_8688WLAN		0x9104
++#define SDIO_DEVICE_ID_MARVELL_8688BT		0x9105
+ #define SDIO_DEVICE_ID_MARVELL_8688_WLAN	0x9104
+ #define SDIO_DEVICE_ID_MARVELL_8688_BT		0x9105
+ #define SDIO_DEVICE_ID_MARVELL_8786_WLAN	0x9116
+@@ -91,6 +95,7 @@
+ #define SDIO_DEVICE_ID_MARVELL_8897_WLAN	0x912d
+ #define SDIO_DEVICE_ID_MARVELL_8897_BT		0x912e
+ #define SDIO_DEVICE_ID_MARVELL_8887_F0		0x9134
++#define SDIO_DEVICE_ID_MARVELL_8887WLAN		0x9134
+ #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
+ #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
+ #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index aad54c666..d08254386 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1083,6 +1083,7 @@
+ #define PCI_VENDOR_ID_SGI		0x10a9
+ #define PCI_DEVICE_ID_SGI_IOC3		0x0003
+ #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
++#define PCI_DEVICE_ID_SGI_IOC4         0x100a
+ 
+ #define PCI_VENDOR_ID_WINBOND		0x10ad
+ #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
+@@ -1352,6 +1353,7 @@
+ #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
+ #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
++#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
+ 
+ #define PCI_VENDOR_ID_IMS		0x10e0
+ #define PCI_DEVICE_ID_IMS_TT128		0x9128
+@@ -1696,6 +1698,14 @@
+ #define PCI_VENDOR_ID_RP		0x11fe
+ 
+ #define PCI_VENDOR_ID_CYCLADES		0x120e
++#define PCI_DEVICE_ID_CYCLOM_Y_Lo	0x0100
++#define PCI_DEVICE_ID_CYCLOM_Y_Hi	0x0101
++#define PCI_DEVICE_ID_CYCLOM_4Y_Lo	0x0102
++#define PCI_DEVICE_ID_CYCLOM_4Y_Hi	0x0103
++#define PCI_DEVICE_ID_CYCLOM_8Y_Lo	0x0104
++#define PCI_DEVICE_ID_CYCLOM_8Y_Hi	0x0105
++#define PCI_DEVICE_ID_CYCLOM_Z_Lo	0x0200
++#define PCI_DEVICE_ID_CYCLOM_Z_Hi	0x0201
+ #define PCI_DEVICE_ID_PC300_RX_2	0x0300
+ #define PCI_DEVICE_ID_PC300_RX_1	0x0301
+ #define PCI_DEVICE_ID_PC300_TE_2	0x0310
+@@ -1965,6 +1975,24 @@
+ #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
+ 
+ #define PCI_VENDOR_ID_MOXA		0x1393
++#define PCI_DEVICE_ID_MOXA_RC7000	0x0001
++#define PCI_DEVICE_ID_MOXA_CP102	0x1020
++#define PCI_DEVICE_ID_MOXA_CP102UL	0x1021
++#define PCI_DEVICE_ID_MOXA_CP102U	0x1022
++#define PCI_DEVICE_ID_MOXA_C104		0x1040
++#define PCI_DEVICE_ID_MOXA_CP104U	0x1041
++#define PCI_DEVICE_ID_MOXA_CP104JU	0x1042
++#define PCI_DEVICE_ID_MOXA_CP104EL	0x1043
++#define PCI_DEVICE_ID_MOXA_CT114	0x1140
++#define PCI_DEVICE_ID_MOXA_CP114	0x1141
++#define PCI_DEVICE_ID_MOXA_CP118U	0x1180
++#define PCI_DEVICE_ID_MOXA_CP118EL	0x1181
++#define PCI_DEVICE_ID_MOXA_CP132	0x1320
++#define PCI_DEVICE_ID_MOXA_CP132U	0x1321
++#define PCI_DEVICE_ID_MOXA_CP134U	0x1340
++#define PCI_DEVICE_ID_MOXA_C168		0x1680
++#define PCI_DEVICE_ID_MOXA_CP168U	0x1681
++#define PCI_DEVICE_ID_MOXA_CP168EL	0x1682
+ #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
+ #define PCI_DEVICE_ID_MOXA_C218		0x2180
+ #define PCI_DEVICE_ID_MOXA_C320		0x3200
+@@ -3096,4 +3124,6 @@
+ 
+ #define PCI_VENDOR_ID_NCUBE		0x10ff
+ 
++#define PCI_VENDOR_ID_SK_HYNIX		0x1c5c
++
+ #endif /* _LINUX_PCI_IDS_H */
+diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+index d23f93163..91512b345 100644
+--- a/sound/pci/bt87x.c
++++ b/sound/pci/bt87x.c
+@@ -656,11 +656,23 @@ static const struct snd_kcontrol_new snd_bt87x_capture_source = {
+ 	.put = snd_bt87x_capture_source_put,
+ };
+ 
+-static void snd_bt87x_free(struct snd_card *card)
+-{
+-	struct snd_bt87x *chip = card->private_data;
++static int snd_bt87x_free(struct snd_bt87x *chip)
++{
++	if (chip->mmio)
++		snd_bt87x_stop(chip);
++	if (chip->irq >= 0)
++		free_irq(chip->irq, chip);
++	iounmap(chip->mmio);
++	pci_release_regions(chip->pci);
++	pci_disable_device(chip->pci);
++	kfree(chip);
++	return 0;
++}
+ 
+-	snd_bt87x_stop(chip);
++static int snd_bt87x_dev_free(struct snd_device *device)
++{
++	struct snd_bt87x *chip = device->device_data;
++	return snd_bt87x_free(chip);
+ }
+ 
+ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+@@ -682,24 +694,42 @@ static int snd_bt87x_pcm(struct snd_bt87x *chip, int device, char *name)
+ }
+ 
+ static int snd_bt87x_create(struct snd_card *card,
+-			    struct pci_dev *pci)
++			    struct pci_dev *pci,
++			    struct snd_bt87x **rchip)
+ {
+-	struct snd_bt87x *chip = card->private_data;
++	struct snd_bt87x *chip;
+ 	int err;
++	static const struct snd_device_ops ops = {
++		.dev_free = snd_bt87x_dev_free
++	};
++
++	*rchip = NULL;
+ 
+-	err = pcim_enable_device(pci);
++	err = pci_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
++	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (!chip) {
++		pci_disable_device(pci);
++		return -ENOMEM;
++	}
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+ 	spin_lock_init(&chip->reg_lock);
+ 
+-	err = pcim_iomap_regions(pci, 1 << 0, "Bt87x audio");
+-	if (err < 0)
++	if ((err = pci_request_regions(pci, "Bt87x audio")) < 0) {
++		kfree(chip);
++		pci_disable_device(pci);
+ 		return err;
+-	chip->mmio = pcim_iomap_table(pci)[0];
++	}
++	chip->mmio = pci_ioremap_bar(pci, 0);
++	if (!chip->mmio) {
++		dev_err(card->dev, "cannot remap io memory\n");
++		err = -ENOMEM;
++		goto fail;
++	}
+ 
+ 	chip->reg_control = CTL_A_PWRDN | CTL_DA_ES2 |
+ 			    CTL_PKTP_16 | (15 << CTL_DA_SDR_SHIFT);
+@@ -708,18 +738,26 @@ static int snd_bt87x_create(struct snd_card *card,
+ 	snd_bt87x_writel(chip, REG_INT_MASK, 0);
+ 	snd_bt87x_writel(chip, REG_INT_STAT, MY_INTERRUPTS);
+ 
+-	err = devm_request_irq(&pci->dev, pci->irq, snd_bt87x_interrupt,
+-			       IRQF_SHARED, KBUILD_MODNAME, chip);
++	err = request_irq(pci->irq, snd_bt87x_interrupt, IRQF_SHARED,
++			  KBUILD_MODNAME, chip);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "cannot grab irq %d\n", pci->irq);
+-		return err;
++		goto fail;
+ 	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
+-	card->private_free = snd_bt87x_free;
+ 	pci_set_master(pci);
+ 
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0)
++		goto fail;
++
++	*rchip = chip;
+ 	return 0;
++
++fail:
++	snd_bt87x_free(chip);
++	return err;
+ }
+ 
+ #define BT_DEVICE(chip, subvend, subdev, id) \
+@@ -829,15 +867,14 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 		return -ENOENT;
+ 	}
+ 
+-	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-				sizeof(*chip), &card);
++	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
++			   0, &card);
+ 	if (err < 0)
+ 		return err;
+-	chip = card->private_data;
+ 
+-	err = snd_bt87x_create(card, pci);
++	err = snd_bt87x_create(card, pci, &chip);
+ 	if (err < 0)
+-		return err;
++		goto _error;
+ 
+ 	memcpy(&chip->board, &snd_bt87x_boards[boardid], sizeof(chip->board));
+ 
+@@ -849,24 +886,24 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 
+ 		err = snd_bt87x_pcm(chip, DEVICE_DIGITAL, "Bt87x Digital");
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 	}
+ 	if (!chip->board.no_analog) {
+ 		err = snd_bt87x_pcm(chip, DEVICE_ANALOG, "Bt87x Analog");
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_volume, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_boost, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 		err = snd_ctl_add(card, snd_ctl_new1(
+ 				  &snd_bt87x_capture_source, chip));
+ 		if (err < 0)
+-			return err;
++			goto _error;
+ 	}
+ 	dev_info(card->dev, "bt87x%d: Using board %d, %sanalog, %sdigital "
+ 		   "(rate %d Hz)\n", dev, boardid,
+@@ -882,11 +919,20 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		return err;
++		goto _error;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	++dev;
+ 	return 0;
++
++_error:
++	snd_card_free(card);
++	return err;
++}
++
++static void snd_bt87x_remove(struct pci_dev *pci)
++{
++	snd_card_free(pci_get_drvdata(pci));
+ }
+ 
+ /* default entries for all Bt87x cards - it's not exported */
+@@ -901,6 +947,7 @@ static struct pci_driver driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_bt87x_ids,
+ 	.probe = snd_bt87x_probe,
++	.remove = snd_bt87x_remove,
+ };
+ 
+ static int __init alsa_card_bt87x_init(void)
+-- 
+2.32.0
+
