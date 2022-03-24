@@ -1,21 +1,21 @@
-From dd7507f732ffbaee0472225397497d1dcda8fd0e Mon Sep 17 00:00:00 2001
+From a86b1d9e80bfa19c8bcb074f9743092805d4cfb0 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Feb 2022 20:22:00 -0600
+Date: Tue, 22 Mar 2022 13:14:15 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe-5.13/changelog | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ debian.hwe-5.13/changelog | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/debian.hwe-5.13/changelog b/debian.hwe-5.13/changelog
-index bf96294bfdb5..16d92a19e067 100644
+index 489067bec408..afd130019176 100644
 --- a/debian.hwe-5.13/changelog
 +++ b/debian.hwe-5.13/changelog
-@@ -1,3 +1,33 @@
-+linux-hwe (5.13.0-272202022022.0+mediatree+hauppauge~hwe) focal; urgency=low
+@@ -1,3 +1,34 @@
++linux-hwe (5.13.0-352203222222.0+mediatree+hauppauge~hwe) focal; urgency=low
 +
 +  * Ubuntu-hwe-5.13 kernel git clone
-+    - 5.13.0-27.29 rev d7f158c8d0885e5db4656e08c876f19ab0a737d2
++    - 5.13.0-35.40 rev 438da6e5c849ffe553fc15379471bf331346c3d2
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
@@ -35,16 +35,17 @@ index bf96294bfdb5..16d92a19e067 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
++    --- 0009-Revert.2c98b8a34.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 02 Feb 2022 20:22:00 -0600
++ -- Fake User <hidden@email.co>  Tue, 22 Mar 2022 22:22:22 -0500
 +
- linux-hwe-5.13 (5.13.0-27.29~20.04.1) focal; urgency=medium
+ linux-hwe-5.13 (5.13.0-35.40~20.04.1) focal; urgency=medium
  
-   * Packaging resync (LP: #1786013)
+   [ Ubuntu: 5.13.0-35.40 ]
 -- 
 2.25.1
 
