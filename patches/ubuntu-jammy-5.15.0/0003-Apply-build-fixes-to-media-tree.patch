@@ -1,0 +1,20 @@
+From 8e84c381aa166769860284a8b50b6b3b809728ce Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 20 Apr 2022 14:27:47 -0500
+Subject: [PATCH 3/6] Apply build fixes to media tree
+
+---
+ debian/empty | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/debian/empty b/debian/empty
+index e1775d5f3..0dd4bc101 100644
+--- a/debian/empty
++++ b/debian/empty
+@@ -1,2 +1,2 @@
+ Placeholder
+-
++Media tree fixes
+-- 
+2.34.1
+

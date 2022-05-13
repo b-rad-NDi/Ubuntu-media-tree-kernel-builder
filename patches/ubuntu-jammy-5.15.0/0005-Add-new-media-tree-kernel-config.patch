@@ -1,0 +1,22 @@
+From f382c2775e8bca696bd866fbbf5bf9a9f225928b Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 20 Apr 2022 14:29:03 -0500
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian/empty | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/debian/empty b/debian/empty
+index 021679e7b..dddd430a1 100644
+--- a/debian/empty
++++ b/debian/empty
+@@ -1,3 +1,5 @@
+ Placeholder
+ Media tree fixes
+ Mainline Ubuntu build fixes
++Add new media tree kernel config
++
+-- 
+2.34.1
+
