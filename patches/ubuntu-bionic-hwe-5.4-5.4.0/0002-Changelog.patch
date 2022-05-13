@@ -1,6 +1,6 @@
-From 837c6d2d8a6bf4624430247c6103ff3a66db8ceb Mon Sep 17 00:00:00 2001
+From a19950e01a772c14fa623a9782f072e5daddbbc9 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 22 Mar 2022 13:14:15 -0500
+Date: Thu, 12 May 2022 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.hwe-5.4/changelog b/debian.hwe-5.4/changelog
-index ecae68c80a92..bf59b7773554 100644
+index 368c63d269a1..6d520cc945d9 100644
 --- a/debian.hwe-5.4/changelog
 +++ b/debian.hwe-5.4/changelog
 @@ -1,3 +1,34 @@
-+linux-hwe (5.4.0-1062203222222.0+mediatree+hauppauge~hwe) bionic; urgency=low
++linux-hwe (5.4.0-1122205121620.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
 +  * Ubuntu-hwe-5.4 kernel git clone
-+    - 5.4.0-106.120 rev 605dc714ba4caec338e3bc30337a3fa282ba8644
++    - 5.4.0-112.126 rev fadd782e0a1de9d9151cc8b1548aa70b89e66867
 +
 +  * LinuxTV.org media tree slipstream + build fixes
 +    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
@@ -41,11 +41,11 @@ index ecae68c80a92..bf59b7773554 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 22 Mar 2022 22:22:22 -0500
++ -- Fake User <hidden@email.co>  Thu, 12 May 2022 16:20:00 -0500
 +
- linux-hwe-5.4 (5.4.0-106.120~18.04.1) bionic; urgency=medium
+ linux-hwe-5.4 (5.4.0-112.126~18.04.1) bionic; urgency=medium
  
-   * bionic/linux-hwe-5.4: 5.4.0-106.120~18.04.1 -proposed tracker (LP: #1965383)
+   * bionic/linux-hwe-5.4: 5.4.0-112.126~18.04.1 -proposed tracker (LP: #1971838)
 -- 
 2.17.1
 

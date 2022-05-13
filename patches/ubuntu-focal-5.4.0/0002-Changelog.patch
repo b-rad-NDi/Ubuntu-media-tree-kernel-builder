@@ -1,6 +1,6 @@
-From e35aa1bff0139aab86dac25a088ba6bd7899418c Mon Sep 17 00:00:00 2001
+From 57c75b7f92d85b9ccf6f088b134cdcfdc84286f3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 22 Mar 2022 13:14:15 -0500
+Date: Thu, 12 May 2022 16:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,11 +8,11 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 31 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index b3d19b12b..f3979197a 100644
+index b3d19b12b..10ef06b06 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,34 @@
-+linux (5.4.0-1042203222222.0+mediatree+hauppauge) focal; urgency=low
++linux (5.4.0-1042205121620.0+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 5.4.0-104.118 rev 93e0b3b475dcc41e187375fd6362a10e12de283a
@@ -41,7 +41,7 @@ index b3d19b12b..f3979197a 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Tue, 22 Mar 2022 22:22:22 -0500
++ -- Fake User <hidden@email.co>  Thu, 12 May 2022 16:20:00 -0500
 +
  linux (5.4.0-104.118) focal; urgency=medium
  
