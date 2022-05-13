@@ -47,6 +47,8 @@ fi
 if [ -z "${KERNEL_ABI_TAG}" ] ; then
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge"
+	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+		KERNEL_ABI_TAG="+mediatree+hauppauge"
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge~hwe"
 	else
@@ -86,6 +88,8 @@ export TOP_DEVDIR=`pwd`
 if [ -f ".state_env_file" ] ; then
 	. .state_env_file
 	if [ -z "${DISTRO_BRANCH}" ] ; then
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
+	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
 	else
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH}-${KVER}.${KMAJ}.0"
@@ -560,6 +564,8 @@ function update_identity()
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=master
+	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+		deb_branch=master
 	else
 		deb_branch=${DISTRO_BRANCH}
 	fi
@@ -580,6 +586,9 @@ function regen_changelog()
 	[ -z "${1}" ] && echo "error..." && return 1
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=master
+		deb_package=linux
+	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
 		deb_branch=master
 		deb_package=linux
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
@@ -684,6 +693,8 @@ function generate_virtual_package()
 	fi
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=""
+	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
 		deb_branch=""
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
 		deb_branch=-hwe
