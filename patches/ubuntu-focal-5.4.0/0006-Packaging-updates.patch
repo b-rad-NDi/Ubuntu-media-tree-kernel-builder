@@ -1,4 +1,4 @@
-From d48a69cab43bd932b159314e20ac24eefc4c0f81 Mon Sep 17 00:00:00 2001
+From fb29b496fbec8509b7890d778932e3d9b2d4bac7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 26 Aug 2021 19:57:09 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -43,7 +43,7 @@ index 4ba31aa63..f0685937b 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 47ddd5418..d3f1dc812 100644
+index a597bcaa4..8d6498c07 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -56,7 +56,7 @@ index 47ddd5418..d3f1dc812 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper (>= 9),
-@@ -54,30 +55,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
+@@ -55,30 +56,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -87,7 +87,7 @@ index 47ddd5418..d3f1dc812 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -90,20 +67,6 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -91,20 +68,6 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -108,7 +108,7 @@ index 47ddd5418..d3f1dc812 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf arm64 ppc64el s390x
-@@ -117,17 +80,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -118,17 +81,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -126,7 +126,7 @@ index 47ddd5418..d3f1dc812 100644
  Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf
-@@ -140,15 +92,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -141,15 +93,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
  
@@ -281,7 +281,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index f8d53afa2..92af72be0 100755
+index b10128a11..dbebf167c 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -294,7 +294,7 @@ index f8d53afa2..92af72be0 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index b71546ab0..171eff24c 100644
+index b53af8938..d62d17dbf 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -41,6 +41,15 @@ family=ubuntu

@@ -1,6 +1,6 @@
-From 201c42929b7244647a65de5224ec5b5a76bfa501 Mon Sep 17 00:00:00 2001
+From 40effaceb446b38beb0ab055a9a5c9f7194ba0e6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 26 Jan 2022 13:56:14 -0600
+Date: Thu, 7 Jul 2022 16:21:02 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -16,8 +16,8 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/hdmi.h                          |   2 +-
  include/linux/mmc/sdio_ids.h                  |   5 +
  include/linux/pci_ids.h                       |  32 ++++
- sound/pci/bt87x.c                             | 143 +++++++++++++-----
- 13 files changed, 180 insertions(+), 66 deletions(-)
+ sound/pci/bt87x.c                             | 147 ++++++++++++------
+ 13 files changed, 179 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -293,10 +293,10 @@ index 53f0efa0b..f8eea0191 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index aad54c666..d064414bb 100644
+index 0178823ce..a7cd85cd1 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1083,6 +1083,7 @@
+@@ -1085,6 +1085,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -304,7 +304,7 @@ index aad54c666..d064414bb 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1352,6 +1353,7 @@
+@@ -1354,6 +1355,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -312,7 +312,7 @@ index aad54c666..d064414bb 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -1696,6 +1698,14 @@
+@@ -1698,6 +1700,14 @@
  #define PCI_VENDOR_ID_RP		0x11fe
  
  #define PCI_VENDOR_ID_CYCLADES		0x120e
@@ -327,7 +327,7 @@ index aad54c666..d064414bb 100644
  #define PCI_DEVICE_ID_PC300_RX_2	0x0300
  #define PCI_DEVICE_ID_PC300_RX_1	0x0301
  #define PCI_DEVICE_ID_PC300_TE_2	0x0310
-@@ -1964,6 +1974,24 @@
+@@ -1966,6 +1976,24 @@
  #define PCI_DEVICE_ID_APPLICOM_PCI2000IBS_CAN 0x0002
  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
  
@@ -352,7 +352,7 @@ index aad54c666..d064414bb 100644
  #define PCI_VENDOR_ID_MOXA		0x1393
  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
  #define PCI_DEVICE_ID_MOXA_C218		0x2180
-@@ -2024,6 +2052,8 @@
+@@ -2026,6 +2054,8 @@
  #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
  
  #define PCI_VENDOR_ID_MICROGATE		0x13c0
@@ -361,7 +361,7 @@ index aad54c666..d064414bb 100644
  
  #define PCI_VENDOR_ID_3WARE		0x13C1
  #define PCI_DEVICE_ID_3WARE_1000	0x1000
-@@ -3096,4 +3126,6 @@
+@@ -3105,4 +3135,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -369,7 +369,7 @@ index aad54c666..d064414bb 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index d23f93163..66a5a24e7 100644
+index 621985bfe..66a5a24e7 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -23,12 +23,14 @@
@@ -528,10 +528,10 @@ index d23f93163..66a5a24e7 100644
 +	static struct snd_device_ops ops = {
 +		.dev_free = snd_bt87x_dev_free
 +	};
-+
-+	*rchip = NULL;
  
 -	err = pcim_enable_device(pci);
++	*rchip = NULL;
++
 +	err = pci_enable_device(pci);
  	if (err < 0)
  		return err;
@@ -626,7 +626,18 @@ index d23f93163..66a5a24e7 100644
  			dev_dbg(&pci->dev,
  				"card %#04x-%#04x:%#04x has no audio\n",
  				    pci->device, pci->subsystem_vendor, pci->subsystem_device);
-@@ -829,15 +881,14 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -805,8 +857,8 @@ static int snd_bt87x_detect_card(struct pci_dev *pci)
+ 	return SND_BT87X_BOARD_UNKNOWN;
+ }
+ 
+-static int __snd_bt87x_probe(struct pci_dev *pci,
+-			     const struct pci_device_id *pci_id)
++static int snd_bt87x_probe(struct pci_dev *pci,
++			   const struct pci_device_id *pci_id)
+ {
+ 	static int dev;
+ 	struct snd_card *card;
+@@ -829,15 +881,14 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  		return -ENOENT;
  	}
  
@@ -646,7 +657,7 @@ index d23f93163..66a5a24e7 100644
  
  	memcpy(&chip->board, &snd_bt87x_boards[boardid], sizeof(chip->board));
  
-@@ -849,24 +900,24 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -849,24 +900,24 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  		err = snd_bt87x_pcm(chip, DEVICE_DIGITAL, "Bt87x Digital");
  		if (err < 0)
@@ -676,7 +687,7 @@ index d23f93163..66a5a24e7 100644
  	}
  	dev_info(card->dev, "bt87x%d: Using board %d, %sanalog, %sdigital "
  		   "(rate %d Hz)\n", dev, boardid,
-@@ -882,11 +933,20 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -882,17 +933,20 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  	err = snd_card_register(card);
  	if (err < 0)
@@ -690,15 +701,18 @@ index d23f93163..66a5a24e7 100644
 +_error:
 +	snd_card_free(card);
 +	return err;
-+}
-+
+ }
+ 
+-static int snd_bt87x_probe(struct pci_dev *pci,
+-			   const struct pci_device_id *pci_id)
 +static void snd_bt87x_remove(struct pci_dev *pci)
-+{
+ {
+-	return snd_card_free_on_error(&pci->dev, __snd_bt87x_probe(pci, pci_id));
 +	snd_card_free(pci_get_drvdata(pci));
  }
  
  /* default entries for all Bt87x cards - it's not exported */
-@@ -901,6 +961,7 @@ static struct pci_driver driver = {
+@@ -907,6 +961,7 @@ static struct pci_driver driver = {
  	.name = KBUILD_MODNAME,
  	.id_table = snd_bt87x_ids,
  	.probe = snd_bt87x_probe,

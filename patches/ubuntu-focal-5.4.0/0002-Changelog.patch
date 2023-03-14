@@ -1,24 +1,24 @@
-From 57c75b7f92d85b9ccf6f088b134cdcfdc84286f3 Mon Sep 17 00:00:00 2001
+From de45e3cb1ef284580cd407c604c9ec2a8e8c5292 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 12 May 2022 16:20:00 -0500
+Date: Thu, 22 Sep 2022 11:22:33 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ debian.master/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index b3d19b12b..10ef06b06 100644
+index 499d7399c..52c2fed26 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,34 @@
-+linux (5.4.0-1042205121620.0+mediatree+hauppauge) focal; urgency=low
+@@ -1,3 +1,33 @@
++linux (5.4.0-1222209221122.1+mediatree+hauppauge) focal; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 5.4.0-104.118 rev 93e0b3b475dcc41e187375fd6362a10e12de283a
++    - 5.4.0-122.138 rev ac13f0e563d69c185c7fa9cbd8302a47f2ca07dd
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
++    - 0001-Linuxtv.org-media-tree-sync-2022-06-06-06-00.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,17 +35,16 @@ index b3d19b12b..10ef06b06 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-Revert.2c98b8a34.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 12 May 2022 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
 +
- linux (5.4.0-104.118) focal; urgency=medium
+ linux (5.4.0-122.138) focal; urgency=medium
  
-   * CVE-2022-23960
+   * focal/linux: 5.4.0-122.138 -proposed tracker (LP: #1979489)
 -- 
 2.25.1
 
