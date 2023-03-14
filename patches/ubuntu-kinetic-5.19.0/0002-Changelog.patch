@@ -1,0 +1,33 @@
+From 1cc6ec646a5459d9b9fe227389dff871895c0615 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Mon, 13 Feb 2023 14:26:25 -0600
+Subject: [PATCH 2/6] Changelog
+
+---
+ debian.master/changelog | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/debian.master/changelog b/debian.master/changelog
+index f4f7c91cb..5adab5bb2 100644
+--- a/debian.master/changelog
++++ b/debian.master/changelog
+@@ -1,3 +1,16 @@
++linux (5.19.0-352302131426.0+mediatree+hauppauge) kinetic; urgency=low
++
++  * Ubuntu-master kernel git clone
++    - 5.19.0-35.36 rev b0cc132d683aaee94f0bff57abc2bb02e06631ec
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2022-01-01-00-00.patch
++    - 0002-Changelog.patch
++
++  * Additional patches
++
++ -- Fake User <hidden@email.co>  Mon, 13 Feb 2023 14:26:25 -0600
++
+ linux (5.19.0-35.36) kinetic; urgency=medium
+ 
+   * kinetic/linux: 5.19.0-35.36 -proposed tracker (LP: #2004652)
+-- 
+2.37.2
+
