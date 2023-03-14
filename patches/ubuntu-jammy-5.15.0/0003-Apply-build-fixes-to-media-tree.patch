@@ -1,20 +1,275 @@
-From 8e84c381aa166769860284a8b50b6b3b809728ce Mon Sep 17 00:00:00 2001
+From 89c6f873d866b032c34044ebeeaecc7cb6ac1981 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 20 Apr 2022 14:27:47 -0500
+Date: Wed, 21 Sep 2022 13:51:33 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- debian/empty | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/cec/core/cec-api.c           | 3 +++
+ drivers/media/i2c/hi556.c                  | 4 ++--
+ drivers/media/i2c/imx208.c                 | 4 ++--
+ drivers/media/i2c/imx319.c                 | 4 ++--
+ drivers/media/i2c/ov2740.c                 | 4 ++--
+ drivers/media/i2c/ov5670.c                 | 4 ++--
+ drivers/media/i2c/ov5675.c                 | 4 ++--
+ drivers/media/i2c/ov8856.c                 | 4 ++--
+ drivers/media/mc/mc-device.c               | 2 ++
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++++--
+ drivers/media/rc/Makefile                  | 2 +-
+ drivers/media/usb/em28xx/em28xx-dvb.c      | 2 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c       | 2 ++
+ 13 files changed, 27 insertions(+), 18 deletions(-)
 
-diff --git a/debian/empty b/debian/empty
-index e1775d5f3..0dd4bc101 100644
---- a/debian/empty
-+++ b/debian/empty
-@@ -1,2 +1,2 @@
- Placeholder
--
-+Media tree fixes
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index 1c3096820..3f321386b 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -19,6 +19,9 @@
+ #include <linux/version.h>
+ 
+ #include <media/cec-pin.h>
++
++#include <media/compat.h>
++
+ #include "cec-priv.h"
+ #include "cec-pin-priv.h"
+ 
+diff --git a/drivers/media/i2c/hi556.c b/drivers/media/i2c/hi556.c
+index 055d1aa84..a455860f3 100644
+--- a/drivers/media/i2c/hi556.c
++++ b/drivers/media/i2c/hi556.c
+@@ -1134,7 +1134,7 @@ static int hi556_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&hi556->sd, client, &hi556_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = hi556_identify_module(hi556);
+ 		if (ret) {
+@@ -1208,7 +1208,7 @@ static struct i2c_driver hi556_i2c_driver = {
+ 	},
+ 	.probe_new = hi556_probe,
+ 	.remove = hi556_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(hi556_i2c_driver);
+diff --git a/drivers/media/i2c/imx208.c b/drivers/media/i2c/imx208.c
+index b9516b2f1..ec43f095d 100644
+--- a/drivers/media/i2c/imx208.c
++++ b/drivers/media/i2c/imx208.c
+@@ -996,7 +996,7 @@ static int imx208_probe(struct i2c_client *client)
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&imx208->sd, client, &imx208_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		/* Check module identity */
+ 		ret = imx208_identify_module(imx208);
+@@ -1100,7 +1100,7 @@ static struct i2c_driver imx208_i2c_driver = {
+ 	},
+ 	.probe_new = imx208_probe,
+ 	.remove = imx208_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(imx208_i2c_driver);
+diff --git a/drivers/media/i2c/imx319.c b/drivers/media/i2c/imx319.c
+index a2b5a34de..dfdb7c441 100644
+--- a/drivers/media/i2c/imx319.c
++++ b/drivers/media/i2c/imx319.c
+@@ -2444,7 +2444,7 @@ static int imx319_probe(struct i2c_client *client)
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&imx319->sd, client, &imx319_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		/* Check module identity */
+ 		ret = imx319_identify_module(imx319);
+@@ -2558,7 +2558,7 @@ static struct i2c_driver imx319_i2c_driver = {
+ 	},
+ 	.probe_new = imx319_probe,
+ 	.remove = imx319_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ module_i2c_driver(imx319_i2c_driver);
+ 
+diff --git a/drivers/media/i2c/ov2740.c b/drivers/media/i2c/ov2740.c
+index d5f0eabf2..a50d1a2d3 100644
+--- a/drivers/media/i2c/ov2740.c
++++ b/drivers/media/i2c/ov2740.c
+@@ -1163,7 +1163,7 @@ static int ov2740_probe(struct i2c_client *client)
+ 		return -ENOMEM;
+ 
+ 	v4l2_i2c_subdev_init(&ov2740->sd, client, &ov2740_subdev_ops);
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = ov2740_identify_module(ov2740);
+ 		if (ret) {
+@@ -1239,7 +1239,7 @@ static struct i2c_driver ov2740_i2c_driver = {
+ 	},
+ 	.probe_new = ov2740_probe,
+ 	.remove = ov2740_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov2740_i2c_driver);
+diff --git a/drivers/media/i2c/ov5670.c b/drivers/media/i2c/ov5670.c
+index 02f75c18e..460443a91 100644
+--- a/drivers/media/i2c/ov5670.c
++++ b/drivers/media/i2c/ov5670.c
+@@ -2490,7 +2490,7 @@ static int ov5670_probe(struct i2c_client *client)
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&ov5670->sd, client, &ov5670_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		/* Check module identity */
+ 		ret = ov5670_identify_module(ov5670);
+@@ -2593,7 +2593,7 @@ static struct i2c_driver ov5670_i2c_driver = {
+ 	},
+ 	.probe_new = ov5670_probe,
+ 	.remove = ov5670_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov5670_i2c_driver);
+diff --git a/drivers/media/i2c/ov5675.c b/drivers/media/i2c/ov5675.c
+index 82ba9f56b..502589dad 100644
+--- a/drivers/media/i2c/ov5675.c
++++ b/drivers/media/i2c/ov5675.c
+@@ -1208,7 +1208,7 @@ static int ov5675_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&ov5675->sd, client, &ov5675_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = ov5675_identify_module(ov5675);
+ 		if (ret) {
+@@ -1287,7 +1287,7 @@ static struct i2c_driver ov5675_i2c_driver = {
+ 	},
+ 	.probe_new = ov5675_probe,
+ 	.remove = ov5675_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov5675_i2c_driver);
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index a9728afc8..a0e5a6771 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -2475,7 +2475,7 @@ static int ov8856_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&ov8856->sd, client, &ov8856_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = __ov8856_power_on(ov8856);
+ 		if (ret) {
+@@ -2566,7 +2566,7 @@ static struct i2c_driver ov8856_i2c_driver = {
+ 	},
+ 	.probe_new = ov8856_probe,
+ 	.remove = ov8856_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov8856_i2c_driver);
+diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
+index f361319f9..9793ce83d 100644
+--- a/drivers/media/mc/mc-device.c
++++ b/drivers/media/mc/mc-device.c
+@@ -24,6 +24,8 @@
+ #include <media/media-entity.h>
+ #include <media/media-request.h>
+ 
++#include <media/compat.h>
++
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+ /*
+diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+index df6c94da2..7dc8351d1 100644
+--- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
++++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+@@ -8,6 +8,8 @@
+ #include <linux/property.h>
+ #include <media/v4l2-fwnode.h>
+ 
++#include <media/compat.h>
++
+ #include "cio2-bridge.h"
+ 
+ /*
+@@ -236,7 +238,7 @@ static void cio2_bridge_instantiate_vcm_i2c_client(struct cio2_sensor *sensor)
+ 	board_info.swnode = &sensor->swnodes[SWNODE_VCM];
+ 
+ 	sensor->vcm_i2c_client =
+-		i2c_acpi_new_device_by_fwnode(acpi_fwnode_handle(sensor->adev),
++		i2c_acpi_new_device(get_dev_from_fwnode(acpi_fwnode_handle(sensor->adev)),
+ 					      1, &board_info);
+ 	if (IS_ERR(sensor->vcm_i2c_client)) {
+ 		dev_warn(&sensor->adev->dev, "Error instantiation VCM i2c-client: %ld\n",
+@@ -391,7 +393,7 @@ static int cio2_bridge_sensors_are_ready(void)
+ 			if (!adev->status.enabled)
+ 				continue;
+ 
+-			if (!acpi_dev_ready_for_enumeration(adev))
++			if (!(adev->status.present || adev->status.functional))
+ 				ready = false;
+ 		}
+ 	}
+diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
+index 3d0911783..a9285266e 100644
+--- a/drivers/media/rc/Makefile
++++ b/drivers/media/rc/Makefile
+@@ -4,7 +4,7 @@ obj-y += keymaps/
+ 
+ rc-core-y := rc-main.o rc-ir-raw.o
+ rc-core-$(CONFIG_LIRC) += lirc_dev.o
+-rc-core-$(CONFIG_MEDIA_CEC_RC) += rc-cec.o
++rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
+ rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
+ 
+ obj-$(CONFIG_RC_CORE) += rc-core.o
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 9530c41c4..fed16bcb2 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -44,7 +44,7 @@
+ #include "mt352.h"
+ #include "mt352_priv.h" /* FIXME */
+ #include "tda1002x.h"
+-#include "drx39xxj.h"
++#include "../../dvb-frontends/drx39xyj/drx39xxj.h"
+ #include "tda18271.h"
+ #include "s921.h"
+ #include "drxd.h"
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 9c017806b..3ef92783f 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -31,6 +31,8 @@
+ 
+ #include <trace/events/v4l2.h>
+ 
++#include <media/compat.h>
++
+ /* Zero out the end of the struct pointed to by p.  Everything after, but
+  * not including, the specified field is cleared. */
+ #define CLEAR_AFTER_FIELD(p, field) \
 -- 
 2.34.1
 

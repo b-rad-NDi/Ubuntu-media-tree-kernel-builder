@@ -1,12 +1,12 @@
-From a3ca93edc3243f559d97266af4720e294aa93a1d Mon Sep 17 00:00:00 2001
+From 57e7a94b694a2c706d62c4031f5d775ffc6dcde4 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 20 Apr 2022 14:32:51 -0500
+Date: Wed, 10 Aug 2022 12:06:05 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
- debian.master/control.stub.in                | 58 --------------------
- debian.master/copyright                      | 22 ++++++++
+ debian.master/control.stub.in                | 61 +-------------------
+ debian.master/copyright                      | 22 +++++++
  debian.master/rules.d/amd64.mk               |  6 +-
  debian.master/rules.d/arm64.mk               |  2 +-
  debian.master/rules.d/ppc64el.mk             |  2 +-
@@ -16,7 +16,7 @@ Subject: [PATCH 6/6] Packaging updates
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 17 ++++--
  debian/scripts/config-check                  |  2 +-
- 12 files changed, 47 insertions(+), 74 deletions(-)
+ 12 files changed, 49 insertions(+), 75 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
 index 9fe268b33..42ad68642 100644
@@ -34,10 +34,20 @@ index 9fe268b33..42ad68642 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 74e4130f4..b48bef3f8 100644
+index 419bd340a..39426fc08 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
-@@ -59,30 +59,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
+@@ -1,7 +1,8 @@
+ Source: SRCPKGNAME
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Fake User <hidden@email.co>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper-compat (= 10),
+@@ -60,30 +61,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
  
@@ -68,7 +78,7 @@ index 74e4130f4..b48bef3f8 100644
  Package: SRCPKGNAME-headers-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: all
-@@ -95,18 +71,6 @@ Description: Header files related to Linux kernel version PKGVER
+@@ -96,18 +73,6 @@ Description: Header files related to Linux kernel version PKGVER
   that want the latest kernel headers. Please read
   /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
  
@@ -87,7 +97,7 @@ index 74e4130f4..b48bef3f8 100644
  Package: SRCPKGNAME-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf arm64 ppc64el s390x
-@@ -120,17 +84,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
+@@ -121,17 +86,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
   =HUMAN=.
   You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
  
@@ -105,7 +115,7 @@ index 74e4130f4..b48bef3f8 100644
  Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
  Build-Profiles: <!stage1>
  Architecture: amd64 armhf
-@@ -142,14 +95,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
+@@ -143,14 +97,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
   version locked tools for cloud tools for version PKGVER-ABINUM on
   =HUMAN=.
   You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
@@ -151,7 +161,7 @@ index d1d04a6d6..b6f183f12 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index 2288c25a7..68f53685f 100644
+index d0384f022..df23d1a64 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -8,7 +8,7 @@ kernel_file	= arch/$(build_arch)/boot/bzImage
@@ -163,7 +173,7 @@ index 2288c25a7..68f53685f 100644
  do_tools_usbip  = true
  do_tools_cpupower = true
  do_tools_perf   = true
-@@ -16,9 +16,9 @@ do_tools_perf_jvmti = true
+@@ -16,8 +16,8 @@ do_tools_perf_jvmti = true
  do_tools_bpftool = true
  do_tools_x86	= true
  do_tools_hyperv	= true
@@ -173,10 +183,9 @@ index 2288c25a7..68f53685f 100644
 -do_tools_common = true
 +do_tools_common = false
  do_tools_acpidbg = true
- do_zfs		= true
- do_v4l2loopback	= true
+ do_odm_drivers  = true
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index e0415a407..529f890a2 100644
+index d215e1bda..139eacca8 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
 @@ -7,7 +7,7 @@ build_image	= Image.gz
@@ -189,7 +198,7 @@ index e0415a407..529f890a2 100644
  vdso		= vdso_install
  
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index ec8f7e914..71b95e9f2 100644
+index b205a5153..786e7beae 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
 @@ -8,7 +8,7 @@ kernel_file     = arch/powerpc/boot/vmlinux.strip
@@ -202,7 +211,7 @@ index ec8f7e914..71b95e9f2 100644
  do_tools_cpupower = true
  do_tools_perf	  = true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index 4b3698fc9..eb8a131af 100644
+index 0620c638a..4569e6e94 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
 @@ -11,7 +11,7 @@ vdso		= vdso_install
@@ -238,7 +247,7 @@ index dd08a6715..68df67c02 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index eca69cdc9..e623294c8 100755
+index 732b5eeea..232ac93ac 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -251,7 +260,7 @@ index eca69cdc9..e623294c8 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 78f8a0f16..68fa1b464 100644
+index 2f27d1710..089b4e52c 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -43,6 +43,15 @@ family=ubuntu
