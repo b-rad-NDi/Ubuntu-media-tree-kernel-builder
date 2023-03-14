@@ -1,24 +1,24 @@
-From fc56ce8b7a2cc2cab31a3cef389012cda2bec644 Mon Sep 17 00:00:00 2001
+From 1270be05e36e591e120a7dbdf373361410f91a4f Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 12 May 2022 16:20:00 -0500
+Date: Thu, 22 Sep 2022 11:22:33 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ debian.master/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index d6b648e60..e1aad3047 100644
+index c983414ea..b4abf68d9 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,34 @@
-+linux (4.15.0-171202205121620.0+mediatree+hauppauge) bionic; urgency=low
+@@ -1,3 +1,33 @@
++linux (4.15.0-189202209221122.0+mediatree+hauppauge) bionic; urgency=low
 +
 +  * Ubuntu-master kernel git clone
-+    - 4.15.0-171.180 rev fb4e7c6470550e156b1ccf9438a7836a404baae5
++    - 4.15.0-189.200 rev 4422fc901a08ab64433e87850db9d68495280623
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2022-02-02-20-22.patch
++    - 0001-Linuxtv.org-media-tree-sync-2022-06-06-06-00.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,17 +35,16 @@ index d6b648e60..e1aad3047 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-Revert.2c98b8a34.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 12 May 2022 16:20:00 -0500
++ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
 +
- linux (4.15.0-171.180) bionic; urgency=medium
+ linux (4.15.0-189.200) bionic; urgency=medium
  
-   * CVE-2022-0001
+   * bionic/linux: 4.15.0-189.200 -proposed tracker (LP: #1979525)
 -- 
 2.17.1
 
