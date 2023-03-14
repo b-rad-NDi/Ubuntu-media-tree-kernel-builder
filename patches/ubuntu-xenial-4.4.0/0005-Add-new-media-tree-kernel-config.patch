@@ -1,14 +1,14 @@
-From e02188e00ef7c85f9947f4e130f26e13766f07d4 Mon Sep 17 00:00:00 2001
+From 6456b70089e08b282e15f5def15bfee4215c8731 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Feb 2022 12:04:36 -0600
+Date: Wed, 8 Jun 2022 10:27:54 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 184 +++++++++++++++++++++++++++---
- 1 file changed, 171 insertions(+), 13 deletions(-)
+ debian.master/config/config.common.ubuntu | 189 ++++++++++++++++++++++++++++--
+ 1 file changed, 176 insertions(+), 13 deletions(-)
 
 diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 2f3c1a0..19e84d8 100644
+index 2f3c1a0..660c831 100644
 --- a/debian.master/config/config.common.ubuntu
 +++ b/debian.master/config/config.common.ubuntu
 @@ -2060,7 +2060,7 @@ CONFIG_DUMMY_CONSOLE=y
@@ -72,7 +72,7 @@ index 2f3c1a0..19e84d8 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -9143,3 +9136,168 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
+@@ -9143,3 +9136,173 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
  CONFIG_ZSMALLOC=y
  # CONFIG_ZSMALLOC_STAT is not set
  CONFIG_ZSWAP=y
@@ -136,7 +136,7 @@ index 2f3c1a0..19e84d8 100644
 +CONFIG_VIDEO_FB_IVTV_FORCE_PAT is not set
 +# CONFIG_VIDEO_TDA1997X is not set
 +CONFIG_VIDEO_TLV320AIC23B=m
-+CONFIG_VIDEO_ADV7183=m
++# CONFIG_VIDEO_ADV7183 is not set
 +CONFIG_VIDEO_ADV7604_CEC=y
 +CONFIG_VIDEO_ADV7842_CEC=y
 +CONFIG_VIDEO_ML86V7667=m
@@ -179,8 +179,8 @@ index 2f3c1a0..19e84d8 100644
 +CONFIG_VIDEO_MT9V032=m
 +# CONFIG_VIDEO_MT9V111 is not set
 +CONFIG_VIDEO_SR030PC30=m
-+CONFIG_VIDEO_NOON010PC30=m
-+CONFIG_VIDEO_M5MOLS=m
++# CONFIG_VIDEO_NOON010PC30 is not set
++# CONFIG_VIDEO_M5MOLS is not set
 +CONFIG_VIDEO_RJ54N1=m
 +CONFIG_VIDEO_S5K6AA=m
 +CONFIG_VIDEO_S5K6A3=m
@@ -241,6 +241,11 @@ index 2f3c1a0..19e84d8 100644
 +# CONFIG_VIDEO_OV13B10 is not set
 +# CONFIG_VIDEO_ZORAN_DC30 is not set
 +# CONFIG_VIDEO_ZORAN_ZR36060 is not set
++CONFIG_MEDIA_PLATFORM_DRIVERS=y
++# CONFIG_VIDEO_HI847 is not set
++# CONFIG_VIDEO_OG01A1B is not set
++# CONFIG_VIDEO_OV08D10 is not set
++
 -- 
 2.7.4
 

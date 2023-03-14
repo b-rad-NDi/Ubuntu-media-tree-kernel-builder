@@ -1,27 +1,31 @@
-From ae1985277d3447cd66ec2e47a8157c51c7193447 Mon Sep 17 00:00:00 2001
+From 14d26fa32bd8013b65711dee16bd8d99d31ebc64 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 2 Feb 2022 12:03:39 -0600
+Date: Wed, 8 Jun 2022 10:27:30 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- drivers/hid/hid-picolcd_cir.c           |  11 +-
- drivers/input/touchscreen/sur40.c       |  48 ++++-----
- drivers/isdn/hardware/mISDN/w6692.c     |   6 +-
- drivers/leds/Kconfig                    |   1 +
- drivers/net/ethernet/via/via-velocity.c |  10 +-
- drivers/usb/gadget/function/uvc_queue.c |   5 +-
- drivers/video/hdmi.c                    |   4 +-
- fs/compat_ioctl.c                       |  42 --------
- include/linux/compiler-gcc.h            |   3 +
- include/linux/dma-buf.h                 |   2 +
- include/linux/hdmi.h                    |   7 +-
- include/linux/kconfig.h                 |   7 ++
- include/linux/mmc/sdio_ids.h            |   5 +
- include/linux/pci_ids.h                 |  32 ++++++
- mm/slub.c                               |   2 +
- sound/pci/bt87x.c                       | 181 ++++++++++++++++++++++----------
- ubuntu/i915/i915_gem_dmabuf.c           |  10 +-
- 17 files changed, 228 insertions(+), 148 deletions(-)
+ drivers/hid/hid-picolcd_cir.c               |  11 +-
+ drivers/input/touchscreen/sur40.c           |  48 ++++----
+ drivers/isdn/hardware/mISDN/w6692.c         |   6 +-
+ drivers/leds/Kconfig                        |   1 +
+ drivers/net/ethernet/via/via-velocity.c     |  10 +-
+ drivers/staging/media/av7110/av7110.c       |   8 +-
+ drivers/staging/media/av7110/av7110.h       |  12 +-
+ drivers/staging/media/av7110/av7110_ipack.c |   1 +
+ drivers/staging/media/av7110/budget-patch.c |  10 +-
+ drivers/usb/gadget/function/uvc_queue.c     |   5 +-
+ drivers/video/hdmi.c                        |   4 +-
+ fs/compat_ioctl.c                           |  42 -------
+ include/linux/compiler-gcc.h                |   3 +
+ include/linux/dma-buf.h                     |   2 +
+ include/linux/hdmi.h                        |   7 +-
+ include/linux/kconfig.h                     |   7 ++
+ include/linux/mmc/sdio_ids.h                |   5 +
+ include/linux/pci_ids.h                     |  32 +++++
+ mm/slub.c                                   |   2 +
+ sound/pci/bt87x.c                           | 185 +++++++++++++++++++---------
+ ubuntu/i915/i915_gem_dmabuf.c               |  10 +-
+ 21 files changed, 243 insertions(+), 168 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..1d42112 100644
@@ -280,6 +284,89 @@ index f38696c..c841bba 100644
  }
  
  static int velocity_platform_remove(struct platform_device *pdev)
+diff --git a/drivers/staging/media/av7110/av7110.c b/drivers/staging/media/av7110/av7110.c
+index 919397d..e78b88c 100644
+--- a/drivers/staging/media/av7110/av7110.c
++++ b/drivers/staging/media/av7110/av7110.c
+@@ -41,16 +41,16 @@
+ 
+ #include <media/dvb_frontend.h>
+ 
+-#include "ttpci-eeprom.h"
++#include "../../../media/common/ttpci-eeprom.h"
+ #include "av7110.h"
+ #include "av7110_hw.h"
+ #include "av7110_av.h"
+ #include "av7110_ca.h"
+ #include "av7110_ipack.h"
+ 
+-#include "bsbe1.h"
+-#include "lnbp21.h"
+-#include "bsru6.h"
++#include "../../../media/dvb-frontends/bsbe1.h"
++#include "../../../media/dvb-frontends/lnbp21.h"
++#include "../../../media/dvb-frontends/bsru6.h"
+ 
+ #define TS_WIDTH  376
+ #define TS_HEIGHT 512
+diff --git a/drivers/staging/media/av7110/av7110.h b/drivers/staging/media/av7110/av7110.h
+index 809d938..3674498 100644
+--- a/drivers/staging/media/av7110/av7110.h
++++ b/drivers/staging/media/av7110/av7110.h
+@@ -25,13 +25,13 @@
+ #include <media/dvb_net.h>
+ #include <media/dvb_ringbuffer.h>
+ #include <media/dvb_frontend.h>
+-#include "ves1820.h"
+-#include "ves1x93.h"
+-#include "stv0299.h"
+-#include "tda8083.h"
++#include "../../../media/dvb-frontends/ves1820.h"
++#include "../../../media/dvb-frontends/ves1x93.h"
++#include "../../../media/dvb-frontends/stv0299.h"
++#include "../../../media/dvb-frontends/tda8083.h"
+ #include "sp8870.h"
+-#include "stv0297.h"
+-#include "l64781.h"
++#include "../../../media/dvb-frontends/stv0297.h"
++#include "../../../media/dvb-frontends/l64781.h"
+ 
+ #include <media/drv-intf/saa7146_vv.h>
+ 
+diff --git a/drivers/staging/media/av7110/av7110_ipack.c b/drivers/staging/media/av7110/av7110_ipack.c
+index 30330ed..dbc5d77 100644
+--- a/drivers/staging/media/av7110/av7110_ipack.c
++++ b/drivers/staging/media/av7110/av7110_ipack.c
+@@ -4,6 +4,7 @@
+ #include <linux/string.h>	/* for memcpy() */
+ #include <linux/vmalloc.h>
+ 
++#include <media/compat.h>
+ 
+ void av7110_ipack_reset(struct ipack *p)
+ {
+diff --git a/drivers/staging/media/av7110/budget-patch.c b/drivers/staging/media/av7110/budget-patch.c
+index d173c8a..73fee26 100644
+--- a/drivers/staging/media/av7110/budget-patch.c
++++ b/drivers/staging/media/av7110/budget-patch.c
+@@ -15,12 +15,12 @@
+ 
+ #include "av7110.h"
+ #include "av7110_hw.h"
+-#include "budget.h"
+-#include "stv0299.h"
+-#include "ves1x93.h"
+-#include "tda8083.h"
++#include "../../../media/pci/ttpci/budget.h"
++#include "../../../media/dvb-frontends/stv0299.h"
++#include "../../../media/dvb-frontends/ves1x93.h"
++#include "../../../media/dvb-frontends/tda8083.h"
+ 
+-#include "bsru6.h"
++#include "../../../media/dvb-frontends/bsru6.h"
+ 
+ DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+ 
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
 index 51d4a17..4089ae4 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
@@ -503,10 +590,10 @@ index 53f0efa..67953e6 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index aad54c6..3788279 100644
+index 0178823..89668e6 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1083,6 +1083,7 @@
+@@ -1085,6 +1085,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -514,7 +601,7 @@ index aad54c6..3788279 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1696,6 +1697,17 @@
+@@ -1698,6 +1699,17 @@
  #define PCI_VENDOR_ID_RP		0x11fe
  
  #define PCI_VENDOR_ID_CYCLADES		0x120e
@@ -532,7 +619,7 @@ index aad54c6..3788279 100644
  #define PCI_DEVICE_ID_PC300_RX_2	0x0300
  #define PCI_DEVICE_ID_PC300_RX_1	0x0301
  #define PCI_DEVICE_ID_PC300_TE_2	0x0310
-@@ -1965,6 +1977,24 @@
+@@ -1967,6 +1979,24 @@
  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
  
  #define PCI_VENDOR_ID_MOXA		0x1393
@@ -557,7 +644,7 @@ index aad54c6..3788279 100644
  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
  #define PCI_DEVICE_ID_MOXA_C218		0x2180
  #define PCI_DEVICE_ID_MOXA_C320		0x3200
-@@ -2024,6 +2054,8 @@
+@@ -2026,6 +2056,8 @@
  #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
  
  #define PCI_VENDOR_ID_MICROGATE		0x13c0
@@ -580,7 +667,7 @@ index 40c7a3f..ce561fd 100644
  void *__kmalloc_node_track_caller(size_t size, gfp_t gfpflags,
  					int node, unsigned long caller)
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index d23f931..5925b71 100644
+index 621985b..5925b71 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -1,10 +1,24 @@
@@ -892,11 +979,11 @@ index d23f931..5925b71 100644
 -	card->private_free = snd_bt87x_free;
  	pci_set_master(pci);
 +	synchronize_irq(chip->irq);
-+
+ 
 +	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 +	if (err < 0)
 +		goto fail;
- 
++
 +	*rchip = chip;
  	return 0;
 +
@@ -937,7 +1024,18 @@ index d23f931..5925b71 100644
  			dev_dbg(&pci->dev,
  				"card %#04x-%#04x:%#04x has no audio\n",
  				    pci->device, pci->subsystem_vendor, pci->subsystem_device);
-@@ -829,15 +895,14 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -805,8 +871,8 @@ static int snd_bt87x_detect_card(struct pci_dev *pci)
+ 	return SND_BT87X_BOARD_UNKNOWN;
+ }
+ 
+-static int __snd_bt87x_probe(struct pci_dev *pci,
+-			     const struct pci_device_id *pci_id)
++static int snd_bt87x_probe(struct pci_dev *pci,
++			   const struct pci_device_id *pci_id)
+ {
+ 	static int dev;
+ 	struct snd_card *card;
+@@ -829,15 +895,14 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  		return -ENOENT;
  	}
  
@@ -957,7 +1055,7 @@ index d23f931..5925b71 100644
  
  	memcpy(&chip->board, &snd_bt87x_boards[boardid], sizeof(chip->board));
  
-@@ -849,24 +914,24 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -849,24 +914,24 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  		err = snd_bt87x_pcm(chip, DEVICE_DIGITAL, "Bt87x Digital");
  		if (err < 0)
@@ -987,7 +1085,7 @@ index d23f931..5925b71 100644
  	}
  	dev_info(card->dev, "bt87x%d: Using board %d, %sanalog, %sdigital "
  		   "(rate %d Hz)\n", dev, boardid,
-@@ -882,11 +947,20 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -882,17 +947,20 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  	err = snd_card_register(card);
  	if (err < 0)
@@ -1001,15 +1099,18 @@ index d23f931..5925b71 100644
 +_error:
 +	snd_card_free(card);
 +	return err;
-+}
-+
+ }
+ 
+-static int snd_bt87x_probe(struct pci_dev *pci,
+-			   const struct pci_device_id *pci_id)
 +static void snd_bt87x_remove(struct pci_dev *pci)
-+{
+ {
+-	return snd_card_free_on_error(&pci->dev, __snd_bt87x_probe(pci, pci_id));
 +	snd_card_free(pci_get_drvdata(pci));
  }
  
  /* default entries for all Bt87x cards - it's not exported */
-@@ -901,6 +975,7 @@ static struct pci_driver driver = {
+@@ -907,6 +975,7 @@ static struct pci_driver driver = {
  	.name = KBUILD_MODNAME,
  	.id_table = snd_bt87x_ids,
  	.probe = snd_bt87x_probe,
