@@ -1,9 +1,10 @@
-From 758d68ead4cfa185fb4a0ff48fc9e3869876a2d6 Mon Sep 17 00:00:00 2001
+From c03cc6c63674be4ff8532eb662b96f9dfdd2bfb3 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 10 Sep 2021 15:50:35 -0500
+Date: Wed, 8 Jun 2022 16:04:03 -0500
 Subject: [PATCH 6/6] Packaging updates
 
 ---
+ debian.hwe/changelog                      | 31 -------------------------------
  debian.hwe/control.d/flavour-control.stub |  4 ++--
  debian.hwe/control.stub.in                | 30 ++++--------------------------
  debian.hwe/copyright                      | 22 ++++++++++++++++++++++
@@ -15,7 +16,7 @@ Subject: [PATCH 6/6] Packaging updates
  debian/rules                              |  2 +-
  debian/rules.d/0-common-vars.mk           | 17 +++++++++++++----
  debian/rules.d/2-binary-arch.mk           |  4 ++++
- 11 files changed, 54 insertions(+), 41 deletions(-)
+ 12 files changed, 54 insertions(+), 72 deletions(-)
 
 diff --git a/debian.hwe/control.d/flavour-control.stub b/debian.hwe/control.d/flavour-control.stub
 index c172159..6327273 100644

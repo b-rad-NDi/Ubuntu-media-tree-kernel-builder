@@ -1,14 +1,14 @@
-From 6fbca79e47daa61f393f838e78e8566ae30d77a5 Mon Sep 17 00:00:00 2001
+From 8b8cb5af70ebbefdef9357913b7b991cac416472 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 17 Feb 2022 17:44:37 -0600
+Date: Wed, 8 Jun 2022 16:03:58 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.hwe/config/config.common.ubuntu | 145 +++++++++++++++++++++++++++++++--
- 1 file changed, 136 insertions(+), 9 deletions(-)
+ debian.hwe/config/config.common.ubuntu | 150 +++++++++++++++++++++++++++++++--
+ 1 file changed, 141 insertions(+), 9 deletions(-)
 
 diff --git a/debian.hwe/config/config.common.ubuntu b/debian.hwe/config/config.common.ubuntu
-index a5cbe99..c1f2220 100644
+index a5cbe99..a0da56c 100644
 --- a/debian.hwe/config/config.common.ubuntu
 +++ b/debian.hwe/config/config.common.ubuntu
 @@ -2487,7 +2487,7 @@ CONFIG_DVB_LNBP22=m
@@ -36,7 +36,7 @@ index a5cbe99..c1f2220 100644
  CONFIG_VIPERBOARD_ADC=m
  CONFIG_VIRTIO=y
  CONFIG_VIRTIO_BALLOON=y
-@@ -10555,3 +10548,137 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -10555,3 +10548,142 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -69,7 +69,7 @@ index a5cbe99..c1f2220 100644
 +# CONFIG_VIDEO_FB_IVTV_FORCE_PAT is not set
 +# CONFIG_VIDEO_TDA1997X is not set
 +CONFIG_VIDEO_TLV320AIC23B=m
-+CONFIG_VIDEO_ADV7183=m
++# CONFIG_VIDEO_ADV7183 is not set
 +CONFIG_VIDEO_ADV7604_CEC=y
 +CONFIG_VIDEO_ADV7842_CEC=y
 +CONFIG_VIDEO_ML86V7667=m
@@ -112,8 +112,8 @@ index a5cbe99..c1f2220 100644
 +CONFIG_VIDEO_MT9V032=m
 +# CONFIG_VIDEO_MT9V111 is not set
 +CONFIG_VIDEO_SR030PC30=m
-+CONFIG_VIDEO_NOON010PC30=m
-+CONFIG_VIDEO_M5MOLS=m
++# CONFIG_VIDEO_NOON010PC30 is not set
++# CONFIG_VIDEO_M5MOLS is not set
 +CONFIG_VIDEO_RJ54N1=m
 +CONFIG_VIDEO_S5K6AA=m
 +CONFIG_VIDEO_S5K6A3=m
@@ -174,6 +174,11 @@ index a5cbe99..c1f2220 100644
 +CONFIG_VIDEO_OV5693=m
 +CONFIG_VIDEO_OV13B10=m
 +# CONFIG_VIDEO_ZORAN_DC30 is not set
++CONFIG_MEDIA_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_HI847=m
++CONFIG_VIDEO_OG01A1B=m
++CONFIG_VIDEO_OV08D10=m
++
 -- 
 2.7.4
 
