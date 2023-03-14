@@ -1,6 +1,6 @@
-From 1e4a8cfddb6cbde091bae3d8c6d9180f63012f30 Mon Sep 17 00:00:00 2001
+From 5eacda65a2bb0bcd922eacdf074c9a06b5049556 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 28 Jan 2022 15:01:29 -0600
+Date: Wed, 21 Sep 2022 11:11:28 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -52,9 +52,10 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
  include/media/config-mycompat.h                             | 4 ++++
+ include/media/v4l2-subdev.h                                 | 2 ++
  include/media/videobuf2-core.h                              | 2 +-
  samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
- 50 files changed, 96 insertions(+), 20 deletions(-)
+ 51 files changed, 98 insertions(+), 20 deletions(-)
 
 diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
 index 4c5a15c53dbf..61734697ae39 100644
@@ -115,7 +116,7 @@ index ed75636a6fb3..681b30c5b3ca 100644
  #include "cec-pin-priv.h"
  
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index 0e616d975688..8fd7ba86d802 100644
+index 1c3096820590..3f321386b3db 100644
 --- a/drivers/media/cec/core/cec-api.c
 +++ b/drivers/media/cec/core/cec-api.c
 @@ -19,6 +19,9 @@
@@ -129,7 +130,7 @@ index 0e616d975688..8fd7ba86d802 100644
  #include "cec-pin-priv.h"
  
 diff --git a/drivers/media/common/videobuf2/Makefile b/drivers/media/common/videobuf2/Makefile
-index 54306f8d096c..9edaeaca50b8 100644
+index a6fe3f304685..022eb33c0ae8 100644
 --- a/drivers/media/common/videobuf2/Makefile
 +++ b/drivers/media/common/videobuf2/Makefile
 @@ -1,6 +1,6 @@
@@ -141,7 +142,7 @@ index 54306f8d096c..9edaeaca50b8 100644
  ifeq ($(CONFIG_TRACEPOINTS),y)
    videobuf2-common-objs += vb2-trace.o
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 76c725887f94..cd7ab619f8ad 100644
+index b3c1db9088d3..02af2e70ddbd 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
 @@ -23,6 +23,8 @@
@@ -154,7 +155,7 @@ index 76c725887f94..cd7ab619f8ad 100644
  	struct device			*dev;
  	void				*vaddr;
 diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 5e9d4c84aecd..85536c3943ef 100644
+index 994fa007dd3e..1b66374b4b36 100644
 --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
 @@ -22,6 +22,8 @@
@@ -214,7 +215,7 @@ index 82a09f560273..5f704d3d78c3 100644
  {
  	unsigned int j;
 diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index a62b9b6ddbb5..ecc609ccd923 100644
+index ebcda208bd05..123a28069f02 100644
 --- a/drivers/media/dvb-core/dvbdev.c
 +++ b/drivers/media/dvb-core/dvbdev.c
 @@ -27,6 +27,8 @@
@@ -283,7 +284,7 @@ index 3e383912bcfd..f85fe3d94e4c 100644
  #define FREQ_OFFSET_LOW_SYM_RATE 3000
  
 diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
-index a2fa408d2d9f..d11f26383d8e 100644
+index bb0c8fc6d383..2030c2fc258a 100644
 --- a/drivers/media/i2c/adv7604.c
 +++ b/drivers/media/i2c/adv7604.c
 @@ -37,6 +37,8 @@
@@ -309,7 +310,7 @@ index c249507aa2db..cf5e73e5d80f 100644
  #define IMX258_REG_VALUE_16BIT		2
  
 diff --git a/drivers/media/i2c/ov5693.c b/drivers/media/i2c/ov5693.c
-index 2784fcf67f3b..0409fcd27b42 100644
+index 117ff5403312..87ac777e24ec 100644
 --- a/drivers/media/i2c/ov5693.c
 +++ b/drivers/media/i2c/ov5693.c
 @@ -27,6 +27,8 @@
@@ -322,7 +323,7 @@ index 2784fcf67f3b..0409fcd27b42 100644
  #define OV5693_REG_16BIT(n)			((2 << 16) | (n))
  #define OV5693_REG_24BIT(n)			((3 << 16) | (n))
 diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
-index 8a30cfca328b..979310632419 100644
+index f361319f9c25..9793ce83d140 100644
 --- a/drivers/media/mc/mc-device.c
 +++ b/drivers/media/mc/mc-device.c
 @@ -24,6 +24,8 @@
@@ -361,7 +362,7 @@ index a83435245251..0fe3e2921476 100644
  #include "cx18-io.h"
  #include "cx18-cards.h"
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 45c2f4afceb8..94e0ec49a999 100644
+index 8fd5b6ef2428..55f26978df4d 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
 @@ -17,6 +17,8 @@
@@ -387,11 +388,11 @@ index f51fad33dc04..f9fa9e97532c 100644
  module_param(i2c_debug, int, 0644);
  MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
 diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 57d4d5485d7a..e6aa650df76b 100644
+index f5846c22c799..37d812293867 100644
 --- a/drivers/media/pci/ivtv/ivtv-driver.c
 +++ b/drivers/media/pci/ivtv/ivtv-driver.c
 @@ -60,6 +60,8 @@
- #include "tuner-xc2028.h"
+ #include "xc2028.h"
  #include <uapi/linux/sched/types.h>
  
 +#include <media/compat.h>
@@ -413,7 +414,7 @@ index c052c57c6dce..6b610a58b5ed 100644
  #include "ivtv-cards.h"
  #include "ivtv-gpio.h"
 diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-index 374c8e1087de..8fa5fc38b635 100644
+index 4d8974c9fcc9..d7707cf8449c 100644
 --- a/drivers/media/pci/saa7134/saa7134-video.c
 +++ b/drivers/media/pci/saa7134/saa7134-video.c
 @@ -21,6 +21,8 @@
@@ -465,7 +466,7 @@ index 2b4c0d9d6928..f08b8fc192d8 100644
  	if (ret < 0)
  		goto evidreg;
 diff --git a/drivers/media/platform/via-camera.c b/drivers/media/platform/via-camera.c
-index 95483c84c3f2..d3c98fe6046a 100644
+index 78841b9015ce..26b126da7f75 100644
 --- a/drivers/media/platform/via-camera.c
 +++ b/drivers/media/platform/via-camera.c
 @@ -35,6 +35,8 @@
@@ -491,18 +492,18 @@ index c77281d43f89..1c81d59b394a 100644
  		v4l2_err(&dev->v4l2_dev, "Failed to register video device '%s'\n", name);
  		v4l2_m2m_release(dev_instance->m2m_dev);
 diff --git a/drivers/media/platform/vim2m.c b/drivers/media/platform/vim2m.c
-index 8d6b09623d88..ac6717fbb764 100644
+index 6fba00e03c67..a7929e7b7ffa 100644
 --- a/drivers/media/platform/vim2m.c
 +++ b/drivers/media/platform/vim2m.c
-@@ -1333,7 +1333,7 @@ static int vim2m_probe(struct platform_device *pdev)
- 	vfd->lock = &dev->dev_mutex;
- 	vfd->v4l2_dev = &dev->v4l2_dev;
+@@ -1357,7 +1357,7 @@ static int vim2m_probe(struct platform_device *pdev)
+ 	dev->v4l2_dev.mdev = &dev->mdev;
+ #endif
  
 -	ret = video_register_device(vfd, VFL_TYPE_GRABBER, 0);
 +	ret = video_register_device(vfd, VFL_TYPE_VIDEO, 0);
  	if (ret) {
  		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
- 		goto error_v4l2;
+ 		goto error_m2m;
 diff --git a/drivers/media/platform/vimc/vimc-capture.c b/drivers/media/platform/vimc/vimc-capture.c
 index 1d56b91830ba..49956d562f53 100644
 --- a/drivers/media/platform/vimc/vimc-capture.c
@@ -600,7 +601,7 @@ index 72aa6a9a9ed4..5e42ff105855 100644
  
  struct zd1301_dev {
 diff --git a/drivers/media/usb/dvb-usb/dib0700_devices.c b/drivers/media/usb/dvb-usb/dib0700_devices.c
-index 710c1afe3e85..443baf98f74c 100644
+index 7f8bebfa3e8e..731a9825fce0 100644
 --- a/drivers/media/usb/dvb-usb/dib0700_devices.c
 +++ b/drivers/media/usb/dvb-usb/dib0700_devices.c
 @@ -23,6 +23,7 @@
@@ -612,7 +613,7 @@ index 710c1afe3e85..443baf98f74c 100644
  static int force_lna_activation;
  module_param(force_lna_activation, int, 0644);
 diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
-index ca75ebdc10b3..1ffa25f6b2ca 100644
+index 0ca764282c76..f219a9cea5f6 100644
 --- a/drivers/media/usb/dvb-usb/dw2102.c
 +++ b/drivers/media/usb/dvb-usb/dw2102.c
 @@ -33,6 +33,8 @@
@@ -663,7 +664,7 @@ index 93d36aab824f..4c7978999929 100644
  	printk(KERN_INFO "USBVision[%d]: registered USBVision Video device %s [v4l2]\n",
  	       usbvision->nr, video_device_node_name(&usbvision->vdev));
 diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-index 25dcb6457c70..b29b78b97ed1 100644
+index 338c8c6da6e2..e9cc9b008718 100644
 --- a/drivers/media/v4l2-core/v4l2-async.c
 +++ b/drivers/media/v4l2-core/v4l2-async.c
 @@ -24,6 +24,8 @@
@@ -676,7 +677,7 @@ index 25dcb6457c70..b29b78b97ed1 100644
  				    struct v4l2_subdev *subdev,
  				    struct v4l2_async_subdev *asd)
 diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 00457e1e93f6..346a7db528d5 100644
+index 3d85a8600f57..13408a47426d 100644
 --- a/drivers/media/v4l2-core/v4l2-fwnode.c
 +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
 @@ -28,6 +28,8 @@
@@ -702,10 +703,10 @@ index b4acca75644b..2313a9ec967d 100644
  {
  	struct i2c_client *client = v4l2_get_subdevdata(sd);
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 2e79108be898..edb8e292bb67 100644
+index 9c017806b841..3ef92783faa8 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -30,6 +30,8 @@
+@@ -31,6 +31,8 @@
  
  #include <trace/events/v4l2.h>
  
@@ -726,6 +727,19 @@ index 76aaa0b26811..3502895686c6 100644
 +#undef NEED_NEXT_PSEUDO_RANDOM32
 +#undef NEED_FRAME_VECTOR
 +
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index b661e1817470..e8e402f7f755 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -17,6 +17,8 @@
+ #include <media/v4l2-fh.h>
+ #include <media/v4l2-mediabus.h>
+ 
++#include <media/compat.h>
++
+ /* generic v4l2_device notify callback notification values */
+ #define V4L2_SUBDEV_IR_RX_NOTIFY		_IOW('v', 0, u32)
+ #define V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ	0x00000001
 diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
 index 5468b633b9d2..5aebc2c7db7a 100644
 --- a/include/media/videobuf2-core.h

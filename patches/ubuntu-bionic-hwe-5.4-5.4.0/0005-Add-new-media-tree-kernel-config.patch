@@ -1,17 +1,17 @@
-From 12ffecea0f5da145918754ac2f486ae592fb58de Mon Sep 17 00:00:00 2001
+From a475c4784e46a5d6c2d3e5cb5948978d835381ed Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 28 Jan 2022 15:05:46 -0600
+Date: Fri, 29 Jul 2022 13:28:38 -0500
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.hwe-5.4/config/config.common.ubuntu | 52 +++++++++++++++++++---
- 1 file changed, 45 insertions(+), 7 deletions(-)
+ debian.hwe-5.4/config/config.common.ubuntu | 57 +++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 7 deletions(-)
 
 diff --git a/debian.hwe-5.4/config/config.common.ubuntu b/debian.hwe-5.4/config/config.common.ubuntu
-index b3820ca72711..1204dba07706 100644
+index d71c78c79904..ddd9ad09ad72 100644
 --- a/debian.hwe-5.4/config/config.common.ubuntu
 +++ b/debian.hwe-5.4/config/config.common.ubuntu
-@@ -2804,7 +2804,7 @@ CONFIG_DVB_LNBP22=m
+@@ -2805,7 +2805,7 @@ CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
  CONFIG_DVB_MANTIS=m
@@ -20,7 +20,7 @@ index b3820ca72711..1204dba07706 100644
  CONFIG_DVB_MB86A16=m
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -4519,7 +4519,7 @@ CONFIG_INTEGRITY_AUDIT=y
+@@ -4521,7 +4521,7 @@ CONFIG_INTEGRITY_AUDIT=y
  CONFIG_INTEGRITY_PLATFORM_KEYRING=y
  CONFIG_INTEGRITY_SIGNATURE=y
  CONFIG_INTEGRITY_TRUSTED_KEYRING=y
@@ -59,7 +59,7 @@ index b3820ca72711..1204dba07706 100644
  CONFIG_VIDEO_OV9640=m
  CONFIG_VIDEO_OV9650=m
  # CONFIG_VIDEO_PCI_SKELETON is not set
-@@ -11638,3 +11638,41 @@ CONFIG_ZYNQMP_FIRMWARE=y
+@@ -11638,3 +11638,46 @@ CONFIG_ZYNQMP_FIRMWARE=y
  CONFIG_ZYNQMP_IPI_MBOX=y
  CONFIG_ZYNQMP_PM_DOMAINS=y
  CONFIG_ZYNQMP_POWER=y
@@ -101,6 +101,11 @@ index b3820ca72711..1204dba07706 100644
 +CONFIG_VIDEO_OV13B10=m
 +# CONFIG_VIDEO_ZORAN_DC30 is not set
 +# CONFIG_VIDEO_ZORAN_ZR36060 is not set
++CONFIG_MEDIA_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_HI847=m
++CONFIG_VIDEO_OG01A1B=m
++CONFIG_VIDEO_OV08D10=m
++
 -- 
 2.17.1
 
