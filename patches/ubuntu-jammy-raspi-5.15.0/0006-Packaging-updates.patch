@@ -1,0 +1,191 @@
+From 45703e90650e67153dec88b369e4308094ac71e0 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Tue, 28 Feb 2023 17:59:14 +0000
+Subject: [PATCH 6/6] Packaging updates
+
+---
+ debian.raspi/control.d/flavour-control.stub |  4 ++--
+ debian.raspi/control.stub.in                |  3 ++-
+ debian.raspi/copyright                      | 22 +++++++++++++++++++++
+ debian.raspi/rules.d/armhf.mk               |  2 +-
+ debian/control.d/flavour-buildinfo.stub     |  2 +-
+ debian/rules                                |  2 +-
+ debian/rules.d/0-common-vars.mk             | 17 ++++++++++++----
+ debian/scripts/config-check                 |  2 +-
+ 8 files changed, 43 insertions(+), 11 deletions(-)
+
+diff --git a/debian.raspi/control.d/flavour-control.stub b/debian.raspi/control.d/flavour-control.stub
+index 5326ff97e..f4edde47c 100644
+--- a/debian.raspi/control.d/flavour-control.stub
++++ b/debian.raspi/control.d/flavour-control.stub
+@@ -31,7 +31,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.
+ Recommends: BOOTLOADER, initramfs-tools | linux-initramfs-tool
+ Breaks: flash-kernel (<< 3.90ubuntu2) [arm64 armhf], s390-tools (<< 2.3.0-0ubuntu3) [s390x]
+ Conflicts: linux-image=SIGN-PEER-PKG=-PKGVER-ABINUM-FLAVOUR
+-Suggests: fdutils, SRCPKGNAME-doc-PKGVER | SRCPKGNAME-source-PKGVER, SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR, linux-modules-extra-PKGVER-ABINUM-FLAVOUR
++Suggests: fdutils, SRCPKGNAME-tools, linux-headers-PKGVER-ABINUM-FLAVOUR, linux-modules-extra-PKGVER-ABINUM-FLAVOUR
+ Description: Linux kernel image for version PKGVER on DESC
+  This package contains the=SIGN-ME-TXT= Linux kernel image for version PKGVER on
+  DESC.
+@@ -70,7 +70,7 @@ Architecture: ARCH
+ Section: kernel
+ Priority: optional
+ Depends: ${misc:Depends}, ${shlibs:Depends}, linux-image-PKGVER-ABINUM-FLAVOUR
+-Description: Linux kernel extra modules for version PKGVER on DESC
++Description: Linux kernel extra modules with slipstreamed mediatree drivers for version PKGVER on DESC
+  This package contains the Linux kernel extra modules for version PKGVER on
+  DESC.
+  .
+diff --git a/debian.raspi/control.stub.in b/debian.raspi/control.stub.in
+index c4b74fe4d..b43f11517 100644
+--- a/debian.raspi/control.stub.in
++++ b/debian.raspi/control.stub.in
+@@ -1,7 +1,8 @@
+ Source: SRCPKGNAME
+ Section: devel
+ Priority: optional
+-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
++Maintainer: Bradford Love <brad@nextdimension.cc>
++XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
+ Standards-Version: 3.9.4.0
+ Build-Depends:
+  debhelper-compat (= 10),
+diff --git a/debian.raspi/copyright b/debian.raspi/copyright
+index d1d04a6d6..b6f183f12 100644
+--- a/debian.raspi/copyright
++++ b/debian.raspi/copyright
+@@ -1,3 +1,25 @@
++#############################################################
++#############################################################
++#############################################################
++
++This is a patched version of the Ubuntu kernel.
++The latest media tree drivers from https://linuxtv.org are slip streamed in.
++
++Additional patches for hardware/performance/etc are also included.
++
++All patches are available at https://github.com/b-rad-NDi/Ubuntu-media-tree-kernel-builder
++
++The packaging and build system is spoonsored by Hauppauge Computer Works.
++
++    http://www.hauppauge.com
++
++Errors in packaging or building should be directed to github above.
++Bugs in the kernel or media tree drivers should be reported upstream.
++
++#############################################################
++#############################################################
++#############################################################
++
+ This is the Ubuntu prepackaged version of the Linux kernel.
+ Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
+ and others.
+diff --git a/debian.raspi/rules.d/armhf.mk b/debian.raspi/rules.d/armhf.mk
+index e59ac3db1..69acf569b 100644
+--- a/debian.raspi/rules.d/armhf.mk
++++ b/debian.raspi/rules.d/armhf.mk
+@@ -2,7 +2,7 @@ human_arch		= ARM (hard float)
+ build_arch		= arm
+ header_arch		= arm
+ defconfig		= defconfig
+-flavours		= raspi raspi-nolpae
++flavours		= raspi
+ build_image		= zImage
+ kernel_file		= arch/$(build_arch)/boot/zImage
+ install_file		= vmlinuz
+diff --git a/debian/control.d/flavour-buildinfo.stub b/debian/control.d/flavour-buildinfo.stub
+index dd08a6715..68df67c02 100644
+--- a/debian/control.d/flavour-buildinfo.stub
++++ b/debian/control.d/flavour-buildinfo.stub
+@@ -1,5 +1,5 @@
+ 
+-Package: linux-buildinfo-PKGVER-ABINUM-FLAVOUR
++Package: linux-buildinfo-mediatree-PKGVER-ABINUM-FLAVOUR
+ Build-Profiles: <!stage1>
+ Architecture: ARCH
+ Section: kernel
+diff --git a/debian/rules b/debian/rules
+index 732b5eeea..232ac93ac 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
+ 
+ do_linux_tools=$(sort $(filter-out false,$(do_tools_usbip) $(do_tools_cpupower) $(do_tools_perf) $(do_tools_bpftool) $(do_tools_x86)))
+ do_cloud_tools=$(sort $(filter-out false,$(do_tools_hyperv)))
+-do_tools_common?=true
++do_tools_common?=false
+ do_tools_host?=false
+ do_tools_perf_jvmti?=false
+ do_enforce_all?=false
+diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
+index 2f27d1710..089b4e52c 100644
+--- a/debian/rules.d/0-common-vars.mk
++++ b/debian/rules.d/0-common-vars.mk
+@@ -43,6 +43,15 @@ family=ubuntu
+ # or configs.
+ AUTOBUILD=
+ 
++skipabi         ?= true
++skipmodule      ?= true
++skipdbg         ?= true
++do_binary_udebs ?= false
++do_tools_common ?= false
++do_tools	?= true
++do_linux_tools	?= false
++skipretpoline	?= true
++
+ ifneq ($(AUTOBUILD),)
+ skipabi		= true
+ skipmodule	= true
+@@ -144,7 +153,7 @@ bin_pkg_name_signed=linux-image-$(abi_release)
+ bin_pkg_name_unsigned=linux-image-unsigned-$(abi_release)
+ mods_pkg_name=linux-modules-$(abi_release)
+ mods_extra_pkg_name=linux-modules-extra-$(abi_release)
+-bldinfo_pkg_name=linux-buildinfo-$(abi_release)
++bldinfo_pkg_name=linux-buildinfo-mediatree-$(abi_release)
+ hdrs_pkg_name=linux-headers-$(abi_release)
+ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+ 
+@@ -155,7 +164,7 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+ # failures get sorted out. Finally, the doc package doesn't really need to be built
+ # for developer testing (its kind of slow), so only do it if on a buildd.
+ ifneq ($(filter --,$(variants)),)
+-do_doc_package=true
++do_doc_package=false
+ else
+ do_doc_package=false
+ endif
+@@ -169,7 +178,7 @@ doc_pkg_name=$(src_pkg_name)-doc
+ # Similarly with the linux-source package, you need not build it as a developer. Its
+ # somewhat I/O intensive and utterly useless.
+ #
+-do_source_package=true
++do_source_package=false
+ do_source_package_content=true
+ ifeq ($(full_build),false)
+ do_source_package_content=false
+@@ -178,7 +187,7 @@ endif
+ # linux-libc-dev may not be needed, default to building it only for the
+ # primary variant
+ ifneq ($(filter --,$(variants)),)
+-do_libc_dev_package=true
++do_libc_dev_package=false
+ else
+ do_libc_dev_package=false
+ endif
+diff --git a/debian/scripts/config-check b/debian/scripts/config-check
+index df0cd5206..7baa81c20 100755
+--- a/debian/scripts/config-check
++++ b/debian/scripts/config-check
+@@ -22,7 +22,7 @@ my %values = ();
+ # If we are in overridden then still perform the checks and emit the messages
+ # but do not return failure.  Those items marked FATAL will alway trigger
+ # failure.
+-my $fail_exit = 1;
++my $fail_exit = 0;
+ $fail_exit = 0 if ($warn_only eq 'true' || $warn_only eq '1');
+ my $exit_val = 0;
+ 
+-- 
+2.34.1
+
