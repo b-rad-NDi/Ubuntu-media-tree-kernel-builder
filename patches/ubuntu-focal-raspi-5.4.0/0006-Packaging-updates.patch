@@ -1,6 +1,6 @@
-From 47110d7d11c688fd165d78bbba8524161e933cfa Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Mon, 7 Mar 2022 11:08:46 -0600
+From af2947e8c8f111cc98b1c960330d81410b7a0d53 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Tue, 28 Feb 2023 12:56:35 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
@@ -30,7 +30,7 @@ index 9f5d47e91..f8252567f 100644
   DESC.
   .
 diff --git a/debian.raspi/control.stub.in b/debian.raspi/control.stub.in
-index d94b568a4..270040b77 100644
+index d94b568a4..762e7ea07 100644
 --- a/debian.raspi/control.stub.in
 +++ b/debian.raspi/control.stub.in
 @@ -1,7 +1,8 @@
@@ -38,7 +38,7 @@ index d94b568a4..270040b77 100644
  Section: devel
  Priority: optional
 -Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
-+Maintainer: Fake User <hidden@email.co>
++Maintainer: Bradford Love <brad@nextdimension.cc>
 +XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:
@@ -202,5 +202,5 @@ index df0cd5206..7baa81c20 100755
  my $exit_val = 0;
  
 -- 
-2.25.1
+2.34.1
 

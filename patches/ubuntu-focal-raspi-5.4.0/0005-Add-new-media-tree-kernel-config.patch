@@ -1,17 +1,17 @@
-From 7ba82d4f9bbe255963d5290b7d2946eb3b7d5832 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Mon, 7 Mar 2022 11:06:21 -0600
+From fd0ccb3e0764567e12269d31fe6c4bb058057787 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Tue, 28 Feb 2023 12:56:20 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.raspi/config/config.common.ubuntu | 45 +++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ debian.raspi/config/config.common.ubuntu | 50 +++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
 diff --git a/debian.raspi/config/config.common.ubuntu b/debian.raspi/config/config.common.ubuntu
-index b94fb00ed..3ac90375d 100644
+index 70a85c458..621741f6b 100644
 --- a/debian.raspi/config/config.common.ubuntu
 +++ b/debian.raspi/config/config.common.ubuntu
-@@ -1925,7 +1925,7 @@ CONFIG_DVB_LNBP21=m
+@@ -1929,7 +1929,7 @@ CONFIG_DVB_LNBP21=m
  CONFIG_DVB_LNBP22=m
  CONFIG_DVB_M88DS3103=m
  CONFIG_DVB_M88RS2000=m
@@ -20,7 +20,7 @@ index b94fb00ed..3ac90375d 100644
  # CONFIG_DVB_MB86A16 is not set
  CONFIG_DVB_MB86A20S=m
  # CONFIG_DVB_MMAP is not set
-@@ -8078,3 +8078,46 @@ CONFIG_ZSTD_COMPRESS=m
+@@ -8088,3 +8088,51 @@ CONFIG_ZSTD_COMPRESS=m
  CONFIG_ZSTD_DECOMPRESS=y
  CONFIG_ZSWAP=y
  CONFIG_ZX_TDM=m
@@ -67,6 +67,11 @@ index b94fb00ed..3ac90375d 100644
 +CONFIG_VIDEO_OV13B10=m
 +CONFIG_VIDEO_RDACM21=m
 +CONFIG_VIDEO_CCS=m
++CONFIG_MEDIA_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_HI847=m
++CONFIG_VIDEO_OG01A1B=m
++CONFIG_VIDEO_OV08D10=m
++CONFIG_VIDEO_ISL7998X=m
 -- 
-2.25.1
+2.34.1
 

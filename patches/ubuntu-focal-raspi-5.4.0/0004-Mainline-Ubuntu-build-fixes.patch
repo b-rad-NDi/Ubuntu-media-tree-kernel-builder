@@ -1,6 +1,6 @@
-From dd5d440846765747ecdd31f8f293705dc8652878 Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Mon, 7 Mar 2022 11:05:57 -0600
+From f610a2cb0d3008e4e74c022556447d15733e5420 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Tue, 28 Feb 2023 12:55:34 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -8,6 +8,7 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  drivers/gpu/drm/i2c/tda9950.c                 |  11 +-
  drivers/gpu/drm/i2c/tda998x_drv.c             |   8 +-
  drivers/gpu/drm/i915/display/intel_hdmi.c     |  18 ++-
+ drivers/gpu/ipu-v3/ipu-csi.c                  |   6 +-
  drivers/hid/hid-picolcd_cir.c                 |   1 +
  drivers/staging/most/video/video.c            |   4 +-
  .../bcm2835-camera/bcm2835-camera.c           |   2 +-
@@ -19,7 +20,8 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/mmc/sdio_ids.h                  |   5 +
  include/linux/pci_ids.h                       |   4 +
  sound/pci/bt87x.c                             | 143 +++++++++++++-----
- 15 files changed, 158 insertions(+), 66 deletions(-)
+ tools/perf/builtin-sched.c                    |   2 +-
+ 17 files changed, 162 insertions(+), 70 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
 index ac1e001d0..70ab4fbdc 100644
@@ -154,6 +156,25 @@ index 3d2f6c68b..a24db66af 100644
  	if (!intel_hdmi->cec_notifier)
  		DRM_DEBUG_KMS("CEC notifier get failed\n");
  }
+diff --git a/drivers/gpu/ipu-v3/ipu-csi.c b/drivers/gpu/ipu-v3/ipu-csi.c
+index 8ae301eef..4a0d82830 100644
+--- a/drivers/gpu/ipu-v3/ipu-csi.c
++++ b/drivers/gpu/ipu-v3/ipu-csi.c
+@@ -343,11 +343,11 @@ static int fill_csi_bus_cfg(struct ipu_csi_bus_config *csicfg,
+ 	switch (mbus_cfg->type) {
+ 	case V4L2_MBUS_PARALLEL:
+ 		csicfg->ext_vsync = 1;
+-		csicfg->vsync_pol = (mbus_cfg->flags &
++		csicfg->vsync_pol = (mbus_cfg->bus.parallel.flags &
+ 				     V4L2_MBUS_VSYNC_ACTIVE_LOW) ? 1 : 0;
+-		csicfg->hsync_pol = (mbus_cfg->flags &
++		csicfg->hsync_pol = (mbus_cfg->bus.parallel.flags &
+ 				     V4L2_MBUS_HSYNC_ACTIVE_LOW) ? 1 : 0;
+-		csicfg->pixclk_pol = (mbus_cfg->flags &
++		csicfg->pixclk_pol = (mbus_cfg->bus.parallel.flags &
+ 				      V4L2_MBUS_PCLK_SAMPLE_FALLING) ? 1 : 0;
+ 		csicfg->clk_mode = IPU_CSI_CLK_MODE_GATED_CLK;
+ 		break;
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 34da38d5b..1faf56c37 100644
 --- a/drivers/hid/hid-picolcd_cir.c
@@ -344,10 +365,10 @@ index 53f0efa0b..f8eea0191 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index aad54c666..24d7c2da7 100644
+index 0178823ce..454af89e4 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1083,6 +1083,7 @@
+@@ -1085,6 +1085,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -355,7 +376,7 @@ index aad54c666..24d7c2da7 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1352,6 +1353,7 @@
+@@ -1354,6 +1355,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -363,7 +384,7 @@ index aad54c666..24d7c2da7 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -3096,4 +3098,6 @@
+@@ -3105,4 +3107,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
@@ -371,7 +392,7 @@ index aad54c666..24d7c2da7 100644
 +
  #endif /* _LINUX_PCI_IDS_H */
 diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index d23f93163..66a5a24e7 100644
+index 621985bfe..410020e56 100644
 --- a/sound/pci/bt87x.c
 +++ b/sound/pci/bt87x.c
 @@ -23,12 +23,14 @@
@@ -628,7 +649,7 @@ index d23f93163..66a5a24e7 100644
  			dev_dbg(&pci->dev,
  				"card %#04x-%#04x:%#04x has no audio\n",
  				    pci->device, pci->subsystem_vendor, pci->subsystem_device);
-@@ -829,15 +881,14 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -829,15 +881,14 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  		return -ENOENT;
  	}
  
@@ -648,7 +669,7 @@ index d23f93163..66a5a24e7 100644
  
  	memcpy(&chip->board, &snd_bt87x_boards[boardid], sizeof(chip->board));
  
-@@ -849,24 +900,24 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -849,24 +900,24 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  		err = snd_bt87x_pcm(chip, DEVICE_DIGITAL, "Bt87x Digital");
  		if (err < 0)
@@ -678,7 +699,7 @@ index d23f93163..66a5a24e7 100644
  	}
  	dev_info(card->dev, "bt87x%d: Using board %d, %sanalog, %sdigital "
  		   "(rate %d Hz)\n", dev, boardid,
-@@ -882,11 +933,20 @@ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -882,11 +933,20 @@ static int __snd_bt87x_probe(struct pci_dev *pci,
  
  	err = snd_card_register(card);
  	if (err < 0)
@@ -699,8 +720,8 @@ index d23f93163..66a5a24e7 100644
 +	snd_card_free(pci_get_drvdata(pci));
  }
  
- /* default entries for all Bt87x cards - it's not exported */
-@@ -901,6 +961,7 @@ static struct pci_driver driver = {
+ static int snd_bt87x_probe(struct pci_dev *pci,
+@@ -907,6 +967,7 @@ static struct pci_driver driver = {
  	.name = KBUILD_MODNAME,
  	.id_table = snd_bt87x_ids,
  	.probe = snd_bt87x_probe,
@@ -708,6 +729,19 @@ index d23f93163..66a5a24e7 100644
  };
  
  static int __init alsa_card_bt87x_init(void)
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 5cacc4f84..082689309 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -666,7 +666,7 @@ static void create_tasks(struct perf_sched *sched)
+ 	err = pthread_attr_init(&attr);
+ 	BUG_ON(err);
+ 	err = pthread_attr_setstacksize(&attr,
+-			(size_t) max(16 * 1024, PTHREAD_STACK_MIN));
++			(size_t) max(16 * 1024, (int)PTHREAD_STACK_MIN));
+ 	BUG_ON(err);
+ 	err = pthread_mutex_lock(&sched->start_work_mutex);
+ 	BUG_ON(err);
 -- 
-2.25.1
+2.34.1
 
