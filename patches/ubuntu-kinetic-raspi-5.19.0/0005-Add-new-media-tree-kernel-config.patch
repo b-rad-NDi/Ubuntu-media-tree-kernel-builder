@@ -1,0 +1,59 @@
+From 0500c1e4d48a5b0d8aafcc7629eee9d4c7f6bc00 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 8 Mar 2023 14:22:29 -0600
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.raspi/config/config.common.ubuntu | 32 +++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/debian.raspi/config/config.common.ubuntu b/debian.raspi/config/config.common.ubuntu
+index 008d28c88..58eda4fcd 100644
+--- a/debian.raspi/config/config.common.ubuntu
++++ b/debian.raspi/config/config.common.ubuntu
+@@ -2317,7 +2317,7 @@ CONFIG_DVB_LNBP21=m
+ CONFIG_DVB_LNBP22=m
+ CONFIG_DVB_M88DS3103=m
+ CONFIG_DVB_M88RS2000=m
+-CONFIG_DVB_MAX_ADAPTERS=8
++CONFIG_DVB_MAX_ADAPTERS=32
+ CONFIG_DVB_MB86A16=m
+ CONFIG_DVB_MB86A20S=m
+ # CONFIG_DVB_MMAP is not set
+@@ -9368,3 +9368,33 @@ CONFIG_ZSWAP_ZPOOL_DEFAULT="zbud"
+ # CONFIG_ZSWAP_ZPOOL_DEFAULT_Z3FOLD is not set
+ CONFIG_ZSWAP_ZPOOL_DEFAULT_ZBUD=y
+ # CONFIG_ZSWAP_ZPOOL_DEFAULT_ZSMALLOC is not set
++### LINUX MEDIA TREE EXTRA OPTIONS ###
++CONFIG_IR_TOY=m
++CONFIG_CEC_CH7322=m
++CONFIG_DVB_TEST_DRIVERS=y
++CONFIG_DVB_VIDTV=m
++# CONFIG_VIDEO_RDACM20 is not set
++# CONFIG_VIDEO_DW9768 is not set
++CONFIG_DVB_MXL692=m
++# CONFIG_CIO2_BRIDGE is not set
++# CONFIG_VIDEO_OV02A10 is not set
++# CONFIG_VIDEO_OV5648 is not set
++# CONFIG_VIDEO_OV8865 is not set
++# CONFIG_VIDEO_OV9734 is not set
++# CONFIG_VIDEO_RDACM21 is not set
++# CONFIG_VIDEO_CCS is not set
++# CONFIG_VIDEO_IMX208 is not set
++CONFIG_VIDEO_HI846=m
++CONFIG_VIDEO_OV5693=m
++CONFIG_VIDEO_OV13B10=m
++CONFIG_VIDEO_IMX335=m
++CONFIG_VIDEO_IMX412=m
++CONFIG_VIDEO_OV9282=m
++CONFIG_VIDEO_MAX96712=m
++CONFIG_DVB_AV7110=m
++CONFIG_DVB_AV7110_OSD=y
++CONFIG_MEDIA_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_HI847=m
++CONFIG_VIDEO_OG01A1B=m
++CONFIG_VIDEO_OV08D10=m
++CONFIG_VIDEO_ISL7998X=m
+-- 
+2.37.2
+
