@@ -1,18 +1,18 @@
-From 33f94fa96f560394f239cbf1824313fa2078bb5e Mon Sep 17 00:00:00 2001
+From dd6b703a4d68f6583a6ce14345a4881c3cc987a6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 22 Sep 2022 11:22:33 -0500
+Date: Thu, 6 Apr 2023 08:10:12 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe/changelog | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ debian.hwe/changelog | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/debian.hwe/changelog b/debian.hwe/changelog
-index e6246d1..a00e522 100644
+index e6246d1..b2a1177 100644
 --- a/debian.hwe/changelog
 +++ b/debian.hwe/changelog
-@@ -1,3 +1,34 @@
-+linux-hwe (4.15.0-142202209221122.1+mediatree+hauppauge~hwe) xenial; urgency=low
+@@ -1,3 +1,33 @@
++linux-hwe (4.15.0-142202304060810.0+mediatree+hauppauge~hwe) xenial; urgency=low
 +
 +  * Ubuntu-hwe kernel git clone
 +    - 4.15.0-142.146 rev 523f0632baab29fe0e679315fe693ee10217deda
@@ -35,13 +35,12 @@ index e6246d1..a00e522 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-Revert.2c98b8a34.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
++ -- Fake User <hidden@email.co>  Thu, 06 Apr 2023 08:10:12 -0500
 +
  linux-hwe (4.15.0-142.146~16.04.1) xenial; urgency=medium
  

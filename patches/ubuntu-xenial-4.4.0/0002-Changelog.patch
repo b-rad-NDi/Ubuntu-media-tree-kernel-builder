@@ -1,6 +1,6 @@
-From f0c01870dd0343d1ff1b438626ea5c8aff41b616 Mon Sep 17 00:00:00 2001
+From 406d7e5d5a05c564050403a033eff1be7b15478a Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 22 Sep 2022 11:22:33 -0500
+Date: Thu, 6 Apr 2023 08:10:12 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
@@ -8,11 +8,11 @@ Subject: [PATCH 2/6] Changelog
  1 file changed, 30 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 2ca48c7..0f35ca6 100644
+index 2ca48c7..ffdf0cf 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,33 @@
-+linux (4.4.0-209202209221122.2+mediatree+hauppauge) xenial; urgency=low
++linux (4.4.0-209202304060810.0+mediatree+hauppauge) xenial; urgency=low
 +
 +  * Ubuntu-master kernel git clone
 +    - 4.4.0-209.241 rev 56e454363d416acdc41c34b68c44fa6b9a207c3a
@@ -40,7 +40,7 @@ index 2ca48c7..0f35ca6 100644
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
++ -- Fake User <hidden@email.co>  Thu, 06 Apr 2023 08:10:12 -0500
 +
  linux (4.4.0-209.241) xenial; urgency=medium
  
