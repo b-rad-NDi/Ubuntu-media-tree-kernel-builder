@@ -1,0 +1,131 @@
+From cbaa5d5c0589e7d4ca6252b090c1b1199df1af83 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 24 Dec 2025 16:09:16 -0600
+Subject: [PATCH 2/3] em28xx: Add Hauppauge 461e v3
+
+Same as v2, but uses Montage ds3103c instead of ds3103b
+---
+ drivers/media/usb/em28xx/em28xx-cards.c | 26 +++++++++++++++++++++----
+ drivers/media/usb/em28xx/em28xx-dvb.c   | 25 +++++++++++++++++++-----
+ drivers/media/usb/em28xx/em28xx.h       |  1 +
+ 3 files changed, 43 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 01016a87f..126d9cefa 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -388,13 +388,13 @@ static const struct em28xx_reg_seq c3tech_digital_duo_digital[] = {
+  */
+ static const struct em28xx_reg_seq pctv_461e[] = {
+ 	{EM2874_R80_GPIO_P0_CTRL,      0x7f, 0xff,    0},
+-	{0x0d,                 0xff, 0xff,    0},
++	{0x0d,                         0xff, 0xff,    0},
+ 	{EM2874_R80_GPIO_P0_CTRL,      0x3f, 0xff,  100}, /* reset demod */
+ 	{EM2874_R80_GPIO_P0_CTRL,      0x7f, 0xff,  200}, /* reset demod */
+-	{0x0d,                 0x42, 0xff,    0},
++	{0x0d,                         0x42, 0xff,    0},
+ 	{EM2874_R80_GPIO_P0_CTRL,      0xeb, 0xff,    0},
+-	{EM2874_R5F_TS_ENABLE, 0x84, 0x84,    0}, /* parallel? | null discard */
+-	{                  -1,   -1,   -1,   -1},
++	{EM2874_R5F_TS_ENABLE,         0x84, 0x84,    0}, /* parallel? | null discard */
++	{                  -1,           -1,   -1,   -1},
+ };
+ 
+ #if 0
+@@ -2496,6 +2496,20 @@ const struct em28xx_board em28xx_boards[] = {
+ 		.has_dvb       = 1,
+ 		.ir_codes      = RC_MAP_PINNACLE_PCTV_HD,
+ 	},
++	/*
++	 * 2013:x462 PCTV DVB-S2 Stick (461e_v3)
++	 * Empia EM28178, Montage M88DS3103c, Montage M88TS2022, Allegro A8293
++	 */
++	[EM28178_BOARD_PCTV_461E_V3] = {
++		.def_i2c_bus   = 1,
++		.i2c_speed     = EM28XX_I2C_CLK_WAIT_ENABLE |
++				 EM28XX_I2C_FREQ_400_KHZ,
++		.name          = "PCTV DVB-S2 Stick (461e v3)",
++		.tuner_type    = TUNER_ABSENT,
++		.tuner_gpio    = pctv_461e,
++		.has_dvb       = 1,
++		.ir_codes      = RC_MAP_PINNACLE_PCTV_HD,
++	},
+ 	/*
+ 	 * 2013:025f PCTV tripleStick (292e).
+ 	 * Empia EM28178, Silicon Labs Si2168, Silicon Labs Si2157
+@@ -2998,6 +3012,10 @@ struct usb_device_id em28xx_id_table[] = {
+ 			.driver_info = EM28178_BOARD_PCTV_461E_V2 },
+ 	{ USB_DEVICE(0x2013, 0x0259),
+ 			.driver_info = EM28178_BOARD_PCTV_461E_V2 },
++	{ USB_DEVICE(0x2013, 0x0462),
++			.driver_info = EM28178_BOARD_PCTV_461E_V3 },
++	{ USB_DEVICE(0x2013, 0x8462), /* Bulk transport 461e v3 */
++			.driver_info = EM28178_BOARD_PCTV_461E_V3 },
+ 	{ USB_DEVICE(0x2013, 0x025f),
+ 			.driver_info = EM28178_BOARD_PCTV_292E },
+ 	{ USB_DEVICE(0x2013, 0x0264), /* Hauppauge WinTV-soloHD 292e SE */
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index ccaf57f63..dd93f6c6f 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -1237,7 +1237,7 @@ static int em28178_dvb_init_pctv_461e(struct em28xx *dev)
+ 	return 0;
+ }
+ 
+-static int em28178_dvb_init_pctv_461e_v2(struct em28xx *dev)
++static int em28178_dvb_init_pctv_461e_vX(struct em28xx *dev, int version)
+ {
+ 	struct em28xx_dvb *dvb = dev->dvb;
+ 	struct i2c_adapter *i2c_adapter;
+@@ -1254,9 +1254,19 @@ static int em28178_dvb_init_pctv_461e_v2(struct em28xx *dev)
+ 	m88ds3103_pdata.agc = 0x99;
+ 	m88ds3103_pdata.agc_inv = 0;
+ 	m88ds3103_pdata.spec_inv = 0;
+-	dvb->i2c_client_demod[0] = dvb_module_probe("m88ds3103", "m88ds3103b",
+-						 &dev->i2c_adap[dev->def_i2c_bus],
+-						 0x6a, &m88ds3103_pdata);
++
++	if (version == 2)
++		dvb->i2c_client_demod[0] = dvb_module_probe("m88ds3103", "m88ds3103b",
++							    &dev->i2c_adap[dev->def_i2c_bus],
++							    0x6a, &m88ds3103_pdata);
++	else {
++		m88ds3103_pdata.lnb_hv_pol = 1;
++		m88ds3103_pdata.lnb_en_pol = 1;
++
++		dvb->i2c_client_demod[0] = dvb_module_probe("m88ds3103", "m88ds3103c",
++							    &dev->i2c_adap[dev->def_i2c_bus],
++							    0x6a, &m88ds3103_pdata);
++	}
+ 
+ 	if (!dvb->i2c_client_demod[0])
+ 		return -ENODEV;
+@@ -2144,7 +2154,12 @@ static int em28xx_dvb_init(struct em28xx *dev)
+ 			goto out_free;
+ 		break;
+ 	case EM28178_BOARD_PCTV_461E_V2:
+-		result = em28178_dvb_init_pctv_461e_v2(dev);
++		result = em28178_dvb_init_pctv_461e_vX(dev, 2);
++		if (result)
++			goto out_free;
++		break;
++	case EM28178_BOARD_PCTV_461E_V3:
++		result = em28178_dvb_init_pctv_461e_vX(dev, 3);
+ 		if (result)
+ 			goto out_free;
+ 		break;
+diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
+index 8cefd328c..005042ced 100644
+--- a/drivers/media/usb/em28xx/em28xx.h
++++ b/drivers/media/usb/em28xx/em28xx.h
+@@ -148,6 +148,7 @@
+ #define EM2828X_BOARD_HAUPPAUGE_935_V2            109
+ #define EM2828X_BOARD_HAUPPAUGE_955_V2            110
+ #define EM2828X_BOARD_HAUPPAUGE_975_V2            111
++#define EM28178_BOARD_PCTV_461E_V3                112
+ 
+ /* Limits minimum and default number of buffers */
+ #define EM28XX_MIN_BUF 4
+-- 
+2.51.0
+

@@ -1,0 +1,1070 @@
+From faa257cb49ef148e4debce6fd8701aaec32bbcba Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Fri, 26 Dec 2025 13:57:40 -0600
+Subject: [PATCH 3/3] m88ds3103: Add i2c debug output
+
+Kernel module parameter
+---
+ drivers/media/dvb-frontends/m88ds3103.c | 382 +++++++++++++++++-------
+ 1 file changed, 274 insertions(+), 108 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index ab30c1abf..14457aa9d 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -7,8 +7,86 @@
+ 
+ #include "m88ds3103_priv.h"
+ 
++static unsigned int i2c_debug;
++module_param(i2c_debug, int, 0644);
++MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
++
+ static const struct dvb_frontend_ops m88ds3103_ops;
+ 
++int regmap_write_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, unsigned int val);
++int regmap_read_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, unsigned int *val);
++int regmap_bulk_write_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, const void *val, size_t val_count);
++int regmap_bulk_read_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, void *val, size_t val_count);
++
++int regmap_write_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, unsigned int val) {
++	int ret = 0;
++
++	ret = regmap_write(map, reg, val);
++
++	if (i2c_debug)
++		dev_dbg(&dev->client->dev, "M88DS3103C [I2cSetByte]  add: %x, Reg: %02x, Data: %02x %s",
++		        0xd4, reg, val, ret == 0 ? "OK" : "BAD");
++
++	return ret;
++}
++
++int regmap_read_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, unsigned int *val) {
++	int ret = 0;
++
++	ret = regmap_read(map, reg, val);
++
++	if (i2c_debug)
++		dev_dbg(&dev->client->dev, "M88DS3103C [I2cGetByte]  add: %x, Reg: %02x, Data: %02x %s",
++		        0xd4, reg, *val, ret == 0 ? "OK" : "BAD");
++
++	return ret;
++}
++
++void array_to_string(size_t val_count, const void* val, char* data_string)
++{
++	int i = 0;
++	char data_tmp[5] = { '[', 0xdc, ']'};
++
++	for(i = 0; i < val_count; i++) {
++		sprintf(&data_tmp[0], "[%02x]", ((char*)val)[i]);
++		strcat(data_string, data_tmp);
++	}
++}
++
++int regmap_bulk_write_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, const void *val, size_t val_count) {
++	int ret = 0;
++	char data_string[256] = {};
++
++	ret = regmap_bulk_write(map, reg, val, val_count);
++
++	array_to_string(val_count, val, &data_string[0]);
++
++	if (i2c_debug && val_count != 32)
++		dev_dbg(&dev->client->dev, "M88DS3103C [I2cSetMultiBytes]  add: %x, Reg: %02x, Len: %02d  Data: %s %s",
++		        0xd4, reg, val_count, data_string, ret == 0 ? "OK" : "BAD");
++
++	return ret;
++}
++
++int regmap_bulk_read_debug(struct m88ds3103_dev *dev, struct regmap *map, unsigned int reg, void *val, size_t val_count) {
++	int ret = 0;
++	char data_string[256] = {};
++
++	ret = regmap_bulk_read(map, reg, val, val_count);
++
++	if (ret == 0) {
++		array_to_string(val_count, val, &data_string[0]);
++		if (i2c_debug)
++			dev_dbg(&dev->client->dev, "M88DS3103C [I2cGetMultiBytes]  add: %x, Reg: %02x, Len: %02d  Data: %s %s",
++			        0xd4, reg, val_count, data_string, ret == 0 ? "OK" : "BAD");
++	} else {
++		if (i2c_debug)
++			dev_dbg(&dev->client->dev, "M88DS3103C [I2cGetMultiBytes]  add: %x, Reg: %02x, Len: %02d  Data: %s %s",
++			        0xd4, reg, val_count, "[XXX]", ret == 0 ? "OK" : "BAD");
++	}
++	return ret;
++}
++
+ /* write single register with mask */
+ static int m88ds3103_update_bits(struct m88ds3103_dev *dev,
+ 				u8 reg, u8 mask, u8 val)
+@@ -16,6 +94,27 @@ static int m88ds3103_update_bits(struct m88ds3103_dev *dev,
+ 	int ret;
+ 	u8 tmp;
+ 
++	/* no need for read if whole reg is written */
++	if (mask != 0xff) {
++		ret = regmap_bulk_read_debug(dev, dev->regmap, reg, &tmp, 1);
++		if (ret)
++			return ret;
++
++		val &= mask;
++		tmp &= ~mask;
++		val |= tmp;
++	}
++
++	return regmap_bulk_write_debug(dev, dev->regmap, reg, &val, 1);
++}
++
++/* write single register with mask */
++static int m88ds3103_update_bits_orig(struct m88ds3103_dev *dev,
++				u8 reg, u8 mask, u8 val)
++{
++	int ret;
++	u8 tmp;
++
+ 	/* no need for read if whole reg is written */
+ 	if (mask != 0xff) {
+ 		ret = regmap_bulk_read(dev->regmap, reg, &tmp, 1);
+@@ -50,7 +149,7 @@ static int m88ds3103_wr_reg_val_tab(struct m88ds3103_dev *dev,
+ 
+ 		if (i == tab_len - 1 || tab[i].reg != tab[i + 1].reg - 1 ||
+ 				!((j + 1) % (dev->cfg->i2c_wr_max - 1))) {
+-			ret = regmap_bulk_write(dev->regmap, tab[i].reg - j, buf, j + 1);
++			ret = regmap_bulk_write_debug(dev, dev->regmap, tab[i].reg - j, buf, j + 1);
+ 			if (ret)
+ 				goto err;
+ 
+@@ -79,9 +178,9 @@ static int m88ds3103b_dt_write(struct m88ds3103_dev *dev, int reg, int data)
+ 	};
+ 
+ 	if (dev->chip_id == M88DS3103C_CHIP_ID)
+-		m88ds3103_update_bits(dev, 0x04, 0x10, 0x00);
++		m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x00);
+ 	else
+-		m88ds3103_update_bits(dev, 0x11, 0x01, 0x00);
++		m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x00);
+ 
+ 	val = 0x11;
+ 	ret = regmap_write(dev->regmap, 0x03, val);
+@@ -93,19 +192,26 @@ static int m88ds3103b_dt_write(struct m88ds3103_dev *dev, int reg, int data)
+ 	if (ret != 1) {
+ //		dev_err(&client->dev, "0x%02x (ret=%i, reg=0x%02x, value=0x%02x)\n",
+ //			dev->dt_addr, ret, reg, data);
++		if (i2c_debug)
++			dev_dbg(&client->dev, "M88DS3103C [I2cSetByte]  add: %x, Reg: %02x, Data: %02x BAD",
++				dev->dt_addr << 1, reg, data);
+ 
+ 		if (dev->chip_id == M88DS3103C_CHIP_ID)
+-			m88ds3103_update_bits(dev, 0x04, 0x10, 0x10);
++			m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x10);
+ 		else
+-			m88ds3103_update_bits(dev, 0x11, 0x01, 0x01);
++			m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x01);
+ 
+ 		return -EREMOTEIO;
++	} else {
++		if (i2c_debug)
++			dev_dbg(&client->dev, "M88DS3103C [I2cSetByte]  add: %x, Reg: %02x, Data: %02x OK",
++				dev->dt_addr << 1, reg, data);
+ 	}
+ 
+ 	if (dev->chip_id == M88DS3103C_CHIP_ID)
+-		m88ds3103_update_bits(dev, 0x04, 0x10, 0x10);
++		m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x10);
+ 	else
+-		m88ds3103_update_bits(dev, 0x11, 0x01, 0x01);
++		m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x01);
+ 
+ //	dev_dbg(&client->dev, "0x%02x reg 0x%02x, value 0x%02x\n",
+ //		dev->dt_addr, reg, data);
+@@ -140,10 +246,10 @@ static int m88ds3103b_dt_read(struct m88ds3103_dev *dev, u8 reg)
+ 	};
+ 
+ 	if (dev->chip_id == M88DS3103C_CHIP_ID) {
+-		m88ds3103_update_bits(dev, 0x04, 0x10, 0x00);
++		m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x00);
+ 		val = 0x11;
+ 	} else {
+-		m88ds3103_update_bits(dev, 0x11, 0x01, 0x00);
++		m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x00);
+ 		val = 0x12;
+ 	}
+ 
+@@ -155,19 +261,26 @@ static int m88ds3103b_dt_read(struct m88ds3103_dev *dev, u8 reg)
+ 	if (ret != 2) {
+ //		dev_err(&client->dev, "0x%02x (ret=%d, reg=0x%02x)\n",
+ //			dev->dt_addr, ret, reg);
++		if (i2c_debug)
++			dev_dbg(&client->dev, "M88DS3103C [I2cGetByte]  add: %x, Reg: %02x, Data: %02x BAD",
++				dev->dt_addr << 1, reg, b1[0]);
+ 
+ 		if (dev->chip_id == M88DS3103C_CHIP_ID)
+-			m88ds3103_update_bits(dev, 0x04, 0x10, 0x10);
++			m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x10);
+ 		else
+-			m88ds3103_update_bits(dev, 0x11, 0x01, 0x01);
++			m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x01);
+ 
+ 		return -EREMOTEIO;
++	} else {
++		if (i2c_debug)
++			dev_dbg(&client->dev, "M88DS3103C [I2cGetByte]  add: %x, Reg: %02x, Data: %02x OK",
++				dev->dt_addr << 1, reg, b1[0]);
+ 	}
+ 
+ 	if (dev->chip_id == M88DS3103C_CHIP_ID)
+-		m88ds3103_update_bits(dev, 0x04, 0x10, 0x10);
++		m88ds3103_update_bits_orig(dev, 0x04, 0x10, 0x10);
+ 	else
+-		m88ds3103_update_bits(dev, 0x11, 0x01, 0x01);
++		m88ds3103_update_bits_orig(dev, 0x11, 0x01, 0x01);
+ 
+ //	dev_dbg(&client->dev, "0x%02x reg 0x%02x, value 0x%02x\n",
+ //		dev->dt_addr, reg, b1[0]);
+@@ -184,7 +297,7 @@ int m88ds3103_get_agc_pwm(struct dvb_frontend *fe, u8 *_agc_pwm)
+ 	unsigned tmp;
+ 	int ret;
+ 
+-	ret = regmap_read(dev->regmap, 0x3f, &tmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0x3f, &tmp);
+ 	if (ret == 0)
+ 		*_agc_pwm = tmp;
+ 	return ret;
+@@ -201,6 +314,8 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 	unsigned int utmp;
+ 	u8 buf[3];
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	*status = 0;
+ 
+ 	if (!dev->warm) {
+@@ -211,7 +326,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 	switch (c->delivery_system) {
+ 	case SYS_DVBS:
+ 		if (dev->chiptype == M88DS3103_CHIPTYPE_3103C) {
+-			ret = regmap_read(dev->regmap, 0x0d, &utmp);
++			ret = regmap_read_debug(dev, dev->regmap, 0x0d, &utmp);
+ 			if (ret)
+ 				goto err;
+ 
+@@ -220,7 +335,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 					  FE_HAS_VITERBI | FE_HAS_SYNC |
+ 					  FE_HAS_LOCK;
+ 		} else {
+-			ret = regmap_read(dev->regmap, 0xd1, &utmp);
++			ret = regmap_read_debug(dev, dev->regmap, 0xd1, &utmp);
+ 			if (ret)
+ 				goto err;
+ 
+@@ -231,7 +346,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 		}
+ 		break;
+ 	case SYS_DVBS2:
+-		ret = regmap_read(dev->regmap, 0x0d, &utmp);
++		ret = regmap_read_debug(dev, dev->regmap, 0x0d, &utmp);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -262,7 +377,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 			itmp = 0;
+ 
+ 			for (i = 0; i < M88DS3103_SNR_ITERATIONS; i++) {
+-				ret = regmap_read(dev->regmap, 0xff, &utmp);
++				ret = regmap_read_debug(dev, dev->regmap, 0xff, &utmp);
+ 				if (ret)
+ 					goto err;
+ 
+@@ -280,7 +395,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 			signal_tot = 0;
+ 
+ 			for (i = 0; i < M88DS3103_SNR_ITERATIONS; i++) {
+-				ret = regmap_bulk_read(dev->regmap, 0x8c, buf, 3);
++				ret = regmap_bulk_read_debug(dev, dev->regmap, 0x8c, buf, 3);
+ 				if (ret)
+ 					goto err;
+ 
+@@ -325,17 +440,17 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 
+ 		switch (c->delivery_system) {
+ 		case SYS_DVBS:
+-			ret = regmap_write(dev->regmap, 0xf9, 0x04);
++			ret = regmap_write_debug(dev, dev->regmap, 0xf9, 0x04);
+ 			if (ret)
+ 				goto err;
+ 
+-			ret = regmap_read(dev->regmap, 0xf8, &utmp);
++			ret = regmap_read_debug(dev, dev->regmap, 0xf8, &utmp);
+ 			if (ret)
+ 				goto err;
+ 
+ 			/* measurement ready? */
+ 			if (!(utmp & 0x10)) {
+-				ret = regmap_bulk_read(dev->regmap, 0xf6, buf, 2);
++				ret = regmap_bulk_read_debug(dev, dev->regmap, 0xf6, buf, 2);
+ 				if (ret)
+ 					goto err;
+ 
+@@ -347,13 +462,13 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 
+ 				/* restart measurement */
+ 				utmp |= 0x10;
+-				ret = regmap_write(dev->regmap, 0xf8, utmp);
++				ret = regmap_write_debug(dev, dev->regmap, 0xf8, utmp);
+ 				if (ret)
+ 					goto err;
+ 			}
+ 			break;
+ 		case SYS_DVBS2:
+-			ret = regmap_bulk_read(dev->regmap, 0xd5, buf, 3);
++			ret = regmap_bulk_read_debug(dev, dev->regmap, 0xd5, buf, 3);
+ 			if (ret)
+ 				goto err;
+ 
+@@ -361,7 +476,7 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 
+ 			/* enough data? */
+ 			if (utmp > 4000) {
+-				ret = regmap_bulk_read(dev->regmap, 0xf7, buf, 2);
++				ret = regmap_bulk_read_debug(dev, dev->regmap, 0xf7, buf, 2);
+ 				if (ret)
+ 					goto err;
+ 
+@@ -372,19 +487,19 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 				dev->dvbv3_ber = post_bit_error;
+ 
+ 				/* restart measurement */
+-				ret = regmap_write(dev->regmap, 0xd1, 0x01);
++				ret = regmap_write_debug(dev, dev->regmap, 0xd1, 0x01);
+ 				if (ret)
+ 					goto err;
+ 
+-				ret = regmap_write(dev->regmap, 0xf9, 0x01);
++				ret = regmap_write_debug(dev, dev->regmap, 0xf9, 0x01);
+ 				if (ret)
+ 					goto err;
+ 
+-				ret = regmap_write(dev->regmap, 0xf9, 0x00);
++				ret = regmap_write_debug(dev, dev->regmap, 0xf9, 0x00);
+ 				if (ret)
+ 					goto err;
+ 
+-				ret = regmap_write(dev->regmap, 0xd1, 0x00);
++				ret = regmap_write_debug(dev, dev->regmap, 0xd1, 0x00);
+ 				if (ret)
+ 					goto err;
+ 			}
+@@ -404,9 +519,12 @@ static int m88ds3103_read_status(struct dvb_frontend *fe,
+ 		c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
+ 	}
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -424,6 +542,8 @@ static int m88ds3103b_select_mclk(struct m88ds3103_dev *dev)
+ 	u8 i;
+ 	char big_symbol = 0;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	big_symbol = (c->symbol_rate > 45010000) ? 1 : 0;
+ 
+ 	if (big_symbol) {
+@@ -453,15 +573,15 @@ static int m88ds3103b_select_mclk(struct m88ds3103_dev *dev)
+ 	}
+ 
+ 	if (dev->mclk == 93000000)
+-		regmap_write(dev->regmap, 0xA0, 0x42);
++		regmap_write_debug(dev, dev->regmap, 0xA0, 0x42);
+ 	else if (dev->mclk == 96000000)
+-		regmap_write(dev->regmap, 0xA0, 0x44);
++		regmap_write_debug(dev, dev->regmap, 0xA0, 0x44);
+ 	else if (dev->mclk == 99000000)
+-		regmap_write(dev->regmap, 0xA0, 0x46);
++		regmap_write_debug(dev, dev->regmap, 0xA0, 0x46);
+ 	else if (dev->mclk == 110250000)
+-		regmap_write(dev->regmap, 0xA0, 0x4E);
++		regmap_write_debug(dev, dev->regmap, 0xA0, 0x4E);
+ 	else
+-		regmap_write(dev->regmap, 0xA0, 0x44);
++		regmap_write_debug(dev, dev->regmap, 0xA0, 0x44);
+ 
+ 	reg15 = m88ds3103b_dt_read(dev, 0x15);
+ 
+@@ -489,6 +609,8 @@ static int m88ds3103b_select_mclk(struct m88ds3103_dev *dev)
+ 
+ 	usleep_range(5000, 5500);
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ }
+ 
+@@ -499,6 +621,8 @@ static int m88ds3103b_set_mclk(struct m88ds3103_dev *dev, u32 mclk_khz)
+ 	u16 pll_div_fb, N;
+ 	u32 div;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	reg15 = m88ds3103b_dt_read(dev, 0x15);
+ 	reg16 = m88ds3103b_dt_read(dev, 0x16);
+ 	reg1D = m88ds3103b_dt_read(dev, 0x1D);
+@@ -662,6 +786,8 @@ static int m88ds3103b_set_mclk(struct m88ds3103_dev *dev, u32 mclk_khz)
+ 
+ 	usleep_range(5000, 5500);
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ }
+ 
+@@ -672,18 +798,20 @@ static int mt_fe_dmd_ds3103c_set_ts_out_mode(struct dvb_frontend *fe, enum m88ds
+ 
+ 	unsigned int tmp, val = 0, ret = 0;
+ 
+-	ret = regmap_read(dev->regmap, 0x0b, &val);
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
++	ret = regmap_read_debug(dev, dev->regmap, 0x0b, &val);
+ 	val &= ~0x01;
+-	ret = regmap_write(dev->regmap, 0x0b, val);
++	ret = regmap_write_debug(dev, dev->regmap, 0x0b, val);
+ 
+-	ret = regmap_read(dev->regmap, 0xfd, &tmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0xfd, &tmp);
+ 	if (mode == M88DS3103_TS_PARALLEL) {
+ 		tmp &= ~0x01;
+ 		tmp &= ~0x04;
+ 
+-		regmap_write(dev->regmap, 0xfa, 0x01);
+-		regmap_write(dev->regmap, 0xf1, 0x60);
+-		regmap_write(dev->regmap, 0xfa, 0x00);
++		regmap_write_debug(dev, dev->regmap, 0xfa, 0x01);
++		regmap_write_debug(dev, dev->regmap, 0xf1, 0x60);
++		regmap_write_debug(dev, dev->regmap, 0xfa, 0x00);
+ 	} else if (mode == M88DS3103_TS_SERIAL) {
+ 		tmp &= ~0x01;
+ 		tmp |= 0x04;
+@@ -691,9 +819,9 @@ static int mt_fe_dmd_ds3103c_set_ts_out_mode(struct dvb_frontend *fe, enum m88ds
+ 		tmp |= 0x01;
+ 		tmp &= ~0x04;
+ 
+-		regmap_write(dev->regmap, 0xfa, 0x01);
+-		regmap_write(dev->regmap, 0xf1, 0x60);
+-		regmap_write(dev->regmap, 0xfa, 0x00);
++		regmap_write_debug(dev, dev->regmap, 0xfa, 0x01);
++		regmap_write_debug(dev, dev->regmap, 0xf1, 0x60);
++		regmap_write_debug(dev, dev->regmap, 0xfa, 0x00);
+ 	}
+ 
+ 	if (dev->cfg->ts_clk_pol) {
+@@ -705,7 +833,7 @@ static int mt_fe_dmd_ds3103c_set_ts_out_mode(struct dvb_frontend *fe, enum m88ds
+ 	}
+ 
+ 	tmp |= 0x80;
+-	regmap_write(dev->regmap, 0xfd, tmp);
++	regmap_write_debug(dev, dev->regmap, 0xfd, tmp);
+ 
+ 	val = 0;
+ 	if (mode != M88DS3103_TS_SERIAL) {
+@@ -718,22 +846,24 @@ static int mt_fe_dmd_ds3103c_set_ts_out_mode(struct dvb_frontend *fe, enum m88ds
+ 	} else
+ 		val = 0x00;
+ 
+-	regmap_write(dev->regmap, 0x0a, val);
++	regmap_write_debug(dev, dev->regmap, 0x0a, val);
+ 
+-	regmap_read(dev->regmap, 0x0b, &tmp);
++	regmap_read_debug(dev, dev->regmap, 0x0b, &tmp);
+ 
+ 	tmp &= ~0x20;
+ 	tmp |= 0x01;
+ 
+-	regmap_write(dev->regmap, 0x0b, tmp);
++	regmap_write_debug(dev, dev->regmap, 0x0b, tmp);
+ 
+ 
+-	ret = regmap_read(dev->regmap, 0x0c, &tmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0x0c, &tmp);
+ 
+-	regmap_write(dev->regmap, 0xf4, 0x01);
++	regmap_write_debug(dev, dev->regmap, 0xf4, 0x01);
+ 
+ 	tmp &= ~0x80;
+-	regmap_write(dev->regmap, 0x0c, tmp);
++	regmap_write_debug(dev, dev->regmap, 0x0c, tmp);
++
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return 0;
+ }
+@@ -755,6 +885,8 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 		{0x07, 0x80}, {0x07, 0x00}
+ 	};
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	dev_dbg(&client->dev,
+ 		"delivery_system=%d modulation=%d frequency=%u symbol_rate=%d inversion=%d pilot=%d rolloff=%d\n",
+ 		c->delivery_system, c->modulation, c->frequency, c->symbol_rate,
+@@ -771,27 +903,27 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 		goto err;
+ 
+ 	/* Clear TS */
+-	ret = regmap_write(dev->regmap, 0xf5, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0xf5, 0x00);
+ 
+ 	/* Disable demod clock path */
+ 	if (dev->chip_id == M88RS6000_CHIP_ID ||
+ 	    dev->chip_id == M88DS3103C_CHIP_ID) {
+ 		if (dev->chiptype == M88DS3103_CHIPTYPE_3103B ||
+ 		    dev->chiptype == M88DS3103_CHIPTYPE_3103C) {
+-			ret = regmap_read(dev->regmap, 0xb2, &u32tmp);
++			ret = regmap_read_debug(dev, dev->regmap, 0xb2, &u32tmp);
+ 			if (ret)
+ 				goto err;
+ 			if (u32tmp == 0x01) {
+-				ret = regmap_write(dev->regmap, 0x00, 0x00);
++				ret = regmap_write_debug(dev, dev->regmap, 0x00, 0x00);
+ 				if (ret)
+ 					goto err;
+-				ret = regmap_write(dev->regmap, 0xb2, 0x00);
++				ret = regmap_write_debug(dev, dev->regmap, 0xb2, 0x00);
+ 				if (ret)
+ 					goto err;
+ 			}
+ 		}
+ 
+-		ret = regmap_write(dev->regmap, 0x06, 0xe0);
++		ret = regmap_write_debug(dev, dev->regmap, 0x06, 0xe0);
+ 		if (ret)
+ 			goto err;
+ 	}
+@@ -836,7 +968,7 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 		}
+ 
+ 		/* Enable demod clock path */
+-		ret = regmap_write(dev->regmap, 0x06, 0x00);
++		ret = regmap_write_debug(dev, dev->regmap, 0x06, 0x00);
+ 		if (ret)
+ 			goto err;
+ 		usleep_range(10000, 20000);
+@@ -890,11 +1022,11 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 			goto err;
+ 	}
+ 
+-	ret = regmap_write(dev->regmap, 0xb2, 0x01);
++	ret = regmap_write_debug(dev, dev->regmap, 0xb2, 0x01);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0x00, 0x01);
++	ret = regmap_write_debug(dev, dev->regmap, 0x00, 0x01);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -940,13 +1072,13 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 	    dev->chip_id == M88DS3103C_CHIP_ID) {
+ 		if (c->delivery_system == SYS_DVBS2 &&
+ 		    c->symbol_rate <= 5000000) {
+-			ret = regmap_write(dev->regmap, 0xc0, 0x04);
++			ret = regmap_write_debug(dev, dev->regmap, 0xc0, 0x04);
+ 			if (ret)
+ 				goto err;
+ 			buf[0] = 0x09;
+ 			buf[1] = 0x22;
+ 			buf[2] = 0x88;
+-			ret = regmap_bulk_write(dev->regmap, 0x8a, buf, 3);
++			ret = regmap_bulk_write_debug(dev, dev->regmap, 0x8a, buf, 3);
+ 			if (ret)
+ 				goto err;
+ 		}
+@@ -978,17 +1110,17 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 			m88ds3103b_dt_write(dev, 0x15, buf[0]);
+ 			m88ds3103b_dt_write(dev, 0x16, buf[1]);
+ 
+-			regmap_read(dev->regmap, 0x30, &u32tmp);
++			regmap_read_debug(dev, dev->regmap, 0x30, &u32tmp);
+ 			if (dev->chip_id == M88DS3103C_CHIP_ID) {
+-				regmap_write(dev->regmap, 0x30, dev->config.agc_inv ? 0x18 : 0x08);
++				regmap_write_debug(dev, dev->regmap, 0x30, dev->config.agc_inv ? 0x18 : 0x08);
+ 			} else {
+ 				u32tmp &= ~0x80;
+-				regmap_write(dev->regmap, 0x30, u32tmp & 0xff);
++				regmap_write_debug(dev, dev->regmap, 0x30, u32tmp & 0xff);
+ 			}
+ 		}
+ 
+ 		if (dev->chip_id != M88DS3103C_CHIP_ID) {
+-			ret = regmap_write(dev->regmap, 0xf1, 0x01);
++			ret = regmap_write_debug(dev, dev->regmap, 0xf1, 0x01);
+ 			if (ret)
+ 				goto err;
+ 		}
+@@ -1032,7 +1164,7 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 
+ 	if (dev->chiptype != M88DS3103_CHIPTYPE_3103C) {
+ 		/* TS mode */
+-		ret = regmap_write(dev->regmap, 0xfd, u8tmp);
++		ret = regmap_write_debug(dev, dev->regmap, 0xfd, u8tmp);
+ 		if (ret)
+ 			goto err;
+ 	}
+@@ -1072,7 +1204,7 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 
+ //	dev_dbg(&client->dev, "%s  FE/EA  %X  |  %X\n", __func__, u8tmp, ((u8tmp1 & 0x03) << 6) | u8tmp2);
+ 	u8tmp = ((u8tmp1 & 0x03) << 6) | u8tmp2 >> 0;
+-	ret = regmap_write(dev->regmap, 0xea, u8tmp);
++	ret = regmap_write_debug(dev, dev->regmap, 0xea, u8tmp);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1087,19 +1219,19 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 	    dev->chiptype == M88DS3103_CHIPTYPE_3103C)
+ 		m88ds3103b_set_mclk(dev, target_mclk / 1000);
+ 
+-	ret = regmap_write(dev->regmap, 0xc3, 0x08);
++	ret = regmap_write_debug(dev, dev->regmap, 0xc3, 0x08);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0xc8, u8tmp);
++	ret = regmap_write_debug(dev, dev->regmap, 0xc8, u8tmp);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0xc4, 0x08);
++	ret = regmap_write_debug(dev, dev->regmap, 0xc4, 0x08);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0xc7, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0xc7, 0x00);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1113,7 +1245,7 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 
+ //	dev_dbg(&client->dev, "%s()  symbol_rate << 16 / mclk == %d   0x%X  |  0x%X\n", __func__, u16tmp, buf[0], buf[1]);
+ 
+-	ret = regmap_bulk_write(dev->regmap, 0x61, buf, 2);
++	ret = regmap_bulk_write_debug(dev, dev->regmap, 0x61, buf, 2);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1133,7 +1265,7 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0x33, dev->cfg->agc);
++	ret = regmap_write_debug(dev, dev->regmap, 0x33, dev->cfg->agc);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1158,21 +1290,21 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = regmap_read(dev->regmap, 0x08, &utmp);
++		ret = regmap_read_debug(dev, dev->regmap, 0x08, &utmp);
+ 		if (ret)
+ 			goto err;
+ 
+ 		if (c->delivery_system == SYS_DVBS) {
+ 			utmp = (utmp & 0xfb) | 0x40;
+-			regmap_write(dev->regmap, 0x08, utmp);
+-			regmap_write(dev->regmap, 0xe0, 0xf8);
++			regmap_write_debug(dev, dev->regmap, 0x08, utmp);
++			regmap_write_debug(dev, dev->regmap, 0xe0, 0xf8);
+ 		} else if (c->delivery_system == SYS_DVBS2) {
+ 			utmp = utmp | 0x44;
+-			regmap_write(dev->regmap, 0x08, utmp);
++			regmap_write_debug(dev, dev->regmap, 0x08, utmp);
+ 		} else {
+ 			utmp = utmp & 0xbb;
+-			regmap_write(dev->regmap, 0x08, utmp);
+-			regmap_write(dev->regmap, 0xe0, 0xf8);
++			regmap_write_debug(dev, dev->regmap, 0x08, utmp);
++			regmap_write_debug(dev, dev->regmap, 0xe0, 0xf8);
+ 		}
+ 	}
+ 
+@@ -1189,15 +1321,15 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 	buf[1] = (s32tmp >> 8) & 0xff;
+ //	dev_dbg(&client->dev, "%s()  0x%X  |  0x%X  |  %d\n", __func__, buf[0], buf[1], s32tmp);
+ 
+-	ret = regmap_bulk_write(dev->regmap, 0x5e, buf, 2);
++	ret = regmap_bulk_write_debug(dev, dev->regmap, 0x5e, buf, 2);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0x00, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0x00, 0x00);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0xb2, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0xb2, 0x00);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1209,10 +1341,12 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 	}
+ 
+ 	dev->delivery_system = c->delivery_system;
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1227,8 +1361,9 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 	const struct firmware *firmware;
+ 	const char *name;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
+ 
+-	dev_dbg(&client->dev, "\n");
++//	dev_dbg(&client->dev, "\n");
+ 
+ 	/* set cold state by default */
+ 	dev->warm = false;
+@@ -1256,10 +1391,10 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 		if (ret)
+ 			goto err;
+ 		/* global reset, global diseqc reset, global fec reset */
+-		ret = regmap_write(dev->regmap, 0x07, 0x80);
++		ret = regmap_write_debug(dev, dev->regmap, 0x07, 0x80);
+ 		if (ret)
+ 			goto err;
+-		ret = regmap_write(dev->regmap, 0x07, 0x00);
++		ret = regmap_write_debug(dev, dev->regmap, 0x07, 0x00);
+ 		if (ret)
+ 			goto err;
+ 		usleep_range(800, 1200);
+@@ -1289,15 +1424,15 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 	}
+ 
+ 	/* global reset, global diseqc reset, global fec reset */
+-	ret = regmap_write(dev->regmap, 0x07, 0xe0);
++	ret = regmap_write_debug(dev, dev->regmap, 0x07, 0xe0);
+ 	if (ret)
+ 		goto err;
+-	ret = regmap_write(dev->regmap, 0x07, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0x07, 0x00);
+ 	if (ret)
+ 		goto err;
+ 
+ 	/* firmware status */
+-	ret = regmap_read(dev->regmap, 0xb9, &utmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0xb9, &utmp);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1328,13 +1463,13 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 
+ 	dev_info(&client->dev, "downloading firmware from file '%s'\n", name);
+ 
+-	ret = regmap_write(dev->regmap, 0xb2, 0x01);
++	ret = regmap_write_debug(dev, dev->regmap, 0xb2, 0x01);
+ 	if (ret)
+ 		goto err_release_firmware;
+ 
+ 	for (rem = firmware->size; rem > 0; rem -= (dev->cfg->i2c_wr_max - 1)) {
+ 		len = min(dev->cfg->i2c_wr_max - 1, rem);
+-		ret = regmap_bulk_write(dev->regmap, 0xb0,
++		ret = regmap_bulk_write_debug(dev, dev->regmap, 0xb0,
+ 					&firmware->data[firmware->size - rem],
+ 					len);
+ 		if (ret) {
+@@ -1344,13 +1479,13 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 		}
+ 	}
+ 
+-	ret = regmap_write(dev->regmap, 0xb2, 0x00);
++	ret = regmap_write_debug(dev, dev->regmap, 0xb2, 0x00);
+ 	if (ret)
+ 		goto err_release_firmware;
+ 
+ 	release_firmware(firmware);
+ 
+-	ret = regmap_read(dev->regmap, 0xb9, &utmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0xb9, &utmp);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1395,11 +1530,14 @@ static int m88ds3103_init(struct dvb_frontend *fe)
+ 	c->post_bit_count.len = 1;
+ 	c->post_bit_count.stat[0].scale = FE_SCALE_NOT_AVAILABLE;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err_release_firmware:
+ 	release_firmware(firmware);
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1411,7 +1549,9 @@ static int m88ds3103_sleep(struct dvb_frontend *fe)
+ 	int ret;
+ 	unsigned int utmp;
+ 
+-	dev_dbg(&client->dev, "\n");
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
++//	dev_dbg(&client->dev, "\n");
+ 
+ 	dev->fe_status = 0;
+ 	dev->delivery_system = SYS_UNDEFINED;
+@@ -1449,9 +1589,12 @@ static int m88ds3103_sleep(struct dvb_frontend *fe)
+ 	if (ret)
+ 		goto err;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1464,7 +1607,9 @@ static int m88ds3103_get_frontend(struct dvb_frontend *fe,
+ 	int ret;
+ 	u8 buf[3];
+ 
+-	dev_dbg(&client->dev, "\n");
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
++//	dev_dbg(&client->dev, "\n");
+ 
+ 	if (!dev->warm || !(dev->fe_status & FE_HAS_LOCK)) {
+ 		ret = 0;
+@@ -1475,11 +1620,11 @@ static int m88ds3103_get_frontend(struct dvb_frontend *fe,
+ 
+ 	switch (c->delivery_system) {
+ 	case SYS_DVBS:
+-		ret = regmap_bulk_read(dev->regmap, 0xe0, &buf[0], 1);
++		ret = regmap_bulk_read_debug(dev, dev->regmap, 0xe0, &buf[0], 1);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = regmap_bulk_read(dev->regmap, 0xe6, &buf[1], 1);
++		ret = regmap_bulk_read_debug(dev, dev->regmap, 0xe6, &buf[1], 1);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -1516,15 +1661,15 @@ static int m88ds3103_get_frontend(struct dvb_frontend *fe,
+ 
+ 		break;
+ 	case SYS_DVBS2:
+-		ret = regmap_bulk_read(dev->regmap, 0x7e, &buf[0], 1);
++		ret = regmap_bulk_read_debug(dev, dev->regmap, 0x7e, &buf[0], 1);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = regmap_bulk_read(dev->regmap, 0x89, &buf[1], 1);
++		ret = regmap_bulk_read_debug(dev, dev->regmap, 0x89, &buf[1], 1);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = regmap_bulk_read(dev->regmap, 0xf2, &buf[2], 1);
++		ret = regmap_bulk_read_debug(dev, dev->regmap, 0xf2, &buf[2], 1);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -1615,16 +1760,19 @@ static int m88ds3103_get_frontend(struct dvb_frontend *fe,
+ 		goto err;
+ 	}
+ 
+-	ret = regmap_bulk_read(dev->regmap, 0x6d, buf, 2);
++	ret = regmap_bulk_read_debug(dev, dev->regmap, 0x6d, buf, 2);
+ 	if (ret)
+ 		goto err;
+ 
+ //	dev_dbg(&client->dev, "%s()  0x%X  |  0x%X\n", __func__, buf[0], buf[1]);
+ 	c->symbol_rate = DIV_ROUND_CLOSEST_ULL((u64)(buf[1] << 8 | buf[0] << 0) * dev->mclk, 0x10000);
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1658,7 +1806,7 @@ static int m88ds3103_set_tone(struct dvb_frontend *fe,
+ 	int ret;
+ 	unsigned int utmp, tone, reg_a1_mask;
+ 
+-	dev_dbg(&client->dev, "fe_sec_tone_mode=%s\n", fe_sec_tone_mode == SEC_TONE_ON ? "ON" : "OFF");
++	dev_dbg(&dev->client->dev, "fe_sec_tone_mode=%s\n", fe_sec_tone_mode == SEC_TONE_ON ? "ON" : "OFF");
+ 
+ 	if (!dev->warm) {
+ 		ret = -EAGAIN;
+@@ -1690,9 +1838,12 @@ static int m88ds3103_set_tone(struct dvb_frontend *fe,
+ 	if (ret)
+ 		goto err;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1706,6 +1857,8 @@ static int m88ds3103_set_voltage(struct dvb_frontend *fe,
+ 	unsigned int utmp;
+ 	bool voltage_sel, voltage_dis;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	dev_dbg(&client->dev, "fe_sec_voltage=%d\n", fe_sec_voltage);
+ 
+ 	if (!dev->warm) {
+@@ -1741,9 +1894,12 @@ static int m88ds3103_set_voltage(struct dvb_frontend *fe,
+ 	if (ret)
+ 		goto err;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1757,6 +1913,8 @@ static int m88ds3103_diseqc_send_master_cmd(struct dvb_frontend *fe,
+ 	unsigned int utmp;
+ 	unsigned long timeout;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	dev_dbg(&client->dev, "msg=%*ph\n",
+ 		diseqc_cmd->msg_len, diseqc_cmd->msg);
+ 
+@@ -1775,12 +1933,12 @@ static int m88ds3103_diseqc_send_master_cmd(struct dvb_frontend *fe,
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_bulk_write(dev->regmap, 0xa3, diseqc_cmd->msg,
++	ret = regmap_bulk_write_debug(dev, dev->regmap, 0xa3, diseqc_cmd->msg,
+ 			diseqc_cmd->msg_len);
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = regmap_write(dev->regmap, 0xa1,
++	ret = regmap_write_debug(dev, dev->regmap, 0xa1,
+ 			(diseqc_cmd->msg_len - 1) << 3 | 0x07);
+ 	if (ret)
+ 		goto err;
+@@ -1794,7 +1952,7 @@ static int m88ds3103_diseqc_send_master_cmd(struct dvb_frontend *fe,
+ 	usleep_range(utmp - 4000, utmp);
+ 
+ 	for (utmp = 1; !time_after(jiffies, timeout) && utmp;) {
+-		ret = regmap_read(dev->regmap, 0xa1, &utmp);
++		ret = regmap_read_debug(dev, dev->regmap, 0xa1, &utmp);
+ 		if (ret)
+ 			goto err;
+ 		utmp = (utmp >> 6) & 0x1;
+@@ -1821,9 +1979,12 @@ static int m88ds3103_diseqc_send_master_cmd(struct dvb_frontend *fe,
+ 		goto err;
+ 	}
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -1837,6 +1998,8 @@ static int m88ds3103_diseqc_send_burst(struct dvb_frontend *fe,
+ 	unsigned int utmp, burst;
+ 	unsigned long timeout;
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  BEGIN\n", __func__);
++
+ 	dev_dbg(&client->dev, "fe_sec_mini_cmd=%d\n", fe_sec_mini_cmd);
+ 
+ 	if (!dev->warm) {
+@@ -1862,7 +2025,7 @@ static int m88ds3103_diseqc_send_burst(struct dvb_frontend *fe,
+ 		goto err;
+ 	}
+ 
+-	ret = regmap_write(dev->regmap, 0xa1, burst);
++	ret = regmap_write_debug(dev, dev->regmap, 0xa1, burst);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1874,7 +2037,7 @@ static int m88ds3103_diseqc_send_burst(struct dvb_frontend *fe,
+ 	usleep_range(8500, 12500);
+ 
+ 	for (utmp = 1; !time_after(jiffies, timeout) && utmp;) {
+-		ret = regmap_read(dev->regmap, 0xa1, &utmp);
++		ret = regmap_read_debug(dev, dev->regmap, 0xa1, &utmp);
+ 		if (ret)
+ 			goto err;
+ 		utmp = (utmp >> 6) & 0x1;
+@@ -1901,9 +2064,12 @@ static int m88ds3103_diseqc_send_burst(struct dvb_frontend *fe,
+ 		goto err;
+ 	}
+ 
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
++
+ 	return 0;
+ err:
+ 	dev_dbg(&client->dev, "failed=%d\n", ret);
++//	dev_dbg(&dev->client->dev, "%s()  --  END\n", __func__);
+ 
+ 	return ret;
+ }
+@@ -2090,7 +2256,7 @@ static int m88ds3103_probe(struct i2c_client *client)
+ 	}
+ 
+ 	/* 0x00: chip id[6:0], 0x01: chip ver[7:0], 0x02: chip ver[15:8] */
+-	ret = regmap_read(dev->regmap, 0x00, &utmp);
++	ret = regmap_read_debug(dev, dev->regmap, 0x00, &utmp);
+ 	if (ret)
+ 		goto err_kfree;
+ 
+@@ -2136,7 +2302,7 @@ static int m88ds3103_probe(struct i2c_client *client)
+ 	    dev->chip_id == M88DS3103C_CHIP_ID)
+ 		utmp = 0x00;
+ 
+-	ret = regmap_write(dev->regmap, 0x29, utmp);
++	ret = regmap_write_debug(dev, dev->regmap, 0x29, utmp);
+ 	if (ret)
+ 		goto err_kfree;
+ 
+@@ -2192,7 +2358,7 @@ static int m88ds3103_probe(struct i2c_client *client)
+ 			m88ds3103_update_bits(dev, 0x11, 0x01, 0x01);
+ 
+ 		/* get frontend address */
+-		ret = regmap_read(dev->regmap, 0x29, &utmp);
++		ret = regmap_read_debug(dev, dev->regmap, 0x29, &utmp);
+ 		if (ret)
+ 			goto err_del_adapters;
+ 
+-- 
+2.51.0
+
