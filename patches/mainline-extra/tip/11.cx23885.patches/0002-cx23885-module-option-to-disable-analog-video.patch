@@ -1,7 +1,7 @@
-From 1845f85dd56e6aca3944fe24ee20228ba5c01f47 Mon Sep 17 00:00:00 2001
-From: Brad Love <brad@nextdimension.cc>
-Date: Mon, 21 Dec 2020 15:17:43 -0600
-Subject: [PATCH 2/3] cx23885: module option to disable analog video
+From 0891cf78e46a41e6a7969b2ab91bf4ed77961812 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Fri, 26 Dec 2025 12:26:15 -0600
+Subject: [PATCH] cx23885: module option to disable analog video
 
 Array containing card numbers to disable.
 Card numbes found in cx23885.h
@@ -13,13 +13,13 @@ Card numbes found in cx23885.h
  4 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
-index 58db6cd59413..7f2ae69405df 100644
+index 217fff542..25e7bd696 100644
 --- a/drivers/media/pci/cx23885/cx23885-cards.c
 +++ b/drivers/media/pci/cx23885/cx23885-cards.c
-@@ -2413,6 +2413,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
- 	case CX23885_BOARD_VIEWCAST_260E:
+@@ -2441,6 +2441,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
  	case CX23885_BOARD_VIEWCAST_460E:
  	case CX23885_BOARD_AVERMEDIA_CE310B:
+ 	case CX23885_BOARD_AVERMEDIA_H789C:
 +		if (dev->disable_analog)
 +			break;
 +
@@ -27,7 +27,7 @@ index 58db6cd59413..7f2ae69405df 100644
  				&dev->i2c_bus[2].i2c_adap,
  				"cx25840", 0x88 >> 1, NULL);
 diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 7e0b0b7cc2a3..2cb8a0263ec1 100644
+index a39f445ce..175bab3e1 100644
 --- a/drivers/media/pci/cx23885/cx23885-core.c
 +++ b/drivers/media/pci/cx23885/cx23885-core.c
 @@ -48,6 +48,11 @@ static unsigned int debug;
@@ -65,10 +65,10 @@ index 7e0b0b7cc2a3..2cb8a0263ec1 100644
  			pr_err("%s() Failed to register analog video adapters on VID_A\n",
  			       __func__);
 diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
-index 45c2f4afceb8..59c4fc7c9eaf 100644
+index 05a7859cb..f240ccda4 100644
 --- a/drivers/media/pci/cx23885/cx23885-dvb.c
 +++ b/drivers/media/pci/cx23885/cx23885-dvb.c
-@@ -2375,7 +2375,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2373,7 +2373,8 @@ static int dvb_register(struct cx23885_tsport *port)
  			port->i2c_client_tuner = client_tuner;
  
  			/* we only attach tuner for analog on the 888 version */
@@ -78,7 +78,7 @@ index 45c2f4afceb8..59c4fc7c9eaf 100644
  				pr_info("%s(): QUADHD_DVB analog setup\n",
  					__func__);
  				dev->ts1.analog_fe.tuner_priv = client_tuner;
-@@ -2474,7 +2475,8 @@ static int dvb_register(struct cx23885_tsport *port)
+@@ -2466,7 +2467,8 @@ static int dvb_register(struct cx23885_tsport *port)
  			port->i2c_client_tuner = client_tuner;
  
  			/* we only attach tuner for analog on the 888 version */
@@ -89,10 +89,10 @@ index 45c2f4afceb8..59c4fc7c9eaf 100644
  					__func__);
  				dev->ts1.analog_fe.tuner_priv = client_tuner;
 diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
-index c472498e57c4..e964b1ad54d7 100644
+index 8ba1f3062..8653ee1d9 100644
 --- a/drivers/media/pci/cx23885/cx23885.h
 +++ b/drivers/media/pci/cx23885/cx23885.h
-@@ -403,6 +403,7 @@ struct cx23885_dev {
+@@ -404,6 +404,7 @@ struct cx23885_dev {
  	unsigned char              radio_addr;
  	struct v4l2_subdev	   *sd_cx25840;
  	struct work_struct	   cx25840_work;
@@ -101,5 +101,5 @@ index c472498e57c4..e964b1ad54d7 100644
  	/* Infrared */
  	struct v4l2_subdev         *sd_ir;
 -- 
-2.28.0
+2.51.0
 

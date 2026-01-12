@@ -1,14 +1,14 @@
-From 944525b6a9b755458ad1af12716be1e33d80ae6f Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Fri, 11 Oct 2019 20:55:45 -0500
-Subject: [PATCH 3/3] si2168: Add some various v3 stat ioctls
+From 55697e5526f4f1d17127c0e7565d256a8bb7e6a3 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Fri, 19 Dec 2025 13:15:10 -0600
+Subject: [PATCH] si2168: Add some various v3 stat ioctls
 
 ---
  drivers/media/dvb-frontends/si2168.c | 208 ++++++++++++++++++++++++++-
  1 file changed, 201 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 72794ead8..94420d9f6 100644
+index b394448cf..175e74ae4 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -117,13 +117,12 @@ static int si2168_ts_bus_ctrl(struct dvb_frontend *fe, int acquire)
@@ -267,7 +267,7 @@ index 72794ead8..94420d9f6 100644
  
  	return 0;
  err:
-@@ -720,6 +909,11 @@ static const struct dvb_frontend_ops si2168_ops = {
+@@ -729,6 +918,11 @@ static const struct dvb_frontend_ops si2168_ops = {
  	.set_frontend = si2168_set_frontend,
  
  	.read_status = si2168_read_status,
@@ -278,7 +278,7 @@ index 72794ead8..94420d9f6 100644
 +	.read_ucblocks        = si2168_read_ucblocks,
  };
  
- static int si2168_probe(struct i2c_client *client,
+ static int si2168_probe(struct i2c_client *client)
 -- 
-2.20.1
+2.51.0
 

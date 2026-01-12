@@ -1,14 +1,14 @@
-From 46cef36d56595c069a28093e642defe213806429 Mon Sep 17 00:00:00 2001
+From 66d9e6bae4532e94b0ad7c0e5b158757377728b6 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 18 Jan 2021 14:49:10 -0600
-Subject: [PATCH] Fix saa7164 REV2 firmware
+Subject: [PATCH 07/14] Fix saa7164 REV2 firmware
 
 ---
  drivers/media/pci/saa7164/saa7164-fw.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/pci/saa7164/saa7164-fw.c b/drivers/media/pci/saa7164/saa7164-fw.c
-index 3636894..c57d566 100644
+index cc9f384f7..341cef624 100644
 --- a/drivers/media/pci/saa7164/saa7164-fw.c
 +++ b/drivers/media/pci/saa7164/saa7164-fw.c
 @@ -10,8 +10,8 @@
@@ -23,5 +23,5 @@ index 3636894..c57d566 100644
  #define SAA7164_REV3_FIRMWARE		"NXP7164-2010-03-10.1.fw"
  #define SAA7164_REV3_FIRMWARE_SIZE	4019072
 -- 
-2.7.4
+2.43.0
 

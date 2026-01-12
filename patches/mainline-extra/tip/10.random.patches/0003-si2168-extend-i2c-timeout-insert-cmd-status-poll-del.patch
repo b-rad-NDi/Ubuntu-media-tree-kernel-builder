@@ -1,14 +1,15 @@
-From 553c9a6a7a00749694f1df0160b60729aea6ac2e Mon Sep 17 00:00:00 2001
+From 2b591ce0e4909a0dfd268f662e7fb5ace43a603b Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 29 Jul 2019 15:53:05 -0500
-Subject: [PATCH 3/5] si2168: extend i2c timeout, insert cmd status poll delay
+Subject: [PATCH 03/14] si2168: extend i2c timeout, insert cmd status poll
+ delay
 
 ---
  drivers/media/dvb-frontends/si2168.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index ac56f4681..0d9d384cf 100644
+index 1ac4cfbbb..4c9299ac8 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -44,7 +44,7 @@ static int si2168_cmd_execute(struct i2c_client *client, struct si2168_cmd *cmd)
@@ -30,5 +31,5 @@ index ac56f4681..0d9d384cf 100644
  
  		dev_dbg(&client->dev, "cmd execution took %d ms\n",
 -- 
-2.20.1
+2.43.0
 

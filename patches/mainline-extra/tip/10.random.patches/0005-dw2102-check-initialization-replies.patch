@@ -1,7 +1,7 @@
-From b54874961e23053ee951b2e8807b76cb00e60413 Mon Sep 17 00:00:00 2001
+From 1e89b21d669874531f5be8edc7bcf9ceef72748b Mon Sep 17 00:00:00 2001
 From: Michael Bunk <micha@freedict.org>
 Date: Sat, 4 Jan 2020 19:35:49 +0100
-Subject: [PATCH 5/6] dw2102: check initialization replies
+Subject: [PATCH 05/14] dw2102: check initialization replies
 
 In tt_s2_4600_frontend_attach() initialization commands are sent over
 USB to the device.  The replies were not checked for success.
@@ -18,10 +18,10 @@ Signed-off-by: Michael Bunk <micha@freedict.org>
  1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
-index b5f4aa1ec..f3fe8f08c 100644
+index 4fecf2f96..8be600eab 100644
 --- a/drivers/media/usb/dvb-usb/dw2102.c
 +++ b/drivers/media/usb/dvb-usb/dw2102.c
-@@ -1564,14 +1564,18 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
+@@ -1611,14 +1611,18 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
  	state->data[2] = 0x0;
  
  	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
@@ -42,7 +42,7 @@ index b5f4aa1ec..f3fe8f08c 100644
  	msleep(300);
  
  	state->data[0] = 0xe;
-@@ -1579,19 +1583,25 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
+@@ -1626,19 +1630,25 @@ static int tt_s2_4600_frontend_attach(struct dvb_usb_adapter *adap)
  	state->data[2] = 0;
  
  	if (dvb_usb_generic_rw(d, state->data, 3, state->data, 1, 0) < 0)
@@ -71,5 +71,5 @@ index b5f4aa1ec..f3fe8f08c 100644
  	/* probe for demodulator i2c address */
  	demod_addr = -1;
 -- 
-2.20.1
+2.43.0
 

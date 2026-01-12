@@ -1,7 +1,7 @@
-From 15cbcf238fd6d6e90b84ddd4646e15c4480a41f3 Mon Sep 17 00:00:00 2001
+From 8265225b54e25aa978e0c4b8b1cf6e8cf589059d Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Tue, 8 Sep 2020 16:14:56 -0500
-Subject: [PATCH] si2168: Include b 4.0-11 when checking firmware version
+Subject: [PATCH 06/14] si2168: Include b 4.0-11 when checking firmware version
 
 Multiple reports of firmware B-4.0-11 being non functional after resuming from sleep
 
@@ -11,10 +11,10 @@ Signed-off-by: Brad Love <hidden@email.co>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index 72794ea..ba9e2cd 100644
+index fc05a2f92..b394448cf 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
-@@ -623,8 +623,8 @@ static int si2168_sleep(struct dvb_frontend *fe)
+@@ -631,8 +631,8 @@ static int si2168_sleep(struct dvb_frontend *fe)
  	if (ret)
  		goto err;
  
@@ -26,5 +26,5 @@ index 72794ea..ba9e2cd 100644
  
  	cmd_init(&cmd, "\x13", 1, 0);
 -- 
-2.7.4
+2.43.0
 
