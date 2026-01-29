@@ -1,6 +1,6 @@
-From c0de7dfc9dff5644e179f795c9b44e988f229b8a Mon Sep 17 00:00:00 2001
+From dadac9f53d78a889e40f49828d3a703e0e92f17b Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Fri, 26 Dec 2025 12:48:26 -0600
+Date: Wed, 14 Jan 2026 15:28:59 -0600
 Subject: [PATCH 1/2] Add support for EM2828X
 
 USB bridge chipset contains a new embedded video decoder.
@@ -10,20 +10,20 @@ Included in this support patch is:
 - Analog composite/s-video
 - Analog TV for i2c devices
 ---
- drivers/media/usb/em28xx/em28xx-cards.c |  27 +++-
+ drivers/media/usb/em28xx/em28xx-cards.c |  27 ++-
  drivers/media/usb/em28xx/em28xx-core.c  | 159 ++++++++++++++++--
  drivers/media/usb/em28xx/em28xx-dvb.c   |  15 ++
  drivers/media/usb/em28xx/em28xx-i2c.c   |   2 +
  drivers/media/usb/em28xx/em28xx-reg.h   |   3 +
- drivers/media/usb/em28xx/em28xx-video.c | 206 ++++++++++++++++++++++--
+ drivers/media/usb/em28xx/em28xx-video.c | 210 ++++++++++++++++++++++--
  drivers/media/usb/em28xx/em28xx.h       |  12 ++
- 7 files changed, 397 insertions(+), 27 deletions(-)
+ 7 files changed, 399 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-index a51cbcf42..8c43314bb 100644
+index 37c0c6e86024..38b4e1ee1f1d 100644
 --- a/drivers/media/usb/em28xx/em28xx-cards.c
 +++ b/drivers/media/usb/em28xx/em28xx-cards.c
-@@ -3626,6 +3626,11 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
+@@ -3638,6 +3638,11 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
  			}
  			/* NOTE: the em2820 is used in webcams, too ! */
  			break;
@@ -35,7 +35,7 @@ index a51cbcf42..8c43314bb 100644
  		case CHIP_ID_EM2840:
  			chip_name = "em2840";
  			break;
-@@ -3784,6 +3789,7 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
+@@ -3796,6 +3801,7 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
  	 *  0x84	bulk		=> analog or digital**
  	 *  0x85	isoc		=> digital TS2
  	 *  0x85	bulk		=> digital TS2
@@ -43,7 +43,7 @@ index a51cbcf42..8c43314bb 100644
  	 * (*: audio should always be isoc)
  	 * (**: analog, if ep 0x82 is isoc, otherwise digital)
  	 *
-@@ -3807,6 +3813,8 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
+@@ -3819,6 +3825,8 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
  	/* Only inspect input endpoints */
  
  	switch (e->bEndpointAddress) {
@@ -52,7 +52,7 @@ index a51cbcf42..8c43314bb 100644
  	case 0x82:
  		*has_video = true;
  		if (usb_endpoint_xfer_isoc(e)) {
-@@ -3824,7 +3832,10 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
+@@ -3836,7 +3844,10 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
  				"error: skipping audio endpoint 0x83, because it uses bulk transfers !\n");
  		return;
  	case 0x84:
@@ -64,7 +64,7 @@ index a51cbcf42..8c43314bb 100644
  			dev->analog_ep_bulk = e->bEndpointAddress;
  		} else {
  			if (usb_endpoint_xfer_isoc(e)) {
-@@ -3858,7 +3869,17 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
+@@ -3870,7 +3881,17 @@ static void em28xx_check_usb_descriptor(struct em28xx *dev,
  			dev->dvb_ep_bulk_ts2 = e->bEndpointAddress;
  		}
  		return;
@@ -83,7 +83,7 @@ index a51cbcf42..8c43314bb 100644
  }
  
  /*
-@@ -4040,6 +4061,8 @@ static int em28xx_usb_probe(struct usb_interface *intf,
+@@ -4052,6 +4073,8 @@ static int em28xx_usb_probe(struct usb_interface *intf,
  			try_bulk = 1;
  		else
  			try_bulk = 0;
@@ -93,7 +93,7 @@ index a51cbcf42..8c43314bb 100644
  		try_bulk = usb_xfer_mode > 0;
  	}
 diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index 29a7f3f19..2a38e29fb 100644
+index 29a7f3f19b56..2a38e29fb52e 100644
 --- a/drivers/media/usb/em28xx/em28xx-core.c
 +++ b/drivers/media/usb/em28xx/em28xx-core.c
 @@ -499,6 +499,7 @@ int em28xx_audio_setup(struct em28xx *dev)
@@ -197,14 +197,14 @@ index 29a7f3f19..2a38e29fb 100644
 +				if (rc < 0)
 +					return rc;
 +
-+				if (dev->chip_id == CHIP_ID_EM2828X)
-+					rc = em28xx_write_reg(dev,
-+							      EM28XX_R12_VINENABLE,
-+							      0x27);
-+				else
-+					rc = em28xx_write_reg(dev,
-+							      EM28XX_R12_VINENABLE,
-+							      0x67);
++				//if (dev->chip_id == CHIP_ID_EM2828X)
++				//	rc = em28xx_write_reg(dev,
++				//			      EM28XX_R12_VINENABLE,
++				//			      0x27);
++				//else
++				rc = em28xx_write_reg(dev,
++						      EM28XX_R12_VINENABLE,
++						      0x67);
 +
 +			} else if (dev->chip_id == CHIP_ID_EM2828X) {
 +				dev_err(&dev->intf->dev, "%s() CHIP_ID_EM2828X\n", __func__);
@@ -290,7 +290,7 @@ index 29a7f3f19..2a38e29fb 100644
  	}
  
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 9fce59979..c8e6ae362 100644
+index 9fce59979e3b..c8e6ae362f64 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -296,6 +296,21 @@ static int em28xx_dvb_bus_ctrl(struct dvb_frontend *fe, int acquire)
@@ -316,7 +316,7 @@ index 9fce59979..c8e6ae362 100644
  
  static struct lgdt330x_config em2880_lgdt3303_dev = {
 diff --git a/drivers/media/usb/em28xx/em28xx-i2c.c b/drivers/media/usb/em28xx/em28xx-i2c.c
-index a7eb11f7f..f0a901c3b 100644
+index a7eb11f7fb34..f0a901c3b49a 100644
 --- a/drivers/media/usb/em28xx/em28xx-i2c.c
 +++ b/drivers/media/usb/em28xx/em28xx-i2c.c
 @@ -864,6 +864,8 @@ static int em28xx_i2c_eeprom(struct em28xx *dev, unsigned int bus,
@@ -329,7 +329,7 @@ index a7eb11f7f..f0a901c3b 100644
  
  error:
 diff --git a/drivers/media/usb/em28xx/em28xx-reg.h b/drivers/media/usb/em28xx/em28xx-reg.h
-index d7c608628..b974873e4 100644
+index d7c60862874a..b974873e4e86 100644
 --- a/drivers/media/usb/em28xx/em28xx-reg.h
 +++ b/drivers/media/usb/em28xx/em28xx-reg.h
 @@ -167,6 +167,8 @@
@@ -350,7 +350,7 @@ index d7c608628..b974873e4 100644
  
  /*
 diff --git a/drivers/media/usb/em28xx/em28xx-video.c b/drivers/media/usb/em28xx/em28xx-video.c
-index 2dfa3242a..2e81fa61b 100644
+index 2dfa3242a7ab..4e590e2d538f 100644
 --- a/drivers/media/usb/em28xx/em28xx-video.c
 +++ b/drivers/media/usb/em28xx/em28xx-video.c
 @@ -161,13 +161,26 @@ static int em28xx_vbi_supported(struct em28xx *dev)
@@ -685,8 +685,19 @@ index 2dfa3242a..2e81fa61b 100644
  			v4l2_disable_ioctl(&v4l2->vbi_dev, VIDIOC_G_TUNER);
  			v4l2_disable_ioctl(&v4l2->vbi_dev, VIDIOC_S_TUNER);
  			v4l2_disable_ioctl(&v4l2->vbi_dev, VIDIOC_G_FREQUENCY);
+@@ -2846,8 +3030,8 @@ static int em28xx_v4l2_init(struct em28xx *dev)
+ 	if (ret) {
+ 		dev_err(&dev->intf->dev,
+ 			"failed to create media graph\n");
+-		em28xx_v4l2_media_release(dev);
+-		goto unregister_dev;
++//		em28xx_v4l2_media_release(dev);
++//		goto unregister_dev;
+ 	}
+ #endif
+ 
 diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-index f3449c240..8bb4d5e67 100644
+index f3449c240d21..8bb4d5e67852 100644
 --- a/drivers/media/usb/em28xx/em28xx.h
 +++ b/drivers/media/usb/em28xx/em28xx.h
 @@ -425,8 +425,15 @@ enum em28xx_decoder {
