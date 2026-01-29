@@ -1,6 +1,6 @@
-From 5eacda65a2bb0bcd922eacdf074c9a06b5049556 Mon Sep 17 00:00:00 2001
+From 6f5ed05e74718d5b52a4630a5390b75e96806bf5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 21 Sep 2022 11:11:28 -0500
+Date: Mon, 29 Apr 2024 16:48:17 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -51,11 +51,13 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-fwnode.c                       | 2 ++
  drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
  drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
+ include/linux/kernel_version.h                              | 1 +
  include/media/config-mycompat.h                             | 4 ++++
  include/media/v4l2-subdev.h                                 | 2 ++
  include/media/videobuf2-core.h                              | 2 +-
  samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
- 51 files changed, 98 insertions(+), 20 deletions(-)
+ 52 files changed, 99 insertions(+), 20 deletions(-)
+ create mode 100644 include/linux/kernel_version.h
 
 diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
 index 4c5a15c53dbf..61734697ae39 100644
@@ -518,10 +520,10 @@ index 1d56b91830ba..49956d562f53 100644
  		dev_err(comp, "%s: video register failed (err=%d)\n",
  			vcap->vdev.name, ret);
 diff --git a/drivers/media/platform/vivid/vivid-core.c b/drivers/media/platform/vivid/vivid-core.c
-index cc71aa425597..1312f445d210 100644
+index f6dc2b69b62e..1c8896dc27c5 100644
 --- a/drivers/media/platform/vivid/vivid-core.c
 +++ b/drivers/media/platform/vivid/vivid-core.c
-@@ -380,7 +380,7 @@ static int vidioc_log_status(struct file *file, void *fh)
+@@ -402,7 +402,7 @@ static int vidioc_log_status(struct file *file, void *fh)
  	struct video_device *vdev = video_devdata(file);
  
  	v4l2_ctrl_log_status(file, fh);
@@ -530,7 +532,7 @@ index cc71aa425597..1312f445d210 100644
  		tpg_log_status(&dev->tpg);
  	return 0;
  }
-@@ -1308,7 +1308,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+@@ -1330,7 +1330,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
  		}
  #endif
  
@@ -539,7 +541,7 @@ index cc71aa425597..1312f445d210 100644
  		if (ret < 0)
  			goto unreg_dev;
  		v4l2_info(&dev->v4l2_dev, "V4L2 capture device registered as %s\n",
-@@ -1359,7 +1359,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+@@ -1381,7 +1381,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
  		}
  #endif
  
@@ -715,6 +717,13 @@ index 9c017806b841..3ef92783faa8 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/include/linux/kernel_version.h b/include/linux/kernel_version.h
+new file mode 100644
+index 000000000000..85bd4b9831df
+--- /dev/null
++++ b/include/linux/kernel_version.h
+@@ -0,0 +1 @@
++#define V4L2_VERSION 332288
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
 index 76aaa0b26811..3502895686c6 100644
 --- a/include/media/config-mycompat.h

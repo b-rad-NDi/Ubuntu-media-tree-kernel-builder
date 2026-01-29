@@ -1,4 +1,4 @@
-From b9669435e7e3515ebfb73e2d7e1cbbd129ed4e77 Mon Sep 17 00:00:00 2001
+From 6f66777da9e149da5d111dbfa4318d9ec7a752dc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 9 Jun 2022 13:38:23 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
@@ -42,7 +42,7 @@ index 32747b7f9..1d42112d3 100644
  		rawir.pulse = !!(w & 0x8000);
  		rawir.duration = US_TO_NS(rawir.pulse ? (65536 - w) : w);
 diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
-index 278d50ff1..ac626fb80 100644
+index a6adeb729..ada6697c1 100644
 --- a/drivers/usb/gadget/function/uvc_queue.c
 +++ b/drivers/usb/gadget/function/uvc_queue.c
 @@ -166,7 +166,7 @@ int uvcg_queue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf)

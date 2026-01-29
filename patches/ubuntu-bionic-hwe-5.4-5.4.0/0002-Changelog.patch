@@ -1,24 +1,24 @@
-From 9361c86926fdb72eb71ce2a96e5416a51473aed3 Mon Sep 17 00:00:00 2001
+From 120cbeb389b45069876e09501a576d98744bceeb Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 22 Sep 2022 11:22:33 -0500
+Date: Wed, 28 Jan 2026 01:28:26 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe-5.4/changelog | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ debian.hwe-5.4/changelog | 47 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
 diff --git a/debian.hwe-5.4/changelog b/debian.hwe-5.4/changelog
-index 8ccecbdc42d7..dbda363af64e 100644
+index 3309f8812009..d0d162d08584 100644
 --- a/debian.hwe-5.4/changelog
 +++ b/debian.hwe-5.4/changelog
-@@ -1,3 +1,34 @@
-+linux-hwe (5.4.0-1282209221122.0+mediatree+hauppauge~hwe) bionic; urgency=low
+@@ -1,3 +1,50 @@
++linux-hwe (5.4.0-1522601280128.0+mediatree+hauppauge~hwe) bionic; urgency=low
 +
-+  * Ubuntu-hwe-5.4 kernel git clone
-+    - 5.4.0-128.144 rev 87acbf115918cec4843aeb2762ad5a6836bf838a
++  * Ubuntu hwe-5.4 kernel git clone
++    - 5.4.0-152.169 rev 3d5133ff256678ababe7a98c3519043d7f656314
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2022-06-06-06-00.patch
++    - 0001-Linuxtv.org-media-tree-sync-2023-05-24-04-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,17 +35,33 @@ index 8ccecbdc42d7..dbda363af64e 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
-+    --- 0009-Revert.2c98b8a34.patch
++    --- 0009-cx231xx-Fix-AGC-configuration-to-defaults-from-windo.patch
++    --- 0010-au0828-Add-dqbuf-function-to-check-for-and-fix-green.patch
++    --- 0011-xc5000-rf-strength-function-is-required-to-get-analo.patch
++    --- 0012-cx25840-Fix-NTSC-J-PAL-N-and-SECAM-standards.patch
++    --- 0013-si2157-Fix-SECAM-L-PAL-N-and-PAL-Nc.patch
++    --- 0014-au0828-Add-new-Hauppauge-HVR1265-and-ImpactVCB-e.patch
++    --- 0015-em28xx-Add-DualHD-variants.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 25.em2828X
++    --- 0001-Add-support-for-EM2828X.patch
++    --- 0002-em28xx-Add-EM2828X-based-Hauppauge-USB-Live2.patch
++    - 27.em2828x.based.9x5
++    --- 0001-em28xx-Include-support-for-second-i2c-client-demod.patch
++    --- 0002-si2157-Add-analog-TV-support-for-si2177.patch
++    --- 0003-em28xx-Add-Hauppauge-em2828X-based-9x5-revisions.patch
++    - 30.Montage.3103c.demod
++    --- 0001-m88ds3103-Add-Montage-3103c-demod-support.patch
++    --- 0002-em28xx-Add-Hauppauge-461e-v3.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
++ -- Fake User <hidden@email.co>  Wed, 28 Jan 2026 01:28:26 -0600
 +
- linux-hwe-5.4 (5.4.0-128.144~18.04.1) bionic; urgency=medium
+ linux-hwe-5.4 (5.4.0-152.169~18.04.1) bionic; urgency=medium
  
-   * bionic/linux-hwe-5.4: 5.4.0-128.144~18.04.1 -proposed tracker (LP: #1989891)
+   * bionic/linux-hwe-5.4: 5.4.0-152.169~18.04.1 -proposed tracker (LP: #2023103)
 -- 
 2.17.1
 

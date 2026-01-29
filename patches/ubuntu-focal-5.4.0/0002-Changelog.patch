@@ -1,24 +1,24 @@
-From de45e3cb1ef284580cd407c604c9ec2a8e8c5292 Mon Sep 17 00:00:00 2001
+From e0f12cbf1c7ac5aeaf2bea097e4d2c8fbea093a5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 22 Sep 2022 11:22:33 -0500
+Date: Tue, 28 May 2024 04:20:00 -0500
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ debian.master/changelog | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index 499d7399c..52c2fed26 100644
+index c247c77ba..a896af545 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,33 @@
-+linux (5.4.0-1222209221122.1+mediatree+hauppauge) focal; urgency=low
+@@ -1,3 +1,42 @@
++linux (5.4.0-1862405280420.0+mediatree+hauppauge) focal; urgency=low
 +
-+  * Ubuntu-master kernel git clone
-+    - 5.4.0-122.138 rev ac13f0e563d69c185c7fa9cbd8302a47f2ca07dd
++  * Ubuntu master-next kernel git clone
++    - 5.4.0-186.206 rev 9bbfaa01721018bfe680a9c39d82c3f786efdf09
 +
 +  * LinuxTV.org media tree slipstream + build fixes
-+    - 0001-Linuxtv.org-media-tree-sync-2022-06-06-06-00.patch
++    - 0001-Linuxtv.org-media-tree-sync-2023-05-24-04-20.patch
 +    - 0002-Changelog.patch
 +    - 0003-Apply-build-fixes-to-media-tree.patch
 +    - 0004-Mainline-Ubuntu-build-fixes.patch
@@ -35,16 +35,25 @@ index 499d7399c..52c2fed26 100644
 +    --- 0006-dw2102-warn-on-failed-i2c-read-requests.patch
 +    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
 +    --- 0008-Fix-saa7164-REV2-firmware.patch
++    --- 0011-cx231xx-Fix-AGC-configuration-to-defaults-from-windo.patch
++    --- 0012-au0828-Add-dqbuf-function-to-check-for-and-fix-green.patch
++    --- 0013-xc5000-rf-strength-function-is-required-to-get-analo.patch
++    --- 0014-cx25840-Fix-NTSC-J-PAL-N-and-SECAM-standards.patch
++    --- 0015-si2157-Fix-SECAM-L-PAL-N-and-PAL-Nc.patch
++    --- 0016-au0828-Add-new-Hauppauge-HVR1265-and-ImpactVCB-e.patch
++    --- 0017-em28xx-Add-DualHD-variants.patch
++    --- 0018-em28xx-Add-support-for-EM2828X.patch
++    --- 0019-em28xx-Add-support-for-em2828X-based-USB-Live2.patch
 +    - 11.cx23885.patches
 +    --- 0002-cx23885-module-option-to-disable-analog-video.patch
 +    - 20.missing.stat.bits
 +    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
 +
-+ -- Fake User <hidden@email.co>  Thu, 22 Sep 2022 11:22:33 -0500
++ -- Fake User <hidden@email.co>  Tue, 28 May 2024 04:20:00 -0500
 +
- linux (5.4.0-122.138) focal; urgency=medium
+ linux (5.4.0-186.206) focal; urgency=medium
  
-   * focal/linux: 5.4.0-122.138 -proposed tracker (LP: #1979489)
+   * focal/linux: 5.4.0-186.206 -proposed tracker (LP: #2063812)
 -- 
 2.25.1
 

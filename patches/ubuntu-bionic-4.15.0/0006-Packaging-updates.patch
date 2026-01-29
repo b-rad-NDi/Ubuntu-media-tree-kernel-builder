@@ -1,4 +1,4 @@
-From 1b0a666a1e3e661972271cfc79a1f0308e01b4b1 Mon Sep 17 00:00:00 2001
+From a142ef4974e5794d42aef5387e9240ddc12d86e8 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Thu, 9 Jun 2022 16:54:08 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -284,7 +284,7 @@ index ed92b3d53..18505efb1 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index ca87ccf8f..1ee630cd8 100755
+index d742490a6..9b72a77d1 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -354,10 +354,10 @@ index ed8a4a360..f91a93d94 100644
  # common headers normally is built as an indep package, but may be arch
  do_common_headers_indep=true
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index db990d5be..be6195ef3 100644
+index 2ec1ac096..6b9f3dcf0 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -794,10 +794,14 @@ build-arch: $(build-arch-deps-true)
+@@ -796,10 +796,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

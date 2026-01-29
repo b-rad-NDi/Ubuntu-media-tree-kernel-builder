@@ -1,6 +1,6 @@
-From 87ffb34eadfe9c1206f0bda34dc7e6651c785171 Mon Sep 17 00:00:00 2001
+From da6c60758001609122ccaf9fe96b67bd41020f22 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 23 Sep 2022 14:00:18 -0500
+Date: Tue, 30 Apr 2024 11:22:43 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -117,6 +117,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/media/v4l2-core/v4l2-fwnode.c              |   2 +
  drivers/media/v4l2-core/v4l2-ioctl.c               |   2 +
  drivers/media/v4l2-core/videobuf2-dma-sg.c         |   2 +
+ include/linux/kernel_version.h                     |   1 +
  include/linux/refcount.h                           | 102 +++++++++++++++++++++
  include/media/compat.h                             |  11 ++-
  include/media/config-mycompat.h                    |   3 +
@@ -129,7 +130,8 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-fwnode.h                        |   2 +
  include/media/videobuf-core.h                      |   2 +
  include/media/videobuf2-core.h                     |   3 +-
- 125 files changed, 371 insertions(+), 69 deletions(-)
+ 126 files changed, 372 insertions(+), 69 deletions(-)
+ create mode 100644 include/linux/kernel_version.h
  create mode 100644 include/linux/refcount.h
 
 diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
@@ -1748,6 +1750,13 @@ index 9985c89..a99983b 100644
  static int debug;
  module_param(debug, int, 0644);
  
+diff --git a/include/linux/kernel_version.h b/include/linux/kernel_version.h
+new file mode 100644
+index 0000000..85bd4b9
+--- /dev/null
++++ b/include/linux/kernel_version.h
+@@ -0,0 +1 @@
++#define V4L2_VERSION 332288
 diff --git a/include/linux/refcount.h b/include/linux/refcount.h
 new file mode 100644
 index 0000000..e828658

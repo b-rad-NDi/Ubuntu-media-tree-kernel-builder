@@ -1,4 +1,4 @@
-From c523e0ea09be5f849598e1f53dfdf142b2814a40 Mon Sep 17 00:00:00 2001
+From 1875fdc266a49f2e1cf6bff6674ae30043334d85 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Fri, 29 Jul 2022 13:30:56 -0500
 Subject: [PATCH 6/6] Packaging updates
@@ -43,7 +43,7 @@ index bdad951bbd20..e3995d517c35 100644
   DESC.
   .
 diff --git a/debian.hwe-5.4/control.stub.in b/debian.hwe-5.4/control.stub.in
-index 5ab8a2d9d31d..0f93f6cd3074 100644
+index b91b93ca1112..eea03db852d4 100644
 --- a/debian.hwe-5.4/control.stub.in
 +++ b/debian.hwe-5.4/control.stub.in
 @@ -54,30 +54,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
@@ -253,7 +253,7 @@ index ed92b3d53ba5..18505efb1b11 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index b10128a11f0b..dbebf167ce60 100755
+index e49f8376be43..851813c4aec9 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -327,10 +327,10 @@ index b53af89388d8..d62d17dbfb8c 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/rules.d/2-binary-arch.mk b/debian/rules.d/2-binary-arch.mk
-index 0542c12a708b..8301d30b3c83 100644
+index 747cc9992e7d..aa7c3bb642f5 100644
 --- a/debian/rules.d/2-binary-arch.mk
 +++ b/debian/rules.d/2-binary-arch.mk
-@@ -804,10 +804,14 @@ build-arch: $(build-arch-deps-true)
+@@ -806,10 +806,14 @@ build-arch: $(build-arch-deps-true)
  	@echo Debug: $@
  
  ifeq ($(AUTOBUILD),)

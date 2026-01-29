@@ -1,85 +1,44 @@
-From 532fb8eb02f544bc8b04d0b94fbec03f37b86e9f Mon Sep 17 00:00:00 2001
-From: Brad Love <hidden@email.co>
-Date: Thu, 9 Mar 2023 10:33:42 -0600
+From f51414497eb05c30297b8141777fe5b5354dbf73 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 17 Apr 2024 16:26:40 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/core/cec-api.c                              | 2 ++
- drivers/media/common/videobuf2/frame_vector.c                 | 2 ++
- drivers/media/common/videobuf2/videobuf2-memops.c             | 2 ++
- drivers/media/dvb-core/dvb_net.c                              | 2 ++
- drivers/media/i2c/hi556.c                                     | 4 ++--
- drivers/media/i2c/imx319.c                                    | 4 ++--
- drivers/media/mc/mc-device.c                                  | 2 ++
- drivers/media/rc/Makefile                                     | 2 +-
- drivers/media/usb/em28xx/em28xx-dvb.c                         | 2 +-
- drivers/media/v4l2-core/v4l2-ioctl.c                          | 2 ++
- .../media/atomisp/pci/hive_isp_css_common/host/input_system.c | 1 +
- include/media/videobuf2-core.h                                | 1 -
- include/media/videobuf2-v4l2.h                                | 2 ++
- 13 files changed, 21 insertions(+), 7 deletions(-)
+ drivers/media/cec/core/cec-api.c           |  3 +++
+ drivers/media/i2c/hi556.c                  |  4 +--
+ drivers/media/i2c/imx208.c                 |  4 +--
+ drivers/media/i2c/imx319.c                 |  4 +--
+ drivers/media/i2c/ov2740.c                 |  4 +--
+ drivers/media/i2c/ov5670.c                 |  4 +--
+ drivers/media/i2c/ov5675.c                 |  4 +--
+ drivers/media/i2c/ov8856.c                 |  4 +--
+ drivers/media/mc/mc-device.c               |  2 ++
+ drivers/media/pci/intel/ipu3/cio2-bridge.c |  6 +++--
+ drivers/media/rc/Makefile                  |  2 +-
+ drivers/media/usb/em28xx/em28xx-dvb.c      |  2 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c       |  2 ++
+ include/linux/kernel_version.h             |  1 +
+ include/media/config-compat.h              | 29 ++++++++++++++++++++++
+ 15 files changed, 57 insertions(+), 18 deletions(-)
+ create mode 100644 include/linux/kernel_version.h
+ create mode 100644 include/media/config-compat.h
 
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index 1c3096820..f7955a829 100644
+index 1c3096820590..3f321386b3db 100644
 --- a/drivers/media/cec/core/cec-api.c
 +++ b/drivers/media/cec/core/cec-api.c
-@@ -22,6 +22,8 @@
+@@ -19,6 +19,9 @@
+ #include <linux/version.h>
+ 
+ #include <media/cec-pin.h>
++
++#include <media/compat.h>
++
  #include "cec-priv.h"
  #include "cec-pin-priv.h"
  
-+#include <media/compat.h>
-+
- static inline struct cec_devnode *cec_devnode_data(struct file *filp)
- {
- 	struct cec_fh *fh = filp->private_data;
-diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
-index 542dde9d2..a10c7d6cf 100644
---- a/drivers/media/common/videobuf2/frame_vector.c
-+++ b/drivers/media/common/videobuf2/frame_vector.c
-@@ -10,6 +10,8 @@
- 
- #include <media/frame_vector.h>
- 
-+#include <media/compat.h>
-+
- /**
-  * get_vaddr_frames() - map virtual addresses to pfns
-  * @start:	starting user address
-diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
-index 9dd6c2716..c8da1c859 100644
---- a/drivers/media/common/videobuf2/videobuf2-memops.c
-+++ b/drivers/media/common/videobuf2/videobuf2-memops.c
-@@ -40,6 +40,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
- 	unsigned long first, last;
- 	unsigned long nr;
- 	struct frame_vector *vec;
-+//	unsigned int flags = FOLL_FORCE;
- 
- 	first = start >> PAGE_SHIFT;
- 	last = (start + length - 1) >> PAGE_SHIFT;
-@@ -47,6 +48,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
- 	vec = frame_vector_create(nr);
- 	if (!vec)
- 		return ERR_PTR(-ENOMEM);
-+//	ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
- 	ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
- 	if (ret < 0)
- 		goto out_destroy;
-diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
-index 82a09f560..5f704d3d7 100644
---- a/drivers/media/dvb-core/dvb_net.c
-+++ b/drivers/media/dvb-core/dvb_net.c
-@@ -58,6 +58,8 @@
- #include <media/dvb_demux.h>
- #include <media/dvb_net.h>
- 
-+#include <media/compat.h>
-+
- static inline __u32 iov_crc32( __u32 c, struct kvec *iov, unsigned int cnt )
- {
- 	unsigned int j;
 diff --git a/drivers/media/i2c/hi556.c b/drivers/media/i2c/hi556.c
-index 055d1aa84..a455860f3 100644
+index 055d1aa8410e..a455860f3e87 100644
 --- a/drivers/media/i2c/hi556.c
 +++ b/drivers/media/i2c/hi556.c
 @@ -1134,7 +1134,7 @@ static int hi556_probe(struct i2c_client *client)
@@ -100,8 +59,30 @@ index 055d1aa84..a455860f3 100644
  };
  
  module_i2c_driver(hi556_i2c_driver);
+diff --git a/drivers/media/i2c/imx208.c b/drivers/media/i2c/imx208.c
+index b9516b2f1c15..ec43f095d593 100644
+--- a/drivers/media/i2c/imx208.c
++++ b/drivers/media/i2c/imx208.c
+@@ -996,7 +996,7 @@ static int imx208_probe(struct i2c_client *client)
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&imx208->sd, client, &imx208_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		/* Check module identity */
+ 		ret = imx208_identify_module(imx208);
+@@ -1100,7 +1100,7 @@ static struct i2c_driver imx208_i2c_driver = {
+ 	},
+ 	.probe_new = imx208_probe,
+ 	.remove = imx208_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(imx208_i2c_driver);
 diff --git a/drivers/media/i2c/imx319.c b/drivers/media/i2c/imx319.c
-index a2b5a34de..dfdb7c441 100644
+index a2b5a34de76b..dfdb7c441d42 100644
 --- a/drivers/media/i2c/imx319.c
 +++ b/drivers/media/i2c/imx319.c
 @@ -2444,7 +2444,7 @@ static int imx319_probe(struct i2c_client *client)
@@ -122,8 +103,96 @@ index a2b5a34de..dfdb7c441 100644
  };
  module_i2c_driver(imx319_i2c_driver);
  
+diff --git a/drivers/media/i2c/ov2740.c b/drivers/media/i2c/ov2740.c
+index d5f0eabf20c6..a50d1a2d37a3 100644
+--- a/drivers/media/i2c/ov2740.c
++++ b/drivers/media/i2c/ov2740.c
+@@ -1163,7 +1163,7 @@ static int ov2740_probe(struct i2c_client *client)
+ 		return -ENOMEM;
+ 
+ 	v4l2_i2c_subdev_init(&ov2740->sd, client, &ov2740_subdev_ops);
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = ov2740_identify_module(ov2740);
+ 		if (ret) {
+@@ -1239,7 +1239,7 @@ static struct i2c_driver ov2740_i2c_driver = {
+ 	},
+ 	.probe_new = ov2740_probe,
+ 	.remove = ov2740_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov2740_i2c_driver);
+diff --git a/drivers/media/i2c/ov5670.c b/drivers/media/i2c/ov5670.c
+index 02f75c18e480..460443a915ca 100644
+--- a/drivers/media/i2c/ov5670.c
++++ b/drivers/media/i2c/ov5670.c
+@@ -2490,7 +2490,7 @@ static int ov5670_probe(struct i2c_client *client)
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&ov5670->sd, client, &ov5670_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		/* Check module identity */
+ 		ret = ov5670_identify_module(ov5670);
+@@ -2593,7 +2593,7 @@ static struct i2c_driver ov5670_i2c_driver = {
+ 	},
+ 	.probe_new = ov5670_probe,
+ 	.remove = ov5670_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov5670_i2c_driver);
+diff --git a/drivers/media/i2c/ov5675.c b/drivers/media/i2c/ov5675.c
+index 82ba9f56baec..502589dad3ca 100644
+--- a/drivers/media/i2c/ov5675.c
++++ b/drivers/media/i2c/ov5675.c
+@@ -1208,7 +1208,7 @@ static int ov5675_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&ov5675->sd, client, &ov5675_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = ov5675_identify_module(ov5675);
+ 		if (ret) {
+@@ -1287,7 +1287,7 @@ static struct i2c_driver ov5675_i2c_driver = {
+ 	},
+ 	.probe_new = ov5675_probe,
+ 	.remove = ov5675_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov5675_i2c_driver);
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index a9728afc81d4..a0e5a6771a48 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -2475,7 +2475,7 @@ static int ov8856_probe(struct i2c_client *client)
+ 
+ 	v4l2_i2c_subdev_init(&ov8856->sd, client, &ov8856_subdev_ops);
+ 
+-	full_power = acpi_dev_state_d0(&client->dev);
++	full_power = true; //acpi_dev_state_d0(&client->dev);
+ 	if (full_power) {
+ 		ret = __ov8856_power_on(ov8856);
+ 		if (ret) {
+@@ -2566,7 +2566,7 @@ static struct i2c_driver ov8856_i2c_driver = {
+ 	},
+ 	.probe_new = ov8856_probe,
+ 	.remove = ov8856_remove,
+-	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
++//	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
+ };
+ 
+ module_i2c_driver(ov8856_i2c_driver);
 diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
-index f361319f9..9793ce83d 100644
+index f361319f9c25..9793ce83d140 100644
 --- a/drivers/media/mc/mc-device.c
 +++ b/drivers/media/mc/mc-device.c
 @@ -24,6 +24,8 @@
@@ -135,8 +204,39 @@ index f361319f9..9793ce83d 100644
  #ifdef CONFIG_MEDIA_CONTROLLER
  
  /*
+diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+index df6c94da2f6a..7dc8351d16fd 100644
+--- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
++++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+@@ -8,6 +8,8 @@
+ #include <linux/property.h>
+ #include <media/v4l2-fwnode.h>
+ 
++#include <media/compat.h>
++
+ #include "cio2-bridge.h"
+ 
+ /*
+@@ -236,7 +238,7 @@ static void cio2_bridge_instantiate_vcm_i2c_client(struct cio2_sensor *sensor)
+ 	board_info.swnode = &sensor->swnodes[SWNODE_VCM];
+ 
+ 	sensor->vcm_i2c_client =
+-		i2c_acpi_new_device_by_fwnode(acpi_fwnode_handle(sensor->adev),
++		i2c_acpi_new_device(get_dev_from_fwnode(acpi_fwnode_handle(sensor->adev)),
+ 					      1, &board_info);
+ 	if (IS_ERR(sensor->vcm_i2c_client)) {
+ 		dev_warn(&sensor->adev->dev, "Error instantiation VCM i2c-client: %ld\n",
+@@ -391,7 +393,7 @@ static int cio2_bridge_sensors_are_ready(void)
+ 			if (!adev->status.enabled)
+ 				continue;
+ 
+-			if (!acpi_dev_ready_for_enumeration(adev))
++			if (!(adev->status.present || adev->status.functional))
+ 				ready = false;
+ 		}
+ 	}
 diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
-index 3d0911783..a9285266e 100644
+index 3d09117835d5..a9285266e944 100644
 --- a/drivers/media/rc/Makefile
 +++ b/drivers/media/rc/Makefile
 @@ -4,7 +4,7 @@ obj-y += keymaps/
@@ -149,7 +249,7 @@ index 3d0911783..a9285266e 100644
  
  obj-$(CONFIG_RC_CORE) += rc-core.o
 diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 9530c41c4..fed16bcb2 100644
+index 9530c41c437d..fed16bcb24dc 100644
 --- a/drivers/media/usb/em28xx/em28xx-dvb.c
 +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
 @@ -44,7 +44,7 @@
@@ -162,7 +262,7 @@ index 9530c41c4..fed16bcb2 100644
  #include "s921.h"
  #include "drxd.h"
 diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 9c017806b..3ef92783f 100644
+index 9c017806b841..3ef92783faa8 100644
 --- a/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -31,6 +31,8 @@
@@ -174,43 +274,48 @@ index 9c017806b..3ef92783f 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-index 712e01c37..f4ec7af77 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-@@ -1187,6 +1187,7 @@ static void input_system_network_configure(
- 				    sub_id,
- 				    &cfg->ctrl_unit_cfg[sub_id - CTRL_UNIT0_ID]);
- 	}
-+	return status;
- }
- 
- static input_system_err_t configuration_to_registers(void)
-diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-index 5468b633b..72a50850f 100644
---- a/include/media/videobuf2-core.h
-+++ b/include/media/videobuf2-core.h
-@@ -18,7 +18,6 @@
- #include <linux/dma-buf.h>
- #include <linux/bitops.h>
- #include <media/media-request.h>
--#include <media/frame_vector.h>
- 
- #define VB2_MAX_FRAME	(32)
- #define VB2_MAX_PLANES	(8)
-diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
-index d818d9707..8b956177b 100644
---- a/include/media/videobuf2-v4l2.h
-+++ b/include/media/videobuf2-v4l2.h
-@@ -15,6 +15,8 @@
- #include <linux/videodev2.h>
- #include <media/videobuf2-core.h>
- 
-+#include <media/frame_vector.h>
+diff --git a/include/linux/kernel_version.h b/include/linux/kernel_version.h
+new file mode 100644
+index 000000000000..85bd4b9831df
+--- /dev/null
++++ b/include/linux/kernel_version.h
+@@ -0,0 +1 @@
++#define V4L2_VERSION 332288
+diff --git a/include/media/config-compat.h b/include/media/config-compat.h
+new file mode 100644
+index 000000000000..ba5db9d832bc
+--- /dev/null
++++ b/include/media/config-compat.h
+@@ -0,0 +1,29 @@
++#ifndef __CONFIG_COMPAT_H__
++#define __CONFIG_COMPAT_H__
 +
- #if VB2_MAX_FRAME != VIDEO_MAX_FRAME
- #error VB2_MAX_FRAME != VIDEO_MAX_FRAME
- #endif
++#include <linux/version.h>
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
++#include <linux/autoconf.h>
++#endif
++
++#include <linux/mmdebug.h>
++
++
++#define NEED_MIN3 1
++
++#define NEED_SETUP_TIMER 1
++
++#define NEED_GET_USER_PAGES_LONGTERM 1
++
++#define NEED_U8_MAX 1
++
++#define NEED_STRUCT_SIZE 1
++
++#define NEED_I2C_NEW_SECONDARY_DEV 1
++
++#define NEED_KEY_SCREENSAVER 1
++
++#endif
 -- 
 2.25.1
 

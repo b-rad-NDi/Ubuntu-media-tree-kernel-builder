@@ -1,6 +1,6 @@
-From 3af5b04028ccc2d318b0c4d173af977ea8f8dfb3 Mon Sep 17 00:00:00 2001
+From e8b85b694ede4668be7b02871dd396e3167809f5 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Fri, 29 Jul 2022 13:42:54 -0500
+Date: Tue, 23 Apr 2024 16:32:53 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
@@ -110,6 +110,7 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  drivers/staging/media/av7110/av7110.h              | 12 ++++++------
  drivers/staging/media/av7110/av7110_ipack.c        |  1 +
  drivers/staging/media/av7110/budget-patch.c        | 10 +++++-----
+ include/linux/kernel_version.h                     |  1 +
  include/media/config-mycompat.h                    |  3 +++
  include/media/i2c/saa6588.h                        |  2 ++
  include/media/media-devnode.h                      |  2 ++
@@ -117,7 +118,8 @@ Subject: [PATCH 3/6] Apply build fixes to media tree
  include/media/v4l2-dev.h                           |  5 ++++-
  include/media/videobuf-core.h                      |  2 ++
  include/media/videobuf2-core.h                     |  2 +-
- 113 files changed, 233 insertions(+), 76 deletions(-)
+ 114 files changed, 234 insertions(+), 76 deletions(-)
+ create mode 100644 include/linux/kernel_version.h
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index c9acf752f..a580d3830 100644
@@ -1595,6 +1597,13 @@ index d173c8ade..73fee2641 100644
  
  DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
  
+diff --git a/include/linux/kernel_version.h b/include/linux/kernel_version.h
+new file mode 100644
+index 000000000..85bd4b983
+--- /dev/null
++++ b/include/linux/kernel_version.h
+@@ -0,0 +1 @@
++#define V4L2_VERSION 332288
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
 index 76aaa0b26..d56501afe 100644
 --- a/include/media/config-mycompat.h

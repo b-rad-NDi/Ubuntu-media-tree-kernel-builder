@@ -1,106 +1,63 @@
-From aede8a254df65ee510a0c56fc0ac5cb940d50e71 Mon Sep 17 00:00:00 2001
+From d64cc53bd3ab577a38dc5e062e1bf680f8edcad7 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 8 Feb 2023 11:20:23 -0600
+Date: Tue, 28 May 2024 14:18:10 -0500
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- Documentation/media/kapi/v4l2-dev.rst                       | 4 ++--
- .../translations/zh_CN/video4linux/v4l2-framework.txt       | 4 ++--
- drivers/media/cec/cec-api.c                                 | 3 +++
- drivers/media/cec/core/cec-api.c                            | 3 +++
- drivers/media/common/videobuf2/Makefile                     | 2 +-
- drivers/media/common/videobuf2/videobuf2-dma-contig.c       | 2 ++
- drivers/media/common/videobuf2/videobuf2-dma-sg.c           | 2 ++
- drivers/media/common/videobuf2/videobuf2-memops.c           | 3 ++-
- drivers/media/common/videobuf2/videobuf2-vmalloc.c          | 2 ++
- drivers/media/dvb-core/dvb_net.c                            | 2 ++
- drivers/media/dvb-core/dvbdev.c                             | 2 ++
- drivers/media/dvb-frontends/cxd2820r_core.c                 | 3 ++-
- drivers/media/dvb-frontends/lgdt330x.c                      | 3 +++
- drivers/media/dvb-frontends/m88ds3103.c                     | 2 ++
- drivers/media/dvb-frontends/ts2020.c                        | 2 ++
- drivers/media/i2c/adv7604.c                                 | 2 ++
- drivers/media/i2c/imx258.c                                  | 2 ++
- drivers/media/i2c/ov5693.c                                  | 2 ++
- drivers/media/mc/mc-device.c                                | 2 ++
- drivers/media/pci/bt8xx/bttv-input.c                        | 2 ++
- drivers/media/pci/cx18/cx18-i2c.c                           | 2 ++
- drivers/media/pci/cx23885/cx23885-dvb.c                     | 2 ++
- drivers/media/pci/cx23885/cx23885-i2c.c                     | 2 ++
- drivers/media/pci/ivtv/ivtv-driver.c                        | 2 ++
- drivers/media/pci/ivtv/ivtv-i2c.c                           | 2 ++
- drivers/media/pci/saa7134/saa7134-video.c                   | 2 ++
- drivers/media/pci/saa7164/saa7164-dvb.c                     | 2 ++
- drivers/media/pci/smipcie/smipcie-main.c                    | 2 ++
- drivers/media/platform/sh_veu.c                             | 2 +-
- drivers/media/platform/via-camera.c                         | 2 ++
- drivers/media/platform/vicodec/vicodec-core.c               | 2 +-
- drivers/media/platform/vim2m.c                              | 2 +-
- drivers/media/platform/vimc/vimc-capture.c                  | 2 +-
- drivers/media/platform/vivid/vivid-core.c                   | 6 +++---
- drivers/media/usb/dvb-usb-v2/af9035.c                       | 2 ++
- drivers/media/usb/dvb-usb-v2/anysee.c                       | 2 ++
- drivers/media/usb/dvb-usb-v2/rtl28xxu.c                     | 2 ++
- drivers/media/usb/dvb-usb-v2/zd1301.c                       | 2 ++
- drivers/media/usb/dvb-usb/dib0700_devices.c                 | 1 +
- drivers/media/usb/dvb-usb/dw2102.c                          | 2 ++
- drivers/media/usb/em28xx/Makefile                           | 4 ++--
- drivers/media/usb/em28xx/em28xx-dvb.c                       | 2 +-
- drivers/media/usb/usbvision/usbvision-video.c               | 2 +-
- drivers/media/v4l2-core/v4l2-async.c                        | 2 ++
- drivers/media/v4l2-core/v4l2-fwnode.c                       | 2 ++
- drivers/media/v4l2-core/v4l2-i2c.c                          | 2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c                        | 2 ++
- include/media/config-mycompat.h                             | 4 ++++
- include/media/v4l2-subdev.h                                 | 2 ++
- include/media/videobuf2-core.h                              | 4 +++-
- samples/v4l/v4l2-pci-skeleton.c                             | 2 +-
- 51 files changed, 100 insertions(+), 20 deletions(-)
+ drivers/media/cec/cec-api.c                   |  3 ++
+ drivers/media/cec/core/cec-api.c              |  3 ++
+ drivers/media/common/videobuf2/Makefile       |  2 +-
+ .../common/videobuf2/videobuf2-dma-contig.c   |  2 +
+ .../media/common/videobuf2/videobuf2-dma-sg.c |  2 +
+ .../media/common/videobuf2/videobuf2-memops.c |  3 +-
+ .../common/videobuf2/videobuf2-vmalloc.c      |  2 +
+ drivers/media/dvb-core/dvb_net.c              |  2 +
+ drivers/media/dvb-core/dvbdev.c               |  2 +
+ drivers/media/dvb-frontends/cxd2820r_core.c   |  3 +-
+ drivers/media/dvb-frontends/lgdt330x.c        |  3 ++
+ drivers/media/dvb-frontends/m88ds3103.c       |  2 +
+ drivers/media/dvb-frontends/ts2020.c          |  2 +
+ drivers/media/i2c/adv7604.c                   |  2 +
+ drivers/media/i2c/imx258.c                    |  2 +
+ drivers/media/i2c/ov5693.c                    |  2 +
+ drivers/media/mc/mc-device.c                  |  2 +
+ drivers/media/pci/bt8xx/bttv-input.c          |  2 +
+ drivers/media/pci/cx18/cx18-i2c.c             |  2 +
+ drivers/media/pci/cx23885/cx23885-dvb.c       |  2 +
+ drivers/media/pci/cx23885/cx23885-i2c.c       |  2 +
+ drivers/media/pci/ivtv/ivtv-driver.c          |  2 +
+ drivers/media/pci/ivtv/ivtv-i2c.c             |  2 +
+ drivers/media/pci/saa7134/saa7134-video.c     |  2 +
+ drivers/media/pci/saa7164/saa7164-dvb.c       |  2 +
+ drivers/media/pci/smipcie/smipcie-main.c      |  2 +
+ drivers/media/platform/sh_veu.c               |  2 +-
+ drivers/media/platform/via-camera.c           |  2 +
+ drivers/media/platform/vicodec/vicodec-core.c |  2 +-
+ drivers/media/platform/vim2m.c                |  2 +-
+ drivers/media/platform/vimc/vimc-capture.c    |  2 +-
+ drivers/media/platform/vivid/vivid-core.c     |  6 +--
+ drivers/media/usb/dvb-usb-v2/af9035.c         |  2 +
+ drivers/media/usb/dvb-usb-v2/anysee.c         |  2 +
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c       |  2 +
+ drivers/media/usb/dvb-usb-v2/zd1301.c         |  2 +
+ drivers/media/usb/dvb-usb/dib0700_devices.c   |  1 +
+ drivers/media/usb/dvb-usb/dw2102.c            |  2 +
+ drivers/media/usb/em28xx/Makefile             |  4 +-
+ drivers/media/usb/em28xx/em28xx-dvb.c         |  2 +-
+ drivers/media/usb/usbvision/usbvision-video.c |  2 +-
+ drivers/media/v4l2-core/v4l2-async.c          |  2 +
+ drivers/media/v4l2-core/v4l2-fwnode.c         |  2 +
+ drivers/media/v4l2-core/v4l2-i2c.c            |  2 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  2 +
+ include/linux/kernel_version.h                |  1 +
+ include/media/config-compat.h                 | 47 +++++++++++++++++++
+ include/media/config-mycompat.h               |  6 +++
+ include/media/v4l2-subdev.h                   |  2 +
+ include/media/videobuf2-core.h                |  4 +-
+ 50 files changed, 145 insertions(+), 15 deletions(-)
+ create mode 100644 include/linux/kernel_version.h
+ create mode 100644 include/media/config-compat.h
 
-diff --git a/Documentation/media/kapi/v4l2-dev.rst b/Documentation/media/kapi/v4l2-dev.rst
-index 4c5a15c53..61734697a 100644
---- a/Documentation/media/kapi/v4l2-dev.rst
-+++ b/Documentation/media/kapi/v4l2-dev.rst
-@@ -185,7 +185,7 @@ This will create the character device for you.
- 
- .. code-block:: c
- 
--	err = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
-+	err = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
- 	if (err) {
- 		video_device_release(vdev); /* or kfree(my_vdev); */
- 		return err;
-@@ -201,7 +201,7 @@ types exist:
- ========================== ====================	 ==============================
- :c:type:`vfl_devnode_type` Device name		 Usage
- ========================== ====================	 ==============================
--``VFL_TYPE_GRABBER``       ``/dev/videoX``       for video input/output devices
-+``VFL_TYPE_VIDEO``       ``/dev/videoX``       for video input/output devices
- ``VFL_TYPE_VBI``           ``/dev/vbiX``         for vertical blank data (i.e.
- 						 closed captions, teletext)
- ``VFL_TYPE_RADIO``         ``/dev/radioX``       for radio tuners
-diff --git a/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt b/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
-index 66c7c568b..9c39ee58e 100644
---- a/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
-+++ b/Documentation/translations/zh_CN/video4linux/v4l2-framework.txt
-@@ -649,7 +649,7 @@ video_device注册
- 
- 接下来你需要注册视频设备：这会为你创建一个字符设备。
- 
--	err = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
-+	err = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
- 	if (err) {
- 		video_device_release(vdev); /* or kfree(my_vdev); */
- 		return err;
-@@ -660,7 +660,7 @@ video_device注册
- 
- 注册哪种设备是根据类型（type）参数。存在以下类型：
- 
--VFL_TYPE_GRABBER: 用于视频输入/输出设备的 videoX
-+VFL_TYPE_VIDEO: 用于视频输入/输出设备的 videoX
- VFL_TYPE_VBI: 用于垂直消隐数据的 vbiX (例如，隐藏式字幕，图文电视)
- VFL_TYPE_RADIO: 用于广播调谐器的 radioX
- 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
 index ed75636a6..681b30c5b 100644
 --- a/drivers/media/cec/cec-api.c
@@ -518,10 +475,10 @@ index 1d56b9183..49956d562 100644
  		dev_err(comp, "%s: video register failed (err=%d)\n",
  			vcap->vdev.name, ret);
 diff --git a/drivers/media/platform/vivid/vivid-core.c b/drivers/media/platform/vivid/vivid-core.c
-index cc71aa425..1312f445d 100644
+index f6dc2b69b..1c8896dc2 100644
 --- a/drivers/media/platform/vivid/vivid-core.c
 +++ b/drivers/media/platform/vivid/vivid-core.c
-@@ -380,7 +380,7 @@ static int vidioc_log_status(struct file *file, void *fh)
+@@ -402,7 +402,7 @@ static int vidioc_log_status(struct file *file, void *fh)
  	struct video_device *vdev = video_devdata(file);
  
  	v4l2_ctrl_log_status(file, fh);
@@ -530,7 +487,7 @@ index cc71aa425..1312f445d 100644
  		tpg_log_status(&dev->tpg);
  	return 0;
  }
-@@ -1308,7 +1308,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+@@ -1330,7 +1330,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
  		}
  #endif
  
@@ -539,7 +496,7 @@ index cc71aa425..1312f445d 100644
  		if (ret < 0)
  			goto unreg_dev;
  		v4l2_info(&dev->v4l2_dev, "V4L2 capture device registered as %s\n",
-@@ -1359,7 +1359,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+@@ -1381,7 +1381,7 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
  		}
  #endif
  
@@ -715,18 +672,80 @@ index 9c017806b..3ef92783f 100644
  /* Zero out the end of the struct pointed to by p.  Everything after, but
   * not including, the specified field is cleared. */
  #define CLEAR_AFTER_FIELD(p, field) \
+diff --git a/include/linux/kernel_version.h b/include/linux/kernel_version.h
+new file mode 100644
+index 000000000..85bd4b983
+--- /dev/null
++++ b/include/linux/kernel_version.h
+@@ -0,0 +1 @@
++#define V4L2_VERSION 332288
+diff --git a/include/media/config-compat.h b/include/media/config-compat.h
+new file mode 100644
+index 000000000..bc666dfaf
+--- /dev/null
++++ b/include/media/config-compat.h
+@@ -0,0 +1,47 @@
++#ifndef __CONFIG_COMPAT_H__
++#define __CONFIG_COMPAT_H__
++
++#include <linux/version.h>
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
++#include <generated/autoconf.h>
++#else
++#include <linux/autoconf.h>
++#endif
++
++#include <linux/mmdebug.h>
++
++
++#define NEED_FRAME_VECTOR 1
++
++#define NEED_SETUP_TIMER 1
++
++#define NEED_GET_USER_PAGES_LONGTERM 1
++
++#define NEED_U8_MAX 1
++
++#define NEED_STRUCT_SIZE 1
++
++#define NEED_FWNODE_GETNAME 1
++
++#define NEED_I2C_NEW_SECONDARY_DEV 1
++
++#define NEED_I2C_NEW_SCANNED_DEVICE 1
++
++#define NEED_I2C_CLIENT_HAS_DRIVER 1
++
++#define NEED_CPU_LATENCY_QOS 1
++
++#define NEED_FWNODE_GRAPH_IS_ENDPOINT 1
++
++#define NEED_SCHED_SET_FIFO 1
++
++#define NEED_VMA_LOOKUP 1
++
++#define NEED_DMA_VMAP_NONCONTIGUOUS 1
++
++#define NEED_LOCKDEP_ASSERT_NOT_HELD 1
++
++#define NEED_KEY_SCREENSAVER 1
++
++#endif
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
-index 76aaa0b26..350289568 100644
+index 76aaa0b26..3c62230e0 100644
 --- a/include/media/config-mycompat.h
 +++ b/include/media/config-mycompat.h
-@@ -2,3 +2,7 @@
+@@ -2,3 +2,9 @@
  
  
  #undef NEED_USB_SPEED_WIRELESS
 +#undef NEED_PRANDOM_U32_MAX
 +#undef NEED_NEXT_PSEUDO_RANDOM32
 +#undef NEED_FRAME_VECTOR
-+
++#undef NEED_DMA_MAP_SGTABLE
++#undef NEED_DEV_ERR_PROBE
++#undef NEED_ETH_HW_ADDR_SET
 diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
 index b661e1817..e8e402f7f 100644
 --- a/include/media/v4l2-subdev.h
@@ -755,19 +774,6 @@ index 5468b633b..00ca72312 100644
  
  #define VB2_MAX_FRAME	(32)
  #define VB2_MAX_PLANES	(8)
-diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
-index f6a551bd5..3fa6582b4 100644
---- a/samples/v4l/v4l2-pci-skeleton.c
-+++ b/samples/v4l/v4l2-pci-skeleton.c
-@@ -879,7 +879,7 @@ static int skeleton_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	vdev->tvnorms = SKEL_TVNORMS;
- 	video_set_drvdata(vdev, skel);
- 
--	ret = video_register_device(vdev, VFL_TYPE_GRABBER, -1);
-+	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
- 	if (ret)
- 		goto free_hdl;
- 
 -- 
 2.25.1
 

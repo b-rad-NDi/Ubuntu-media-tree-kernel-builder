@@ -1,35 +1,247 @@
-From 738f8d0f58528e50942618e918fbe5e2bd3859ac Mon Sep 17 00:00:00 2001
+From 4772b9c45d65804f0e05dbcbc9bac264ae794a05 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 10 Aug 2022 12:04:30 -0500
+Date: Wed, 28 Jan 2026 16:21:33 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config
 
 ---
- debian.master/config/config.common.ubuntu | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ debian.master/config/annotations | 63 +++++++++++++++++---------------
+ 1 file changed, 34 insertions(+), 29 deletions(-)
 
-diff --git a/debian.master/config/config.common.ubuntu b/debian.master/config/config.common.ubuntu
-index 9f487b2b8..eba685711 100644
---- a/debian.master/config/config.common.ubuntu
-+++ b/debian.master/config/config.common.ubuntu
-@@ -12821,3 +12821,18 @@ CONFIG_ZYNQMP_FIRMWARE=y
- CONFIG_ZYNQMP_IPI_MBOX=y
- CONFIG_ZYNQMP_PM_DOMAINS=y
- CONFIG_ZYNQMP_POWER=y
-+### LINUX MEDIA TREE EXTRA OPTIONS ###
-+CONFIG_MEDIA_PLATFORM_DRIVERS=y
-+CONFIG_VIDEO_HI846=m
-+CONFIG_VIDEO_HI847=m
-+CONFIG_VIDEO_OG01A1B=m
-+CONFIG_VIDEO_OV08D10=m
-+CONFIG_VIDEO_OV13B10=m
-+CONFIG_VIDEO_OV5693=m
-+CONFIG_VIDEO_ZORAN_DC30=y
-+CONFIG_VIDEO_ZORAN_ZR36060=y
-+CONFIG_VIDEO_ZORAN_BUZ=y
-+CONFIG_VIDEO_ZORAN_DC10=y
-+CONFIG_VIDEO_ZORAN_LML33=y
-+CONFIG_VIDEO_ZORAN_LML33R10=y
-+CONFIG_VIDEO_ZORAN_AVS6EYES=y
+diff --git a/debian.master/config/annotations b/debian.master/config/annotations
+index 380c31559c..8585245229 100644
+--- a/debian.master/config/annotations
++++ b/debian.master/config/annotations
+@@ -4074,7 +4074,7 @@ CONFIG_DVB_LNBP22                               policy<{'amd64': 'm', 'arm64': '
+ CONFIG_DVB_M88DS3103                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_DVB_M88RS2000                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_DVB_MANTIS                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_DVB_MAX_ADAPTERS                         policy<{'amd64': '8', 'arm64': '8', 'armhf': '8', 'ppc64el': '8'}>
++CONFIG_DVB_MAX_ADAPTERS                         policy<{'amd64': '32', 'arm64': '32', 'armhf': '32', 'ppc64el': '32'}>
+ CONFIG_DVB_MB86A16                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_DVB_MB86A20S                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_DVB_MMAP                                 policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'ppc64el': 'n'}>
+@@ -4825,7 +4825,7 @@ CONFIG_GAMEPORT_L4                              policy<{'amd64': 'm', 'arm64': '
+ CONFIG_GAMEPORT_NS558                           policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_GARP                                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_GART_IOMMU                               policy<{'amd64': 'y'}>
+-CONFIG_GCC_VERSION                              policy<{'amd64': '110400', 'arm64': '110400', 'armhf': '110400', 'ppc64el': '110400', 's390x': '110400'}>
++CONFIG_GCC_VERSION                              policy<{'amd64': '110300', 'arm64': '110400', 'armhf': '110400', 'ppc64el': '110400', 's390x': '110400'}>
+ CONFIG_GCOV_KERNEL                              policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'ppc64el': 'n', 's390x': 'n'}>
+ CONFIG_GDB_SCRIPTS                              policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_GDS_FORCE_MITIGATION                     policy<{'amd64': 'n'}>
+@@ -6389,7 +6389,7 @@ CONFIG_IR_SANYO_DECODER                         policy<{'amd64': 'm', 'arm64': '
+ CONFIG_IR_SERIAL                                policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_IR_SERIAL_TRANSMITTER                    policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_IR_SHARP_DECODER                         policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_IR_SIR                                   policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_IR_SIR                                   policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_IR_SONY_DECODER                          policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_IR_SPI                                   policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_IR_STREAMZAP                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -7064,6 +7064,7 @@ CONFIG_MEDIA_CONTROLLER_DVB                     policy<{'amd64': 'y', 'arm64': '
+ CONFIG_MEDIA_CONTROLLER_REQUEST_API             policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_MEDIA_DIGITAL_TV_SUPPORT                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_MEDIA_PCI_SUPPORT                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_MEDIA_PLATFORM_DRIVERS                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_MEDIA_PLATFORM_SUPPORT                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_MEDIA_RADIO_SUPPORT                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_MEDIA_SDR_SUPPORT                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+@@ -7555,7 +7556,7 @@ CONFIG_MOST_I2C                                 policy<{'amd64': 'm', 'arm64': '
+ CONFIG_MOST_NET                                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_MOST_SND                                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_MOST_USB_HDM                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_MOST_VIDEO                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_MOST_VIDEO                               policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_MOTORCOMM_PHY                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'n'}>
+ CONFIG_MOUSE_APPLETOUCH                         policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_MOUSE_BCM5974                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -8678,7 +8679,7 @@ CONFIG_PAGE_POOL                                policy<{'amd64': 'y', 'arm64': '
+ CONFIG_PAGE_REPORTING                           policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_PAGE_TABLE_ISOLATION                     policy<{'amd64': 'y'}>
+ CONFIG_PAHOLE_HAS_SPLIT_BTF                     policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+-CONFIG_PAHOLE_VERSION                           policy<{'amd64': '125', 'arm64': '125', 'armhf': '125', 'ppc64el': '125', 's390x': '125'}>
++CONFIG_PAHOLE_VERSION                           policy<{'amd64': '122', 'arm64': '125', 'armhf': '125', 'ppc64el': '125', 's390x': '125'}>
+ CONFIG_PALMAS_GPADC                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_PANASONIC_LAPTOP                         policy<{'amd64': 'm'}>
+ CONFIG_PANEL                                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -9380,7 +9381,7 @@ CONFIG_POWERNV_CPUIDLE                          policy<{'ppc64el': 'y'}>
+ CONFIG_POWERNV_OP_PANEL                         policy<{'ppc64el': 'm'}>
+ CONFIG_POWER_AVS_OMAP                           policy<{'armhf-generic': 'y'}>
+ CONFIG_POWER_AVS_OMAP_CLASS3                    policy<{'armhf-generic': 'y'}>
+-CONFIG_POWER_CTRL_LOGIC                         policy<{'amd64': 'm', 'arm64': 'n'}>
++CONFIG_POWER_CTRL_LOGIC                         policy<{'amd64': '-', 'arm64': 'n'}>
+ CONFIG_POWER_RESET                              policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_POWER_RESET_AS3722                       policy<{'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_POWER_RESET_ATC260X                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -9763,7 +9764,7 @@ CONFIG_QUOTA_TREE                               policy<{'amd64': 'm', 'arm64': '
+ CONFIG_R6040                                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_R8169                                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_R8188EU                                  policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_RADIO_ADAPTERS                           policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_RADIO_ADAPTERS                           policy<{'amd64': 'm', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_RADIO_MAXIRADIO                          policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_RADIO_SAA7706H                           policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_RADIO_SHARK                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -10093,7 +10094,7 @@ CONFIG_RMI4_F12                                 policy<{'amd64': 'y', 'arm64': '
+ CONFIG_RMI4_F30                                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_RMI4_F34                                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_RMI4_F3A                                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+-CONFIG_RMI4_F54                                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_RMI4_F54                                 policy<{'amd64': '-', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_RMI4_F55                                 policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_RMI4_I2C                                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_RMI4_SMB                                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -11198,7 +11199,7 @@ CONFIG_SND_ENS1371                              policy<{'amd64': 'm', 'arm64': '
+ CONFIG_SND_ES1938                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf-generic-lpae': 'm'}>
+ CONFIG_SND_ES1968                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf-generic-lpae': 'm'}>
+ CONFIG_SND_ES1968_INPUT                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf-generic-lpae': 'y'}>
+-CONFIG_SND_ES1968_RADIO                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf-generic-lpae': 'y'}>
++CONFIG_SND_ES1968_RADIO                         policy<{'amd64': '-', 'arm64': 'y', 'armhf-generic-lpae': 'y'}>
+ CONFIG_SND_FIREFACE                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_SND_FIREWIRE                             policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_SND_FIREWIRE_DIGI00X                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -11207,7 +11208,7 @@ CONFIG_SND_FIREWIRE_MOTU                        policy<{'amd64': 'm', 'arm64': '
+ CONFIG_SND_FIREWIRE_TASCAM                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_SND_FIREWORKS                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_SND_FM801                                policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_SND_FM801_TEA575X_BOOL                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_SND_FM801_TEA575X_BOOL                   policy<{'amd64': '-', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_SND_GINA20                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_SND_GINA24                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_SND_HDA                                  policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -12554,7 +12555,7 @@ CONFIG_TOUCHSCREEN_ADC                          policy<{'amd64': 'm', 'arm64': '
+ CONFIG_TOUCHSCREEN_ADS7846                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_AR1021_I2C                   policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_ATMEL_MXT                    policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_TOUCHSCREEN_ATMEL_MXT_T37                policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_TOUCHSCREEN_ATMEL_MXT_T37                policy<{'amd64': '-', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_TOUCHSCREEN_AUO_PIXCIR                   policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_BU21013                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_BU21029                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -12613,7 +12614,7 @@ CONFIG_TOUCHSCREEN_ST1232                       policy<{'amd64': 'm', 'arm64': '
+ CONFIG_TOUCHSCREEN_STMFTS                       policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_STMPE                        policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_SUN4I                        policy<{'arm64': 'n'}>
+-CONFIG_TOUCHSCREEN_SUR40                        policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_TOUCHSCREEN_SUR40                        policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_SURFACE3_SPI                 policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_SX8654                       policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_TOUCHSCREEN_TI_AM335X_TSC                policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': '-'}>
+@@ -12899,7 +12900,7 @@ CONFIG_USB_CONFIGFS_F_TCM                       policy<{'amd64': 'y', 'arm64': '
+ CONFIG_USB_CONFIGFS_F_UAC1                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_USB_CONFIGFS_F_UAC1_LEGACY               policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_USB_CONFIGFS_F_UAC2                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+-CONFIG_USB_CONFIGFS_F_UVC                       policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_USB_CONFIGFS_F_UVC                       policy<{'amd64': '-', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_USB_CONFIGFS_MASS_STORAGE                policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_USB_CONFIGFS_NCM                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_USB_CONFIGFS_OBEX                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+@@ -12986,7 +12987,7 @@ CONFIG_USB_F_TCM                                policy<{'amd64': 'm', 'arm64': '
+ CONFIG_USB_F_UAC1                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_F_UAC1_LEGACY                        policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_F_UAC2                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_USB_F_UVC                                policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_USB_F_UVC                                policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_GADGET                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'y', 'ppc64el': 'm'}>
+ CONFIG_USB_GADGETFS                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_GADGET_DEBUG                         policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'ppc64el': 'n'}>
+@@ -13059,7 +13060,7 @@ CONFIG_USB_G_NCM                                policy<{'amd64': 'm', 'arm64': '
+ CONFIG_USB_G_NOKIA                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_G_PRINTER                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_G_SERIAL                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_USB_G_WEBCAM                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_USB_G_WEBCAM                             policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_HACKRF                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_USB_HCD_TEST_MODE                        policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'ppc64el': 'n'}>
+ CONFIG_USB_HID                                  policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13442,7 +13443,7 @@ CONFIG_VIDEO_BT819                              policy<{'amd64': 'm', 'arm64': '
+ CONFIG_VIDEO_BT848                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_BT856                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_BT866                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_CADENCE                            policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
++CONFIG_VIDEO_CADENCE                            policy<{'amd64': '-', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_VIDEO_CADENCE_CSI2RX                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_CADENCE_CSI2TX                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_CAFE_CCIC                          policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13498,7 +13499,8 @@ CONFIG_VIDEO_HDPVR                              policy<{'amd64': 'm', 'arm64': '
+ CONFIG_VIDEO_HEXIUM_GEMINI                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_HEXIUM_ORION                       policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_HI556                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_HM11B1                             policy<{'amd64': 'm'}>
++CONFIG_VIDEO_HI846                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
++CONFIG_VIDEO_HI847                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_VIDEO_I2C                                policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_IMX208                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_IMX214                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13517,7 +13519,7 @@ CONFIG_VIDEO_IMX_CSI                            policy<{'armhf-generic': 'm'}>
+ CONFIG_VIDEO_IMX_MEDIA                          policy<{'arm64': 'm', 'armhf-generic': 'm'}>
+ CONFIG_VIDEO_IMX_PXP                            policy<{'arm64': 'm', 'armhf-generic': 'm'}>
+ CONFIG_VIDEO_IMX_VDOA                           policy<{'armhf-generic': 'm'}>
+-CONFIG_VIDEO_INTEL_IPU6                         policy<{'amd64': 'm', 'arm64': 'n'}>
++CONFIG_VIDEO_INTEL_IPU6                         policy<{'amd64': '-', 'arm64': 'n'}>
+ CONFIG_VIDEO_IPU3_CIO2                          policy<{'amd64': 'm'}>
+ CONFIG_VIDEO_IPU3_IMGU                          policy<{'amd64': 'm'}>
+ CONFIG_VIDEO_IR_I2C                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13549,16 +13551,18 @@ CONFIG_VIDEO_MT9V111                            policy<{'amd64': 'm', 'arm64': '
+ CONFIG_VIDEO_MUX                                policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_MXB                                policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_NOON010PC30                        policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_VIDEO_OG01A1B                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_VIDEO_OMAP2_VOUT                         policy<{'armhf-generic': 'm'}>
+ CONFIG_VIDEO_OMAP2_VOUT_VRFB                    policy<{'armhf-generic': 'y'}>
+ CONFIG_VIDEO_OMAP3                              policy<{'armhf-generic': 'm'}>
+ CONFIG_VIDEO_OMAP3_DEBUG                        policy<{'armhf-generic': 'n'}>
+ CONFIG_VIDEO_OMAP4                              policy<{'armhf-generic': 'm'}>
+-CONFIG_VIDEO_OV01A10                            policy<{'amd64': 'm', 'arm64': 'n'}>
+-CONFIG_VIDEO_OV01A1S                            policy<{'amd64': 'm'}>
++CONFIG_VIDEO_OV01A10                            policy<{'amd64': '-', 'arm64': 'n'}>
+ CONFIG_VIDEO_OV02A10                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_OV02C10                            policy<{'amd64': 'm', 'arm64': 'n'}>
++CONFIG_VIDEO_OV02C10                            policy<{'amd64': '-', 'arm64': 'n'}>
++CONFIG_VIDEO_OV08D10                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_VIDEO_OV13858                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_VIDEO_OV13B10                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_VIDEO_OV2640                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV2659                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV2680                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13570,6 +13574,7 @@ CONFIG_VIDEO_OV5647                             policy<{'amd64': 'm', 'arm64': '
+ CONFIG_VIDEO_OV5648                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV5670                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV5675                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_VIDEO_OV5693                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 's390x': 'm'}>
+ CONFIG_VIDEO_OV5695                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV6650                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_OV7251                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13680,7 +13685,7 @@ CONFIG_VIDEO_UDA1342                            policy<{'amd64': 'm', 'arm64': '
+ CONFIG_VIDEO_UPD64031A                          policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_UPD64083                           policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_USBTV                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_V4L2                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_VIDEO_V4L2                               policy<{'amd64': '-', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_V4L2_I2C                           policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_VIDEO_V4L2_SUBDEV_API                    policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y'}>
+ CONFIG_VIDEO_V4L2_TPG                           policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+@@ -13700,13 +13705,13 @@ CONFIG_VIDEO_XILINX_CSI2RXSS                    policy<{'arm64': 'm', 'armhf': '
+ CONFIG_VIDEO_XILINX_TPG                         policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_XILINX_VTC                         policy<{'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIDEO_ZORAN                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_AVS6EYES                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_BUZ                          policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_DC10                         policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_DC30                         policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_LML33                        policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_LML33R10                     policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+-CONFIG_VIDEO_ZORAN_ZR36060                      policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
++CONFIG_VIDEO_ZORAN_AVS6EYES                     policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_BUZ                          policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_DC10                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_DC30                         policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_LML33                        policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_LML33R10                     policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
++CONFIG_VIDEO_ZORAN_ZR36060                      policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_VIPERBOARD_ADC                           policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm'}>
+ CONFIG_VIRTIO                                   policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
+ CONFIG_VIRTIO_BALLOON                           policy<{'amd64': 'y', 'arm64': 'y', 'armhf': 'y', 'ppc64el': 'y', 's390x': 'y'}>
 -- 
 2.34.1
 

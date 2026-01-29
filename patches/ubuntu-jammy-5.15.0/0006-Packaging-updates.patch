@@ -1,25 +1,27 @@
-From 57e7a94b694a2c706d62c4031f5d775ffc6dcde4 Mon Sep 17 00:00:00 2001
+From 6f31665289474997b9476017a166d20d717db238 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 10 Aug 2022 12:06:05 -0500
+Date: Tue, 30 Dec 2025 17:15:54 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
  debian.master/control.d/flavour-control.stub |  4 +-
  debian.master/control.stub.in                | 61 +-------------------
  debian.master/copyright                      | 22 +++++++
- debian.master/rules.d/amd64.mk               |  6 +-
+ debian.master/dkms-versions                  |  1 -
+ debian.master/rules.d/amd64.mk               |  7 ++-
  debian.master/rules.d/arm64.mk               |  2 +-
+ debian.master/rules.d/i386.mk                |  1 +
  debian.master/rules.d/ppc64el.mk             |  2 +-
  debian.master/rules.d/s390x.mk               |  2 +-
- debian.master/rules.d/x32.mk                 |  2 +-
+ debian.master/rules.d/x32.mk                 |  3 +-
  debian/control.d/flavour-buildinfo.stub      |  2 +-
  debian/rules                                 |  2 +-
  debian/rules.d/0-common-vars.mk              | 17 ++++--
  debian/scripts/config-check                  |  2 +-
- 12 files changed, 49 insertions(+), 75 deletions(-)
+ 14 files changed, 52 insertions(+), 76 deletions(-)
 
 diff --git a/debian.master/control.d/flavour-control.stub b/debian.master/control.d/flavour-control.stub
-index 9fe268b33..42ad68642 100644
+index 9fe268b333..42ad686420 100644
 --- a/debian.master/control.d/flavour-control.stub
 +++ b/debian.master/control.d/flavour-control.stub
 @@ -31,8 +31,8 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, kmod, linux-base (>= 4.5ubuntu1~16.
@@ -34,7 +36,7 @@ index 9fe268b33..42ad68642 100644
   DESC.
   .
 diff --git a/debian.master/control.stub.in b/debian.master/control.stub.in
-index 419bd340a..39426fc08 100644
+index f6c1db0f09..a312f76260 100644
 --- a/debian.master/control.stub.in
 +++ b/debian.master/control.stub.in
 @@ -1,7 +1,8 @@
@@ -46,7 +48,7 @@ index 419bd340a..39426fc08 100644
 +XSBC-Original-Maintainer: Ubuntu Kernel Team <kernel-team@lists.ubuntu.com>
  Standards-Version: 3.9.4.0
  Build-Depends:
-  debhelper-compat (= 10),
+  autoconf <!stage1>,
 @@ -60,30 +61,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
  XS-Testsuite: autopkgtest
  #XS-Testsuite-Depends: gcc-4.7 binutils
@@ -88,7 +90,7 @@ index 419bd340a..39426fc08 100644
 -Multi-Arch: foreign
 -Section: kernel
 -Priority: optional
--Depends: ${misc:Depends}, lsb-release
+-Depends: ${misc:Depends}, lsb-release, hwdata
 -Description: Linux kernel version specific tools for version PKGVER
 - This package provides the architecture independent parts for kernel
 - version locked tools (such as perf and x86_energy_perf_policy) for
@@ -131,7 +133,7 @@ index 419bd340a..39426fc08 100644
 - This package provides kernel tools useful for VM hosts.
 -
 diff --git a/debian.master/copyright b/debian.master/copyright
-index d1d04a6d6..b6f183f12 100644
+index d1d04a6d66..b6f183f12d 100644
 --- a/debian.master/copyright
 +++ b/debian.master/copyright
 @@ -1,3 +1,25 @@
@@ -160,8 +162,16 @@ index d1d04a6d6..b6f183f12 100644
  This is the Ubuntu prepackaged version of the Linux kernel.
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
+diff --git a/debian.master/dkms-versions b/debian.master/dkms-versions
+index 73cd253748..7515da8545 100644
+--- a/debian.master/dkms-versions
++++ b/debian.master/dkms-versions
+@@ -1,3 +1,2 @@
+ zfs-linux 2.1.5-1ubuntu6~22.04.6 modulename=zfs debpath=pool/universe/z/%package%/zfs-dkms_%version%_all.deb arch=amd64 arch=arm64 arch=ppc64el arch=s390x rprovides=spl-modules rprovides=spl-dkms rprovides=zfs-modules rprovides=zfs-dkms
+ backport-iwlwifi-dkms 11510-0ubuntu1~22.04.3 modulename=iwlwifi debpath=pool/universe/b/%package%/backport-iwlwifi-dkms_%version%_all.deb arch=amd64 rprovides=iwlwifi-modules rprovides=backport-iwlwifi-dkms type=standalone
+-v4l2loopback 0.12.7-2ubuntu2~22.04.1 modulename=v4l2loopback debpath=pool/universe/v/%package%/v4l2loopback-dkms_%version%_all.deb arch=amd64 rprovides=v4l2loopback-modules rprovides=v4l2loopback-dkms
 diff --git a/debian.master/rules.d/amd64.mk b/debian.master/rules.d/amd64.mk
-index d0384f022..df23d1a64 100644
+index d0384f0227..6718985608 100644
 --- a/debian.master/rules.d/amd64.mk
 +++ b/debian.master/rules.d/amd64.mk
 @@ -8,7 +8,7 @@ kernel_file	= arch/$(build_arch)/boot/bzImage
@@ -173,7 +183,7 @@ index d0384f022..df23d1a64 100644
  do_tools_usbip  = true
  do_tools_cpupower = true
  do_tools_perf   = true
-@@ -16,8 +16,8 @@ do_tools_perf_jvmti = true
+@@ -16,8 +16,9 @@ do_tools_perf_jvmti = true
  do_tools_bpftool = true
  do_tools_x86	= true
  do_tools_hyperv	= true
@@ -184,8 +194,9 @@ index d0384f022..df23d1a64 100644
 +do_tools_common = false
  do_tools_acpidbg = true
  do_odm_drivers  = true
++do_dtbs		= false
 diff --git a/debian.master/rules.d/arm64.mk b/debian.master/rules.d/arm64.mk
-index d215e1bda..139eacca8 100644
+index d215e1bda1..139eacca89 100644
 --- a/debian.master/rules.d/arm64.mk
 +++ b/debian.master/rules.d/arm64.mk
 @@ -7,7 +7,7 @@ build_image	= Image.gz
@@ -197,8 +208,17 @@ index d215e1bda..139eacca8 100644
  
  vdso		= vdso_install
  
+diff --git a/debian.master/rules.d/i386.mk b/debian.master/rules.d/i386.mk
+index c2e41a0768..5634abf492 100644
+--- a/debian.master/rules.d/i386.mk
++++ b/debian.master/rules.d/i386.mk
+@@ -16,3 +16,4 @@ do_source_package = false
+ do_doc_package	= false
+ do_flavour_header_package = false
+ do_common_headers_indep = false
++do_dtbs                 = false
 diff --git a/debian.master/rules.d/ppc64el.mk b/debian.master/rules.d/ppc64el.mk
-index b205a5153..786e7beae 100644
+index b205a5153b..786e7beae0 100644
 --- a/debian.master/rules.d/ppc64el.mk
 +++ b/debian.master/rules.d/ppc64el.mk
 @@ -8,7 +8,7 @@ kernel_file     = arch/powerpc/boot/vmlinux.strip
@@ -211,7 +231,7 @@ index b205a5153..786e7beae 100644
  do_tools_cpupower = true
  do_tools_perf	  = true
 diff --git a/debian.master/rules.d/s390x.mk b/debian.master/rules.d/s390x.mk
-index 0620c638a..4569e6e94 100644
+index 0620c638a7..4569e6e94a 100644
 --- a/debian.master/rules.d/s390x.mk
 +++ b/debian.master/rules.d/s390x.mk
 @@ -11,7 +11,7 @@ vdso		= vdso_install
@@ -224,10 +244,10 @@ index 0620c638a..4569e6e94 100644
  do_tools_cpupower = true
  do_tools_perf     = true
 diff --git a/debian.master/rules.d/x32.mk b/debian.master/rules.d/x32.mk
-index 84918880e..e4bc4a3f1 100644
+index 84918880e2..8639d18d0e 100644
 --- a/debian.master/rules.d/x32.mk
 +++ b/debian.master/rules.d/x32.mk
-@@ -8,6 +8,6 @@ kernel_file	= arch/$(build_arch)/boot/bzImage
+@@ -8,6 +8,7 @@ kernel_file	= arch/$(build_arch)/boot/bzImage
  install_file	= vmlinuz
  vdso		= vdso_install
  no_dumpfile	= true
@@ -235,8 +255,9 @@ index 84918880e..e4bc4a3f1 100644
 +uefi_signed     = false
  
  do_flavour_image_package = false
++do_dtbs         = false
 diff --git a/debian/control.d/flavour-buildinfo.stub b/debian/control.d/flavour-buildinfo.stub
-index dd08a6715..68df67c02 100644
+index dd08a6715f..68df67c02a 100644
 --- a/debian/control.d/flavour-buildinfo.stub
 +++ b/debian/control.d/flavour-buildinfo.stub
 @@ -1,5 +1,5 @@
@@ -247,7 +268,7 @@ index dd08a6715..68df67c02 100644
  Architecture: ARCH
  Section: kernel
 diff --git a/debian/rules b/debian/rules
-index 732b5eeea..232ac93ac 100755
+index 3132d26cfc..cf3cfec526 100755
 --- a/debian/rules
 +++ b/debian/rules
 @@ -35,7 +35,7 @@ include $(DROOT)/rules.d/1-maintainer.mk
@@ -260,7 +281,7 @@ index 732b5eeea..232ac93ac 100755
  do_tools_perf_jvmti?=false
  do_enforce_all?=false
 diff --git a/debian/rules.d/0-common-vars.mk b/debian/rules.d/0-common-vars.mk
-index 2f27d1710..089b4e52c 100644
+index 5d3982f874..c506f74cc5 100644
 --- a/debian/rules.d/0-common-vars.mk
 +++ b/debian/rules.d/0-common-vars.mk
 @@ -43,6 +43,15 @@ family=ubuntu
@@ -279,7 +300,7 @@ index 2f27d1710..089b4e52c 100644
  ifneq ($(AUTOBUILD),)
  skipabi		= true
  skipmodule	= true
-@@ -144,7 +153,7 @@ bin_pkg_name_signed=linux-image-$(abi_release)
+@@ -143,7 +152,7 @@ bin_pkg_name_signed=linux-image-$(abi_release)
  bin_pkg_name_unsigned=linux-image-unsigned-$(abi_release)
  mods_pkg_name=linux-modules-$(abi_release)
  mods_extra_pkg_name=linux-modules-extra-$(abi_release)
@@ -288,7 +309,7 @@ index 2f27d1710..089b4e52c 100644
  hdrs_pkg_name=linux-headers-$(abi_release)
  indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  
-@@ -155,7 +164,7 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
+@@ -154,7 +163,7 @@ indep_hdrs_pkg_name=$(src_pkg_name)-headers-$(abi_release)
  # failures get sorted out. Finally, the doc package doesn't really need to be built
  # for developer testing (its kind of slow), so only do it if on a buildd.
  ifneq ($(filter --,$(variants)),)
@@ -297,7 +318,7 @@ index 2f27d1710..089b4e52c 100644
  else
  do_doc_package=false
  endif
-@@ -169,7 +178,7 @@ doc_pkg_name=$(src_pkg_name)-doc
+@@ -168,7 +177,7 @@ doc_pkg_name=$(src_pkg_name)-doc
  # Similarly with the linux-source package, you need not build it as a developer. Its
  # somewhat I/O intensive and utterly useless.
  #
@@ -306,7 +327,7 @@ index 2f27d1710..089b4e52c 100644
  do_source_package_content=true
  ifeq ($(full_build),false)
  do_source_package_content=false
-@@ -178,7 +187,7 @@ endif
+@@ -177,7 +186,7 @@ endif
  # linux-libc-dev may not be needed, default to building it only for the
  # primary variant
  ifneq ($(filter --,$(variants)),)
@@ -316,7 +337,7 @@ index 2f27d1710..089b4e52c 100644
  do_libc_dev_package=false
  endif
 diff --git a/debian/scripts/config-check b/debian/scripts/config-check
-index df0cd5206..7baa81c20 100755
+index 6e64277da0..baef5cd987 100755
 --- a/debian/scripts/config-check
 +++ b/debian/scripts/config-check
 @@ -22,7 +22,7 @@ my %values = ();

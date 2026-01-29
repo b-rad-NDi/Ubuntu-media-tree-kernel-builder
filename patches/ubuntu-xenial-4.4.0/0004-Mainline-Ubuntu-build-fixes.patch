@@ -1,6 +1,6 @@
-From 14d26fa32bd8013b65711dee16bd8d99d31ebc64 Mon Sep 17 00:00:00 2001
+From 657b6714203aef81b231c7b331599927efa502f2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Wed, 8 Jun 2022 10:27:30 -0500
+Date: Tue, 30 Apr 2024 11:24:58 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -21,11 +21,11 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/hdmi.h                        |   7 +-
  include/linux/kconfig.h                     |   7 ++
  include/linux/mmc/sdio_ids.h                |   5 +
- include/linux/pci_ids.h                     |  32 +++++
+ include/linux/pci_ids.h                     |  34 +++++
  mm/slub.c                                   |   2 +
  sound/pci/bt87x.c                           | 185 +++++++++++++++++++---------
  ubuntu/i915/i915_gem_dmabuf.c               |  10 +-
- 21 files changed, 243 insertions(+), 168 deletions(-)
+ 21 files changed, 245 insertions(+), 168 deletions(-)
 
 diff --git a/drivers/hid/hid-picolcd_cir.c b/drivers/hid/hid-picolcd_cir.c
 index 9628651..1d42112 100644
@@ -590,10 +590,18 @@ index 53f0efa..67953e6 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_WLAN	0x9135
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 0178823..89668e6 100644
+index 0178823..db54e4f 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1085,6 +1085,7 @@
+@@ -556,6 +556,7 @@
+ #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F3 0x1493
+ #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
+ #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
++#define PCI_DEVICE_ID_AMD_VANGOGH_USB	0x163a
+ #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
+ #define PCI_DEVICE_ID_AMD_19H_M10H_DF_F3 0x14b0
+ #define PCI_DEVICE_ID_AMD_19H_M40H_DF_F3 0x167c
+@@ -1085,6 +1086,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -601,7 +609,7 @@ index 0178823..89668e6 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1698,6 +1699,17 @@
+@@ -1698,6 +1700,17 @@
  #define PCI_VENDOR_ID_RP		0x11fe
  
  #define PCI_VENDOR_ID_CYCLADES		0x120e
@@ -619,7 +627,7 @@ index 0178823..89668e6 100644
  #define PCI_DEVICE_ID_PC300_RX_2	0x0300
  #define PCI_DEVICE_ID_PC300_RX_1	0x0301
  #define PCI_DEVICE_ID_PC300_TE_2	0x0310
-@@ -1967,6 +1979,24 @@
+@@ -1967,6 +1980,24 @@
  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
  
  #define PCI_VENDOR_ID_MOXA		0x1393
@@ -644,7 +652,7 @@ index 0178823..89668e6 100644
  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
  #define PCI_DEVICE_ID_MOXA_C218		0x2180
  #define PCI_DEVICE_ID_MOXA_C320		0x3200
-@@ -2026,6 +2056,8 @@
+@@ -2026,6 +2057,8 @@
  #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
  
  #define PCI_VENDOR_ID_MICROGATE		0x13c0
@@ -653,6 +661,14 @@ index 0178823..89668e6 100644
  
  #define PCI_VENDOR_ID_3WARE		0x13C1
  #define PCI_DEVICE_ID_3WARE_1000	0x1000
+@@ -2988,6 +3021,7 @@
+ #define PCI_DEVICE_ID_INTEL_82443GX_0	0x71a0
+ #define PCI_DEVICE_ID_INTEL_82443GX_2	0x71a2
+ #define PCI_DEVICE_ID_INTEL_82372FB_1	0x7601
++#define PCI_DEVICE_ID_INTEL_HDA_ARL	0x7728
+ #define PCI_DEVICE_ID_INTEL_SCH_LPC	0x8119
+ #define PCI_DEVICE_ID_INTEL_SCH_IDE	0x811a
+ #define PCI_DEVICE_ID_INTEL_E6XX_CU	0x8183
 diff --git a/mm/slub.c b/mm/slub.c
 index 40c7a3f..ce561fd 100644
 --- a/mm/slub.c

@@ -1,6 +1,6 @@
-From 40effaceb446b38beb0ab055a9a5c9f7194ba0e6 Mon Sep 17 00:00:00 2001
+From 1ce1e3b04f0779e6c318f16abfecc89694f8f516 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 7 Jul 2022 16:21:02 -0500
+Date: Mon, 29 Apr 2024 16:41:07 -0500
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -15,9 +15,9 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-fence.h                     |  14 +-
  include/linux/hdmi.h                          |   2 +-
  include/linux/mmc/sdio_ids.h                  |   5 +
- include/linux/pci_ids.h                       |  32 ++++
+ include/linux/pci_ids.h                       |  38 +++++
  sound/pci/bt87x.c                             | 147 ++++++++++++------
- 13 files changed, 179 insertions(+), 71 deletions(-)
+ 13 files changed, 185 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -178,10 +178,10 @@ index d4d1e44b1..c10c3b29c 100644
  	if (ret < 0)
  		return ret;
 diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index c03b67aab..6f1be40c3 100644
+index 094a88ff9..e65fe32c7 100644
 --- a/drivers/usb/gadget/function/f_uvc.c
 +++ b/drivers/usb/gadget/function/f_uvc.c
-@@ -428,7 +428,7 @@ uvc_register_video(struct uvc_device *uvc)
+@@ -429,7 +429,7 @@ uvc_register_video(struct uvc_device *uvc)
  
  	video_set_drvdata(&uvc->vdev, uvc);
  
@@ -190,7 +190,7 @@ index c03b67aab..6f1be40c3 100644
  	if (ret < 0)
  		return ret;
  
-@@ -822,7 +822,7 @@ static struct usb_function_instance *uvc_alloc_inst(void)
+@@ -823,7 +823,7 @@ static struct usb_function_instance *uvc_alloc_inst(void)
  	pd->bmControls[0]		= 1;
  	pd->bmControls[1]		= 0;
  	pd->iProcessing			= 0;
@@ -200,7 +200,7 @@ index c03b67aab..6f1be40c3 100644
  	od = &opts->uvc_output_terminal;
  	od->bLength			= UVC_DT_OUTPUT_TERMINAL_SIZE;
 diff --git a/drivers/usb/gadget/legacy/webcam.c b/drivers/usb/gadget/legacy/webcam.c
-index 2c9eab2b8..c4a5156bc 100644
+index ff970a943..123df6c9d 100644
 --- a/drivers/usb/gadget/legacy/webcam.c
 +++ b/drivers/usb/gadget/legacy/webcam.c
 @@ -125,7 +125,7 @@ static const struct uvc_processing_unit_descriptor uvc_processing = {
@@ -293,10 +293,18 @@ index 53f0efa0b..f8eea0191 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 0178823ce..a7cd85cd1 100644
+index 0178823ce..6b7bc5aa2 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1085,6 +1085,7 @@
+@@ -556,6 +556,7 @@
+ #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F3 0x1493
+ #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
+ #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
++#define PCI_DEVICE_ID_AMD_VANGOGH_USB	0x163a
+ #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
+ #define PCI_DEVICE_ID_AMD_19H_M10H_DF_F3 0x14b0
+ #define PCI_DEVICE_ID_AMD_19H_M40H_DF_F3 0x167c
+@@ -1085,6 +1086,7 @@
  #define PCI_VENDOR_ID_SGI		0x10a9
  #define PCI_DEVICE_ID_SGI_IOC3		0x0003
  #define PCI_DEVICE_ID_SGI_LITHIUM	0x1002
@@ -304,7 +312,7 @@ index 0178823ce..a7cd85cd1 100644
  
  #define PCI_VENDOR_ID_WINBOND		0x10ad
  #define PCI_DEVICE_ID_WINBOND_82C105	0x0105
-@@ -1354,6 +1355,7 @@
+@@ -1354,6 +1356,7 @@
  #define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
  #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
@@ -312,7 +320,7 @@ index 0178823ce..a7cd85cd1 100644
  
  #define PCI_VENDOR_ID_IMS		0x10e0
  #define PCI_DEVICE_ID_IMS_TT128		0x9128
-@@ -1698,6 +1700,14 @@
+@@ -1698,6 +1701,14 @@
  #define PCI_VENDOR_ID_RP		0x11fe
  
  #define PCI_VENDOR_ID_CYCLADES		0x120e
@@ -327,7 +335,7 @@ index 0178823ce..a7cd85cd1 100644
  #define PCI_DEVICE_ID_PC300_RX_2	0x0300
  #define PCI_DEVICE_ID_PC300_RX_1	0x0301
  #define PCI_DEVICE_ID_PC300_TE_2	0x0310
-@@ -1966,6 +1976,24 @@
+@@ -1966,6 +1977,24 @@
  #define PCI_DEVICE_ID_APPLICOM_PCI2000IBS_CAN 0x0002
  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
  
@@ -352,7 +360,7 @@ index 0178823ce..a7cd85cd1 100644
  #define PCI_VENDOR_ID_MOXA		0x1393
  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
  #define PCI_DEVICE_ID_MOXA_C218		0x2180
-@@ -2026,6 +2054,8 @@
+@@ -2026,6 +2055,8 @@
  #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
  
  #define PCI_VENDOR_ID_MICROGATE		0x13c0
@@ -361,7 +369,33 @@ index 0178823ce..a7cd85cd1 100644
  
  #define PCI_VENDOR_ID_3WARE		0x13C1
  #define PCI_DEVICE_ID_3WARE_1000	0x1000
-@@ -3105,4 +3135,6 @@
+@@ -2988,6 +3019,7 @@
+ #define PCI_DEVICE_ID_INTEL_82443GX_0	0x71a0
+ #define PCI_DEVICE_ID_INTEL_82443GX_2	0x71a2
+ #define PCI_DEVICE_ID_INTEL_82372FB_1	0x7601
++#define PCI_DEVICE_ID_INTEL_HDA_ARL	0x7728
+ #define PCI_DEVICE_ID_INTEL_SCH_LPC	0x8119
+ #define PCI_DEVICE_ID_INTEL_SCH_IDE	0x811a
+ #define PCI_DEVICE_ID_INTEL_E6XX_CU	0x8183
+@@ -3002,6 +3034,8 @@
+ #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
+ #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
+ 
++#define PCI_VENDOR_ID_WANGXUN		0x8088
++
+ #define PCI_VENDOR_ID_SCALEMP		0x8686
+ #define PCI_DEVICE_ID_SCALEMP_VSMP_CTL	0x1010
+ 
+@@ -3082,6 +3116,8 @@
+ 
+ #define PCI_VENDOR_ID_3COM_2		0xa727
+ 
++#define PCI_VENDOR_ID_SOLIDRUN		0xd063
++
+ #define PCI_VENDOR_ID_DIGIUM		0xd161
+ #define PCI_DEVICE_ID_DIGIUM_HFC4S	0xb410
+ 
+@@ -3105,4 +3141,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  
