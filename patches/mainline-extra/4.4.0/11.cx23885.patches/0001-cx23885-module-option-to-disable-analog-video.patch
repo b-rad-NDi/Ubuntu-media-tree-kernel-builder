@@ -1,0 +1,105 @@
+From b53dbaca1e6f13e84887b56c57c4a0d6a96ea9bd Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 21 Dec 2020 15:17:43 -0600
+Subject: [PATCH] cx23885: module option to disable analog video
+
+Array containing card numbers to disable.
+Card numbes found in cx23885.h
+---
+ drivers/media/pci/cx23885/cx23885-cards.c |  3 +++
+ drivers/media/pci/cx23885/cx23885-core.c  | 13 ++++++++++++-
+ drivers/media/pci/cx23885/cx23885-dvb.c   |  6 ++++--
+ drivers/media/pci/cx23885/cx23885.h       |  1 +
+ 4 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/pci/cx23885/cx23885-cards.c b/drivers/media/pci/cx23885/cx23885-cards.c
+index 87d1cfa10478..1719eae05c06 100644
+--- a/drivers/media/pci/cx23885/cx23885-cards.c
++++ b/drivers/media/pci/cx23885/cx23885-cards.c
+@@ -2411,6 +2411,9 @@ void cx23885_card_setup(struct cx23885_dev *dev)
+ 	case CX23885_BOARD_VIEWCAST_260E:
+ 	case CX23885_BOARD_VIEWCAST_460E:
+ 	case CX23885_BOARD_AVERMEDIA_CE310B:
++		if (dev->disable_analog)
++			break;
++
+ 		dev->sd_cx25840 = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+ 				&dev->i2c_bus[2].i2c_adap,
+ 				"cx25840", 0x88 >> 1, NULL);
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index c8705d786cdd..1cd7f26313e6 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -48,6 +48,11 @@ static unsigned int debug;
+ module_param(debug, int, 0644);
+ MODULE_PARM_DESC(debug, "enable debug messages");
+ 
++static unsigned int disable_analog_video[8] = { 56, 57, 0, 0, 0, 0, 0, 0};
++static int disable_analog_argc = 2;
++module_param_array(disable_analog_video, int, &disable_analog_argc, 0644);
++MODULE_PARM_DESC(disable_analog_video, "disable analog video for card type");
++
+ static unsigned int card[]  = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+ module_param_array(card,  int, NULL, 0444);
+ MODULE_PARM_DESC(card, "card type");
+@@ -924,6 +929,11 @@ static int cx23885_dev_setup(struct cx23885_dev *dev)
+ 			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+ 	}
+ 
++	for (i = 0; i < disable_analog_argc; i++) {
++		if (disable_analog_video[i] == dev->board)
++			dev->disable_analog = 1;
++	}
++
+ 	/* If the user specific a clk freq override, apply it */
+ 	if (cx23885_boards[dev->board].clk_freq > 0)
+ 		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
+@@ -1043,7 +1053,8 @@ static int cx23885_dev_setup(struct cx23885_dev *dev)
+ 		cx23885_gpio_enable(dev, 0x300, 0);
+ 	}
+ 
+-	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO) {
++	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO &&
++	    !dev->disable_analog) {
+ 		if (cx23885_video_register(dev) < 0) {
+ 			pr_err("%s() Failed to register analog video adapters on VID_A\n",
+ 			       __func__);
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index 3d01cdc4c7f3..f12407e2981c 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -2375,7 +2375,8 @@ static int dvb_register(struct cx23885_tsport *port)
+ 			port->i2c_client_tuner = client_tuner;
+ 
+ 			/* we only attach tuner for analog on the 888 version */
+-			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) {
++			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB &&
++			    !dev->disable_analog) {
+ 				pr_info("%s(): QUADHD_DVB analog setup\n",
+ 					__func__);
+ 				dev->ts1.analog_fe.tuner_priv = client_tuner;
+@@ -2468,7 +2469,8 @@ static int dvb_register(struct cx23885_tsport *port)
+ 			port->i2c_client_tuner = client_tuner;
+ 
+ 			/* we only attach tuner for analog on the 888 version */
+-			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) {
++			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC &&
++			    !dev->disable_analog) {
+ 				pr_info("%s(): QUADHD_ATSC analog setup\n",
+ 					__func__);
+ 				dev->ts1.analog_fe.tuner_priv = client_tuner;
+diff --git a/drivers/media/pci/cx23885/cx23885.h b/drivers/media/pci/cx23885/cx23885.h
+index 349462ee2c48..d044673703c6 100644
+--- a/drivers/media/pci/cx23885/cx23885.h
++++ b/drivers/media/pci/cx23885/cx23885.h
+@@ -403,6 +403,7 @@ struct cx23885_dev {
+ 	unsigned char              radio_addr;
+ 	struct v4l2_subdev	   *sd_cx25840;
+ 	struct work_struct	   cx25840_work;
++	unsigned int		   disable_analog;
+ 
+ 	/* Infrared */
+ 	struct v4l2_subdev         *sd_ir;
+-- 
+2.43.0
+

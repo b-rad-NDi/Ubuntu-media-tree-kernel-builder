@@ -1,0 +1,31 @@
+From 54633dc043ea94c599e942389e36951f0d2a0f7a Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 20 Nov 2023 15:35:52 -0600
+Subject: [PATCH 09/15] cx231xx: Fix AGC configuration to defaults from windows
+ driver
+
+---
+ drivers/media/usb/cx231xx/cx231xx-avcore.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/cx231xx/cx231xx-avcore.c b/drivers/media/usb/cx231xx/cx231xx-avcore.c
+index 3d3c881..d56fef1 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-avcore.c
++++ b/drivers/media/usb/cx231xx/cx231xx-avcore.c
+@@ -2060,10 +2060,9 @@ int cx231xx_dif_set_standard(struct cx231xx *dev, u32 standard)
+ 		status = vid_blk_write_word(dev, DIF_SRC_GAIN_CONTROL,
+ 						0x000035e8);
+ 
+-		status = vid_blk_write_word(dev, DIF_AGC_CTRL_IF, 0xC2262600);
+-		status = vid_blk_write_word(dev, DIF_AGC_CTRL_INT,
+-						0xC2262600);
+-		status = vid_blk_write_word(dev, DIF_AGC_CTRL_RF, 0xC2262600);
++		status = vid_blk_write_word(dev, DIF_AGC_CTRL_IF,  0xC2262600);
++		status = vid_blk_write_word(dev, DIF_AGC_CTRL_INT, 0xC2260000);
++		status = vid_blk_write_word(dev, DIF_AGC_CTRL_RF,  0xC2260000);
+ 
+ 		/* Save the Spec Inversion value */
+ 		dif_misc_ctrl_value &= FLD_DIF_SPEC_INV;
+-- 
+2.7.4
+

@@ -1,7 +1,7 @@
-From 46cef36d56595c069a28093e642defe213806429 Mon Sep 17 00:00:00 2001
+From 1f9f3bd7cc2e1f98dba2b19d43cbd6ba61fa284c Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Mon, 18 Jan 2021 14:49:10 -0600
-Subject: [PATCH] Fix saa7164 REV2 firmware
+Subject: [PATCH 08/15] Fix saa7164 REV2 firmware
 
 ---
  drivers/media/pci/saa7164/saa7164-fw.c | 4 ++--

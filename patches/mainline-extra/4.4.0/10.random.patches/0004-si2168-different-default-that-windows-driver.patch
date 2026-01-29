@@ -1,7 +1,7 @@
-From 7a642faa548946fb81f41d502d6f385b70f24aeb Mon Sep 17 00:00:00 2001
+From 20e88138339e1521b67455e2567357068c35cd95 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 15 Oct 2019 12:20:02 -0500
-Subject: [PATCH 4/5] si2168: different default that windows driver
+Date: Fri, 11 Oct 2019 20:43:30 -0500
+Subject: [PATCH 04/15] si2168: different default that windows driver
 
 Unsure of meaning, look into...
 ---
@@ -9,7 +9,7 @@ Unsure of meaning, look into...
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index f28e09c..87e3f1d 100644
+index 8ff4ab2..c3723b2 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -458,6 +458,8 @@ static int si2168_set_frontend(struct dvb_frontend *fe)

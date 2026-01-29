@@ -1,7 +1,7 @@
-From 5ee603ab21ffe8216b65fc20e90fede8b1a0cb4d Mon Sep 17 00:00:00 2001
+From e219adfe1a0d1312587e999ae36937f5d1e533c2 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 15 Oct 2019 12:17:27 -0500
-Subject: [PATCH 1/5] si2168: Change from DVB-T to DVB-T/T2 autodetect
+Date: Fri, 11 Oct 2019 20:41:09 -0500
+Subject: [PATCH 01/15] si2168: Change from DVB-T to DVB-T/T2 autodetect
 
 DVB-T2 support can be a bit lacking in user land, this provides a module
 parameter to allow setting the PLP to auto detect DVB-T and DVB-T2
@@ -16,7 +16,7 @@ with current behaviour.
  1 file changed, 58 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/media/dvb-frontends/si2168.c b/drivers/media/dvb-frontends/si2168.c
-index b1d0941..88ef079 100644
+index 6f76b45..850f780 100644
 --- a/drivers/media/dvb-frontends/si2168.c
 +++ b/drivers/media/dvb-frontends/si2168.c
 @@ -9,6 +9,10 @@

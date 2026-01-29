@@ -1,0 +1,44 @@
+From b8f16d0545e6315c583136a967924bc8ae1eb1cf Mon Sep 17 00:00:00 2001
+From: Brad Love <brad@nextdimension.cc>
+Date: Mon, 20 Nov 2023 15:44:23 -0600
+Subject: [PATCH 11/15] xc5000: rf strength function is required to get analog
+ lock
+
+---
+ drivers/media/tuners/xc5000.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/tuners/xc5000.c b/drivers/media/tuners/xc5000.c
+index 7b7d9fe..570ff96 100644
+--- a/drivers/media/tuners/xc5000.c
++++ b/drivers/media/tuners/xc5000.c
+@@ -1338,6 +1338,16 @@ static int xc5000_set_config(struct dvb_frontend *fe, void *priv_cfg)
+ }
+ 
+ 
++static int xc5000_get_rf_strength(struct dvb_frontend *fe, u16 *rssi)
++{
++	struct xc5000_priv *priv = fe->tuner_priv;
++
++	dprintk(1, "%s()\n", __func__);
++
++	return xc_get_lock_status(priv, rssi);
++}
++
++
+ static const struct dvb_tuner_ops xc5000_tuner_ops = {
+ 	.info = {
+ 		.name              = "Xceive XC5000",
+@@ -1358,7 +1368,8 @@ static const struct dvb_tuner_ops xc5000_tuner_ops = {
+ 	.get_frequency	   = xc5000_get_frequency,
+ 	.get_if_frequency  = xc5000_get_if_frequency,
+ 	.get_bandwidth	   = xc5000_get_bandwidth,
+-	.get_status	   = xc5000_get_status
++	.get_status	   = xc5000_get_status,
++	.get_rf_strength   = xc5000_get_rf_strength,
+ };
+ 
+ struct dvb_frontend *xc5000_attach(struct dvb_frontend *fe,
+-- 
+2.7.4
+
