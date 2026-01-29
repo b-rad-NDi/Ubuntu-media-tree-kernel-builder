@@ -47,7 +47,7 @@ fi
 if [ -z "${KERNEL_ABI_TAG}" ] ; then
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge"
-	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge"
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
 		KERNEL_ABI_TAG="+mediatree+hauppauge~hwe"
@@ -89,8 +89,10 @@ if [ -f ".state_env_file" ] ; then
 	. .state_env_file
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
-	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${KVER}.${KMAJ}.0"
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH/-next/}-${KVER}.${KMAJ}.0"
 	else
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH}-${KVER}.${KMAJ}.0"
 	fi
@@ -296,8 +298,22 @@ function gen_media_tree_tarball_patched()
 	cd ${TOP_DEVDIR}/media_build
 	cd linux
 
+	if [ -z "${DISTRO_BRANCH}" ] ; then
+		deb_branch=master
+		deb_package=linux
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
+		deb_branch=master
+		deb_package=linux
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		deb_branch=${DISTRO_BRANCH/-next/}
+		deb_package=linux-hwe
+	else
+		deb_branch=${DISTRO_BRANCH}
+		deb_package=linux-${deb_branch}
+	fi
+
 	# linuxtv media tree syslog messages and config-compat.h generation
-	perl ../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}/ ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}/debian.master/config/config.common.ubuntu config-compat.h
+	perl ../v4l/scripts/make_config_compat.pl ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}/ ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}/debian.${deb_branch}/config/config.common.ubuntu config-compat.h
 	perl ./version_patch.pl
 
 	# apply kernel version specific backport patches
@@ -495,7 +511,7 @@ function apply_patches()
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=master
 	else
-		deb_branch=${DISTRO_BRANCH}
+		deb_branch=${DISTRO_BRANCH/-next/}
 	fi
 	echo "#############################################################"
 	if [ "${UPDATE_MT_KBUILD_VER}" == "YES" ] ; then
@@ -564,8 +580,10 @@ function update_identity()
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=master
-	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
 		deb_branch=master
+	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
+		deb_branch=${DISTRO_BRANCH/-next/}
 	else
 		deb_branch=${DISTRO_BRANCH}
 	fi
@@ -588,11 +606,11 @@ function regen_changelog()
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=master
 		deb_package=linux
-	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
 		deb_branch=master
 		deb_package=linux
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
-		deb_branch=${DISTRO_BRANCH}
+		deb_branch=${DISTRO_BRANCH/-next/}
 		deb_package=linux-hwe
 	else
 		deb_branch=${DISTRO_BRANCH}
@@ -621,7 +639,7 @@ function regen_changelog()
 
 	echo "${deb_package} (${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${K_BUILD_VER}.${K_ABI_MOD}${KERNEL_ABI_TAG}) ${DISTRO_CODENAME}; urgency=low" > /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
-	echo "  * Ubuntu-${deb_branch} kernel git clone">>  /tmp/tmpkrn_changelog.mod
+	echo "  * Ubuntu ${DISTRO_BRANCH} kernel git clone">>  /tmp/tmpkrn_changelog.mod
 	echo "    - ${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}.${K_ABI_B} rev ${DISTRO_GIT_REVISION}">>  /tmp/tmpkrn_changelog.mod
 	echo "" >>  /tmp/tmpkrn_changelog.mod
 
@@ -694,7 +712,7 @@ function generate_virtual_package()
 
 	if [ -z "${DISTRO_BRANCH}" ] ; then
 		deb_branch=""
-	elif [ "${DISTRO_BRANCH:0:11}" == "master-next" ] ; then
+	elif [ "${DISTRO_BRANCH:0:7}" == "master-" ] ; then
 		deb_branch=""
 	elif [ "${DISTRO_BRANCH:0:4}" == "hwe-" ] ; then
 		deb_branch=-hwe
