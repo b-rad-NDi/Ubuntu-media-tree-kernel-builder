@@ -1,0 +1,71 @@
+From af44aa191049ea0672fe2654c945e35491da36de Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Tue, 30 Dec 2025 13:21:52 -0600
+Subject: [PATCH 2/2] em28xx: Add EM2828X based Hauppauge USB Live2
+
+Includes composite and s-video inputs, plus stereo audio input.
+---
+ drivers/media/usb/em28xx/em28xx-cards.c | 20 ++++++++++++++++++++
+ drivers/media/usb/em28xx/em28xx.h       |  1 +
+ 2 files changed, 21 insertions(+)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 24ece9d4c907..43644de44309 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -2578,6 +2578,23 @@ const struct em28xx_board em28xx_boards[] = {
+ 		.tuner_gpio    = hauppauge_usb_quadhd_atsc_reg_seq,
+ 		.leds          = hauppauge_usb_quadhd_leds,
+ 	},
++	[EM2828X_BOARD_HAUPPAUGE_USB_LIVE2] = {
++		.name         = "Hauppauge USB Live2",
++		.vchannels    = 2,
++		.tuner_type   = TUNER_ABSENT,
++		.has_dvb      = 0,
++		.decoder      = EM28XX_BUILTIN,
++		.i2c_speed    = EM28XX_I2C_CLK_WAIT_ENABLE | EM28XX_I2C_FREQ_400_KHZ,
++		.input           = { {
++			.type     = EM28XX_VMUX_COMPOSITE,
++			.vmux     = 0,
++			.amux     = EM28XX_AMUX_LINE_IN,
++		}, {
++			.type     = EM28XX_VMUX_SVIDEO,
++			.vmux     = 1,
++			.amux     = EM28XX_AMUX_LINE_IN,
++		} },
++	},
+ };
+ EXPORT_SYMBOL_GPL(em28xx_boards);
+ 
+@@ -2713,6 +2730,8 @@ struct usb_device_id em28xx_id_table[] = {
+ 			.driver_info = EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595 },
+ 	{ USB_DEVICE(0x2040, 0x846d),
+ 			.driver_info = EM2874_BOARD_HAUPPAUGE_USB_QUADHD },
++	{ USB_DEVICE(0x2040, 0xc220),
++			.driver_info = EM2828X_BOARD_HAUPPAUGE_USB_LIVE2 },
+ 	{ USB_DEVICE(0x0438, 0xb002),
+ 			.driver_info = EM2880_BOARD_AMD_ATI_TV_WONDER_HD_600 },
+ 	{ USB_DEVICE(0x2001, 0xf112),
+@@ -3201,6 +3220,7 @@ static void em28xx_card_setup(struct em28xx *dev)
+ 	case EM2884_BOARD_HAUPPAUGE_WINTV_HVR_930C:
+ 	case EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_DVB:
+ 	case EM28174_BOARD_HAUPPAUGE_WINTV_DUALHD_01595:
++	case EM2828X_BOARD_HAUPPAUGE_USB_LIVE2:
+ 	{
+ 		struct tveeprom tv;
+ 
+diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
+index 09213ba0c070..b173a9bd9458 100644
+--- a/drivers/media/usb/em28xx/em28xx.h
++++ b/drivers/media/usb/em28xx/em28xx.h
+@@ -143,6 +143,7 @@
+ #define EM28178_BOARD_PCTV_461E_V2                104
+ #define EM2860_BOARD_MYGICA_IGRABBER              105
+ #define EM2874_BOARD_HAUPPAUGE_USB_QUADHD         106
++#define EM2828X_BOARD_HAUPPAUGE_USB_LIVE2         108
+ 
+ /* Limits minimum and default number of buffers */
+ #define EM28XX_MIN_BUF 4
+-- 
+2.43.0
+
