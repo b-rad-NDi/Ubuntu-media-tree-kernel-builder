@@ -1,0 +1,21 @@
+From ec88028e621b707c5a9f135fbeaa7e8811de4e78 Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Tue, 30 Apr 2024 04:20:00 -0500
+Subject: [PATCH 1/6] Linuxtv.org media tree sync - 2023-04-30-04-20
+
+---
+ debian/empty | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 debian/empty
+
+diff --git a/debian/empty b/debian/empty
+new file mode 100644
+index 000000000000..e1775d5f3b3b
+--- /dev/null
++++ b/debian/empty
+@@ -0,0 +1,2 @@
++Placeholder
++
+-- 
+2.34.1
+

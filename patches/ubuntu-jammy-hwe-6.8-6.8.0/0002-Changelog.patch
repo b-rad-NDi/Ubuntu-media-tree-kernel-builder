@@ -1,0 +1,66 @@
+From a1b1fabbb991861338bb166b9056b9dc8f3d80c0 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 28 Jan 2026 01:28:26 -0600
+Subject: [PATCH 2/6] Changelog
+
+---
+ debian.hwe-6.8/changelog | 46 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+diff --git a/debian.hwe-6.8/changelog b/debian.hwe-6.8/changelog
+index b08e456a871d..0585327e7f4d 100644
+--- a/debian.hwe-6.8/changelog
++++ b/debian.hwe-6.8/changelog
+@@ -1,3 +1,49 @@
++linux-hwe (6.8.0-1002601280128.0+mediatree+hauppauge~hwe) jammy; urgency=low
++
++  * Ubuntu hwe-6.8-next kernel git clone
++    - 6.8.0-100.100 rev 51d5fc69875d3ccbe51a7b51381a79bee9949f8c
++
++  * LinuxTV.org media tree slipstream + build fixes
++    - 0001-Linuxtv.org-media-tree-sync-2023-11-11-00-00.patch
++    - 0002-Changelog.patch
++    - 0003-Apply-build-fixes-to-media-tree.patch
++    - 0004-Mainline-Ubuntu-build-fixes.patch
++    - 0005-Add-new-media-tree-kernel-config.patch
++    - 0006-Packaging-updates.patch
++
++  * Additional patches
++    - 10.random.patches
++    --- 0001-si2168-Change-from-DVB-T-to-DVB-T-T2-autodetect.patch
++    --- 0002-cx23885-Set-Hauppauge-HVR1255-tuner-type-to-TDA18271.patch
++    --- 0003-si2168-extend-i2c-timeout-insert-cmd-status-poll-del.patch
++    --- 0004-si2168-different-default-that-windows-driver.patch
++    --- 0005-dw2102-check-initialization-replies.patch
++    --- 0007-si2168-Include-b-4.0-11-when-checking-firmware-versi.patch
++    --- 0008-Fix-saa7164-REV2-firmware.patch
++    --- 0011-cx231xx-Fix-AGC-configuration-to-defaults-from-windo.patch
++    --- 0012-au0828-Add-dqbuf-function-to-check-for-and-fix-green.patch
++    --- 0013-xc5000-rf-strength-function-is-required-to-get-analo.patch
++    --- 0014-cx25840-Fix-NTSC-J-PAL-N-and-SECAM-standards.patch
++    --- 0015-si2157-Fix-SECAM-L-PAL-N-and-PAL-Nc.patch
++    --- 0016-au0828-Add-new-Hauppauge-HVR1265-and-ImpactVCB-e.patch
++    --- 0017-em28xx-Add-DualHD-variants.patch
++    - 11.cx23885.patches
++    --- 0001-cx23885-module-option-to-disable-analog-video.patch
++    - 20.missing.stat.bits
++    --- 0003-si2168-Add-some-various-v3-stat-ioctls.patch
++    - 25.em2828X
++    --- 0001-Add-support-for-EM2828X.patch
++    --- 0002-em28xx-Add-EM2828X-based-Hauppauge-USB-Live2.patch
++    - 27.em2828x.based.9x5
++    --- 0001-em28xx-Include-support-for-second-i2c-client-demod.patch
++    --- 0002-si2157-Add-analog-TV-support-for-si2177.patch
++    --- 0003-em28xx-Add-Hauppauge-em2828X-based-9x5-revisions.patch
++    - 30.Montage.3103c.demod
++    --- 0001-m88ds3103-Add-Montage-3103c-demod-support.patch
++    --- 0002-em28xx-Add-Hauppauge-461e-v3.patch
++
++ -- Fake User <hidden@email.co>  Wed, 28 Jan 2026 01:28:26 -0600
++
+ linux-hwe-6.8 (6.8.0-100.100~22.04.1) jammy; urgency=medium
+ 
+   * jammy/linux-hwe-6.8: 6.8.0-100.100~22.04.1 -proposed tracker (LP: #2137899)
+-- 
+2.34.1
+

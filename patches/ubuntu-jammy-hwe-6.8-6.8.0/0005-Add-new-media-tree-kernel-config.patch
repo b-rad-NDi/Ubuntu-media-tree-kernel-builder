@@ -1,0 +1,25 @@
+From b0afaf6a61cfc61952a34884acc130e1032715f8 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Mon, 20 Jan 2025 13:21:53 -0600
+Subject: [PATCH 5/6] Add new media tree kernel config
+
+---
+ debian.master/config/annotations | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/debian.master/config/annotations b/debian.master/config/annotations
+index c18593ca8481..79d68ef04ed9 100644
+--- a/debian.master/config/annotations
++++ b/debian.master/config/annotations
+@@ -4507,7 +4507,7 @@ CONFIG_DVB_LNBP22                               policy<{'amd64': 'm', 'arm64': '
+ CONFIG_DVB_M88DS3103                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 'riscv64': 'm'}>
+ CONFIG_DVB_M88RS2000                            policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 'riscv64': 'm'}>
+ CONFIG_DVB_MANTIS                               policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 'riscv64': 'm'}>
+-CONFIG_DVB_MAX_ADAPTERS                         policy<{'amd64': '8', 'arm64': '8', 'armhf': '8', 'ppc64el': '8', 'riscv64': '8'}>
++CONFIG_DVB_MAX_ADAPTERS                         policy<{'amd64': '32', 'arm64': '32', 'armhf': '32', 'ppc64el': '32', 'riscv64': '32'}>
+ CONFIG_DVB_MB86A16                              policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 'riscv64': 'm'}>
+ CONFIG_DVB_MB86A20S                             policy<{'amd64': 'm', 'arm64': 'm', 'armhf': 'm', 'ppc64el': 'm', 'riscv64': 'm'}>
+ CONFIG_DVB_MMAP                                 policy<{'amd64': 'n', 'arm64': 'n', 'armhf': 'n', 'ppc64el': 'n', 'riscv64': 'n', 's390x': '-'}>
+-- 
+2.34.1
+
