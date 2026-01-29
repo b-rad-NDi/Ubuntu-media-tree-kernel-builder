@@ -683,7 +683,8 @@ function clean_kernel()
 {
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
-	fakeroot debian/rules clean
+	fakeroot debian/rules clean do_enforce_all=false
+//	fakeroot debian/rules updateconfigs do_enforce_all=false 2>/dev/null
 
 	return 0
 }
@@ -786,12 +787,12 @@ function build_kernel_bin()
 	cd ${TOP_DEVDIR}/${DISTRO_NAME}-${DISTRO_CODENAME}
 
 	if [ "$1" == "debug" ] ; then
-		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipdbg=false
+		time fakeroot debian/rules binary-headers binary-generic binary-perarch skipdbg=false do_enforce_all=false
 			#skipmodule=true skipabi=true
 	elif [ "$1" == "full" ] ; then
-		time fakeroot debian/rules binary
+		time fakeroot debian/rules binary do_enforce_all=false
 	else
-		time fakeroot debian/rules binary-headers binary-generic binary-perarch
+		time fakeroot debian/rules binary-headers binary-generic binary-perarch do_enforce_all=false
 			#skipmodule=true skipabi=true
 	fi
 }
