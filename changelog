@@ -1,3 +1,45 @@
+0.3.8
+  * Update any new Ubuntu revs
+  * USB Live2 got broken during 9x5 implementation
+
+0.3.7
+  * Update any new Ubuntu revs
+  * Fix analog inputs on em2828X based devices
+
+0.3.6.1
+  * Questing no longer has modules-extra
+
+0.3.6
+  * Update all kernel versions available
+  * Add Questing support
+  * m88ds3103c demod support for em28xx 461e
+  * si2177 tuner support for analog
+  * em28xx 935/955/975 support
+
+0.3.5
+  * Update all kernel versions available
+  * Ubuntu Ocular support
+  * Hauppauge 461e V3 support
+  * em28xx based Hauppauge USB Live2 support
+  * em28xx based Hauppauge HVR-975 support
+
+0.3.4
+  * Update all kernel versions available
+  * New media tree sync 2023-05-24
+  * Fix ImpactVCBE composite input
+  * Ubuntu Noble 24.04 support
+
+0.3.3
+  * New builds for all Ubuntu's
+
+0.3.2
+  * New builds for all Ubuntu
+  * Mantic 23.10 support
+  * All releases track master-next or hwe-X.Y-next
+
+0.3.1
+  * Ubuntu Bionic 4.15.0 snafu...
+
 0.3.0
   * New builds and revisions for everything
   * HWE versions bumped
