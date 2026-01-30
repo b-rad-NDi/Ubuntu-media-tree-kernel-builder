@@ -1,34 +1,98 @@
-From f9121778406495b90ada26f51a4821a07e79ad29 Mon Sep 17 00:00:00 2001
+From 6eec8ecd393a4abc5b161cfc6588e3fd40c68c56 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
 Date: Wed, 8 Mar 2023 16:55:19 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
- debian/empty             | 1 +
- include/uapi/linux/bpf.h | 1 +
- 2 files changed, 2 insertions(+)
+ tools/perf/util/bpf-utils.c | 43 +++++++++----------------------------
+ 1 file changed, 10 insertions(+), 33 deletions(-)
 
-diff --git a/debian/empty b/debian/empty
-index c6a250a21300..01974e6f442f 100644
---- a/debian/empty
-+++ b/debian/empty
-@@ -1,3 +1,4 @@
- Placeholder
- Apply build fixes to media tree
-+Mainline Ubuntu build fixes
+diff --git a/tools/perf/util/bpf-utils.c b/tools/perf/util/bpf-utils.c
+index 5a66dc8594aa..64a558344696 100644
+--- a/tools/perf/util/bpf-utils.c
++++ b/tools/perf/util/bpf-utils.c
+@@ -115,7 +115,7 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+ 	__u32 info_len = sizeof(info);
+ 	__u32 data_len = 0;
+ 	int i, err;
+-	__u8 *ptr;
++	void *ptr;
  
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index a68c74be011f..43eec4b33ca5 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1012,6 +1012,7 @@ enum bpf_prog_type {
- 	BPF_PROG_TYPE_SK_LOOKUP,
- 	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
- 	BPF_PROG_TYPE_NETFILTER,
-+	__MAX_BPF_PROG_TYPE
- };
+ 	if (arrays >> PERF_BPIL_LAST_ARRAY)
+ 		return ERR_PTR(-EINVAL);
+@@ -126,8 +126,6 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+ 		pr_debug("can't get prog info: %s", strerror(errno));
+ 		return ERR_PTR(-EFAULT);
+ 	}
+-	if (info.type >= __MAX_BPF_PROG_TYPE)
+-		pr_debug("%s:%d: unexpected program type %u\n", __func__, __LINE__, info.type);
  
- enum bpf_attach_type {
+ 	/* step 2: calculate total size of all arrays */
+ 	for (i = PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
+@@ -175,8 +173,6 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+ 					     desc->count_offset, count);
+ 		bpf_prog_info_set_offset_u32(&info_linear->info,
+ 					     desc->size_offset, size);
+-		assert(ptr >= info_linear->data);
+-		assert(ptr < &info_linear->data[data_len]);
+ 		bpf_prog_info_set_offset_u64(&info_linear->info,
+ 					     desc->array_offset,
+ 					     ptr_to_u64(ptr));
+@@ -190,45 +186,26 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+ 		free(info_linear);
+ 		return ERR_PTR(-EFAULT);
+ 	}
+-	if (info_linear->info.type >= __MAX_BPF_PROG_TYPE) {
+-		pr_debug("%s:%d: unexpected program type %u\n",
+-			 __func__, __LINE__, info_linear->info.type);
+-	}
+ 
+ 	/* step 6: verify the data */
+-	ptr = info_linear->data;
+ 	for (i = PERF_BPIL_FIRST_ARRAY; i < PERF_BPIL_LAST_ARRAY; ++i) {
+ 		const struct bpil_array_desc *desc = &bpil_array_desc[i];
+-		__u32 count1, count2, size1, size2;
+-		__u64 ptr2;
++		__u32 v1, v2;
+ 
+ 		if ((arrays & (1UL << i)) == 0)
+ 			continue;
+ 
+-		count1 = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
+-		count2 = bpf_prog_info_read_offset_u32(&info_linear->info,
++		v1 = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
++		v2 = bpf_prog_info_read_offset_u32(&info_linear->info,
+ 						   desc->count_offset);
+-		if (count1 != count2) {
+-			pr_warning("%s: mismatch in element count %u vs %u\n", __func__, count1, count2);
+-			free(info_linear);
+-			return ERR_PTR(-ERANGE);
+-		}
++		if (v1 != v2)
++			pr_warning("%s: mismatch in element count\n", __func__);
+ 
+-		size1 = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
+-		size2 = bpf_prog_info_read_offset_u32(&info_linear->info,
++		v1 = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
++		v2 = bpf_prog_info_read_offset_u32(&info_linear->info,
+ 						   desc->size_offset);
+-		if (size1 != size2) {
+-			pr_warning("%s: mismatch in rec size %u vs %u\n", __func__, size1, size2);
+-			free(info_linear);
+-			return ERR_PTR(-ERANGE);
+-		}
+-		ptr2 = bpf_prog_info_read_offset_u64(&info_linear->info, desc->array_offset);
+-		if (ptr_to_u64(ptr) != ptr2) {
+-			pr_warning("%s: mismatch in array %p vs %llx\n", __func__, ptr, ptr2);
+-			free(info_linear);
+-			return ERR_PTR(-ERANGE);
+-		}
+-		ptr += roundup(count1 * size1, sizeof(__u64));
++		if (v1 != v2)
++			pr_warning("%s: mismatch in rec size\n", __func__);
+ 	}
+ 
+ 	/* step 7: update info_len and data_len */
 -- 
 2.43.0
 
