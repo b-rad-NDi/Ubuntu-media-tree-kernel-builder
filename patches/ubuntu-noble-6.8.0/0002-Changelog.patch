@@ -1,4 +1,4 @@
-From 0376f47b7fbd1c3e5f17f32e4e00dfdf91e2169b Mon Sep 17 00:00:00 2001
+From 46e02e3f9bb7700a376a742afa8dd4ace0ae39f3 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
 Date: Wed, 28 Jan 2026 01:28:26 -0600
 Subject: [PATCH 2/6] Changelog
@@ -12,7 +12,7 @@ index 4ce37150a79f..af282538e79b 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
 @@ -1,3 +1,49 @@
-+linux (6.8.0-100260128.2+mediatree+hauppauge) noble; urgency=low
++linux (6.8.0-100260128.4+mediatree+hauppauge) noble; urgency=low
 +
 +  * Ubuntu master-next kernel git clone
 +    - 6.8.0-100.100 rev 2192722c809bc73b512f2581fdbf22bb736e4ac0
