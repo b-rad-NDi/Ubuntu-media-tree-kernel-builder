@@ -750,14 +750,22 @@ function generate_virtual_package()
 	sed -i "s/__LINUX_KBUILD_PKG_SRC_NAME__/linux${deb_branch}-mediatree/g" ns_control
 	sed -i "s/__MAINTAINER_INFO__/${U_FULLNAME} <${U_EMAIL}>/" ns_control
 	sed -i "s/__LINUX_HEADER_PACKAGE__/linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
-	sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+
+	if [ "$DISTRO_CODENAME" == "questing" ] ; then
+		sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+	else
+		sed -i "s/__LINUX_IMAGE_PACKAGES__/linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic, linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic/" ns_control
+	fi
+
 	echo "#########################################"
 	echo "#########################################"
 	echo "Building virtual package that depends on:"
 		echo "    linux-headers-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 		echo "    linux-image-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
 		echo "    linux-modules-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
-		echo "    linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
+		if [ "$DISTRO_CODENAME" != "questing" ] ; then
+			echo "    linux-modules-extra-${KVER}.${KMAJ}.${KMIN}-${K_ABI_A}${LAST_KBUILD_VER}-generic"
+		fi
 	echo "#########################################"
 	echo "#########################################"
 	equivs-build --full ns_control
