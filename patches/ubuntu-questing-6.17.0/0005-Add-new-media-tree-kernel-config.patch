@@ -1,4 +1,4 @@
-From 862c807f08838c3ee9626fb61ca470fcdb8b6ddf Mon Sep 17 00:00:00 2001
+From 8a2342b6b7085ca613b68a622348e201bdff9f77 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
 Date: Fri, 17 Jan 2025 14:26:45 -0600
 Subject: [PATCH 5/6] Add new media tree kernel config

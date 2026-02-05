@@ -1,3 +1,7 @@
+0.3.9
+  * Fix DVB-S - credit theos-foss
+  * Add missing 9x5 devices
+
 0.3.8
   * Update any new Ubuntu revs
   * USB Live2 got broken during 9x5 implementation

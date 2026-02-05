@@ -1,6 +1,6 @@
-From 1ce1e3b04f0779e6c318f16abfecc89694f8f516 Mon Sep 17 00:00:00 2001
+From 7af6fe36839691bf27a038c995fa727d78341bbc Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Mon, 29 Apr 2024 16:41:07 -0500
+Date: Wed, 22 Jan 2025 15:58:03 -0600
 Subject: [PATCH 4/6] Mainline Ubuntu build fixes
 
 ---
@@ -15,9 +15,9 @@ Subject: [PATCH 4/6] Mainline Ubuntu build fixes
  include/linux/dma-fence.h                     |  14 +-
  include/linux/hdmi.h                          |   2 +-
  include/linux/mmc/sdio_ids.h                  |   5 +
- include/linux/pci_ids.h                       |  38 +++++
+ include/linux/pci_ids.h                       |  44 ++++++
  sound/pci/bt87x.c                             | 147 ++++++++++++------
- 13 files changed, 185 insertions(+), 71 deletions(-)
+ 13 files changed, 191 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/gpu/drm/i2c/tda9950.c b/drivers/gpu/drm/i2c/tda9950.c
 index 8039fc0d8..8d6b071c8 100644
@@ -293,7 +293,7 @@ index 53f0efa0b..f8eea0191 100644
  #define SDIO_DEVICE_ID_MARVELL_8887_BT		0x9136
  #define SDIO_DEVICE_ID_MARVELL_8801_WLAN	0x9139
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 0178823ce..6b7bc5aa2 100644
+index 0178823ce..527c3553a 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -556,6 +556,7 @@
@@ -335,7 +335,18 @@ index 0178823ce..6b7bc5aa2 100644
  #define PCI_DEVICE_ID_PC300_RX_2	0x0300
  #define PCI_DEVICE_ID_PC300_RX_1	0x0301
  #define PCI_DEVICE_ID_PC300_TE_2	0x0310
-@@ -1966,6 +1977,24 @@
+@@ -1743,6 +1754,10 @@
+ #define PCI_SUBDEVICE_ID_AT_2700FX	0x2701
+ #define PCI_SUBDEVICE_ID_AT_2701FX	0x2703
+ 
++#define PCI_VENDOR_ID_ASIX		0x125b
++#define PCI_DEVICE_ID_ASIX_AX99100	0x9100
++#define PCI_DEVICE_ID_ASIX_AX99100_LB	0x9110
++
+ #define PCI_VENDOR_ID_ESS		0x125d
+ #define PCI_DEVICE_ID_ESS_ESS1968	0x1968
+ #define PCI_DEVICE_ID_ESS_ESS1978	0x1978
+@@ -1966,6 +1981,24 @@
  #define PCI_DEVICE_ID_APPLICOM_PCI2000IBS_CAN 0x0002
  #define PCI_DEVICE_ID_APPLICOM_PCI2000PFB 0x0003
  
@@ -360,7 +371,7 @@ index 0178823ce..6b7bc5aa2 100644
  #define PCI_VENDOR_ID_MOXA		0x1393
  #define PCI_DEVICE_ID_MOXA_CP204J	0x2040
  #define PCI_DEVICE_ID_MOXA_C218		0x2180
-@@ -2026,6 +2055,8 @@
+@@ -2026,6 +2059,8 @@
  #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
  
  #define PCI_VENDOR_ID_MICROGATE		0x13c0
@@ -369,7 +380,16 @@ index 0178823ce..6b7bc5aa2 100644
  
  #define PCI_VENDOR_ID_3WARE		0x13C1
  #define PCI_DEVICE_ID_3WARE_1000	0x1000
-@@ -2988,6 +3019,7 @@
+@@ -2622,6 +2657,8 @@
+ #define PCI_DEVICE_ID_DCI_PCCOM8	0x0002
+ #define PCI_DEVICE_ID_DCI_PCCOM2	0x0004
+ 
++#define PCI_VENDOR_ID_GLENFLY		0x6766
++
+ #define PCI_VENDOR_ID_INTEL		0x8086
+ #define PCI_DEVICE_ID_INTEL_EESSC	0x0008
+ #define PCI_DEVICE_ID_INTEL_PXHD_0	0x0320
+@@ -2988,6 +3025,7 @@
  #define PCI_DEVICE_ID_INTEL_82443GX_0	0x71a0
  #define PCI_DEVICE_ID_INTEL_82443GX_2	0x71a2
  #define PCI_DEVICE_ID_INTEL_82372FB_1	0x7601
@@ -377,7 +397,7 @@ index 0178823ce..6b7bc5aa2 100644
  #define PCI_DEVICE_ID_INTEL_SCH_LPC	0x8119
  #define PCI_DEVICE_ID_INTEL_SCH_IDE	0x811a
  #define PCI_DEVICE_ID_INTEL_E6XX_CU	0x8183
-@@ -3002,6 +3034,8 @@
+@@ -3002,6 +3040,8 @@
  #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
  #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
  
@@ -386,7 +406,7 @@ index 0178823ce..6b7bc5aa2 100644
  #define PCI_VENDOR_ID_SCALEMP		0x8686
  #define PCI_DEVICE_ID_SCALEMP_VSMP_CTL	0x1010
  
-@@ -3082,6 +3116,8 @@
+@@ -3082,6 +3122,8 @@
  
  #define PCI_VENDOR_ID_3COM_2		0xa727
  
@@ -395,7 +415,7 @@ index 0178823ce..6b7bc5aa2 100644
  #define PCI_VENDOR_ID_DIGIUM		0xd161
  #define PCI_DEVICE_ID_DIGIUM_HFC4S	0xb410
  
-@@ -3105,4 +3141,6 @@
+@@ -3105,4 +3147,6 @@
  
  #define PCI_VENDOR_ID_NCUBE		0x10ff
  

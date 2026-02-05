@@ -1,18 +1,18 @@
-From a1b1fabbb991861338bb166b9056b9dc8f3d80c0 Mon Sep 17 00:00:00 2001
+From 98492e5161b3eb0c62e62a3aab6c1f544b024ab8 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 28 Jan 2026 01:28:26 -0600
+Date: Wed, 4 Feb 2026 02:04:26 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.hwe-6.8/changelog | 46 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ debian.hwe-6.8/changelog | 47 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
 diff --git a/debian.hwe-6.8/changelog b/debian.hwe-6.8/changelog
-index b08e456a871d..0585327e7f4d 100644
+index b08e456a871d..232792b133d6 100644
 --- a/debian.hwe-6.8/changelog
 +++ b/debian.hwe-6.8/changelog
-@@ -1,3 +1,49 @@
-+linux-hwe (6.8.0-1002601280128.0+mediatree+hauppauge~hwe) jammy; urgency=low
+@@ -1,3 +1,50 @@
++linux-hwe (6.8.0-100260204.0+mediatree+hauppauge~hwe) jammy; urgency=low
 +
 +  * Ubuntu hwe-6.8-next kernel git clone
 +    - 6.8.0-100.100 rev 51d5fc69875d3ccbe51a7b51381a79bee9949f8c
@@ -55,8 +55,9 @@ index b08e456a871d..0585327e7f4d 100644
 +    - 30.Montage.3103c.demod
 +    --- 0001-m88ds3103-Add-Montage-3103c-demod-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-v3.patch
++    --- 0004-Two-hot-fixes-9x5-and-DVB-S-3103c.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 28 Jan 2026 01:28:26 -0600
++ -- Fake User <hidden@email.co>  Wed, 04 Feb 2026 02:04:26 -0600
 +
  linux-hwe-6.8 (6.8.0-100.100~22.04.1) jammy; urgency=medium
  

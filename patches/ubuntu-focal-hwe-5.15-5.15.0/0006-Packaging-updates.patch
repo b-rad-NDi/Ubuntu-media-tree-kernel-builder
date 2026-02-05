@@ -1,23 +1,23 @@
-From f3a872974061a8bfcf4798d6ffe844804c1fedd1 Mon Sep 17 00:00:00 2001
+From b089d4d737fe2103de25083f9537215e9b7d781e Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Thu, 18 Apr 2024 13:04:37 -0500
+Date: Tue, 20 Jan 2026 18:51:44 -0600
 Subject: [PATCH 6/6] Packaging updates
 
 ---
- .../control.d/flavour-control.stub            |  4 +-
- debian.hwe-5.15/control.stub.in               | 61 +------------------
- debian.hwe-5.15/copyright                     | 22 +++++++
+ .../control.d/flavour-control.stub            |  4 ++--
+ debian.hwe-5.15/control.stub.in               |  3 ++-
+ debian.hwe-5.15/copyright                     | 22 +++++++++++++++++++
  debian.hwe-5.15/dkms-versions                 |  1 -
- debian.hwe-5.15/rules.d/amd64.mk              |  6 +-
+ debian.hwe-5.15/rules.d/amd64.mk              |  6 ++---
  debian.hwe-5.15/rules.d/arm64.mk              |  2 +-
  debian.hwe-5.15/rules.d/ppc64el.mk            |  2 +-
  debian.hwe-5.15/rules.d/s390x.mk              |  2 +-
  debian.hwe-5.15/rules.d/x32.mk                |  2 +-
  debian/control.d/flavour-buildinfo.stub       |  2 +-
  debian/rules                                  |  2 +-
- debian/rules.d/0-common-vars.mk               | 17 ++++--
+ debian/rules.d/0-common-vars.mk               | 17 ++++++++++----
  debian/scripts/config-check                   |  2 +-
- 13 files changed, 49 insertions(+), 76 deletions(-)
+ 13 files changed, 49 insertions(+), 18 deletions(-)
 
 diff --git a/debian.hwe-5.15/control.d/flavour-control.stub b/debian.hwe-5.15/control.d/flavour-control.stub
 index 5f0bde3034d4..f4c02d40e94d 100644
@@ -35,7 +35,7 @@ index 5f0bde3034d4..f4c02d40e94d 100644
   DESC.
   .
 diff --git a/debian.hwe-5.15/control.stub.in b/debian.hwe-5.15/control.stub.in
-index 973f31b041b5..c24345b4ca4f 100644
+index 378444cff106..7414d96733b1 100644
 --- a/debian.hwe-5.15/control.stub.in
 +++ b/debian.hwe-5.15/control.stub.in
 @@ -1,7 +1,8 @@
@@ -48,89 +48,6 @@ index 973f31b041b5..c24345b4ca4f 100644
  Standards-Version: 3.9.4.0
  Build-Depends:
   debhelper-compat (= 10),
-@@ -61,30 +62,6 @@ Vcs-Git: git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=SERIE
- XS-Testsuite: autopkgtest
- #XS-Testsuite-Depends: gcc-4.7 binutils
- 
--Package: SRCPKGNAME-source-PKGVER
--Build-Profiles: <!stage1>
--Architecture: all
--Section: devel
--Priority: optional
--Provides: linux-source
--Depends: ${misc:Depends}, binutils, bzip2, coreutils
--Recommends: libc-dev, gcc, make
--Suggests: libncurses-dev | ncurses-dev, kernel-package, libqt3-dev
--Description: Linux kernel source for version PKGVER with Ubuntu patches
-- This package provides the source code for the Linux kernel version
-- PKGVER.
-- .
-- This package is mainly meant for other packages to use, in order to build
-- custom flavours.
-- .
-- If you wish to use this package to create a custom Linux kernel, then it
-- is suggested that you investigate the package kernel-package, which has
-- been designed to ease the task of creating kernel image packages.
-- .
-- If you are simply trying to build third-party modules for your kernel,
-- you do not want this package. Install the appropriate linux-headers
-- package instead.
--
- Package: SRCPKGNAME-headers-PKGVER-ABINUM
- Build-Profiles: <!stage1>
- Architecture: all
-@@ -97,18 +74,6 @@ Description: Header files related to Linux kernel version PKGVER
-  that want the latest kernel headers. Please read
-  /usr/share/doc/SRCPKGNAME-headers-PKGVER-ABINUM/debian.README.gz for details
- 
--Package: SRCPKGNAME-tools-common
--Build-Profiles: <!stage1>
--Architecture: all
--Multi-Arch: foreign
--Section: kernel
--Priority: optional
--Depends: ${misc:Depends}, lsb-release
--Description: Linux kernel version specific tools for version PKGVER
-- This package provides the architecture independent parts for kernel
-- version locked tools (such as perf and x86_energy_perf_policy) for
-- version PKGVER.
--
- Package: SRCPKGNAME-tools-PKGVER-ABINUM
- Build-Profiles: <!stage1>
- Architecture: amd64 armhf arm64 ppc64el s390x
-@@ -122,17 +87,6 @@ Description: Linux kernel version specific tools for version PKGVER-ABINUM
-  =HUMAN=.
-  You probably want to install linux-tools-PKGVER-ABINUM-<flavour>.
- 
--Package: SRCPKGNAME-cloud-tools-common
--Build-Profiles: <!stage1>
--Architecture: all
--Multi-Arch: foreign
--Section: kernel
--Priority: optional
--Depends: ${misc:Depends}
--Description: Linux kernel version specific cloud tools for version PKGVER
-- This package provides the architecture independent parts for kernel
-- version locked tools for cloud tools for version PKGVER.
--
- Package: SRCPKGNAME-cloud-tools-PKGVER-ABINUM
- Build-Profiles: <!stage1>
- Architecture: amd64 armhf
-@@ -144,14 +98,3 @@ Description: Linux kernel version specific cloud tools for version PKGVER-ABINUM
-  version locked tools for cloud tools for version PKGVER-ABINUM on
-  =HUMAN=.
-  You probably want to install linux-cloud-tools-PKGVER-ABINUM-<flavour>.
--
--Package: SRCPKGNAME-tools-host
--Build-Profiles: <!stage1>
--Architecture: all
--Multi-Arch: foreign
--Section: kernel
--Priority: optional
--Depends: ${misc:Depends}, python3
--Description: Linux kernel VM host tools
-- This package provides kernel tools useful for VM hosts.
--
 diff --git a/debian.hwe-5.15/copyright b/debian.hwe-5.15/copyright
 index d1d04a6d6697..b6f183f12da6 100644
 --- a/debian.hwe-5.15/copyright
@@ -162,12 +79,12 @@ index d1d04a6d6697..b6f183f12da6 100644
  Linux was written by Linus Torvalds <Linus.Torvalds@cs.Helsinki.FI>
  and others.
 diff --git a/debian.hwe-5.15/dkms-versions b/debian.hwe-5.15/dkms-versions
-index eed679c8ef60..d1a2f15571c7 100644
+index da8d76d3311d..6e84d070ddd7 100644
 --- a/debian.hwe-5.15/dkms-versions
 +++ b/debian.hwe-5.15/dkms-versions
 @@ -1,3 +1,2 @@
- zfs-linux 2.1.5-1ubuntu6~22.04.3 modulename=zfs debpath=pool/universe/z/%package%/zfs-dkms_%version%_all.deb arch=amd64 arch=arm64 arch=ppc64el arch=s390x rprovides=spl-modules rprovides=spl-dkms rprovides=zfs-modules rprovides=zfs-dkms
- backport-iwlwifi-dkms 9858-0ubuntu3.4 modulename=iwlwifi debpath=pool/universe/b/%package%/backport-iwlwifi-dkms_%version%_all.deb arch=amd64 rprovides=iwlwifi-modules rprovides=backport-iwlwifi-dkms type=standalone
+ zfs-linux 2.1.5-1ubuntu6~22.04.5 modulename=zfs debpath=pool/universe/z/%package%/zfs-dkms_%version%_all.deb arch=amd64 arch=arm64 arch=ppc64el arch=s390x rprovides=spl-modules rprovides=spl-dkms rprovides=zfs-modules rprovides=zfs-dkms
+ backport-iwlwifi-dkms 11510-0ubuntu1~22.04.3 modulename=iwlwifi debpath=pool/universe/b/%package%/backport-iwlwifi-dkms_%version%_all.deb arch=amd64 rprovides=iwlwifi-modules rprovides=backport-iwlwifi-dkms type=standalone
 -v4l2loopback 0.12.7-2ubuntu2~22.04.1 modulename=v4l2loopback debpath=pool/universe/v/%package%/v4l2loopback-dkms_%version%_all.deb arch=amd64 rprovides=v4l2loopback-modules rprovides=v4l2loopback-dkms
 diff --git a/debian.hwe-5.15/rules.d/amd64.mk b/debian.hwe-5.15/rules.d/amd64.mk
 index d0384f0227a4..df23d1a64aba 100644

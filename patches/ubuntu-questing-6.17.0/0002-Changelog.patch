@@ -1,18 +1,18 @@
-From 8b57a8da9b808568662f65b189d3c8000bc9fcd2 Mon Sep 17 00:00:00 2001
+From 8ac699ba2b1df3acd3ad00cb595f4e8b9b9324e5 Mon Sep 17 00:00:00 2001
 From: Bradford Love <hidden@email.co>
-Date: Wed, 28 Jan 2026 01:28:26 -0600
+Date: Wed, 4 Feb 2026 02:04:26 -0600
 Subject: [PATCH 2/6] Changelog
 
 ---
- debian.master/changelog | 46 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ debian.master/changelog | 47 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
 diff --git a/debian.master/changelog b/debian.master/changelog
-index ba7903862120..0e3915ce0025 100644
+index ba7903862120..98d5320dec31 100644
 --- a/debian.master/changelog
 +++ b/debian.master/changelog
-@@ -1,3 +1,49 @@
-+linux (6.17.0-14260128.0+mediatree+hauppauge) questing; urgency=low
+@@ -1,3 +1,50 @@
++linux (6.17.0-14260204.0+mediatree+hauppauge) questing; urgency=low
 +
 +  * Ubuntu master-next kernel git clone
 +    - 6.17.0-14.14 rev 2002f38d6145c6d674594aac3680562957c29e01
@@ -55,8 +55,9 @@ index ba7903862120..0e3915ce0025 100644
 +    - 30.Montage.3103c.demod
 +    --- 0001-m88ds3103-Add-Montage-3103c-demod-support.patch
 +    --- 0002-em28xx-Add-Hauppauge-461e-v3.patch
++    --- 0004-Two-hot-fixes-9x5-and-DVB-S-3103c.patch
 +
-+ -- Fake User <hidden@email.co>  Wed, 28 Jan 2026 01:28:26 -0600
++ -- Fake User <hidden@email.co>  Wed, 04 Feb 2026 02:04:26 -0600
 +
  linux (6.17.0-14.14) questing; urgency=medium
  

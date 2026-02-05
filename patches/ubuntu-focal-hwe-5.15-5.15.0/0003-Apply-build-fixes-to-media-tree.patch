@@ -1,27 +1,25 @@
-From f51414497eb05c30297b8141777fe5b5354dbf73 Mon Sep 17 00:00:00 2001
-From: Bradford Love <hidden@email.co>
-Date: Wed, 17 Apr 2024 16:26:40 -0500
+From d32ae5e52e7d62ba0a3a42b7e67b6f3889c0660e Mon Sep 17 00:00:00 2001
+From: Brad Love <hidden@email.co>
+Date: Wed, 22 Jan 2025 14:29:45 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/core/cec-api.c           |  3 +++
- drivers/media/i2c/hi556.c                  |  4 +--
- drivers/media/i2c/imx208.c                 |  4 +--
- drivers/media/i2c/imx319.c                 |  4 +--
- drivers/media/i2c/ov2740.c                 |  4 +--
- drivers/media/i2c/ov5670.c                 |  4 +--
- drivers/media/i2c/ov5675.c                 |  4 +--
- drivers/media/i2c/ov8856.c                 |  4 +--
- drivers/media/mc/mc-device.c               |  2 ++
- drivers/media/pci/intel/ipu3/cio2-bridge.c |  6 +++--
- drivers/media/rc/Makefile                  |  2 +-
- drivers/media/usb/em28xx/em28xx-dvb.c      |  2 +-
- drivers/media/v4l2-core/v4l2-ioctl.c       |  2 ++
- include/linux/kernel_version.h             |  1 +
- include/media/config-compat.h              | 29 ++++++++++++++++++++++
- 15 files changed, 57 insertions(+), 18 deletions(-)
+ drivers/media/cec/core/cec-api.c           | 3 +++
+ drivers/media/i2c/hi556.c                  | 4 ++--
+ drivers/media/i2c/imx208.c                 | 4 ++--
+ drivers/media/i2c/imx319.c                 | 4 ++--
+ drivers/media/i2c/ov2740.c                 | 4 ++--
+ drivers/media/i2c/ov5670.c                 | 4 ++--
+ drivers/media/i2c/ov5675.c                 | 4 ++--
+ drivers/media/i2c/ov8856.c                 | 4 ++--
+ drivers/media/mc/mc-device.c               | 2 ++
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++++--
+ drivers/media/rc/Makefile                  | 2 +-
+ drivers/media/usb/em28xx/em28xx-dvb.c      | 2 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c       | 2 ++
+ include/linux/kernel_version.h             | 1 +
+ 14 files changed, 28 insertions(+), 18 deletions(-)
  create mode 100644 include/linux/kernel_version.h
- create mode 100644 include/media/config-compat.h
 
 diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
 index 1c3096820590..3f321386b3db 100644
@@ -281,41 +279,6 @@ index 000000000000..85bd4b9831df
 +++ b/include/linux/kernel_version.h
 @@ -0,0 +1 @@
 +#define V4L2_VERSION 332288
-diff --git a/include/media/config-compat.h b/include/media/config-compat.h
-new file mode 100644
-index 000000000000..ba5db9d832bc
---- /dev/null
-+++ b/include/media/config-compat.h
-@@ -0,0 +1,29 @@
-+#ifndef __CONFIG_COMPAT_H__
-+#define __CONFIG_COMPAT_H__
-+
-+#include <linux/version.h>
-+
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
-+#include <generated/autoconf.h>
-+#else
-+#include <linux/autoconf.h>
-+#endif
-+
-+#include <linux/mmdebug.h>
-+
-+
-+#define NEED_MIN3 1
-+
-+#define NEED_SETUP_TIMER 1
-+
-+#define NEED_GET_USER_PAGES_LONGTERM 1
-+
-+#define NEED_U8_MAX 1
-+
-+#define NEED_STRUCT_SIZE 1
-+
-+#define NEED_I2C_NEW_SECONDARY_DEV 1
-+
-+#define NEED_KEY_SCREENSAVER 1
-+
-+#endif
 -- 
 2.25.1
 

@@ -1,65 +1,63 @@
-From d64cc53bd3ab577a38dc5e062e1bf680f8edcad7 Mon Sep 17 00:00:00 2001
+From 615b1d20cce5322ac67100acad390c8b31acc282 Mon Sep 17 00:00:00 2001
 From: Brad Love <hidden@email.co>
-Date: Tue, 28 May 2024 14:18:10 -0500
+Date: Wed, 22 Jan 2025 13:57:42 -0600
 Subject: [PATCH 3/6] Apply build fixes to media tree
 
 ---
- drivers/media/cec/cec-api.c                   |  3 ++
- drivers/media/cec/core/cec-api.c              |  3 ++
- drivers/media/common/videobuf2/Makefile       |  2 +-
- .../common/videobuf2/videobuf2-dma-contig.c   |  2 +
- .../media/common/videobuf2/videobuf2-dma-sg.c |  2 +
- .../media/common/videobuf2/videobuf2-memops.c |  3 +-
- .../common/videobuf2/videobuf2-vmalloc.c      |  2 +
- drivers/media/dvb-core/dvb_net.c              |  2 +
- drivers/media/dvb-core/dvbdev.c               |  2 +
- drivers/media/dvb-frontends/cxd2820r_core.c   |  3 +-
- drivers/media/dvb-frontends/lgdt330x.c        |  3 ++
- drivers/media/dvb-frontends/m88ds3103.c       |  2 +
- drivers/media/dvb-frontends/ts2020.c          |  2 +
- drivers/media/i2c/adv7604.c                   |  2 +
- drivers/media/i2c/imx258.c                    |  2 +
- drivers/media/i2c/ov5693.c                    |  2 +
- drivers/media/mc/mc-device.c                  |  2 +
- drivers/media/pci/bt8xx/bttv-input.c          |  2 +
- drivers/media/pci/cx18/cx18-i2c.c             |  2 +
- drivers/media/pci/cx23885/cx23885-dvb.c       |  2 +
- drivers/media/pci/cx23885/cx23885-i2c.c       |  2 +
- drivers/media/pci/ivtv/ivtv-driver.c          |  2 +
- drivers/media/pci/ivtv/ivtv-i2c.c             |  2 +
- drivers/media/pci/saa7134/saa7134-video.c     |  2 +
- drivers/media/pci/saa7164/saa7164-dvb.c       |  2 +
- drivers/media/pci/smipcie/smipcie-main.c      |  2 +
- drivers/media/platform/sh_veu.c               |  2 +-
- drivers/media/platform/via-camera.c           |  2 +
- drivers/media/platform/vicodec/vicodec-core.c |  2 +-
- drivers/media/platform/vim2m.c                |  2 +-
- drivers/media/platform/vimc/vimc-capture.c    |  2 +-
- drivers/media/platform/vivid/vivid-core.c     |  6 +--
- drivers/media/usb/dvb-usb-v2/af9035.c         |  2 +
- drivers/media/usb/dvb-usb-v2/anysee.c         |  2 +
- drivers/media/usb/dvb-usb-v2/rtl28xxu.c       |  2 +
- drivers/media/usb/dvb-usb-v2/zd1301.c         |  2 +
- drivers/media/usb/dvb-usb/dib0700_devices.c   |  1 +
- drivers/media/usb/dvb-usb/dw2102.c            |  2 +
- drivers/media/usb/em28xx/Makefile             |  4 +-
- drivers/media/usb/em28xx/em28xx-dvb.c         |  2 +-
- drivers/media/usb/usbvision/usbvision-video.c |  2 +-
- drivers/media/v4l2-core/v4l2-async.c          |  2 +
- drivers/media/v4l2-core/v4l2-fwnode.c         |  2 +
- drivers/media/v4l2-core/v4l2-i2c.c            |  2 +
- drivers/media/v4l2-core/v4l2-ioctl.c          |  2 +
- include/linux/kernel_version.h                |  1 +
- include/media/config-compat.h                 | 47 +++++++++++++++++++
- include/media/config-mycompat.h               |  6 +++
- include/media/v4l2-subdev.h                   |  2 +
- include/media/videobuf2-core.h                |  4 +-
- 50 files changed, 145 insertions(+), 15 deletions(-)
+ drivers/media/cec/cec-api.c                           | 3 +++
+ drivers/media/cec/core/cec-api.c                      | 3 +++
+ drivers/media/common/videobuf2/Makefile               | 2 +-
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 2 ++
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 2 ++
+ drivers/media/common/videobuf2/videobuf2-memops.c     | 3 ++-
+ drivers/media/common/videobuf2/videobuf2-vmalloc.c    | 2 ++
+ drivers/media/dvb-core/dvb_net.c                      | 2 ++
+ drivers/media/dvb-core/dvbdev.c                       | 2 ++
+ drivers/media/dvb-frontends/cxd2820r_core.c           | 3 ++-
+ drivers/media/dvb-frontends/lgdt330x.c                | 3 +++
+ drivers/media/dvb-frontends/m88ds3103.c               | 2 ++
+ drivers/media/dvb-frontends/ts2020.c                  | 2 ++
+ drivers/media/i2c/adv7604.c                           | 2 ++
+ drivers/media/i2c/imx258.c                            | 2 ++
+ drivers/media/i2c/ov5693.c                            | 2 ++
+ drivers/media/mc/mc-device.c                          | 2 ++
+ drivers/media/pci/bt8xx/bttv-input.c                  | 2 ++
+ drivers/media/pci/cx18/cx18-i2c.c                     | 2 ++
+ drivers/media/pci/cx23885/cx23885-dvb.c               | 2 ++
+ drivers/media/pci/cx23885/cx23885-i2c.c               | 2 ++
+ drivers/media/pci/ivtv/ivtv-driver.c                  | 2 ++
+ drivers/media/pci/ivtv/ivtv-i2c.c                     | 2 ++
+ drivers/media/pci/saa7134/saa7134-video.c             | 2 ++
+ drivers/media/pci/saa7164/saa7164-dvb.c               | 2 ++
+ drivers/media/pci/smipcie/smipcie-main.c              | 2 ++
+ drivers/media/platform/sh_veu.c                       | 2 +-
+ drivers/media/platform/via-camera.c                   | 2 ++
+ drivers/media/platform/vicodec/vicodec-core.c         | 2 +-
+ drivers/media/platform/vim2m.c                        | 2 +-
+ drivers/media/platform/vimc/vimc-capture.c            | 2 +-
+ drivers/media/platform/vivid/vivid-core.c             | 6 +++---
+ drivers/media/usb/dvb-usb-v2/af9035.c                 | 2 ++
+ drivers/media/usb/dvb-usb-v2/anysee.c                 | 2 ++
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c               | 2 ++
+ drivers/media/usb/dvb-usb-v2/zd1301.c                 | 2 ++
+ drivers/media/usb/dvb-usb/dib0700_devices.c           | 1 +
+ drivers/media/usb/dvb-usb/dw2102.c                    | 2 ++
+ drivers/media/usb/em28xx/Makefile                     | 4 ++--
+ drivers/media/usb/em28xx/em28xx-dvb.c                 | 2 +-
+ drivers/media/usb/usbvision/usbvision-video.c         | 2 +-
+ drivers/media/v4l2-core/v4l2-async.c                  | 2 ++
+ drivers/media/v4l2-core/v4l2-fwnode.c                 | 2 ++
+ drivers/media/v4l2-core/v4l2-i2c.c                    | 2 ++
+ drivers/media/v4l2-core/v4l2-ioctl.c                  | 2 ++
+ include/linux/kernel_version.h                        | 1 +
+ include/media/config-mycompat.h                       | 6 ++++++
+ include/media/v4l2-subdev.h                           | 2 ++
+ include/media/videobuf2-core.h                        | 4 +++-
+ 49 files changed, 98 insertions(+), 15 deletions(-)
  create mode 100644 include/linux/kernel_version.h
- create mode 100644 include/media/config-compat.h
 
 diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
-index ed75636a6..681b30c5b 100644
+index 4374c9cec..dc9f33d75 100644
 --- a/drivers/media/cec/cec-api.c
 +++ b/drivers/media/cec/cec-api.c
 @@ -19,6 +19,9 @@
@@ -679,59 +677,6 @@ index 000000000..85bd4b983
 +++ b/include/linux/kernel_version.h
 @@ -0,0 +1 @@
 +#define V4L2_VERSION 332288
-diff --git a/include/media/config-compat.h b/include/media/config-compat.h
-new file mode 100644
-index 000000000..bc666dfaf
---- /dev/null
-+++ b/include/media/config-compat.h
-@@ -0,0 +1,47 @@
-+#ifndef __CONFIG_COMPAT_H__
-+#define __CONFIG_COMPAT_H__
-+
-+#include <linux/version.h>
-+
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
-+#include <generated/autoconf.h>
-+#else
-+#include <linux/autoconf.h>
-+#endif
-+
-+#include <linux/mmdebug.h>
-+
-+
-+#define NEED_FRAME_VECTOR 1
-+
-+#define NEED_SETUP_TIMER 1
-+
-+#define NEED_GET_USER_PAGES_LONGTERM 1
-+
-+#define NEED_U8_MAX 1
-+
-+#define NEED_STRUCT_SIZE 1
-+
-+#define NEED_FWNODE_GETNAME 1
-+
-+#define NEED_I2C_NEW_SECONDARY_DEV 1
-+
-+#define NEED_I2C_NEW_SCANNED_DEVICE 1
-+
-+#define NEED_I2C_CLIENT_HAS_DRIVER 1
-+
-+#define NEED_CPU_LATENCY_QOS 1
-+
-+#define NEED_FWNODE_GRAPH_IS_ENDPOINT 1
-+
-+#define NEED_SCHED_SET_FIFO 1
-+
-+#define NEED_VMA_LOOKUP 1
-+
-+#define NEED_DMA_VMAP_NONCONTIGUOUS 1
-+
-+#define NEED_LOCKDEP_ASSERT_NOT_HELD 1
-+
-+#define NEED_KEY_SCREENSAVER 1
-+
-+#endif
 diff --git a/include/media/config-mycompat.h b/include/media/config-mycompat.h
 index 76aaa0b26..3c62230e0 100644
 --- a/include/media/config-mycompat.h
