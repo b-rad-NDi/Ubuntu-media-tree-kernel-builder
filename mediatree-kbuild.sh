@@ -97,11 +97,7 @@ if [ -f ".state_env_file" ] ; then
 		export KB_PATCH_DIR="${TOP_DEVDIR}/patches/${DISTRO_NAME}-${DISTRO_CODENAME}-${DISTRO_BRANCH}-${KVER}.${KMAJ}.0"
 	fi
 
-	if [ ${KVER} -eq 4 -a ${KMAJ} -lt 16 ] ; then
-		DATE_STRING="+%Y%m%d%H%M"
-	else
-		DATE_STRING="+%y%m%d%H%M"
-	fi
+	DATE_STRING="+%y%m%d"
 fi
 
 ## Set env var V4L_SYNC_DATE to a specific date to override latest tarball
