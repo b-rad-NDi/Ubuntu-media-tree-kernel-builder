@@ -1,0 +1,47 @@
+From 78979c36ee3fc38f9f534780bb55927dfc53ec99 Mon Sep 17 00:00:00 2001
+From: Bradford Love <hidden@email.co>
+Date: Wed, 4 Feb 2026 12:03:30 -0600
+Subject: [PATCH] Two hot fixes, 9x5 and DVB-S 3103c
+
+---
+ drivers/media/dvb-frontends/m88ds3103.c | 6 +++++-
+ drivers/media/usb/em28xx/em28xx-cards.c | 6 ++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index ab30c1abf4d5..77dee109e05f 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -1071,7 +1071,11 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
+ 		goto err;
+ 
+ //	dev_dbg(&client->dev, "%s  FE/EA  %X  |  %X\n", __func__, u8tmp, ((u8tmp1 & 0x03) << 6) | u8tmp2);
+-	u8tmp = ((u8tmp1 & 0x03) << 6) | u8tmp2 >> 0;
++	if (dev->chiptype == M88DS3103_CHIPTYPE_3103C)
++		u8tmp = 0xcb;
++	else
++		u8tmp = ((u8tmp1 & 0x03) << 6) | u8tmp2 >> 0;
++
+ 	ret = regmap_write(dev->regmap, 0xea, u8tmp);
+ 	if (ret)
+ 		goto err;
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index f458866ab939..2e10556f5862 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -2950,6 +2950,12 @@ struct usb_device_id em28xx_id_table[] = {
+ 			.driver_info = EM2874_BOARD_HAUPPAUGE_USB_QUADHD },
+ 	{ USB_DEVICE(0x2040, 0xc220),
+ 			.driver_info = EM2828X_BOARD_HAUPPAUGE_USB_LIVE2 },
++	{ USB_DEVICE(0x2040, 0x0360),
++			.driver_info = EM2828X_BOARD_HAUPPAUGE_935_V2 },
++	{ USB_DEVICE(0x2040, 0x8366),
++			.driver_info = EM2828X_BOARD_HAUPPAUGE_955_V2 },
++	{ USB_DEVICE(0x2040, 0x036a),
++			.driver_info = EM2828X_BOARD_HAUPPAUGE_975_V2 },
+ 	{ USB_DEVICE(0x2040, 0x8360),
+ 			.driver_info = EM2828X_BOARD_HAUPPAUGE_935_V2 },
+ 	{ USB_DEVICE(0x2040, 0x0366),
+-- 
+2.34.1
+
